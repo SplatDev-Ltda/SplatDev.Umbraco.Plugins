@@ -1,13 +1,14 @@
 {
   "$schema": "../../umbraco-package-schema.json",
   "name": "PhotoGallery",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "extensions": [
     {
       "type": "dashboard",
       "alias": "PhotoGallery.Dashboard",
       "name": "Photo Gallery",
-      "element": "/App_Plugins/PhotoGallery/dashboard.js",
+      "element": "/App_Plugins/PhotoGallery/dist/photogallery-dashboard.element.js",
+      "elementName": "photogallery-dashboard",
       "weight": 100,
       "meta": {
         "label": "Photo Gallery",
