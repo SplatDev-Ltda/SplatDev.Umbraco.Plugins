@@ -5,7 +5,7 @@ export default defineConfig({
         lib: {
             entry: "src/dashboards/welcome-dashboard-element.ts",
             formats: ["es"],
-            fileName: "welcome-dashboard",
+            fileName: "formbuilder-dashboard",
         },
         outDir: "../wwwroot/App_Plugins/FormBuilderExtension",
         emptyOutDir: true,
