@@ -59,4 +59,8 @@
     <Folder Include="wwwroot\App_Plugins\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\umbraco-marketplace.json" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
 </Project>
