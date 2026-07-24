@@ -1,0 +1,18 @@
+{
+  "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
+  "Description": "Manage PDF digital books, documents, and publications from the Umbraco backoffice Settings dashboard. Upload, organize, and curate PDF content with a library-style interface. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).",
+  "Category": "Content Management",
+  "PackageType": "Package",
+  "LicenseTypes": ["Free"],
+  "Tags": ["pdf", "documents", "library", "media", "dashboard"],
+  "DocumentationUrl": "https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins/blob/master/SplatDev.Umbraco.Plugins.PdfCurator/README.md",
+  "IssueTrackerUrl": "https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins/issues",
+  "AuthorDetails": {
+    "Name": "SplatDev",
+    "Description": "SplatDev Ltda \u2014 building Umbraco plugins and tools for agencies and developers.",
+    "Url": "https://github.com/SplatDev-Ltda",
+    "ImageUrl": "https://github.com/SplatDev-Ltda.png",
+    "SyncContributorsFromRepository": true
+  },
+  "Screenshots": []
+}

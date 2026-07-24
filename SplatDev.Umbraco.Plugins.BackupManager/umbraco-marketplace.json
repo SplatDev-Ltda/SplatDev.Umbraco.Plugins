@@ -1,0 +1,18 @@
+{
+  "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
+  "Description": "Manage site backups and cloud storage providers directly from the Umbraco backoffice Settings dashboard. Schedule automated backups, configure cloud storage targets, and monitor backup status. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).",
+  "Category": "Developer Tools",
+  "PackageType": "Package",
+  "LicenseTypes": ["Free"],
+  "Tags": ["backup", "cloud", "storage", "dashboard"],
+  "DocumentationUrl": "https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins/blob/master/SplatDev.Umbraco.Plugins.BackupManager/README.md",
+  "IssueTrackerUrl": "https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins/issues",
+  "AuthorDetails": {
+    "Name": "SplatDev",
+    "Description": "SplatDev Ltda \u2014 building Umbraco plugins and tools for agencies and developers.",
+    "Url": "https://github.com/SplatDev-Ltda",
+    "ImageUrl": "https://github.com/SplatDev-Ltda.png",
+    "SyncContributorsFromRepository": true
+  },
+  "Screenshots": []
+}
