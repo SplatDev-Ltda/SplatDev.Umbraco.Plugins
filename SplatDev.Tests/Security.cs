@@ -14,6 +14,7 @@ namespace SplatDev.Tests
 
     using Xunit;
 
+    [Trait("Category", "Integration")]
     public class Security
     {
         [Fact]

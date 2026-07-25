@@ -38,4 +38,8 @@
 		<ProjectReference Include="..\SplatDev.DigitalBookCurator.Core\SplatDev.DigitalBookCurator.Core.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<None Include="umbraco-marketplace.json" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
 </Project>

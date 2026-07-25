@@ -2,7 +2,7 @@
 {
     using Microsoft.Extensions.Primitives;
 
-    using Newtonsoft.Json;
+    using System.Text.Json;
 
     using SplatDev.Mobile.Detection.Models;
 
@@ -18,7 +18,7 @@
             var assemblyLocation = Assembly.GetExecutingAssembly().Location;
             var path = Path.GetDirectoryName(assemblyLocation) ?? AppDomain.CurrentDomain.BaseDirectory;
             var file = File.ReadAllText(Path.Combine(path, "device_list.json"));
-            MobileDevices = JsonConvert.DeserializeObject<MobileDevice[]>(file);
+            MobileDevices = JsonSerializer.Deserialize<MobileDevice[]>(file);
         }
 
         public static bool IsMobileBrowser(Microsoft.AspNetCore.Http.HttpRequest request)

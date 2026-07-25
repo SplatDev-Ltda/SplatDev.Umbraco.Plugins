@@ -7,7 +7,7 @@ namespace SplatDev.Umbraco.EntityFramework.Repositories
         Task<int?> CountRecordsAsync();
         Task<TEntity> CreateAsync(TEntity entity);
         Task DeleteAsync(int id);
-        Task<IList<TEntity>> FetchAsync(string query);
+        Task<IList<TEntity>> FetchAsync(FormattableString query);
         Task<IList<TEntity>?> GetAllAsync();
         Task<TEntity?> GetByIdAsync(int id);
         Task<PagedResults<TEntity>> GetPagedResultsAsync(int pageNumber, int pageSize);

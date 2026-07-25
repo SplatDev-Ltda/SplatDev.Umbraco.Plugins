@@ -1,8 +1,9 @@
-﻿namespace SplatDev.Security
+namespace SplatDev.Security
 {
     using Google.Apis.Safebrowsing.v4.Data;
 
-    using Newtonsoft.Json;
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
 
     using RestSharp;
 
@@ -19,6 +20,11 @@
 
     public static class Tools
     {
+        private static readonly JsonSerializerOptions _jsonDeserializeOptions = new()
+        {
+            PropertyNameCaseInsensitive = true,
+        };
+
         private static readonly Regex _regex = new Regex("[^a-zA-Z0-9]");
 
         private static RestClient CreateRestClient(string baseUrl, HttpMessageHandler? handler = null)
@@ -46,8 +52,9 @@
             await Task.FromResult(0);
             var response = client.Post(request);
 
-            var job = JsonConvert.DeserializeObject<CheckPhishResponse>(response.Content);
-            if (job == null || job.jobID == "none" || job.status == "DONE") return job ?? new CheckPhishResponse
+            var job = JsonSerializer.Deserialize<CheckPhishResponse>(response.Content, _jsonDeserializeOptions);
+
+            if (job == null || job.jobID == "none") return new CheckPhishResponse
             {
                 status = "PENDING",
                 disposition = "clean"
@@ -58,7 +65,7 @@
             requestStatus.AddJsonBody(new { apiKey, job.jobID, insights });
             var responseStatus = client.Post(requestStatus);
 
-            return JsonConvert.DeserializeObject<CheckPhishResponse>(responseStatus.Content);
+            return JsonSerializer.Deserialize<CheckPhishResponse>(responseStatus.Content, _jsonDeserializeOptions);
         }
 
         /// <summary>
@@ -75,7 +82,7 @@
             requestStatus.AddJsonBody(new { apiKey, jobID = jobId, insights });
             var responseStatus = client.Post(requestStatus);
             await Task.FromResult(0);
-            return JsonConvert.DeserializeObject<CheckPhishResponse>(responseStatus.Content);
+            return JsonSerializer.Deserialize<CheckPhishResponse>(responseStatus.Content, _jsonDeserializeOptions);
         }
 
         /// <summary>
@@ -142,14 +149,14 @@
                     ThreatEntries = entries
                 }
             };
-            var jsonSettings = new JsonSerializerSettings
+            var jsonOptions = new JsonSerializerOptions
             {
-                ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver(),
-                NullValueHandling = NullValueHandling.Ignore
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             };
             var client = CreateRestClient(Constants.GOOGLE_SAFE_BROWSING, handler);
             var request = new RestRequest($"v4/threatMatches:find");
-            request.AddStringBody(JsonConvert.SerializeObject(body, jsonSettings), ContentType.Json);
+            request.AddStringBody(JsonSerializer.Serialize(body, jsonOptions), ContentType.Json);
             request.AddQueryParameter("key", apiKey);
             var response = await client.PostAsync<GoogleSecuritySafebrowsingV4FindThreatMatchesResponse>(request);
             return response;

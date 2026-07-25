@@ -30,5 +30,6 @@
     <ProjectReference Include="../SplatDev.Search/SplatDev.Search.csproj" />
     <ProjectReference Include="../SplatDev.Security/SplatDev.Security.csproj" />
     <ProjectReference Include="../SplatDev.Database.MSSQLAdmin/SplatDev.Database.MSSQLAdmin.csproj" />
+    <ProjectReference Include="../SplatDev.Messaging.Newsletter/SplatDev.Messaging.Newsletter.csproj" />
   </ItemGroup>
 </Project>

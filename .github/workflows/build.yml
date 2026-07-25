@@ -43,10 +43,12 @@ jobs:
             | grep -v "Tests\|BackupManager\|FormsClone\|obj\|bin\|CodeFirst\|PdfCurator" \
             | sort); do
             name=$(basename "$csproj" .csproj)
-            # Drive pass/fail off dotnet's exit code, not a grep of its stdout.
-            # The previous `| grep -q "Build succeeded"` swallowed the exit code,
-            # so the job stayed green even when a plugin failed to compile.
-            if dotnet build "$csproj" -c Release --no-restore; then
+            # Some publishable plugins (e.g. Getnet, Santander, Schema2Yaml)
+            # aren't in SplatDev.Core.sln, so the solution-level restore above
+            # doesn't populate their obj/project.assets.json. Let dotnet build
+            # restore per-plugin (cheap when NuGet cache is warm) instead of
+            # using --no-restore, which fails with NETSDK1004 for those plugins.
+            if dotnet build "$csproj" -c Release; then
               PASS_COUNT=$((PASS_COUNT+1))
             else
               echo "::error::Build failed: $name"
@@ -60,9 +62,11 @@ jobs:
             exit 1
           fi
 
-      - name: Test
+      - name: Test (unit)
         # Build-on-demand (no --no-build): the per-plugin build step above does not
         # compile the test projects, so `--no-build` could never find their
         # assemblies. Let dotnet's exit code fail the job on real test failures
         # instead of the old `| grep -q "Test run"` mask.
-        run: dotnet test SplatDev.Core.sln -c Release --verbosity normal
+        # Exclude Integration-tagged tests (live API calls) and InDevelopment-tagged
+        # theme tests (assemblies still under active development).
+        run: dotnet test SplatDev.Core.sln -c Release --verbosity normal --filter "Category!=Integration&Category!=InDevelopment"

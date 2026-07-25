@@ -19,6 +19,5 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.13" />
     <PackageReference Include="Google.Apis.Safebrowsing.v4" Version="1.68.0.2968" />
     <PackageReference Include="RestSharp" Version="112.1.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 </Project>
