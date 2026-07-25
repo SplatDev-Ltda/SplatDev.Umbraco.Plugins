@@ -10,6 +10,7 @@ namespace SplatDev.Payments.MercadoPago.Requests
     using RestSharp;
     using RestSharp.Serializers.NewtonsoftJson;
 
+    using System.Net.Http;
     using System.Threading.Tasks;
 
     using SplatDev.Payments.Interfaces;
@@ -20,11 +21,13 @@ namespace SplatDev.Payments.MercadoPago.Requests
         private readonly string PUBLIC_KEY;
         private readonly string ACCESS_TOKEN;
         private readonly RequestOptions requestOptions;
+        private readonly HttpMessageHandler? _handler;
 
-        public CardPaymentRequest(string publicKey, string accessToken, string referrer)
+        public CardPaymentRequest(string publicKey, string accessToken, string referrer, HttpMessageHandler? handler = null)
         {
             ACCESS_TOKEN = accessToken;
             PUBLIC_KEY = publicKey;
+            _handler = handler;
             requestOptions = new RequestOptions
             {
                 AccessToken = ACCESS_TOKEN,
@@ -36,7 +39,11 @@ namespace SplatDev.Payments.MercadoPago.Requests
         public async Task<Models.CreditCard> GenerateCardTokenAsync(Models.CreditCard model, string locale = "pt-BR")
         {
             var options = new RestClientOptions(Constants.APIv1);
-            var client = new RestClient(options, configureSerialization: s => s.UseNewtonsoftJson(Constants.API_JSON_SETTINGS));
+            RestClient client;
+            if (_handler != null)
+                client = new RestClient(new HttpClient(_handler), options, configureSerialization: s => s.UseNewtonsoftJson(Constants.API_JSON_SETTINGS));
+            else
+                client = new RestClient(options, configureSerialization: s => s.UseNewtonsoftJson(Constants.API_JSON_SETTINGS));
             client.AddDefaultHeader("X-Product-Id", "BTR2N61O1F60OR8RLSGG");
             client.AddDefaultHeader("Authorization", $"Bearer {ACCESS_TOKEN}");
             var request = new RestRequest($"card_tokens?public_key={PUBLIC_KEY}&locale={locale}&js_version=2.0.0&referer={REFERRER}");
@@ -67,7 +74,7 @@ namespace SplatDev.Payments.MercadoPago.Requests
                 Capture = payModel.Capture
             };
 
-            var client = new PaymentClient();
+            var client = CreatePaymentClient();
             Payment payment = await client.CreateAsync(request, requestOptions);
 
             return payment;
@@ -78,7 +85,7 @@ namespace SplatDev.Payments.MercadoPago.Requests
             MercadoPagoConfig.AccessToken = ACCESS_TOKEN;
             Payment payment;
 
-            var client = new PaymentClient();
+            var client = CreatePaymentClient();
 
             if (amount == 0.0m)
                 payment = await client.CaptureAsync(paymentId);
@@ -92,9 +99,16 @@ namespace SplatDev.Payments.MercadoPago.Requests
         {
             MercadoPagoConfig.AccessToken = ACCESS_TOKEN;
 
-            var client = new PaymentClient();
+            var client = CreatePaymentClient();
             Payment payment = await client.CancelAsync(paymentId);
             return payment;
+        }
+
+        private PaymentClient CreatePaymentClient()
+        {
+            if (_handler != null)
+                return new PaymentClient(new DefaultHttpClient(new HttpClient(_handler)));
+            return new PaymentClient();
         }
 
         #region Not Implemented

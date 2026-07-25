@@ -10,6 +10,7 @@
     using SplatDev.Payments.MercadoPago.Enum;
 
     using System;
+    using System.Net.Http;
     using System.Threading.Tasks;
 
     public class TicketPaymentRequest : IPayment<Payment>
@@ -19,11 +20,13 @@
 #pragma warning restore IDE0052 // Remove unread private members
         private readonly string ACCESS_TOKEN;
         private readonly RequestOptions requestOptions;
+        private readonly HttpMessageHandler? _handler;
 
-        public TicketPaymentRequest(string publicKey, string accessToken)
+        public TicketPaymentRequest(string publicKey, string accessToken, HttpMessageHandler? handler = null)
         {
             ACCESS_TOKEN = accessToken;
             PUBLIC_KEY = publicKey;
+            _handler = handler;
             requestOptions = new RequestOptions
             {
                 AccessToken = ACCESS_TOKEN,
@@ -54,9 +57,16 @@
                 DateOfExpiration = ticket.ExpirationDate.AddDays(1).AddTicks(-1)
             };
 
-            var client = new PaymentClient();
+            var client = CreatePaymentClient();
             Payment payment = await client.CreateAsync(request, requestOptions);
             return payment;
+        }
+
+        private PaymentClient CreatePaymentClient()
+        {
+            if (_handler != null)
+                return new PaymentClient(new DefaultHttpClient(new HttpClient(_handler)));
+            return new PaymentClient();
         }
 
         #region Not Implemented

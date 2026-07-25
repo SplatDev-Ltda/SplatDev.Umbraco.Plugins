@@ -12,6 +12,7 @@ namespace SplatDev.Payments.MercadoPago.Requests
     using RestSharp;
     using RestSharp.Serializers.NewtonsoftJson;
 
+    using System.Net.Http;
     using System.Threading.Tasks;
 
     using SplatDev.Payments.MercadoPago.Models;
@@ -24,11 +25,13 @@ namespace SplatDev.Payments.MercadoPago.Requests
         private readonly RequestOptions requestOptions;
 #pragma warning restore IDE0052 // Remove unread private members
         private readonly RestClient client;
+        private readonly HttpMessageHandler _handler;
 
-        public PaymentRequests(string publicKey, string accessToken)
+        public PaymentRequests(string publicKey, string accessToken, HttpMessageHandler? handler = null)
         {
             ACCESS_TOKEN = accessToken;
             PUBLIC_KEY = publicKey;
+            _handler = handler;
             requestOptions = new RequestOptions
             {
                 AccessToken = ACCESS_TOKEN,
@@ -36,7 +39,10 @@ namespace SplatDev.Payments.MercadoPago.Requests
             };
             MercadoPagoConfig.AccessToken = ACCESS_TOKEN;
             var options = new RestClientOptions(Constants.APIv1);
-            client = new RestClient(options, configureSerialization: s => s.UseNewtonsoftJson(Constants.API_JSON_SETTINGS));
+            if (handler != null)
+                client = new RestClient(new HttpClient(handler), options, configureSerialization: s => s.UseNewtonsoftJson(Constants.API_JSON_SETTINGS));
+            else
+                client = new RestClient(options, configureSerialization: s => s.UseNewtonsoftJson(Constants.API_JSON_SETTINGS));
             client.AddDefaultHeader("Authorization", $"Bearer {ACCESS_TOKEN}");
         }
 
@@ -49,7 +55,11 @@ namespace SplatDev.Payments.MercadoPago.Requests
 
         public async Task<ResourcesList<PaymentMethod>> GetAvailablePaymentMethodsAsync()
         {
-            var client = new PaymentMethodClient();
+            PaymentMethodClient client;
+            if (_handler != null)
+                client = new PaymentMethodClient(new DefaultHttpClient(new HttpClient(_handler)));
+            else
+                client = new PaymentMethodClient();
             ResourcesList<PaymentMethod> paymentMethods = await client.ListAsync();
             return paymentMethods;
         }

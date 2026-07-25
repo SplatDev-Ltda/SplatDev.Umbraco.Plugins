@@ -7,6 +7,7 @@ namespace SplatDev.Payments.MercadoPago.Requests
 
     using SplatDev.Payments.MercadoPago.Models;
 
+    using System.Net.Http;
     using System.Threading.Tasks;
 
     public class UserRequest
@@ -14,12 +15,15 @@ namespace SplatDev.Payments.MercadoPago.Requests
         private readonly string ACCESS_TOKEN;
         private readonly RestClient client;
 
-        public UserRequest(string accessToken)
+        public UserRequest(string accessToken, HttpMessageHandler? handler = null)
         {
             ACCESS_TOKEN = accessToken;
             MercadoPagoConfig.AccessToken = ACCESS_TOKEN;
             var options = new RestClientOptions(Constants.APIv1);
-            client = new RestClient(options, configureSerialization: s => s.UseNewtonsoftJson(Constants.API_JSON_SETTINGS));
+            if (handler != null)
+                client = new RestClient(new HttpClient(handler), options, configureSerialization: s => s.UseNewtonsoftJson(Constants.API_JSON_SETTINGS));
+            else
+                client = new RestClient(options, configureSerialization: s => s.UseNewtonsoftJson(Constants.API_JSON_SETTINGS));
             client.AddDefaultHeader("Authorization", $"Bearer {ACCESS_TOKEN}");
         }
 

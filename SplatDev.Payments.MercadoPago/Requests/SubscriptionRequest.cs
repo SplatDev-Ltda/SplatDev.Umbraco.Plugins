@@ -10,6 +10,7 @@ namespace SplatDev.Payments.MercadoPago.Requests
     using SplatDev.Payments.MercadoPago.Enum;
     using SplatDev.Payments.MercadoPago.Models;
 
+    using System.Net.Http;
     using System.Threading.Tasks;
 
     public class SubscriptionRequest
@@ -20,12 +21,15 @@ namespace SplatDev.Payments.MercadoPago.Requests
         private readonly string ACCESS_TOKEN;
         private readonly RestClient client;
 
-        public SubscriptionRequest(string publicKey, string accessToken)
+        public SubscriptionRequest(string publicKey, string accessToken, HttpMessageHandler? handler = null)
         {
             ACCESS_TOKEN = accessToken;
             PUBLIC_KEY = publicKey;
             var options = new RestClientOptions(Constants.API);
-            client = new RestClient(options, configureSerialization: s => s.UseNewtonsoftJson(Constants.API_JSON_SETTINGS));
+            if (handler != null)
+                client = new RestClient(new HttpClient(handler), options, configureSerialization: s => s.UseNewtonsoftJson(Constants.API_JSON_SETTINGS));
+            else
+                client = new RestClient(options, configureSerialization: s => s.UseNewtonsoftJson(Constants.API_JSON_SETTINGS));
             client.AddDefaultHeader("Authorization", $"Bearer {ACCESS_TOKEN}");
         }
 

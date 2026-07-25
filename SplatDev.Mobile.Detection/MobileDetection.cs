@@ -2,9 +2,9 @@
 {
     using Microsoft.Extensions.Primitives;
 
-using System.Text.Json;
+    using System.Text.Json;
 
-using SplatDev.Mobile.Detection.Models;
+    using SplatDev.Mobile.Detection.Models;
 
     using System.IO;
     using System.Linq;
@@ -15,8 +15,9 @@ using SplatDev.Mobile.Detection.Models;
         public static MobileDevice[] MobileDevices { get; private set; }
         static MobileDetection()
         {
-            var path = new DirectoryInfo(Assembly.GetCallingAssembly().CodeBase.Substring(8)).Parent.FullName;
-            var file = File.ReadAllText($"{path}\\device_list.json");
+            var assemblyLocation = Assembly.GetExecutingAssembly().Location;
+            var path = Path.GetDirectoryName(assemblyLocation) ?? AppDomain.CurrentDomain.BaseDirectory;
+            var file = File.ReadAllText(Path.Combine(path, "device_list.json"));
             MobileDevices = JsonSerializer.Deserialize<MobileDevice[]>(file);
         }
 
@@ -38,12 +39,11 @@ using SplatDev.Mobile.Detection.Models;
             {
                 request.Query.TryGetValue("HTTP_USER_AGENT", out StringValues values);
 
-                foreach (MobileDevice s in MobileDevices)
+                foreach (var val in values)
                 {
-                    foreach (var val in values)
-                    {
-                        if (MobileDevices.FirstOrDefault(x => x.Code == val) != null) return true;
-                    }
+                    var lowerVal = val.ToLowerInvariant();
+                    if (MobileDevices.Any(d => d.Code != null && lowerVal.Contains(d.Code.ToLowerInvariant())))
+                        return true;
                 }
             }
 

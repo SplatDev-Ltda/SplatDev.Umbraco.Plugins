@@ -14,15 +14,11 @@
 
     public class SendGridController : IMessagingController<SendGridMessage, Response>, IDisposable
     {
-        private readonly SendGridClient client;
+        private readonly ISendGridClient client;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SendGridController"/> class.
-        /// </summary>
-        /// <param name="apiKey">The API key.</param>
-        public SendGridController(string apiKey = "")
+        public SendGridController(string apiKey = "", ISendGridClient? sendGridClient = null)
         {
-            client = new SendGridClient(apiKey);
+            client = sendGridClient ?? new SendGridClient(apiKey);
         }
 
 

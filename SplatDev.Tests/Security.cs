@@ -1,52 +1,89 @@
 namespace SplatDev.Tests
 {
-    using Xunit;
+    using System.Net;
+    using System.Net.Http;
+    using System.Text.Json;
+    using System.Threading;
+    using System.Threading.Tasks;
+
+    using Moq;
+    using Moq.Protected;
 
     using SplatDev.Security;
+    using SplatDev.UrlShortening.Models;
+
+    using Xunit;
 
     [Trait("Category", "Integration")]
     public class Security
     {
         [Fact]
-        public void UrlShortening_CheckPhish()
+        public async Task UrlShortening_CheckPhish()
         {
-            // arrange
+            var json = JsonSerializer.Serialize(new CheckPhishResponse
+            {
+                jobID = "test-job-123",
+                status = "DONE",
+                disposition = "clean",
+            });
 
-            // act
-            var response = Tools.CheckPhish("ux904vysg7jhbakonldt53cmzhyrgdxc19c0xvnbbrffr83qshrdrozbu3lqqtb0", "http://maliciouswebsitetest.com/", true).GetAwaiter().GetResult();
+            var handler = new Mock<HttpMessageHandler>();
+            handler.Protected()
+                .Setup<Task<HttpResponseMessage>>("SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>())
+                .Returns(() => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(json),
+                }));
 
-            // assert
+            var response = await Tools.CheckPhish("test-key", "http://example.com/", false, handler.Object);
+
+            Assert.NotNull(response);
+            Assert.Equal("test-job-123", response.jobID);
+        }
+
+        [Fact]
+        public async Task UrlShortening_GoogleSafeBrowsing()
+        {
+            var handler = new Mock<HttpMessageHandler>();
+            handler.Protected()
+                .Setup<Task<HttpResponseMessage>>("SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>())
+                .Returns(() => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent("{}"),
+                }));
+
+            var response = await Tools.GoogleSafeBrowing("test-key", new[] { "http://example.com/" }, handler: handler.Object);
+
             Assert.NotNull(response);
         }
 
         [Fact]
-        public void UrlShortening_GoogleSafeBrowsing()
+        public async Task UrlShortening_IpQualityScore()
         {
-            // arrange
+            var handler = new Mock<HttpMessageHandler>();
+            handler.Protected()
+                .Setup<Task<HttpResponseMessage>>("SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>())
+                .Returns(() => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent("""{"message":"Success.","success":true,"risk_score":0}"""),
+                }));
 
-            // act
-            var response = Tools.GoogleSafeBrowing("AIzaSyCHCEGziKvWkas-zw7DFSQ4W_66mlDQKN8", new string[] { "http://maliciouswebsitetest.com/" }, "splatdev").GetAwaiter().GetResult();
+            var response = await Tools.IpQualityScore("test-key", "http://example.com/", handler.Object);
 
-            // assert
             Assert.NotNull(response);
-        }
-
-        [Fact]
-        public void UrlShortening_IpQualityScore()
-        {
-            // arrange
-
-            // act
-            var response = Tools.IpQualityScore("kNc64pBCcMNpQcW2cR85bQsKhzbnnxVw", "http://maliciouswebsitetest.com/").GetAwaiter().GetResult();
-
-            // assert
-            Assert.NotNull(response);
+            Assert.True(response.Success);
         }
 
         [Fact]
         public void Tools_EncodeBearerToken()
         {
-            var response = Tools.EncodeAuthHeader("ccasalicchio", "tWA5@hr3Gug6Ahq");
+            var response = Tools.EncodeAuthHeader("test-user", "test-password");
             Assert.NotNull(response);
         }
     }

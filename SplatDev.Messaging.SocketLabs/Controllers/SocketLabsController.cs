@@ -14,11 +14,11 @@
 
     public class SocketLabsController : IMessagingController<BasicMessage, SendResponse>
     {
-        private readonly SocketLabsClient client;
+        private readonly ISocketLabsClient client;
 
-        public SocketLabsController(int serverId, string injectionApiKey)
+        public SocketLabsController(int serverId, string injectionApiKey, ISocketLabsClient? socketLabsClient = null)
         {
-            client = new SocketLabsClient(serverId, injectionApiKey);
+            client = socketLabsClient ?? new SocketLabsClient(serverId, injectionApiKey);
         }
 
         public SendResponse SendMessage(BasicMessage message)
