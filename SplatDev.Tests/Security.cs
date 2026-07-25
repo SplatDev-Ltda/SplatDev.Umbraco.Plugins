@@ -82,7 +82,7 @@ namespace SplatDev.Tests
         [Fact]
         public void Tools_EncodeBearerToken()
         {
-            var response = Tools.EncodeAuthHeader("ccasalicchio", "tWA5@hr3Gug6Ahq");
+            var response = Tools.EncodeAuthHeader("test-user", "test-password");
             Assert.NotNull(response);
         }
     }
