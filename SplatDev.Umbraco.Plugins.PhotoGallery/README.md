@@ -6,10 +6,10 @@ Photo gallery plugin for Umbraco — stores gallery albums and photos with EF Co
 
 ## Compatibility
 
-| Umbraco | .NET | Package Version |
-|---------|------|-----------------|
-| 13.x    | 8.0  | 1.0.0           |
-| 17.x    | 10.0 | 1.0.0           |
+| Umbraco | .NET | Package Version | Dashboard |
+|---------|------|-----------------|-----------|
+| 13.x    | 8.0  | 1.0.0           | AngularJS |
+| 17.x    | 10.0 | 1.0.1           | Lit (Bellissima) |
 
 ## Installation
 
@@ -28,6 +28,30 @@ builder.CreateUmbracoBuilder()
     .AddPhotoGallery()   // <-- add this
     .Build();
 ```
+
+The Photo Gallery dashboard appears under the **Settings** section in the Umbraco backoffice. It displays albums and photos managed through the gallery.
+
+## U17 Bellissima Dashboard (Lit)
+
+The U17 dashboard is built as a Lit Web Component using Vite and TypeScript.
+
+### Development
+
+```bash
+cd client
+npm install  # or pnpm install
+npm run dev  # watch mode during development
+npm run build  # production build
+```
+
+The build output is placed at `App_Plugins/PhotoGallery/dist/photogallery-dashboard.element.js` and registered in `umbraco-package.json`.
+
+### Architecture
+
+- `client/` — Vite + TypeScript + Lit source
+- `client/src/photogallery-dashboard.element.ts` — Lit element displaying albums with photo grids
+- `Controllers/` — Back-end API endpoints for album/photo CRUD
+- `Services/` — Gallery business logic with EF Core
 
 ## License
 

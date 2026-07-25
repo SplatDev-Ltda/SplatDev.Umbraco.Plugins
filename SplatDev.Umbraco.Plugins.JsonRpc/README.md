@@ -6,10 +6,10 @@ JSON-RPC 2.0 API endpoint for Umbraco — expose content as JSON-RPC with API ke
 
 ## Compatibility
 
-| Umbraco | .NET | Package Version |
-|---------|------|-----------------|
-| 13.x    | 8.0  | 2.0.0           |
-| 17.x    | 10.0 | 2.0.0           |
+| Umbraco | .NET | Package Version | Dashboard |
+|---------|------|-----------------|-----------|
+| 13.x    | 8.0  | 2.0.0           | AngularJS |
+| 17.x    | 10.0 | 2.0.0           | Lit (Bellissima) |
 
 ## Installation
 
@@ -41,6 +41,28 @@ Add to `appsettings.json`:
   }
 }
 ```
+
+## U17 Bellissima Dashboard (Lit)
+
+The U17 dashboard is built as a Lit Web Component using Vite and TypeScript.
+
+### Development
+
+```bash
+cd client
+npm install  # or pnpm install
+npm run dev  # watch mode during development
+npm run build  # production build
+```
+
+The build output is placed at `App_Plugins/JsonRpc/dist/jsonrpc-dashboard.element.js` and registered in `umbraco-package.json`.
+
+### Architecture
+
+- `client/` — Vite + TypeScript + Lit source
+- `client/src/jsonrpc-dashboard.element.ts` — Lit element showing JSON-RPC status and endpoints
+- `Controllers/` — JSON-RPC 2.0 handler endpoints
+- `Services/` — API key management and request logging
 
 ## License
 
