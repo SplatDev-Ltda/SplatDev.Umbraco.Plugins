@@ -7,7 +7,8 @@
       "type": "dashboard",
       "alias": "LazyLoad.Dashboard",
       "name": "Lazy Load",
-      "element": "/App_Plugins/LazyLoad/dashboard.js",
+      "element": "/App_Plugins/LazyLoad/dist/lazyload-dashboard.element.js",
+      "elementName": "lazyload-dashboard",
       "weight": 100,
       "meta": {
         "label": "Lazy Load",

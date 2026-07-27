@@ -7,7 +7,8 @@
       "type": "dashboard",
       "alias": "Slider.Dashboard",
       "name": "Slider",
-      "element": "/App_Plugins/Slider/dashboard.js",
+      "element": "/App_Plugins/Slider/dist/slider-dashboard.element.js",
+      "elementName": "slider-dashboard",
       "weight": 100,
       "meta": {
         "label": "Slider",

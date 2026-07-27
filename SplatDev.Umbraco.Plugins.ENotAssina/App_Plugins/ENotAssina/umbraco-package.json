@@ -7,7 +7,8 @@
       "type": "dashboard",
       "alias": "enotassina.dashboard",
       "name": "e-Not Assina Dashboard",
-      "element": "/App_Plugins/ENotAssina/dashboard.js",
+      "element": "/App_Plugins/ENotAssina/dist/enotassina-dashboard.element.js",
+      "elementName": "enotassina-dashboard",
       "weight": -90,
       "meta": {
         "label": "e-Not Assina",

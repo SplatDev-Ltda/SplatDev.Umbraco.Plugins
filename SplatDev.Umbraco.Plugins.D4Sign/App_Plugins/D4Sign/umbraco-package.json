@@ -7,7 +7,8 @@
       "type": "dashboard",
       "alias": "d4sign.dashboard",
       "name": "D4Sign Dashboard",
-      "element": "/App_Plugins/D4Sign/dashboard.js",
+      "element": "/App_Plugins/D4Sign/dist/d4sign-dashboard.element.js",
+      "elementName": "d4sign-dashboard",
       "weight": -90,
       "meta": {
         "label": "D4Sign",
