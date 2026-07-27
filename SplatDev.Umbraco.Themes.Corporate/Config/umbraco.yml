@@ -273,7 +273,10 @@ documentTypes:
             name: Features
             dataType: serviceFeatureBlockList
 
-  # ── Base Page ─────────────────────────────
+  # ── Base Page (Corporate extensions) ──────
+  # BaseTheme provides basePage with title, metaTitle, metaDescription,
+  # heroImage, hideFromMenu, menuTitle, canonical, and noIndex.
+  # CorporateTheme adds: ogImage and hideFromNavigation.
   - alias: basePage
     name: Base Page
     icon: icon-document
@@ -283,12 +286,6 @@ documentTypes:
     tabs:
       - name: SEO
         properties:
-          - alias: metaTitle
-            name: Meta Title
-            dataType: textStringShort
-          - alias: metaDescription
-            name: Meta Description
-            dataType: textStringShort
           - alias: ogImage
             name: OG Image
             dataType: imagePicker
@@ -370,6 +367,8 @@ documentTypes:
     allowedTemplates:
       - Home
     defaultTemplate: Home
+    compositions:
+      - basePage
     tabs:
       - name: Hero
         properties:
@@ -380,9 +379,6 @@ documentTypes:
           - alias: heroSubtext
             name: Hero Subtext
             dataType: textArea
-          - alias: heroImage
-            name: Hero Background Image
-            dataType: imagePicker
           - alias: heroCtaText
             name: Primary CTA Text
             dataType: textStringShort
@@ -447,14 +443,6 @@ documentTypes:
           - alias: ctaButtonUrl
             name: CTA Button URL
             dataType: urlPicker
-      - name: SEO
-        properties:
-          - alias: metaTitle
-            name: Meta Title
-            dataType: textStringShort
-          - alias: metaDescription
-            name: Meta Description
-            dataType: textStringShort
 
   # ── About Page ────────────────────────────
   - alias: aboutPage
@@ -466,6 +454,8 @@ documentTypes:
     allowedTemplates:
       - About
     defaultTemplate: About
+    compositions:
+      - basePage
     tabs:
       - name: Content
         properties:
@@ -475,9 +465,6 @@ documentTypes:
           - alias: heroText
             name: Hero Text
             dataType: textArea
-          - alias: heroImage
-            name: Hero Image
-            dataType: imagePicker
       - name: Mission
         properties:
           - alias: missionTitle
@@ -511,14 +498,6 @@ documentTypes:
           - alias: leadershipText
             name: Leadership Text
             dataType: textArea
-      - name: SEO
-        properties:
-          - alias: metaTitle
-            name: Meta Title
-            dataType: textStringShort
-          - alias: metaDescription
-            name: Meta Description
-            dataType: textStringShort
 
   # ── Services Page ─────────────────────────
   - alias: servicesPage
@@ -530,6 +509,8 @@ documentTypes:
     allowedTemplates:
       - Services
     defaultTemplate: Services
+    compositions:
+      - basePage
     tabs:
       - name: Content
         properties:
@@ -542,14 +523,6 @@ documentTypes:
           - alias: servicesGrid
             name: Services
             dataType: serviceItemBlockList
-      - name: SEO
-        properties:
-          - alias: metaTitle
-            name: Meta Title
-            dataType: textStringShort
-          - alias: metaDescription
-            name: Meta Description
-            dataType: textStringShort
 
   # ── Team Page ─────────────────────────────
   - alias: teamPage
@@ -561,6 +534,8 @@ documentTypes:
     allowedTemplates:
       - Team
     defaultTemplate: Team
+    compositions:
+      - basePage
     tabs:
       - name: Content
         properties:
@@ -573,14 +548,6 @@ documentTypes:
           - alias: teamMembers
             name: Team Members
             dataType: teamMemberBlockList
-      - name: SEO
-        properties:
-          - alias: metaTitle
-            name: Meta Title
-            dataType: textStringShort
-          - alias: metaDescription
-            name: Meta Description
-            dataType: textStringShort
 
   # ── Contact Page ──────────────────────────
   - alias: contactPage
@@ -592,6 +559,8 @@ documentTypes:
     allowedTemplates:
       - Contact
     defaultTemplate: Contact
+    compositions:
+      - basePage
     tabs:
       - name: Content
         properties:
@@ -621,14 +590,6 @@ documentTypes:
           - alias: successMessage
             name: Success Message
             dataType: textArea
-      - name: SEO
-        properties:
-          - alias: metaTitle
-            name: Meta Title
-            dataType: textStringShort
-          - alias: metaDescription
-            name: Meta Description
-            dataType: textStringShort
 
   # ── Standard Page ─────────────────────────
   - alias: standardPage
@@ -641,6 +602,8 @@ documentTypes:
     allowedTemplates:
       - StandardPage
     defaultTemplate: StandardPage
+    compositions:
+      - basePage
     tabs:
       - name: Content
         properties:
@@ -650,17 +613,6 @@ documentTypes:
           - alias: bodyContent
             name: Body Content
             dataType: richTextEditor
-          - alias: heroImage
-            name: Hero Image
-            dataType: imagePicker
-      - name: SEO
-        properties:
-          - alias: metaTitle
-            name: Meta Title
-            dataType: textStringShort
-          - alias: metaDescription
-            name: Meta Description
-            dataType: textStringShort
 
   # ── RISIN Cadastro Listing ─────────────────
   - alias: risinCadastroListing
@@ -669,6 +621,8 @@ documentTypes:
     allowAsRoot: false
     allowedChildTypes: []
     update: true
+    compositions:
+      - basePage
     tabs:
       - name: Content
         properties:
@@ -693,14 +647,6 @@ documentTypes:
           - alias: logo
             name: Logo
             dataType: imagePicker
-      - name: SEO
-        properties:
-          - alias: metaTitle
-            name: Meta Title
-            dataType: textStringShort
-          - alias: metaDescription
-            name: Meta Description
-            dataType: textStringShort
 
 # ─────────────────────────────────────────────
 # TEMPLATES
