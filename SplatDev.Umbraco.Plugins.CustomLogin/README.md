@@ -1,6 +1,21 @@
-# UmbracoCms.Plugins.CustomLogin
+# SplatDev.Umbraco.Plugins.CustomLogin
 
 Fully customizable Umbraco login page with branding support, SSO integration hooks, and 2FA readiness.
+
+[![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.CustomLogin.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.CustomLogin)
+
+## Compatibility
+
+| Umbraco | .NET | Package Version |
+|---------|------|-----------------|
+| 13.x    | 8.0  | 2.0.1           |
+| 17.x    | 10.0 | 2.0.1           |
+
+## Installation
+
+```sh
+dotnet add package SplatDev.Umbraco.Plugins.CustomLogin
+```
 
 ## Targets
 
@@ -41,3 +56,7 @@ cd client
 npm install
 npm run build
 ```
+
+## License
+
+MIT © [SplatDev](https://github.com/SplatDev-Ltda)

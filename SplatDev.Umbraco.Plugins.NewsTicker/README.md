@@ -1,6 +1,21 @@
-# UmbracoCms.Plugins.NewsTicker
+# SplatDev.Umbraco.Plugins.NewsTicker
 
 A scrolling news ticker plugin for Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
+
+[![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.NewsTicker.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.NewsTicker)
+
+## Compatibility
+
+| Umbraco | .NET | Package Version |
+|---------|------|-----------------|
+| 13.x    | 8.0  | 2.0.1           |
+| 17.x    | 10.0 | 2.0.1           |
+
+## Installation
+
+```sh
+dotnet add package SplatDev.Umbraco.Plugins.NewsTicker
+```
 
 ## Features
 
@@ -50,3 +65,7 @@ The plugin creates a `NewsTickerItems` table via EF Core. Run migrations or call
 | POST   | `/umbraco/api/newsticker/items` | Add a new item |
 | PUT    | `/umbraco/api/newsticker/items/{id}` | Update an item |
 | DELETE | `/umbraco/api/newsticker/items/{id}` | Delete an item |
+
+## License
+
+MIT © [SplatDev](https://github.com/SplatDev-Ltda)

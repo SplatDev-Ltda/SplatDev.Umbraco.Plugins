@@ -1,6 +1,20 @@
 # SplatDev.Umbraco.Plugins.Santander
 
 Umbraco 17 (net10.0) plugin for the **Santander Open Banking** suite. Wires up
+
+[![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Santander.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Santander)
+
+## Compatibility
+
+| Umbraco | .NET | Package Version |
+|---------|------|-----------------|
+| 17.x    | 10.0 | 1.0.0           |
+
+## Installation
+
+```sh
+dotnet add package SplatDev.Umbraco.Plugins.Santander
+```
 [`SplatDev.Payments.Santander`](../SplatDev.Payments.Santander) and exposes a guarded banking API.
 
 ## What it provides
@@ -24,3 +38,7 @@ Umbraco 17 (net10.0) plugin for the **Santander Open Banking** suite. Wires up
 ## Config (appsettings `Santander` section)
 `BaseUrl`, `TokenPath`, `ClientId`, `ClientSecret`, `CertificatePath`/`CertificateBase64`/`CertificatePassword`,
 `ApiKey`, `WorkspaceId`, `CovenantCode`, `BankId`, `AccountId`, `PixKey`, and per-product path overrides.
+
+## License
+
+MIT © [SplatDev](https://github.com/SplatDev-Ltda)
