@@ -13,7 +13,7 @@ public class EmailTemplatesApiController(
     IEmailStyleService styleService,
     ILogger<EmailTemplatesApiController> logger) : ManagementApiControllerBase
 {
-    [HttpGet]
+    [HttpGet("")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult GetAll() => Ok(templateService.GetAll());
 
@@ -53,7 +53,7 @@ public class EmailTemplatesApiController(
         return Ok(templateService.ExtractVariables(template));
     }
 
-    [HttpPost]
+    [HttpPost("create")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public IActionResult Create([FromBody] EmailTemplate template)

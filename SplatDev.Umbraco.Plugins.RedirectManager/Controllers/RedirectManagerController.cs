@@ -17,37 +17,37 @@ namespace SplatDev.Umbraco.Plugins.RedirectManager.Controllers
     {
         private readonly RedirectUrlsRepository redirectUrlsRepository = redirectUrlsRepository;
 
-        [HttpGet]
+        [HttpGet("all")]
         public IEnumerable<RedirectUrl>? GetAll()
         {
             return redirectUrlsRepository.GetAllRedirectionUrls();
         }
 
-        [HttpGet]
+        [HttpGet("{id:int}")]
         public RedirectUrl? Get(int id)
         {
             return redirectUrlsRepository.GetRedirectionUrl(id);
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         public void Post(RedirectUrl url)
         {
             redirectUrlsRepository.AddRedirectionUrl(url);
         }
 
-        [HttpPut]
+        [HttpPut("update")]
         public void Put(RedirectUrl url)
         {
             redirectUrlsRepository.EditRedirectionUrl(url);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id:int}")]
         public void Delete(int id)
         {
             redirectUrlsRepository.DeleteRedirectionUrl(id);
         }
 
-        [HttpDelete]
+        [HttpDelete("all")]
         public void DeleteAll()
         {
             redirectUrlsRepository.DeleteAll();

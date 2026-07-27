@@ -19,7 +19,7 @@ namespace SplatDev.Umbraco.Plugins.Mailer.Controllers
         private readonly MicrosoftGraphMailerService _mailerService = mailerService;
         private readonly ILogger<MailerApiController> _logger = logger;
 
-        [HttpPost]
+        [HttpPost("send-test")]
         public async Task<IActionResult> SendTestAsync(string email)
         {
             try
