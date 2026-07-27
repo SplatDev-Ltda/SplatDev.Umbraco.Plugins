@@ -9,8 +9,10 @@ export default defineConfig({
     },
     outDir: "../App_Plugins/LazyLoad/dist",
     emptyOutDir: true,
+    sourcemap: true,
     rollupOptions: {
       external: [/^@umbraco/],
     },
   },
+  base: "/App_Plugins/LazyLoad/dist/",
 });
