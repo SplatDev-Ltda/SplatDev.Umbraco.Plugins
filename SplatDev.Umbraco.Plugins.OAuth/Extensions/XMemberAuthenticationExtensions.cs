@@ -32,7 +32,9 @@ namespace SplatDev.Umbraco.Plugins.OAuth.Extensions
                             schemeName,
                             options =>
                             {
-                                options.CallbackPath = config.GetValue<string>("OAuth:Applications:X:CallbackPath"); ///oauth%3Fp=x
+                                var callbackPath = config.GetValue<string>("OAuth:Applications:X:CallbackPath");
+                                if (!string.IsNullOrWhiteSpace(callbackPath))
+                                    options.CallbackPath = callbackPath; ///oauth%3Fp=x
                                 options.ConsumerKey = config.GetValue<string>("OAuth:Applications:X:ConsumerKey") ?? "";
                                 options.ConsumerSecret = config.GetValue<string>("OAuth:Applications:X:ConsumerSecret") ?? "";
                                 options.RetrieveUserDetails = true;

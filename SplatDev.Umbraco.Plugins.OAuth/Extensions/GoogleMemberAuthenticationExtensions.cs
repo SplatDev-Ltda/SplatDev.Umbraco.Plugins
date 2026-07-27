@@ -32,7 +32,9 @@ namespace SplatDev.Umbraco.Plugins.OAuth.Extensions
                             schemeName,
                             options =>
                             {
-                                options.CallbackPath = config.GetValue<string>("OAuth:Applications:Google:CallbackPath"); ///oauth%3Fp=google
+                                var callbackPath = config.GetValue<string>("OAuth:Applications:Google:CallbackPath");
+                                if (!string.IsNullOrWhiteSpace(callbackPath))
+                                    options.CallbackPath = callbackPath; ///oauth%3Fp=google
                                 options.ClientId = config.GetValue<string>("OAuth:Applications:Google:ClientId") ?? "";
                                 options.ClientSecret = config.GetValue<string>("OAuth:Applications:Google:ClientSecret") ?? "";
                             });
