@@ -32,7 +32,9 @@ namespace SplatDev.Umbraco.Plugins.OAuth.Extensions
                             schemeName,
                             options =>
                             {
-                                options.CallbackPath = config.GetValue<string>("OAuth:Applications:Facebook:CallbackPath"); ///oauth%3Fp=facebook
+                                var callbackPath = config.GetValue<string>("OAuth:Applications:Facebook:CallbackPath");
+                                if (!string.IsNullOrWhiteSpace(callbackPath))
+                                    options.CallbackPath = callbackPath; ///oauth%3Fp=facebook
                                 options.ClientId = config.GetValue<string>("OAuth:Applications:Facebook:AppId") ?? "";
                                 options.ClientSecret = config.GetValue<string>("OAuth:Applications:Facebook:AppSecret") ?? "";
                             });
