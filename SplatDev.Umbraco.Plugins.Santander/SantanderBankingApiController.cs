@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using SplatDev.Payments.Santander;
@@ -36,11 +37,9 @@ public class SantanderBankingApiController(
         {
             environment = options.BaseUrl.Contains("sandbox", StringComparison.OrdinalIgnoreCase) ? "sandbox" : "production",
             baseUrl = options.BaseUrl,
-            hasClientId = !string.IsNullOrWhiteSpace(options.ClientId),
-            hasClientSecret = !string.IsNullOrWhiteSpace(options.ClientSecret),
-            hasCertificate = !string.IsNullOrWhiteSpace(options.CertificatePath) || !string.IsNullOrWhiteSpace(options.CertificateBase64),
-            hasPixKey = !string.IsNullOrWhiteSpace(options.PixKey),
-            hasWorkspaceId = !string.IsNullOrWhiteSpace(options.WorkspaceId),
+            isConfigured = !string.IsNullOrWhiteSpace(options.ClientId)
+                && !string.IsNullOrWhiteSpace(options.ClientSecret)
+                && (!string.IsNullOrWhiteSpace(options.CertificatePath) || !string.IsNullOrWhiteSpace(options.CertificateBase64)),
             products = new
             {
                 pixQrCode = Describe(options.PixQrCode),
@@ -182,11 +181,20 @@ public class SantanderBankingApiController(
     private bool Unauthorized(out IActionResult challenge)
     {
         var supplied = Request.Headers[ApiKeyHeader].ToString();
-        if (string.IsNullOrWhiteSpace(options.ApiKey) || supplied != options.ApiKey)
+        if (string.IsNullOrWhiteSpace(options.ApiKey))
         {
             challenge = StatusCode(401, new { error = "Missing or invalid API key." });
             return true;
         }
+
+        var suppliedBytes = System.Text.Encoding.UTF8.GetBytes(supplied);
+        var keyBytes = System.Text.Encoding.UTF8.GetBytes(options.ApiKey);
+        if (!CryptographicOperations.FixedTimeEquals(suppliedBytes, keyBytes))
+        {
+            challenge = StatusCode(401, new { error = "Missing or invalid API key." });
+            return true;
+        }
+
         challenge = null!;
         return false;
     }

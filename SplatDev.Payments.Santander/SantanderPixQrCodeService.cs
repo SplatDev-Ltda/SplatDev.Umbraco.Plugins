@@ -45,8 +45,15 @@ public sealed class SantanderPixQrCodeService(
     }
 
     /// <summary>BACEN txid: 26-35 alphanumeric chars.</summary>
-    public static string GerarTxid() =>
-        ("RISIN" + Guid.NewGuid().ToString("N")).ToUpperInvariant()[..32];
+    public static string GerarTxid()
+    {
+        var guid = Guid.NewGuid().ToString("N", System.Globalization.CultureInfo.InvariantCulture);
+        const int maxLength = 35;
+        const string prefix = "RISIN";
+        var remaining = maxLength - prefix.Length;
+        var suffix = guid.Length <= remaining ? guid : guid[..remaining];
+        return prefix + suffix.ToUpperInvariant();
+    }
 }
 
 public sealed record SantanderPixCharge(string Txid, string Status, string? PixCopiaECola, string? Location, string Raw);

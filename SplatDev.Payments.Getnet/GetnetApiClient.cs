@@ -263,8 +263,7 @@ public sealed class GetnetApiClient(
     }
 
     private static string EscapeJson(string value) =>
-        value.Replace("\\", "\\\\", StringComparison.Ordinal)
-             .Replace("\"", "\\\"", StringComparison.Ordinal);
+        System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping.Encode(value);
 
     private sealed class TokenResponse
     {

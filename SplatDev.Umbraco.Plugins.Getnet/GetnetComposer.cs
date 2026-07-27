@@ -44,7 +44,7 @@ public sealed class GetnetComposer : IComposer
         };
 
         builder.Services.AddSingleton(options);
-        builder.Services.AddScoped<GetnetApiClient>();
+        builder.Services.AddSingleton<GetnetApiClient>();
 
         builder.Services.AddHttpClient("Getnet", client =>
         {
