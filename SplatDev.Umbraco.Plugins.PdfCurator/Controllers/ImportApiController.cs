@@ -35,7 +35,7 @@ public class ImportApiController : UmbracoAuthorizedBase
         _fileManagerService = fileManagerService;
     }
 
-    [HttpGet]
+    [HttpGet("ready")]
     public async Task<IEnumerable<FileImportAvailable>> GetAllReadyAsync(bool done = false)
     {
         var path = Path.Combine(_contentRootPath, _path);
@@ -55,13 +55,13 @@ public class ImportApiController : UmbracoAuthorizedBase
         return list;
     }
 
-    [HttpGet]
+    [HttpGet("done")]
     public async Task<IEnumerable<FileImportAvailable>> GetAllDoneAsync()
     {
         return await GetAllReadyAsync(done: true);
     }
 
-    [HttpPost]
+    [HttpPost("import")]
     public IAsyncEnumerable<BookImportResult> ImportAll()
     {
         var path = Path.Combine(_contentRootPath, _path);
