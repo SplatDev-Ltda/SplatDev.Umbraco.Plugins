@@ -108,7 +108,13 @@ export class SliderDashboardElement extends UmbElementMixin(LitElement) {
   private async _loadSliders(): Promise<void> {
     try {
       const response = await fetch("/umbraco/api/slider/GetSliders");
+      if (!response.ok) {
+        console.error("Failed to load sliders:", response.statusText);
+        return;
+      }
       this._sliders = (await response.json()) as SliderConfig[];
+    } catch (err) {
+      console.error("Failed to load sliders:", err);
     } finally {
       this._loading = false;
     }

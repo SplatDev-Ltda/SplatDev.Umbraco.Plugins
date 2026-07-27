@@ -15,7 +15,13 @@ let i = class extends b(c) {
   async _loadSliders() {
     try {
       const t = await fetch("/umbraco/api/slider/GetSliders");
+      if (!t.ok) {
+        console.error("Failed to load sliders:", t.statusText);
+        return;
+      }
       this._sliders = await t.json();
+    } catch (t) {
+      console.error("Failed to load sliders:", t);
     } finally {
       this._loading = !1;
     }
