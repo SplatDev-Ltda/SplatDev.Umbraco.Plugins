@@ -1,39 +1,48 @@
-# Infrastructure as Code — Azure Bicep Templates
+# Infrastructure as Code
 
-Azure Bicep templates for provisioning Umbraco hosting infrastructure on Microsoft Azure. Covers resource groups, storage accounts, and Key Vault across dev/staging/prod environments.
+Azure deployment templates for SplatDev shared services — resource group, storage, Key Vault, Service Bus, and App Service.
 
-## What's Included
+## Contents
 
-- **Resource Group** — scoped per environment (`dev`, `staging`, `prod`)
-- **Storage Account** — Standard_LRS, v2, for Umbraco media and log storage
-- **Key Vault** — secrets/keys management with soft-delete enabled
-- **Environment parameterisation** — single `environment` param drives naming and SKU selection
+- `bicep/main.bicep` — minimal skeleton deploying shared Azure resources (dev/staging/prod).
 
-## Usage
+## Prerequisites
 
-```bash
-az deployment sub create \
-  --location eastus \
+- [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli) with an active subscription.
+- [Bicep CLI](https://docs.microsoft.com/azure/azure-resource-manager/bicep/install) (or use `az bicep`).
+
+## Deploy
+
+```sh
+az group create -n rg-splatdev-dev -l eastus
+az deployment group create \
+  --resource-group rg-splatdev-dev \
   --template-file infra/bicep/main.bicep \
-  --parameters environment=staging
+  --parameters environment=dev
 ```
 
-## Parameters
+## Resources created
 
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `location` | `East US` | Azure region for all resources |
-| `environment` | `dev` | Deployment target: `dev`, `staging`, or `prod` |
+| Resource | Purpose |
+|----------|---------|
+| Resource Group | `rg-splatdev-{env}` — logical container |
+| Storage Account | Blobs, queues, tables for app data |
+| Key Vault | Secrets and connection strings |
+| Service Bus | Messaging backbone for async operations |
+| App Service Plan + Web App | .NET hosting (PremiumV2) |
 
-## Compatibility
+## Environment parameters
 
-Works with Azure CLI 2.60+ and Bicep CLI 0.28+. The templates target the Azure Resource Manager API versions current as of 2024.
+| Parameter | Values | Default |
+|-----------|--------|---------|
+| `location` | Any Azure region | `East US` |
+| `environment` | `dev`, `staging`, `prod` | `dev` |
 
-## Known Limitations
+## Known limitations
 
-- This is a minimal skeleton — production deployments should add an App Service Plan, SQL Server/database, Application Insights, and network security groups.
-- Storage account name uses a static prefix (`stgdev`) — multi-environment deployments with the same subscription require unique names.
-- Key Vault access policies are not defined in this skeleton; add them per environment before use.
+- This is a **minimal skeleton** — production deployments should add private endpoints, managed identities, network ACLs, diagnostic settings, and auto-scale rules.
+- Key Vault access policies are provisioned empty; add service principals or managed identities as needed.
+- Only a single web app is defined — multi-region or slot-based deployments require template extension.
 
 ## License
 
