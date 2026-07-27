@@ -142,6 +142,12 @@ namespace SplatDev.Umbraco.Plugins.Yaml2Schema.Services
                         IsElement = yamlDocType.IsElement
                     };
 
+                    // Track property aliases to detect intra-document-type duplicates.
+                    // Without this check two YAML properties with the same alias would
+                    // both be added to the ContentType, causing an
+                    // InvalidCompositionException on Save.
+                    var seenPropertyAliases = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
                     // Add tabs and properties
                     foreach (var tab in yamlDocType.Tabs ?? [])
                     {
@@ -155,6 +161,15 @@ namespace SplatDev.Umbraco.Plugins.Yaml2Schema.Services
 
                         foreach (var property in tab.Properties)
                         {
+                            if (seenPropertyAliases.Contains(property.Alias))
+                            {
+                                _logger?.LogWarning(
+                                    "Duplicate property alias '{PropertyAlias}' detected in DocumentType '{DocTypeAlias}'. Skipping.",
+                                    property.Alias,
+                                    yamlDocType.Alias);
+                                continue;
+                            }
+
                             var dtName = dataTypeNameByAlias.TryGetValue(property.DataType, out var mapped) ? mapped : property.DataType;
                             var dataType = _dataTypeService.GetDataType(dtName);
                             if (dataType == null)
@@ -179,6 +194,7 @@ namespace SplatDev.Umbraco.Plugins.Yaml2Schema.Services
                             };
 
                             contentTab.PropertyTypes!.Add(contentProp);
+                            seenPropertyAliases.Add(property.Alias);
                         }
 
                         contentType.PropertyGroups.Add(contentTab);
