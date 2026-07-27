@@ -1,0 +1,75 @@
+version: "3.8"
+
+services:
+  u13-testing:
+    build:
+      context: ..
+      dockerfile: test-environments/Dockerfile.u13
+    container_name: umbraco-u13-testing
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5100:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Umbraco__CMS__Global__MainDomLock=SqlMainDomLock
+      - ConnectionStrings__umbracoDbDSN=Server=hostmssql,1433;Database=UmbracoU13Testing;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=true
+    networks:
+      - umbraco-testing
+    depends_on:
+      hostmssql:
+        condition: service_healthy
+    volumes:
+      - u13-media:/app/wwwroot/media
+      - u13-logs:/app/umbraco/Logs
+
+  u17-testing:
+    build:
+      context: ..
+      dockerfile: test-environments/Dockerfile.u17
+    container_name: umbraco-u17-testing
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5101:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Umbraco__CMS__Global__MainDomLock=SqlMainDomLock
+      - ConnectionStrings__umbracoDbDSN=Server=hostmssql,1433;Database=UmbracoU17Testing;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=true
+    networks:
+      - umbraco-testing
+    depends_on:
+      hostmssql:
+        condition: service_healthy
+    volumes:
+      - u17-media:/app/wwwroot/media
+      - u17-logs:/app/umbraco/Logs
+
+  hostmssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: umbraco-testing-mssql
+    restart: unless-stopped
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD}
+    ports:
+      - "127.0.0.1:1433:1433"
+    networks:
+      - umbraco-testing
+    volumes:
+      - mssql-data:/var/opt/mssql
+    healthcheck:
+      test: /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "${MSSQL_SA_PASSWORD}" -C -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  u13-media:
+  u13-logs:
+  u17-media:
+  u17-logs:
+  mssql-data:
+
+networks:
+  umbraco-testing:
+    name: umbraco-testing
