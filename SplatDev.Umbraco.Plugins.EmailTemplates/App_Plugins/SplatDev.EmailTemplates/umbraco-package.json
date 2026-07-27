@@ -47,6 +47,24 @@
         "entityType": "email-style",
         "menus": ["Umb.Menu.Default"]
       }
+    },
+    {
+      "type": "dashboard",
+      "alias": "SplatDev.Dashboard.EmailTemplates",
+      "name": "Email Templates Dashboard",
+      "element": "/App_Plugins/SplatDev.EmailTemplates/dist/email-templates-dashboard.js",
+      "elementName": "email-templates-dashboard",
+      "weight": 10,
+      "meta": {
+        "label": "Email Templates",
+        "pathname": "email-templates"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.SectionAlias",
+          "match": "SplatDev.Section.EmailTemplates"
+        }
+      ]
     }
   ]
 }
