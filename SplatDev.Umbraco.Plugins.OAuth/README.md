@@ -1,6 +1,6 @@
 # OAuth
 
-Umbraco OAuth social login plugin supporting Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
+Umbraco OAuth social login plugin — member authentication via Google, Facebook, and X (Twitter) with configurable provider settings.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.OAuth.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.OAuth)
 
@@ -19,13 +19,15 @@ dotnet add package SplatDev.Umbraco.Plugins.OAuth
 
 ## Quick Start
 
-Register in `Program.cs`:
+Register individual providers in `Program.cs`:
 
 ```csharp
 builder.CreateUmbracoBuilder()
     .AddBackOffice()
     .AddWebsite()
-    .AddOAuth()   // <-- add this
+    .AddGoogleMemberAuthentication()    // Google OAuth
+    .AddFacebookMemberAuthentication()  // Facebook OAuth
+    .AddXMemberAuthentication()         // X / Twitter OAuth
     .Build();
 ```
 
@@ -36,15 +38,44 @@ Add to `appsettings.json`:
 ```json
 {
   "OAuth": {
-    "Providers": {
+    "Applications": {
       "Google": {
-        "ClientId": "",
-        "ClientSecret": ""
+        "ClientId": "your-google-client-id",
+        "ClientSecret": "your-google-client-secret",
+        "CallbackPath": "/signin-google"
+      },
+      "Facebook": {
+        "AppId": "your-facebook-app-id",
+        "AppSecret": "your-facebook-app-secret",
+        "CallbackPath": "/signin-facebook"
+      },
+      "X": {
+        "ConsumerKey": "your-x-api-key",
+        "ConsumerSecret": "your-x-api-secret",
+        "CallbackPath": "/signin-twitter"
       }
     }
   }
 }
 ```
+
+## Supported Providers
+
+| Provider | Extension Method | Required NuGet Dependency |
+|----------|-----------------|---------------------------|
+| Google | `.AddGoogleMemberAuthentication()` | `Microsoft.AspNetCore.Authentication.Google` |
+| Facebook | `.AddFacebookMemberAuthentication()` | `Microsoft.AspNetCore.Authentication.Facebook` |
+| X (Twitter) | `.AddXMemberAuthentication()` | `Microsoft.AspNetCore.Authentication.Twitter` |
+
+## Usage
+
+Authentication happens via browser redirects — the OAuth flow is handled by ASP.NET Core's authentication middleware. Call `/signin-google`, `/signin-facebook`, or `/signin-twitter` to trigger the OAuth login flow for the respective provider.
+
+## Known Limitations
+
+- Only supports Google, Facebook, and X (Twitter) — no generic OpenID Connect provider support
+- No API endpoints for front-end consumption; authentication is strictly browser-based
+- Member account linking (connecting multiple social accounts to one Umbraco member) is not supported
 
 ## License
 

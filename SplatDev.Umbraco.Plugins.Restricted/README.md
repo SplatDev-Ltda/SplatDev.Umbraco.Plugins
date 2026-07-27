@@ -1,6 +1,23 @@
-# UmbracoCms.Plugins.Restricted
+# Restricted
 
-Content restriction plugin for Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
+Content restriction plugin for Umbraco — member-only content gates using Umbraco's built-in `IPublicAccessService` with role-based access and a backoffice dashboard.
+
+## Compatibility
+
+| Umbraco | .NET | Package Version |
+|---------|------|-----------------|
+| 13.x    | 8.0  | 2.0.0           |
+| 17.x    | 10.0 | 2.0.0           |
+
+## Installation
+
+```sh
+dotnet add package SplatDev.Umbraco.Plugins.Restricted
+```
+
+## Quick Start
+
+The plugin auto-registers via Umbraco's composition system. No explicit `Program.cs` registration required.
 
 ## Features
 
@@ -10,20 +27,32 @@ Content restriction plugin for Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 - Backoffice dashboard to manage restricted nodes
 - View component for rendering access status in Razor views
 
-## No EF Core Required
-
-This plugin uses Umbraco's own public access infrastructure — no additional database tables needed.
-
 ## API Endpoints
 
-- `GET /umbraco/api/restricted/GetRestrictedNodes`
-- `POST /umbraco/api/restricted/RestrictNode`
-- `DELETE /umbraco/api/restricted/UnrestrictNode?nodeId={id}`
-- `GET /umbraco/api/restricted/GetRequiredGroups?nodeId={id}`
-- `POST /umbraco/api/restricted/SetRequiredGroups`
+| Method | Route | Description |
+|--------|-------|-------------|
+| GET | `/umbraco/api/restricted/GetRestrictedNodes` | List all restricted nodes |
+| POST | `/umbraco/api/restricted/RestrictNode` | Restrict a node with member groups |
+| DELETE | `/umbraco/api/restricted/UnrestrictNode?nodeId={id}` | Remove restrictions from a node |
+| GET | `/umbraco/api/restricted/GetRequiredGroups?nodeId={id}` | Get required groups for a node |
+| POST | `/umbraco/api/restricted/SetRequiredGroups` | Update required groups |
 
 ## Usage in Razor
 
 ```cshtml
 @await Component.InvokeAsync("Restricted", new { nodeId = Model.Id })
 ```
+
+## No EF Core Required
+
+This plugin uses Umbraco's own public access infrastructure — no additional database tables needed.
+
+## Known Limitations
+
+- Relies entirely on Umbraco's `IPublicAccessService`; cannot enforce restrictions outside of Umbraco's content delivery pipeline
+- Role-based access is limited to Umbraco member groups — no support for external identity providers
+- Redirect behavior (login vs error page) must be configured per-node
+
+## License
+
+MIT © [SplatDev](https://github.com/SplatDev-Ltda)

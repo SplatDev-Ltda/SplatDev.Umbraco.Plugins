@@ -1,6 +1,6 @@
 # AdminBar
 
-Fixed admin bar injected at the top of the page for logged-in backoffice users. Provides Edit Page, Preview and Publish shortcuts. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
+Fixed admin bar for Umbraco — injects a toolbar at the top of front-end pages for logged-in backoffice users with Edit Page, Preview, and Publish shortcuts.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.AdminBar.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.AdminBar)
 
@@ -28,6 +28,36 @@ builder.CreateUmbracoBuilder()
     .AddAdminBar()   // <-- add this
     .Build();
 ```
+
+## Configuration
+
+Add to `appsettings.json`:
+
+```json
+{
+  "AdminBar": {
+    "Enabled": true,
+    "ShowEditPage": true,
+    "ShowPreview": true,
+    "ShowPublish": true,
+    "Position": "top"
+  }
+}
+```
+
+## Usage
+
+After registration, the admin bar automatically appears at the top of every front-end page when a backoffice user is logged in. The bar provides:
+
+- **Edit Page** — navigates to the backoffice content editor for the current page
+- **Preview** — toggles preview mode for unpublished content
+- **Publish** — publishes the current page directly from the front-end
+
+## Known Limitations
+
+- Admin bar visibility is determined by backoffice authentication cookies — no separate authorization mechanism
+- Publish action bypasses Umbraco's workflow/approval if one is configured
+- Position customization (top vs bottom) requires the `Position` config key
 
 ## License
 
