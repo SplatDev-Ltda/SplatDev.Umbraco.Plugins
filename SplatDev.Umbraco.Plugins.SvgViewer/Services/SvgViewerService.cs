@@ -42,15 +42,41 @@ public partial class SvgViewerService : ISvgViewerService
     public async Task<IEnumerable<SvgInfo>> GetAllSvgMediaAsync()
     {
         var results = new List<SvgInfo>();
-        var allItems = _mediaService.GetRootMedia().ToList();
+        var rootMedia = _mediaService.GetRootMedia().ToList();
 
-        foreach (var media in allItems)
+        foreach (var rootItem in rootMedia)
+        {
+            await CollectSvgFromMediaAsync(rootItem, results);
+        }
+
+        return results;
+    }
+
+    private async Task CollectSvgFromMediaAsync(global::Umbraco.Cms.Core.Models.IMedia media, List<SvgInfo> results)
+    {
+        if (media.ContentType.Alias.Equals("Folder", StringComparison.OrdinalIgnoreCase))
+        {
+            const int pageSize = 100;
+            var page = 0;
+            while (true)
+            {
+                var children = _mediaService.GetPagedChildren(media.Id, page, pageSize, out var total);
+                foreach (var child in children)
+                {
+                    await CollectSvgFromMediaAsync(child, results);
+                }
+
+                page++;
+                if (page * pageSize >= total) break;
+            }
+        }
+        else
         {
             var path = ResolvePhysicalPath(media);
-            if (string.IsNullOrEmpty(path)) continue;
+            if (string.IsNullOrEmpty(path)) return;
             var ext = Path.GetExtension(path);
-            if (!ext.Equals(".svg", StringComparison.OrdinalIgnoreCase)) continue;
-            if (!File.Exists(path)) continue;
+            if (!ext.Equals(".svg", StringComparison.OrdinalIgnoreCase)) return;
+            if (!File.Exists(path)) return;
 
             var raw = await File.ReadAllTextAsync(path);
             var sanitized = SanitizeSvg(raw);
@@ -64,8 +90,6 @@ public partial class SvgViewerService : ISvgViewerService
                 Height = h
             });
         }
-
-        return results;
     }
 
     private string? ResolvePhysicalPath(global::Umbraco.Cms.Core.Models.IMedia media)
@@ -90,14 +114,14 @@ public partial class SvgViewerService : ISvgViewerService
 
     internal static string SanitizeSvg(string svgContent)
     {
-        // Remove script tags
         svgContent = ScriptTagRegex().Replace(svgContent, string.Empty);
-        // Remove event handler attributes
+        svgContent = ForeignObjectRegex().Replace(svgContent, string.Empty);
         svgContent = OnEventRegex().Replace(svgContent, string.Empty);
-        // Remove javascript: hrefs
         svgContent = JavascriptHrefRegex().Replace(svgContent, "href=\"\"");
-        // Remove javascript: xlink:hrefs
         svgContent = JavascriptXlinkRegex().Replace(svgContent, "xlink:href=\"\"");
+        svgContent = DataUriHrefRegex().Replace(svgContent, "href=\"\"");
+        svgContent = DataUriXlinkRegex().Replace(svgContent, "xlink:href=\"\"");
+        svgContent = DataUriSrcRegex().Replace(svgContent, "src=\"\"");
         return svgContent;
     }
 
@@ -134,7 +158,10 @@ public partial class SvgViewerService : ISvgViewerService
     [GeneratedRegex(@"<script[\s\S]*?</script>", RegexOptions.IgnoreCase)]
     private static partial Regex ScriptTagRegex();
 
-    [GeneratedRegex(@"\s+on\w+\s*=\s*(""[^""]*""|'[^']*')", RegexOptions.IgnoreCase)]
+    [GeneratedRegex(@"<foreignObject[\s\S]*?</foreignObject>", RegexOptions.IgnoreCase)]
+    private static partial Regex ForeignObjectRegex();
+
+    [GeneratedRegex(@"\s+on\w+\s*=\s*(""[^""]*""|'[^']*'|[^\s>]+)", RegexOptions.IgnoreCase)]
     private static partial Regex OnEventRegex();
 
     [GeneratedRegex(@"href\s*=\s*""javascript:[^""]*""", RegexOptions.IgnoreCase)]
@@ -142,4 +169,13 @@ public partial class SvgViewerService : ISvgViewerService
 
     [GeneratedRegex(@"xlink:href\s*=\s*""javascript:[^""]*""", RegexOptions.IgnoreCase)]
     private static partial Regex JavascriptXlinkRegex();
+
+    [GeneratedRegex(@"href\s*=\s*""data:[^""]*""", RegexOptions.IgnoreCase)]
+    private static partial Regex DataUriHrefRegex();
+
+    [GeneratedRegex(@"xlink:href\s*=\s*""data:[^""]*""", RegexOptions.IgnoreCase)]
+    private static partial Regex DataUriXlinkRegex();
+
+    [GeneratedRegex(@"src\s*=\s*""data:[^""]*""", RegexOptions.IgnoreCase)]
+    private static partial Regex DataUriSrcRegex();
 }
