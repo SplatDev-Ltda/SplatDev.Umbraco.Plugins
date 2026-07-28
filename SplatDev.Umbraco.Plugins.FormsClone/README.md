@@ -141,3 +141,7 @@ dotnet pack Plugin/FormBuilder/FormBuilder.csproj -c Release
 ## License
 
 Proprietary. Contact SplatDev for licensing details.
+
+## Architecture
+
+This is a **headless API plugin** — the backoffice UI is served by the consuming Umbraco Forms application. This plugin provides the API controllers, services, and DI wiring; the Lit dashboard and property editors are external to this package.

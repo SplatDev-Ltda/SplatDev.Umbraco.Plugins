@@ -74,3 +74,7 @@ Add to `appsettings.json`:
 ## License
 
 MIT © [SplatDev](https://github.com/SplatDev-Ltda)
+
+## Architecture
+
+This is a **headless middleware plugin** — no backoffice dashboard, property editors, or UI components. It operates as HTTP middleware (security headers + Data Protection configuration), registered via DI composition.

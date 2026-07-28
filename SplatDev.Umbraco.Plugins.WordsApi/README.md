@@ -94,3 +94,7 @@ MIT © [SplatDev](https://github.com/splatdevtech)
 ---
 
 [Feedback](mailto:feedback@splatdev.com)
+
+## Architecture
+
+This is a **headless API plugin** — no backoffice dashboard, property editors, or UI components. It operates as an API-calling service (RapidAPI WordsAPI), registered via DI composition.

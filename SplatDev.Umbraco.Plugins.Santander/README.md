@@ -42,3 +42,7 @@ dotnet add package SplatDev.Umbraco.Plugins.Santander
 ## License
 
 MIT © [SplatDev](https://github.com/SplatDev-Ltda)
+
+## Architecture
+
+This is a **headless API plugin** — no standalone backoffice dashboard, property editors, or UI components. It operates as an API service (banking integration), registered via DI composition. The banking backoffice surface is intentionally left in the consuming application.

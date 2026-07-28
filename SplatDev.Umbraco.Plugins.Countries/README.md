@@ -90,3 +90,7 @@ MIT © [SplatDev](https://github.com/splatdevtech)
 ---
 
 [Feedback](mailto:feedback@splatdev.com)
+
+## Architecture
+
+This is a **headless data plugin** — no backoffice dashboard, property editors, or UI components. It operates as a database seeding service with NPoco query helpers, registered via DI composition.

@@ -23,3 +23,7 @@ later only if a generic (non-domain) backoffice surface is desired.
 ## Config (appsettings `Getnet` section)
 `BaseUrl` (`https://api.getnet.com.br` prod / `https://api-sandbox.getnet.com.br` sandbox), `TokenPath`,
 `SellerId`, `ClientId`, `ClientSecret`, `EnableDevelopmentMockWithoutCredentials`, and the payment path options.
+
+## Architecture
+
+This is a **headless API plugin** — no standalone backoffice dashboard, property editors, or UI components. It operates as an API service (payment processing + webhooks), registered via DI composition. The backoffice/webhook management surface is intentionally left in the consuming application.

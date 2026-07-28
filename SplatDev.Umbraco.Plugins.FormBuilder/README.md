@@ -42,3 +42,7 @@ No additional license file or license key is required.
 ## License
 
 MIT
+
+## Architecture
+
+This is a **headless API plugin** — the backoffice UI is served by the consuming Umbraco Forms application. This plugin provides the API controllers, services, and DI wiring; the Lit dashboard and property editors are external to this package.

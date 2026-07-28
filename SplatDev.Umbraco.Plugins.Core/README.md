@@ -27,3 +27,12 @@ Package ID: `UmbracoCms.Plugins`
 ```shell
 dotnet add package UmbracoCms.Plugins
 ```
+
+## Architecture
+
+This is a **headless library** — no backoffice dashboard, property editors, or UI components. It operates purely as a shared constants/helpers package registered via DI composition.
+
+
+## Architecture
+
+This is a **headless library** — no backoffice dashboard, property editors, or UI components. It operates purely as a shared constants/helpers package registered via DI composition.

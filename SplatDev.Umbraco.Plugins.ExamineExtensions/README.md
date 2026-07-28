@@ -65,3 +65,7 @@ The dashboard provides a UI for browsing indexes, running searches, and triggeri
 ## License
 
 MIT © [SplatDev](https://github.com/SplatDev-Ltda)
+
+## Architecture
+
+This is a **headless library** — no standalone backoffice dashboard or property editors. It extends Umbraco's built-in Examine backoffice UI with additional API endpoints and index features, operating as a DI-registered service.

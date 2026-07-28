@@ -31,3 +31,7 @@ builder.CreateUmbracoBuilder()
 ## License
 
 MIT © [SplatDev](https://github.com/SplatDev-Ltda)
+
+## Architecture
+
+This is a **headless plugin** — no backoffice dashboard, property editors, or UI components. It operates as a notification handler triggered by Umbraco member events, registered via DI composition.

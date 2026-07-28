@@ -46,3 +46,7 @@ Add to `appsettings.json`:
 ## License
 
 MIT © [SplatDev](https://github.com/SplatDev-Ltda)
+
+## Architecture
+
+This is a **headless plugin** — no backoffice dashboard, property editors, or UI components. It operates as a notification service triggered by Umbraco events, registered via DI composition.
