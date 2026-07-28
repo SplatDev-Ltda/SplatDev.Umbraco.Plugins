@@ -1,14 +1,15 @@
 {
   "$schema": "../../umbraco-package-schema.json",
   "name": "Examine Extensions",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "allowPackageTelemetry": false,
   "extensions": [
     {
       "type": "dashboard",
       "alias": "examineExtensions.dashboard",
       "name": "Examine Extensions Dashboard",
-      "element": "/App_Plugins/ExamineExtensions/examine-extensions-dashboard.js",
+      "element": "/App_Plugins/ExamineExtensions/dist/examine-dashboard.element.js",
+      "elementName": "examine-dashboard",
       "weight": -10,
       "meta": {
         "label": "Examine Extensions",
