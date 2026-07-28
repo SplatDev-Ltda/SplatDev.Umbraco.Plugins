@@ -23,6 +23,14 @@ jobs:
             8.0.x
             10.0.x
 
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/Directory.Build.props') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
       - name: Restore dependencies
         run: dotnet restore SplatDev.Core.sln
 
@@ -30,23 +38,35 @@ jobs:
         run: |
           FAIL_COUNT=0
           PASS_COUNT=0
+          FAILED=""
           for csproj in $(find . -maxdepth 3 -name "SplatDev.Umbraco.Plugins.*.csproj" \
             | grep -v "Tests\|BackupManager\|FormsClone\|obj\|bin\|CodeFirst\|PdfCurator" \
             | sort); do
             name=$(basename "$csproj" .csproj)
-            if dotnet build "$csproj" -c Release --no-restore 2>&1 | grep -q "Build succeeded"; then
+            # Some publishable plugins (e.g. Getnet, Santander, Schema2Yaml)
+            # aren't in SplatDev.Core.sln, so the solution-level restore above
+            # doesn't populate their obj/project.assets.json. Let dotnet build
+            # restore per-plugin (cheap when NuGet cache is warm) instead of
+            # using --no-restore, which fails with NETSDK1004 for those plugins.
+            if dotnet build "$csproj" -c Release; then
               PASS_COUNT=$((PASS_COUNT+1))
             else
-              echo "::warning::Build failed: $name"
+              echo "::error::Build failed: $name"
+              FAILED="$FAILED $name"
               FAIL_COUNT=$((FAIL_COUNT+1))
             fi
           done
           echo "Build summary: $PASS_COUNT passed, $FAIL_COUNT failed"
-
-      - name: Test
-        run: |
-          if dotnet test SplatDev.Core.sln --no-build -c Release --verbosity normal 2>&1 | grep -q "Test run"; then
-            echo "Tests completed"
-          else
-            echo "::warning::No test projects found or tests skipped"
+          if [ "$FAIL_COUNT" -gt 0 ]; then
+            echo "::error::Plugins failed to build:$FAILED"
+            exit 1
           fi
+
+      - name: Test (unit)
+        # Build-on-demand (no --no-build): the per-plugin build step above does not
+        # compile the test projects, so `--no-build` could never find their
+        # assemblies. Let dotnet's exit code fail the job on real test failures
+        # instead of the old `| grep -q "Test run"` mask.
+        # Exclude Integration-tagged tests (live API calls) and InDevelopment-tagged
+        # theme tests (assemblies still under active development).
+        run: dotnet test SplatDev.Core.sln -c Release --verbosity normal --filter "Category!=Integration&Category!=InDevelopment"

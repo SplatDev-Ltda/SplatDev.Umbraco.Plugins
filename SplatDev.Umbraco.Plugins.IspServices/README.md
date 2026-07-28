@@ -1,6 +1,6 @@
 # IspServices
 
-Umbraco ISP/IP services utilities plugin supporting Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
+Umbraco ISP / IP resolution service — resolves client IP addresses including X-Forwarded-For header support.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.IspServices.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.IspServices)
 
@@ -19,15 +19,38 @@ dotnet add package SplatDev.Umbraco.Plugins.IspServices
 
 ## Quick Start
 
-Register in `Program.cs`:
+The plugin auto-registers via `IspServicesComposer`. Inject `IISPService` where needed:
 
 ```csharp
-builder.CreateUmbracoBuilder()
-    .AddBackOffice()
-    .AddWebsite()
-    .AddIspServices()   // <-- add this
-    .Build();
+public class MyController : SurfaceController
+{
+    private readonly IISPService _ispService;
+
+    public MyController(IISPService ispService)
+    {
+        _ispService = ispService;
+    }
+
+    public IActionResult Index()
+    {
+        var clientIp = _ispService.GetClientIpAddress(HttpContext);
+        // Use clientIp for logging, geo-blocking, etc.
+        return Content($"Your IP: {clientIp}");
+    }
+}
 ```
+
+## API
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `GetClientIpAddress` | `string GetClientIpAddress(HttpContext context)` | Returns the client IP, falling back from `RemoteIpAddress` to `X-Forwarded-For` header |
+
+## Known Limitations
+
+- Provides IP resolution only — no geo-location, ISP lookup, or IP intelligence features
+- No controllers or backoffice UI; strictly a DI-registered service for programmatic use
+- No support for `X-Real-IP` or other proxy headers beyond `X-Forwarded-For`
 
 ## License
 

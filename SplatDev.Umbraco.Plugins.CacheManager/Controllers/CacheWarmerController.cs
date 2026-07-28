@@ -35,14 +35,14 @@ namespace SplatDev.Umbraco.Plugins.CacheManager.Controllers
 
         public static bool IsRunning { get; private set; }
 
-        [HttpGet]
+        [HttpGet("fusion-cache")]
         public async Task<IActionResult> GetFusionCache()
         {
             await Task.FromResult(0);
             return Ok(0);
         }
 
-        [HttpGet]
+        [HttpGet("clear-cache")]
         public async Task<IActionResult> ClearCache()
         {
             await Task.FromResult(0);
@@ -54,7 +54,7 @@ namespace SplatDev.Umbraco.Plugins.CacheManager.Controllers
             return Ok();
         }
 
-        [HttpGet]
+        [HttpGet("refresh-cache")]
         public async Task<IActionResult> RefreshCache()
         {
             if (_memoryCache is MemoryCache concreteMemoryCache)
@@ -67,7 +67,7 @@ namespace SplatDev.Umbraco.Plugins.CacheManager.Controllers
             return Ok();
         }
 
-        [HttpGet]
+        [HttpGet("last-task")]
         public async Task<IActionResult> GetLastTask()
         {
             await Task.FromResult(0);
@@ -75,7 +75,7 @@ namespace SplatDev.Umbraco.Plugins.CacheManager.Controllers
             return Ok(history);
         }
 
-        [HttpGet]
+        [HttpGet("clear-log")]
         public async Task<IActionResult> ClearLog()
         {
             await Task.FromResult(0);
@@ -83,7 +83,7 @@ namespace SplatDev.Umbraco.Plugins.CacheManager.Controllers
             return Ok();
         }
 
-        [HttpGet]
+        [HttpGet("url-not-found")]
         public async Task<IActionResult> GetUrlNotFound()
         {
             await Task.FromResult(0);
@@ -92,7 +92,7 @@ namespace SplatDev.Umbraco.Plugins.CacheManager.Controllers
             return Ok(filtered);
         }
 
-        [HttpGet]
+        [HttpGet("statistics")]
         [RequiresPreviewFeatures]
         public async Task<IActionResult> GetStatistics()
         {

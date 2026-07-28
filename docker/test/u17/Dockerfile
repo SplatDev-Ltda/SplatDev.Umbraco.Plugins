@@ -52,6 +52,10 @@ WORKDIR /app
 
 COPY --from=build /app/publish .
 
+# Copy built plugin App_Plugins (dist/ files with Lit 3 dashboard components)
+# This overlays the published output with locally-built frontend assets
+COPY SplatDev.Umbraco.Plugins.*/App_Plugins/ /app/wwwroot/App_Plugins/
+
 # Copy shared E2E test suite + Playwright config
 COPY docker/test/e2e/ /app/e2e/
 RUN cd /app/e2e && npm ci --ignore-scripts 2>/dev/null || npm install --ignore-scripts 2>/dev/null || true

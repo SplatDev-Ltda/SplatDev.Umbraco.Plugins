@@ -1,0 +1,12 @@
+<div class="swf-queue" ng-controller="SplatWorkflow.QueueController as vm" data-swf-theme="{{vm.theme}}">
+    <header class="swf-queue-filterbar">
+        <input type="search" ng-model="vm.filter.freeText" ng-change="vm.load()" placeholder="Search..." />
+        <label><input type="checkbox" ng-model="vm.filter.assignedToMe" ng-change="vm.load()" /> Assigned to me</label>
+    </header>
+
+    <splat-queue-table rows="vm.rows" columns="vm.columns" theme-name="{{vm.theme}}"></splat-queue-table>
+
+    <footer class="swf-queue-paging">
+        <span>{{ vm.total }} results</span>
+    </footer>
+</div>

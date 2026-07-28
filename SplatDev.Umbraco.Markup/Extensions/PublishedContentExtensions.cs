@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Text.Json;
 
 using SplatDev.Umbraco.Common.Extensions;
 using SplatDev.Umbraco.Markup.Extensions;
@@ -13,17 +13,42 @@ namespace SplatDev.Umbraco.Markup.Extensions
     {
         public static bool HasGridValue(this IPublishedContent content, string alias)
         {
-            var result = false;
             try
             {
-                JObject? grid = content.Value(alias) as JObject;
-                if (grid is not null && grid.SelectTokens("sections[*].rows[*].areas[*].controls").Any())
+                var value = content.Value(alias);
+                if (value is null) return false;
+
+                var json = value.ToString()!;
+                using var doc = JsonDocument.Parse(json);
+
+                if (!doc.RootElement.TryGetProperty("sections", out var sections)
+                    || sections.ValueKind != JsonValueKind.Array)
+                    return false;
+
+                foreach (var section in sections.EnumerateArray())
                 {
-                    result = true;
+                    if (!section.TryGetProperty("rows", out var rows)
+                        || rows.ValueKind != JsonValueKind.Array)
+                        continue;
+
+                    foreach (var row in rows.EnumerateArray())
+                    {
+                        if (!row.TryGetProperty("areas", out var areas)
+                            || areas.ValueKind != JsonValueKind.Array)
+                            continue;
+
+                        foreach (var area in areas.EnumerateArray())
+                        {
+                            if (area.TryGetProperty("controls", out var controls)
+                                && controls.ValueKind == JsonValueKind.Array
+                                && controls.EnumerateArray().Any())
+                                return true;
+                        }
+                    }
                 }
             }
             catch { }
-            return result;
+            return false;
         }
         /// <summary>
         /// Returns children of the <paramref name="source"/>, of the given type <see cref="{T}"/>, that satisfy provided <paramref name="predicate"/>.

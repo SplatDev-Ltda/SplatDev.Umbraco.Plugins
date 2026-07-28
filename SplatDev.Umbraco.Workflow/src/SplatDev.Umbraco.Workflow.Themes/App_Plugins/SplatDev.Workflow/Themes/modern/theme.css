@@ -1,0 +1,20 @@
+[data-swf-theme="modern"] {
+    --swf-chart-step-pending-bg: #1f2937;
+    --swf-chart-step-active-bg: #6366f1;
+    --swf-chart-step-active-fg: #ffffff;
+    --swf-chart-step-done-bg: #10b981;
+    --swf-chart-step-done-fg: #ffffff;
+    --swf-chart-step-radius: 9999px;
+    --swf-chart-step-padding: 0.625rem 1rem;
+    --swf-chart-font: "Geist", "Inter", system-ui, sans-serif;
+    --swf-queue-card-bg: #0f172a;
+    --swf-queue-card-fg: #e2e8f0;
+    --swf-queue-card-radius: 0.75rem;
+}
+
+@media (prefers-color-scheme: light) {
+    [data-swf-theme="modern"] {
+        --swf-queue-card-bg: #ffffff;
+        --swf-queue-card-fg: #0f172a;
+    }
+}

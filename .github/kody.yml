@@ -1,0 +1,26 @@
+version: "1.0"
+
+code_review:
+  automated_review: true
+  review_depth: detailed
+  focus:
+    - correctness
+    - security
+    - performance
+    - best_practices
+
+  language_settings:
+    csharp:
+      enabled: true
+
+  ignore_patterns:
+    - "**/*.md"
+    - "**/bin/**"
+    - "**/obj/**"
+    - "**/*.designer.cs"
+    - "**/Migrations/**"
+    - "**/umbraco/models/**"
+
+  review_on:
+    - pull_request
+    - pull_request_review_requested

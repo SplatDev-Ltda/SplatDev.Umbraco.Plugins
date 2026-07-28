@@ -1,14 +1,15 @@
 {
   "$schema": "../../umbraco-package-schema.json",
   "name": "EXIF Viewer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "allowPackageTelemetry": false,
   "extensions": [
     {
       "type": "dashboard",
       "alias": "exif.dashboard",
       "name": "EXIF Metadata Dashboard",
-      "element": "/App_Plugins/Exif/exif-dashboard.js",
+      "element": "/App_Plugins/Exif/dist/exif-dashboard.element.js",
+      "elementName": "exif-dashboard",
       "weight": -10,
       "meta": {
         "label": "EXIF Viewer",

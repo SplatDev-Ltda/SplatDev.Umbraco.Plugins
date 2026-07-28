@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>SplatDev.Search.Meilisearch</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>SplatDev-Ltda</Authors>
+    <Company>SplatDev Ltda</Company>
+    <Description>Meilisearch adapter for SplatDev.Search abstractions. Lightweight, typo-tolerant full-text search with instant indexing.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>search meilisearch fulltext indexing lightweight splatdev</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Meilisearch" Version="0.14.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SplatDev.Search\SplatDev.Search.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,18 @@
+<div class="swf-themes-dashboard" ng-controller="SplatWorkflow.ThemesController as vm">
+    <h2>Themes</h2>
+    <div class="swf-theme-grid">
+        <div class="swf-theme-card" ng-repeat="theme in vm.themes track by theme.name"
+             ng-class="{ 'is-active': vm.selectedTheme === theme.name }"
+             ng-click="vm.selectTheme(theme.name)">
+            <h4>{{ theme.label }}</h4>
+            <p>{{ theme.name }}</p>
+            <div class="swf-theme-preview" data-swf-theme="{{theme.name}}">
+                <div class="swf-chart swf-chart--horizontal">
+                    <div class="swf-chart-step is-done"><span>Step 1</span></div>
+                    <div class="swf-chart-step is-active"><span>Step 2</span></div>
+                    <div class="swf-chart-step is-pending"><span>Step 3</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

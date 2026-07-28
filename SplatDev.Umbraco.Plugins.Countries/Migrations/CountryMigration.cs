@@ -11,21 +11,28 @@ using SplatDev.Umbraco.Plugins.Countries.Models;
 
 namespace SplatDev.Umbraco.Plugins.Countries.Migrations
 {
+#if NET10_0_OR_GREATER
     internal class CountryMigration(IMigrationContext context, ILogger<CountryMigration> logger) : AsyncMigrationBase(context)
     {
         private readonly ILogger<CountryMigration> _logger = logger;
-        private const string _skipping = "The database table {DbTable} already exists, skipping";
 
         protected override async Task MigrateAsync()
+#else
+    internal class CountryMigration(IMigrationContext context, ILogger<CountryMigration> logger) : MigrationBase(context)
+    {
+        private readonly ILogger<CountryMigration> _logger = logger;
+
+        protected override void Migrate()
+#endif
         {
+            const string _skipping = "The database table {DbTable} already exists, skipping";
+
             _logger.LogDebug("Running migration {Migration Step}", "HireologyIntegration");
 
             if (!TableExists(Country.TABLE_NAME))
             {
 
                 Create.Table<Country>().Do();
-                //Seed
-                //TODO: set path to country csv
                 var csvFilePath = "C:\\Temp\\countries.csv";
                 using var reader = new StreamReader(csvFilePath);
                 using var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture));
@@ -35,6 +42,11 @@ namespace SplatDev.Umbraco.Plugins.Countries.Migrations
             else
                 _logger.LogDebug(_skipping, Country.TABLE_NAME);
 
+#if !NET10_0_OR_GREATER
         }
+#else
+            await Task.CompletedTask;
+        }
+#endif
     }
 }

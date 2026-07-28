@@ -1,6 +1,6 @@
 # Schema2Yaml
 
-Export Umbraco document types to YAML format — reverse of Yaml2Schema.
+Export Umbraco document types to YAML format — reverse operation of Yaml2Schema. Exports content types, media types, members, and content to YAML files for version control or migration.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Schema2Yaml.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Schema2Yaml)
 
@@ -19,7 +19,7 @@ dotnet add package SplatDev.Umbraco.Plugins.Schema2Yaml
 
 ## Quick Start
 
-No explicit registration is required — the plugin self-registers via `Schema2YamlComposer` on startup and the dashboard appears automatically in the Settings section.
+No explicit registration required — the plugin self-registers via `Schema2YamlComposer` on startup and the dashboard appears automatically in the Settings section of the backoffice.
 
 ## Configuration
 
@@ -36,6 +36,24 @@ Add to `appsettings.json`:
   }
 }
 ```
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `ExportPath` | string | `exports/umbraco.yml` | Output file path |
+| `IncludeMedia` | bool | true | Export media types |
+| `IncludeContent` | bool | true | Export document types |
+| `IncludeMembers` | bool | true | Export member types |
+| `IncludeUsers` | bool | false | Export user definitions |
+
+## Usage
+
+Access the Schema2Yaml dashboard from the Umbraco Settings section. Select the entity types to export and click "Export" to generate a YAML file at the configured path. Use the resulting YAML with `Yaml2Schema` to import into another Umbraco instance.
+
+## Known Limitations
+
+- Exports to a single YAML file — no support for splitting into multiple files per content type
+- Export path is relative to the application root; ensure the directory is writable
+- No incremental/delta export; always exports the full schema
 
 ## License
 

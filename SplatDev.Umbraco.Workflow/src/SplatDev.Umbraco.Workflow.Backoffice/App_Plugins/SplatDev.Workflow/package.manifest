@@ -1,0 +1,16 @@
+{
+  "name": "SplatDev Workflow",
+  "language": ["en-US", "es-ES"],
+  "javascript": [
+    "~/App_Plugins/SplatDev.Workflow/services/workflowResource.js",
+    "~/App_Plugins/SplatDev.Workflow/services/themeService.js",
+    "~/App_Plugins/SplatDev.Workflow/directives/pizzaChart.directive.js",
+    "~/App_Plugins/SplatDev.Workflow/directives/queueTable.directive.js",
+    "~/App_Plugins/SplatDev.Workflow/dashboards/queue.controller.js",
+    "~/App_Plugins/SplatDev.Workflow/dashboards/definitionEditor.controller.js",
+    "~/App_Plugins/SplatDev.Workflow/dashboards/themes.controller.js"
+  ],
+  "css": [
+    "~/App_Plugins/SplatDev.Workflow/styles/base.css"
+  ]
+}

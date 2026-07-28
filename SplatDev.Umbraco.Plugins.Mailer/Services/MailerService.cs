@@ -34,7 +34,6 @@ namespace SplatDev.Umbraco.Plugins.Mailer.Services
             _smtpSection.Bind(_settings);
 
             using var client = new SmtpClient();
-            client.ServerCertificateValidationCallback = (s, c, h, e) => true;
 
             try
             {

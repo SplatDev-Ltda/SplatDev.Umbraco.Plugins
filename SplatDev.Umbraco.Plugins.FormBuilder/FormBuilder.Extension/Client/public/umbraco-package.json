@@ -15,9 +15,9 @@
     },
     {
       "type": "dashboard",
-      "alias": "formbuildeer.dashboard",
+      "alias": "formbuilder.dashboard",
       "name": "Form Builder Dashboard",
-      "element": "/App_Plugins/FormBuilderExtension/welcome-dashboard.js",
+      "element": "/App_Plugins/FormBuilderExtension/formbuilder-dashboard.js",
       "elementName": "formbuilder-dashboard",
       "weight": 30,
       "meta": {

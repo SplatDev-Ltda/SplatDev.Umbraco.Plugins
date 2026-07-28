@@ -1,0 +1,11 @@
+<div class="swf-chart swf-chart--horizontal" data-swf-theme="{{themeName}}">
+    <div class="swf-chart-step"
+         ng-repeat="step in steps track by step.key"
+         ng-class="{
+            'is-active': $index === currentIndex,
+            'is-done':   $index < currentIndex,
+            'is-pending':$index > currentIndex
+         }">
+        <span class="swf-chart-step-label">{{ step.label }}</span>
+    </div>
+</div>

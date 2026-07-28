@@ -1,6 +1,6 @@
 # Slider
 
-Image slider plugin for Umbraco — stores slide data with EF Core, renders via configurable view component.
+Image slider plugin for Umbraco — stores slide data with EF Core, renders via configurable view component. Provides a Bellissima backoffice dashboard for managing sliders and slides.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Slider.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Slider)
 
@@ -28,6 +28,46 @@ builder.CreateUmbracoBuilder()
     .AddSlider()   // <-- add this
     .Build();
 ```
+
+## Configuration
+
+The plugin uses EF Core to persist slider data. Ensure your Umbraco database is configured and migrations are applied on startup.
+
+### Available settings
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `Slider:EnableEFMigrations` | `bool` | `true` | Run EF migrations on startup |
+
+## Backoffice Dashboard (Umbraco 17+)
+
+A Bellissima Lit dashboard is available under the **Settings** section. It displays all configured sliders with their slides, effects, and autoplay status.
+
+### Client build
+
+The dashboard is built with Vite + TypeScript:
+
+```sh
+cd Slider/client
+pnpm install
+pnpm run build
+```
+
+Output: `App_Plugins/Slider/dist/slider-dashboard.element.js`
+
+## API
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/umbraco/api/slider/GetSliders` | GET | List all sliders with slides |
+| `/umbraco/api/slider/GetSlider` | GET | Get a single slider by ID |
+| `/umbraco/api/slider/CreateSlider` | POST | Create a new slider |
+| `/umbraco/api/slider/UpdateSlider` | PUT | Update slider properties |
+| `/umbraco/api/slider/DeleteSlider` | DELETE | Delete a slider and its slides |
+| `/umbraco/api/slider/GetSlides` | GET | Get slides for a slider |
+| `/umbraco/api/slider/AddSlide` | POST | Add a slide to a slider |
+| `/umbraco/api/slider/UpdateSlide` | PUT | Update slide properties |
+| `/umbraco/api/slider/DeleteSlide` | DELETE | Remove a slide |
 
 ## License
 

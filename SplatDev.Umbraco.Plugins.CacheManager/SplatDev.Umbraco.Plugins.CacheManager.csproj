@@ -70,6 +70,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\SplatDev.Umbraco.Plugins.Mailer\SplatDev.Umbraco.Plugins.Mailer.csproj" />
+		<ProjectReference Include="..\SplatDev.Cache\SplatDev.Cache.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

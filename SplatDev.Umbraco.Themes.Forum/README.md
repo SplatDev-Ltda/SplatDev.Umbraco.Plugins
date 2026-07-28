@@ -34,6 +34,8 @@ Forum/community theme for Umbraco — thread list, post view, user profiles, cat
 | `forumAnnouncements` | Container for announcements |
 | `forumAnnouncement` | Single announcement with priority and expiry |
 | `forumUserProfile` | Public member profile |
+| `forumRuleElement` | Element type for forum rules list |
+| `moderatorElement` | Element type for moderator assignments |
 
 ## Schema Import
 

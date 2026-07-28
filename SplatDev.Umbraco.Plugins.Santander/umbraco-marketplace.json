@@ -1,0 +1,7 @@
+{
+  "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
+  "AuthorDetails": { "Name": "SplatDev Ltda", "Url": "https://github.com/SplatDev-Ltda" },
+  "Category": "Payments",
+  "Description": "Umbraco 17 plugin for the Santander payment integration (SplatDev.Payments.Santander).",
+  "PackageType": "Package"
+}

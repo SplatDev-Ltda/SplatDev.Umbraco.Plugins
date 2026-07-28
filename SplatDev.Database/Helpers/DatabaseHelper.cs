@@ -9,6 +9,9 @@
     using System.IO;
     using System.Linq;
     using System.Reflection;
+
+    using SplatDev.Reflection;
+
     using System.Text;
     public static class DatabaseHelper
     {
@@ -21,7 +24,7 @@
 
         public static string[] GetTableColumns(this Type table)
         {
-            var properties = table.GetInstance<ITable>().GetType().GetProperties().Where(x => !x.HasAttribute<IgnoreAttribute>());
+            var properties = table.GetInstance<ITable>().GetType().GetProperties().Where(x => x.GetCustomAttribute<IgnoreAttribute>() == null);
             var list = new List<string>();
             foreach (var prop in properties) list.Add(prop.Name);
             return list.ToArray<string>();

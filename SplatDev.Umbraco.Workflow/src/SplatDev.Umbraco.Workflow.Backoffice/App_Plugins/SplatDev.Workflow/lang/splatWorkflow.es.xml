@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<language>
+  <area alias="splatWorkflow">
+    <key alias="queue_title">Cola</key>
+    <key alias="queue_filter_search">Buscar</key>
+    <key alias="queue_filter_assigned_to_me">Asignados a m\u00ed</key>
+    <key alias="definitions_title">Definiciones de flujo</key>
+    <key alias="themes_title">Temas</key>
+  </area>
+</language>

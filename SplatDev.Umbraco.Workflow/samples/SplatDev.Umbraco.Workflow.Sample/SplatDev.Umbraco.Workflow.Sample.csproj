@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <CompressionEnabled>false</CompressionEnabled>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <NoWarn>$(NoWarn);NU1902;NETSDK1188;SA1517;SA1633;SA1600</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Umbraco.Cms" Version="13.13.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\SplatDev.Umbraco.Workflow.Api\SplatDev.Umbraco.Workflow.Api.csproj" />
+    <ProjectReference Include="..\..\src\SplatDev.Umbraco.Workflow.Backoffice\SplatDev.Umbraco.Workflow.Backoffice.csproj" />
+    <ProjectReference Include="..\..\src\SplatDev.Umbraco.Workflow.Themes\SplatDev.Umbraco.Workflow.Themes.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <CopyRazorGenerateFilesToPublishDirectory>true</CopyRazorGenerateFilesToPublishDirectory>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <RazorCompileOnBuild>false</RazorCompileOnBuild>
+    <RazorCompileOnPublish>false</RazorCompileOnPublish>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,12 @@
+bin/
+obj/
+.vs/
+*.user
+*.suo
+node_modules/
+TestResults/
+*.received.*
+publish_out/
+App_Data/TEMP/
+App_Data/Logs/
+App_Data/umbraco-net.lck

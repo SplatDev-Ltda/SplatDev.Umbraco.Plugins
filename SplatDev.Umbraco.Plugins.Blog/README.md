@@ -1,6 +1,21 @@
-# UmbracoCms.Plugins.Blog
+# SplatDev.Umbraco.Plugins.Blog
 
 Blog engine plugin for Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
+
+[![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Blog.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Blog)
+
+## Compatibility
+
+| Umbraco | .NET | Package Version |
+|---------|------|-----------------|
+| 13.x    | 8.0  | 2.0.1           |
+| 17.x    | 10.0 | 2.0.1           |
+
+## Installation
+
+```sh
+dotnet add package SplatDev.Umbraco.Plugins.Blog
+```
 
 ## Features
 
@@ -51,3 +66,7 @@ cd client
 npm install
 npm run build
 ```
+
+## License
+
+MIT © [SplatDev](https://github.com/SplatDev-Ltda)

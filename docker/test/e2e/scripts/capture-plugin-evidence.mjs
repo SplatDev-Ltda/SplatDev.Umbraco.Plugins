@@ -154,23 +154,25 @@ function sleep(ms) {
 }
 
 async function login(page, isU17) {
-  await page.goto(`${BASE_URL}/umbraco`, { waitUntil: 'networkidle', timeout: 60000 });
-
   if (isU17) {
-    // Umbraco 17 uses the new login UI
-    const emailInput = page.locator('input[type="email"], input[name="email"], input[name="username"]');
-    await emailInput.waitFor({ timeout: 30000 });
-    await emailInput.fill(ADMIN_USER);
-    await page.locator('input[type="password"]').fill(ADMIN_PASS);
-    await page.locator('button[type="submit"]').click();
-    await page.waitForURL(/umbraco/, { timeout: 30000 });
-    await sleep(4000); // wait for SPA to initialize
+    // U17: go directly to /umbraco/login (root /umbraco causes auth token refresh error)
+    await page.goto(`${BASE_URL}/umbraco/login`, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await sleep(5000);
+    // Login form uses #username-input (type=text, inputmode=email) + #password-input
+    await page.locator('#username-input').waitFor({ timeout: 25000 });
+    await page.locator('#username-input').fill(ADMIN_USER);
+    await page.locator('#password-input').fill(ADMIN_PASS);
+    await page.locator('#umb-login-button').click();
+    await page.waitForURL(/umbraco\/(#|\?)/, { timeout: 30000 }).catch(() => {});
+    await sleep(5000);
   } else {
-    // Umbraco 13 AngularJS login
-    await page.waitForSelector('#username,input[name="username"]', { timeout: 30000 });
-    await page.fill('#username,input[name="username"]', ADMIN_USER);
-    await page.fill('#password,input[name="password"]', ADMIN_PASS);
-    await page.click('button[type="submit"],.umb-login-form__submit');
+    // U13: AngularJS login
+    await page.goto(`${BASE_URL}/umbraco`, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await sleep(5000);
+    await page.waitForSelector('#username-input', { timeout: 30000 });
+    await page.fill('#username-input', ADMIN_USER);
+    await page.fill('#password-input', ADMIN_PASS);
+    await page.click('#umb-login-button');
     await sleep(5000);
   }
 }
@@ -196,8 +198,37 @@ async function capturePlugin(page, plugin, isU17) {
     : `${BASE_URL}${plugin.path}`;
 
   try {
-    await page.goto(url, { waitUntil: 'networkidle', timeout: 25000 });
+    // Navigate and wait for network to settle (SPA needs time to load assets)
+    await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+
+    // Wait for the backoffice content area to update with plugin-specific content
+    // U17: Lit-based backoffice uses <uui-box> or plugin-specific web components
+    // U13: AngularJS backoffice uses <div> with ng-view content
+    if (isU17) {
+      // Wait for any of these indicators that the plugin dashboard has rendered
+      await Promise.any([
+        page.waitForSelector('uui-box, [data-plugin-loaded], .plugin-dashboard', { timeout: 10000 }),
+        page.waitForSelector('umb-body, .umb-body', { timeout: 10000 }),
+        sleep(5000), // fallback: give it time even if selectors don't match
+      ]);
+    } else {
+      // U13 AngularJS: wait for the hash route to be active and content rendered
+      await Promise.any([
+        page.waitForSelector('.umb-panel, [ng-view], .ng-scope', { timeout: 10000 }),
+        sleep(5000),
+      ]);
+    }
+
+    // Extra wait for dynamic content rendering
     await sleep(3000);
+
+    // Verify we're on the right page by checking URL contains plugin identifier
+    const currentUrl = page.url();
+    const pluginKey = isU17 ? plugin.pathname : (plugin.path.split('#')[1] || plugin.path);
+    const keyPart = pluginKey.split('/')[0] || pluginKey;
+    if (!currentUrl.includes(keyPart)) {
+      console.log(`  ⚠️  ${plugin.name}: URL mismatch — expected ${keyPart}, got ${currentUrl}`);
+    }
 
     await page.screenshot({
       path: join(pluginDir, 'dashboard.png'),

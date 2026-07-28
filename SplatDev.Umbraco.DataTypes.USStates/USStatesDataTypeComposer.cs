@@ -4,8 +4,7 @@ using Umbraco.Cms.Core.Composing;
 
 namespace SplatDev.Umbraco.DataTypes.USStates
 {
-    public class USStatesDataTypeComposer : ComponentComposer<USStatesDataTypeComponent> { }
-
+#if NET10_0_OR_GREATER
     public class USStatesDataTypeComponent(IServiceScopeFactory scopeFactory) : IAsyncComponent
     {
         private readonly IServiceScopeFactory _scopeFactory = scopeFactory;
@@ -21,4 +20,21 @@ namespace SplatDev.Umbraco.DataTypes.USStates
             return Task.CompletedTask;
         }
     }
+#else
+    public class USStatesDataTypeComponent(IServiceScopeFactory scopeFactory) : IComponent
+    {
+        private readonly IServiceScopeFactory _scopeFactory = scopeFactory;
+
+        public void Initialize()
+        {
+            new USStatesDataType(_scopeFactory).Install();
+        }
+
+        public void Terminate()
+        {
+        }
+    }
+#endif
+
+    public class USStatesDataTypeComposer : ComponentComposer<USStatesDataTypeComponent> { }
 }

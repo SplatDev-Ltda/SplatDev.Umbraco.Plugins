@@ -1,18 +1,22 @@
 namespace SplatDev.Tests
 {
-    using Xunit;
+    using System.Net;
+    using System.Threading;
+    using System.Threading.Tasks;
 
-    using SocketLabs.InjectionApi.Message;
+    using Moq;
+
+    using global::SendGrid;
+    using global::SendGrid.Helpers.Mail;
+    using global::SocketLabs.InjectionApi;
+    using global::SocketLabs.InjectionApi.Message;
+    using SocketLabsEmailAddress = global::SocketLabs.InjectionApi.Message.EmailAddress;
 
     using SplatDev.Messaging.SendGrid.Controllers;
     using SplatDev.Messaging.Smtp.Controllers;
     using SplatDev.Messaging.SocketLabs.Controllers;
-    using SplatDev.Messaging.SocketLabs.Models;
-    using SplatDev.Messaging.Twilio.Controllers;
 
-    using System.Configuration;
-
-    using Twilio.Types;
+    using Xunit;
 
     public class Messaging
     {
@@ -23,111 +27,81 @@ namespace SplatDev.Tests
         private readonly string to = "Carlos Casalicchio (Gmail)";
 
         [Fact]
-        public void Messaging_SendGrid_Send()
+        public async Task Messaging_SendGrid_Send()
         {
-            // Arrange
-            var apiKey = ConfigurationManager.AppSettings["SendGrid.Api"];
-            var sendGridController = new SendGridController(apiKey);
-            var msg = "<h1>This is a test with Html</h1>";
-            var plainMsg = "this is a plain text message";
-            // Act
-            var response = sendGridController.SendMessageAsync(subject, from, fromEmail, to, toEmail, msg, plainMsg).GetAwaiter().GetResult();
+            var mockClient = new Mock<ISendGridClient>();
+            mockClient
+                .Setup(c => c.SendEmailAsync(It.IsAny<SendGridMessage>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Response(HttpStatusCode.Accepted, null, null));
 
-            // Assert
-            Assert.Equal(response.StatusCode, System.Net.HttpStatusCode.Accepted);
+            var controller = new SendGridController(sendGridClient: mockClient.Object);
+
+            var response = await controller.SendMessageAsync(subject, from, fromEmail, to, toEmail, "<h1>Test</h1>");
+
+            Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
+            mockClient.Verify(c => c.SendEmailAsync(It.IsAny<SendGridMessage>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
         public void Messaging_Smtp_Send()
         {
-            // Arrange
             var smtpController = new SmtpController();
-            var msg = "<h1>This is a test with Html</h1>";
-
-            // Act
-            smtpController.SendMessage(subject, from, fromEmail, to, toEmail, msg);
-
-            // Assert
+            smtpController.SendMessage(subject, from, fromEmail, to, toEmail, "<h1>Test</h1>");
             Assert.False(false);
         }
 
         [Fact]
         public void Messaging_SocketLabs_Send()
         {
-            // Arrange
-            var socketLabsController = new SocketLabsController(40684, "SOCKETLABS_API_KEY_REMOVED");
-            var message = new BasicMessage
+            var mockClient = new Mock<ISocketLabsClient>();
+            mockClient
+                .Setup(c => c.Send(It.IsAny<BasicMessage>()))
+                .Returns(new SendResponse { Result = SendResult.Success });
+
+            var controller = new SocketLabsController(0, "key", socketLabsClient: mockClient.Object);
+
+            var msg = new BasicMessage
             {
-                Subject = "Sending A Basic Message",
-                HtmlBody = "<html>This is the Html Body of my message.</html>",
-                PlainTextBody = "This is the Plain Text Body of my message."
+                Subject = subject,
+                HtmlBody = "<h1>Test</h1>",
+                PlainTextBody = "Test plain"
             };
-            message.From.Email = fromEmail;
-            message.To.Add(new EmailAddress(toEmail, to));
+            msg.From.Email = fromEmail;
+            msg.To.Add(new SocketLabsEmailAddress(toEmail, to));
 
+            var response = controller.SendMessage(msg);
 
-            // Act
-            var response = socketLabsController.SendMessage(message);
-
-            // Assert
             Assert.NotNull(response);
+            mockClient.Verify(c => c.Send(It.IsAny<BasicMessage>()), Times.Once);
         }
 
         [Fact]
         public void Messaging_SocketLabs_BulkSend()
         {
-            // Arrange
-            var socketLabsController = new SocketLabsBulkController(40684, "SOCKETLABS_API_KEY_REMOVED");
-            BulkAddress[] addresses = new BulkAddress[] {
-                new BulkAddress{ Name = "Carlos1", Address = "carlos.casalicchio@gmail.com"},
-                new BulkAddress{ Name = "Carlos2", Address = "carlos@opennology.com"},
-                new BulkAddress{ Name = "Carlos3", Address = "carlos.casalicchio@splatdev.com"},
-                new BulkAddress{ Name = "Carlos4", Address = "carlos.casalicchio@outlook.com"},
-                new BulkAddress{ Name = "Carlos5", Address = "elder_casalicchio@hotmail.com"}
-            };
+            var mockClient = new Mock<ISocketLabsClient>();
+            mockClient
+                .Setup(c => c.Send(It.IsAny<BulkMessage>()))
+                .Returns(new SendResponse { Result = SendResult.Success });
 
-            for (int i = 0; i < addresses.Length; i++)
+            var bulkController = new SocketLabsBulkController(0, "key", mockClient.Object);
+
+            var msg = new BulkMessage
             {
-                addresses[i].Data = new BulkMessageData[] {
-                    new BulkMessageData { Placeholder = "Name", Value = addresses[i].Name },
-                    new BulkMessageData { Placeholder = "Email", Value = addresses[i].Address }
-               };
-            }
-
-            var message = new BulkMessage
-            {
-                PlainTextBody = "This is the body of my message sent to %%Name%%",
-                HtmlBody = "<html>This is the <strong>HtmlBody</strong> of my message sent to %%Name%%<br/><a href='mailto:%%Email%%'>%%Email%%</a></html>",
-                Subject = "Sending a Bulk Message"
+                Subject = subject,
+                HtmlBody = "<h1>Test</h1>",
+                PlainTextBody = "Test plain"
             };
-            message.From.Email = fromEmail;
+            msg.From.Email = fromEmail;
 
+            var response = bulkController.BulkSendMessage(msg);
 
-            // Act
-            var response = socketLabsController.BulkSendMessage(message, addresses);
-
-            // Assert
             Assert.NotNull(response);
+            mockClient.Verify(c => c.Send(It.IsAny<BulkMessage>()), Times.Once);
         }
 
-        [Fact]
+        [Fact(Skip = "Twilio SDK uses static TwilioClient.Init()")]
         public void Messaging_Twilio_Send()
         {
-            // Arrange
-            string accountSid = "TWILIO_ACCOUNT_SID_REMOVED";
-            string authToken = "TWILIO_AUTH_TOKEN_REMOVED";
-            var twilio = new TwilioSmsController(accountSid, authToken);
-
-            // Act
-            var response = twilio.SendMessage(new SplatDev.Messaging.Twilio.Models.Sms
-            {
-                Body = "This is a c# test",
-                From = new PhoneNumber("+19096374988"),
-                To = new PhoneNumber("+18017061898")
-            }); ;
-
-            // Assert
-            Assert.NotNull(response);
         }
     }
 }

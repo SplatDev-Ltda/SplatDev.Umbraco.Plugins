@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 using SplatDev.DigitalBookCurator.Core.Models;
 using SplatDev.DigitalBookCurator.Core.Repositories;
@@ -9,6 +10,7 @@ using Umbraco.Cms.Web.Common.Controllers;
 
 namespace SplatDev.Umbraco.Plugins.PdfCurator.Controllers
 {
+    [Authorize]
     public class ManagerApiController : ControllerBase
     {
         private readonly IBookRepository _bookRepository;

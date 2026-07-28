@@ -1,0 +1,8 @@
+<div class="swf-chart swf-chart--compact">
+    <div class="swf-chart-dots">
+        <span class="swf-chart-step-dot"
+              ng-repeat="step in steps track by step.key"
+              ng-class="{ 'is-active': $index === currentIndex, 'is-done': $index < currentIndex, 'is-pending': $index > currentIndex }"
+              title="{{ step.label }}"></span>
+    </div>
+</div>

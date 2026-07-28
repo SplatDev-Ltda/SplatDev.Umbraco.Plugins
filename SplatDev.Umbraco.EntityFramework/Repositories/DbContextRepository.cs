@@ -38,9 +38,9 @@ namespace SplatDev.Umbraco.EntityFramework.Repositories
 
         public void Dispose() => _dbContext.Dispose();
 
-        public virtual async Task<IList<TEntity>> FetchAsync(string query)
+        public virtual async Task<IList<TEntity>> FetchAsync(FormattableString query)
         {
-            var items = await _dbContext.Set<TEntity>().FromSqlRaw(query).AsNoTracking().ToListAsync();
+            var items = await _dbContext.Set<TEntity>().FromSqlInterpolated(query).AsNoTracking().ToListAsync();
             return items;
         }
 

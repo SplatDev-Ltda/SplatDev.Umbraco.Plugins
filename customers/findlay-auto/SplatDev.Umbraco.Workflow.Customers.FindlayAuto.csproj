@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>SplatDev.Umbraco.Workflow.Customers.FindlayAuto</RootNamespace>
+    <AssemblyName>SplatDev.Umbraco.Workflow.Customers.FindlayAuto</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SplatDev.Umbraco.Workflow.Core" Version="1.0.*" />
+  </ItemGroup>
+
+</Project>

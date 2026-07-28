@@ -1,0 +1,11 @@
+<Solution>
+  <Project Path="src/SplatDev.Umbraco.Workflow.Core/SplatDev.Umbraco.Workflow.Core.csproj" />
+  <Project Path="src/SplatDev.Umbraco.Workflow.Persistence/SplatDev.Umbraco.Workflow.Persistence.csproj" />
+  <Project Path="src/SplatDev.Umbraco.Workflow.Api/SplatDev.Umbraco.Workflow.Api.csproj" />
+  <Project Path="src/SplatDev.Umbraco.Workflow.Backoffice/SplatDev.Umbraco.Workflow.Backoffice.csproj" />
+  <Project Path="src/SplatDev.Umbraco.Workflow.Themes/SplatDev.Umbraco.Workflow.Themes.csproj" />
+  <Project Path="tests/SplatDev.Umbraco.Workflow.Core.Tests/SplatDev.Umbraco.Workflow.Core.Tests.csproj" />
+  <Project Path="tests/SplatDev.Umbraco.Workflow.Persistence.Tests/SplatDev.Umbraco.Workflow.Persistence.Tests.csproj" />
+  <Project Path="tests/SplatDev.Umbraco.Workflow.E2E.Tests/SplatDev.Umbraco.Workflow.E2E.Tests.csproj" />
+  <Project Path="samples/SplatDev.Umbraco.Workflow.Sample/SplatDev.Umbraco.Workflow.Sample.csproj" />
+</Solution>

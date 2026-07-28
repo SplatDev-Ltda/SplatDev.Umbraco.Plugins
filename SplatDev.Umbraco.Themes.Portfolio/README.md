@@ -25,6 +25,7 @@ Portfolio theme for Umbraco — project grid, project detail, filtering, lightbo
 
 | Alias | Description |
 |---|---|
+| `basePage` | Shared base page with common properties |
 | `portfolioRoot` | Root node: owner profile, branding, social links |
 | `portfolioHome` | Homepage with hero, previews, testimonials |
 | `projectsListing` | Filterable projects listing (parent of `project`) |
@@ -48,13 +49,11 @@ The composer `PortfolioThemeComposer` automatically:
 ## Templates
 
 | Alias | View File |
-|---|---|
+|---|---|---|
 | `PortfolioHome` | `Views/PortfolioHome.cshtml` |
 | `ProjectsListing` | `Views/ProjectsListing.cshtml` |
 | `Project` | `Views/Project.cshtml` |
 | `About` | `Views/About.cshtml` |
-| `Services` | `Views/Services.cshtml` |
-| `Contact` | `Views/Contact.cshtml` |
 
 ## Stylesheet
 

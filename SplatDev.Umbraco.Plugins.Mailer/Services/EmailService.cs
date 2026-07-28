@@ -45,7 +45,6 @@ namespace SplatDev.Umbraco.Plugins.Mailer.Services
                 };
 
                 using var client = new SmtpClient();
-                client.ServerCertificateValidationCallback = (s, c, h, e) => true;
                 var acceptedSecureChannels = SecureSocketOptions.StartTls | SecureSocketOptions.StartTlsWhenAvailable | SecureSocketOptions.SslOnConnect | SecureSocketOptions.Auto;
                 client.Connect(smtp.Host, smtp.Port, smtp.SecureSocketOptions == acceptedSecureChannels);
                 if (!string.IsNullOrEmpty(smtp.Username) && !string.IsNullOrEmpty(smtp.Password))

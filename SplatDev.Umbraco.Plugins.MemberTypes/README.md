@@ -1,11 +1,25 @@
-# UmbracoCms.Plugins.MemberTypes
+# MemberTypes
 
-Member type management plugin for Umbraco CMS. Create, edit, and manage custom member types with profile fields, custom properties, and type templates.
+Member type management plugin for Umbraco CMS — create, edit, and manage custom member types with profile fields, custom properties, and type templates via API and a backoffice dashboard.
 
-## Targets
+[![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.MemberTypes.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.MemberTypes)
 
-- **Umbraco 13** (net8.0)
-- **Umbraco 17** (net10.0)
+## Compatibility
+
+| Umbraco | .NET | Package Version |
+|---------|------|-----------------|
+| 13.x    | 8.0  | 2.0.0           |
+| 17.x    | 10.0 | 2.0.0           |
+
+## Installation
+
+```sh
+dotnet add package SplatDev.Umbraco.Plugins.MemberTypes
+```
+
+## Quick Start
+
+The plugin auto-registers via Umbraco's composition system. No explicit `Program.cs` registration required.
 
 ## Features
 
@@ -28,8 +42,20 @@ Member type management plugin for Umbraco CMS. Create, edit, and manage custom m
 
 ## Client Build
 
+The backoffice dashboard uses a client-side build:
+
 ```bash
 cd client
 npm install
 npm run build
 ```
+
+## Known Limitations
+
+- Delete operations are irrevocable — no recycle bin or soft-delete for member types
+- No validation to prevent deletion of member types that have existing members
+- Client dashboard requires manual build step after package installation; assets are not pre-built in the NuGet package
+
+## License
+
+MIT © [SplatDev](https://github.com/SplatDev-Ltda)

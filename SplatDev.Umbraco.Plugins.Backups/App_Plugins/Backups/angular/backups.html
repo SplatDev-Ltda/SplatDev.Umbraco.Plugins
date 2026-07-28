@@ -1,0 +1,211 @@
+<div ng-controller="Backups.DashboardController" class="umb-dashboard-content">
+
+    <style>
+        .sp-backups { font-family: var(--umb-font-family, "Lato", sans-serif); }
+        .sp-backups__header { display:flex; align-items:center; gap:12px; padding:24px 24px 0; }
+        .sp-backups__icon { width:40px; height:40px; border-radius:8px; background:#3544B1; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .sp-backups__icon svg { width:22px; height:22px; fill:#fff; }
+        .sp-backups__title { margin:0 0 2px; font-size:1.4rem; font-weight:700; color:#1a1a1a; }
+        .sp-backups__subtitle { margin:0; font-size:.875rem; color:#666; }
+        .sp-backups__tabs { display:flex; gap:0; border-bottom:2px solid #e5e7eb; margin:20px 24px 0; }
+        .sp-backups__tab { padding:10px 20px; cursor:pointer; font-size:.875rem; font-weight:600; color:#666; border-bottom:3px solid transparent; margin-bottom:-2px; background:none; border-top:none; border-left:none; border-right:none; }
+        .sp-backups__tab.active { color:#3544B1; border-bottom-color:#3544B1; }
+        .sp-backups__tab:hover:not(.active) { color:#1a1a1a; }
+        .sp-backups__panel { padding:24px; }
+        .sp-table { width:100%; border-collapse:collapse; font-size:.875rem; }
+        .sp-table th { text-align:left; padding:10px 12px; background:#f9fafb; border-bottom:2px solid #e5e7eb; font-weight:600; font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#6b7280; }
+        .sp-table td { padding:10px 12px; border-bottom:1px solid #f0f0f0; vertical-align:middle; }
+        .sp-table tr:hover td { background:#f9fafb; }
+        .sp-badge { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:9999px; font-size:.75rem; font-weight:600; }
+        .sp-badge--blue { background:#eff6ff; color:#1d4ed8; }
+        .sp-badge--green { background:#dcfce7; color:#15803d; }
+        .sp-badge--gray { background:#f3f4f6; color:#374151; }
+        .sp-btn { display:inline-flex; align-items:center; gap:6px; padding:7px 16px; border-radius:5px; font-size:.875rem; font-weight:600; cursor:pointer; border:1px solid transparent; }
+        .sp-btn--primary { background:#3544B1; color:#fff; }
+        .sp-btn--primary:hover:not(:disabled) { background:#2a3799; }
+        .sp-btn--danger { background:#fff; color:#dc2626; border-color:#fca5a5; }
+        .sp-btn--danger:hover:not(:disabled) { background:#fef2f2; }
+        .sp-btn--secondary { background:#fff; color:#374151; border-color:#d1d5db; }
+        .sp-btn--secondary:hover:not(:disabled) { background:#f9fafb; }
+        .sp-btn:disabled { opacity:.5; cursor:not-allowed; }
+        .sp-form { display:flex; flex-direction:column; gap:16px; max-width:520px; }
+        .sp-field { display:flex; flex-direction:column; gap:5px; }
+        .sp-label { font-size:.8125rem; font-weight:600; color:#374151; }
+        .sp-input { padding:8px 10px; border:1px solid #d1d5db; border-radius:4px; font-size:.875rem; background:#fff; }
+        .sp-input:focus { outline:none; border-color:#3544B1; box-shadow:0 0 0 2px rgba(53,68,177,.15); }
+        .sp-select { padding:8px 10px; border:1px solid #d1d5db; border-radius:4px; font-size:.875rem; background:#fff; }
+        .sp-checkbox-row { display:flex; align-items:center; gap:8px; font-size:.875rem; cursor:pointer; }
+        .sp-empty { text-align:center; padding:40px 24px; color:#9ca3af; font-size:.875rem; }
+        .sp-provider-card { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border:1px solid #e5e7eb; border-radius:6px; margin-bottom:8px; background:#fff; }
+        .sp-provider-card__name { font-weight:600; font-size:.875rem; }
+        .sp-provider-card__type { font-size:.75rem; color:#6b7280; margin-top:2px; }
+        .sp-spinner { display:inline-block; width:16px; height:16px; border:2px solid #c7d2fe; border-top-color:#3544B1; border-radius:50%; animation:sp-spin .7s linear infinite; }
+        @keyframes sp-spin { to { transform:rotate(360deg); } }
+        .sp-hint { font-size:.8125rem; color:#6b7280; margin-top:4px; }
+        .sp-section-title { font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:#9ca3af; margin:0 0 12px; }
+        .sp-providers-select { display:flex; flex-direction:column; gap:6px; }
+        .sp-provider-check { display:flex; align-items:center; gap:8px; padding:8px 10px; border:1px solid #e5e7eb; border-radius:4px; cursor:pointer; font-size:.875rem; }
+        .sp-provider-check input { cursor:pointer; }
+    </style>
+
+    <div class="sp-backups">
+
+        <!-- Header -->
+        <div class="sp-backups__header">
+            <div class="sp-backups__icon">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.93V15h-2v1.93A8 8 0 0 1 4.07 11H6V9H4.07A8 8 0 0 1 11 4.07V6h2V4.07A8 8 0 0 1 19.93 11H18v2h1.93A8 8 0 0 1 13 16.93z"/>
+                </svg>
+            </div>
+            <div>
+                <h1 class="sp-backups__title">Backups</h1>
+                <p class="sp-backups__subtitle">Manage site backups and cloud storage providers</p>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="sp-backups__tabs">
+            <button class="sp-backups__tab" ng-class="{active: activeTab === 'backups'}" ng-click="setTab('backups')">Backups</button>
+            <button class="sp-backups__tab" ng-class="{active: activeTab === 'create'}" ng-click="setTab('create')">Create Backup</button>
+            <button class="sp-backups__tab" ng-class="{active: activeTab === 'providers'}" ng-click="setTab('providers')">Cloud Providers <span ng-if="providers.length" style="font-weight:400;margin-left:4px;">({{providers.length}})</span></button>
+        </div>
+
+        <!-- Backups panel -->
+        <div class="sp-backups__panel" ng-show="activeTab === 'backups'">
+            <div ng-if="loading" style="text-align:center;padding:40px;">
+                <div class="sp-spinner" style="width:24px;height:24px;border-width:3px;"></div>
+            </div>
+
+            <div ng-if="!loading && backups.length === 0" class="sp-empty">
+                <p style="font-size:2rem;margin:0 0 8px;">📦</p>
+                <p>No backups yet. Use <strong>Create Backup</strong> to create your first backup.</p>
+            </div>
+
+            <table class="sp-table" ng-if="!loading && backups.length > 0">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Created</th>
+                        <th>Size</th>
+                        <th>Options</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="b in backups">
+                        <td style="font-weight:600;">{{b.name}}</td>
+                        <td>{{b.createdAt | date:'d MMM yyyy, HH:mm'}}</td>
+                        <td>{{formatBytes(b.sizeBytes)}}</td>
+                        <td>
+                            <span class="sp-badge sp-badge--blue" ng-if="b.isCompressed">Compressed</span>
+                            <span class="sp-badge sp-badge--green" ng-if="b.isEncrypted">Encrypted</span>
+                            <span class="sp-badge sp-badge--gray" ng-if="!b.isCompressed && !b.isEncrypted">—</span>
+                        </td>
+                        <td style="text-align:right;">
+                            <button class="sp-btn sp-btn--danger"
+                                    ng-click="deleteBackup(b.name)"
+                                    ng-disabled="deletingName !== null"
+                                    style="font-size:.8rem;padding:5px 12px;">
+                                <span ng-if="deletingName === b.name" class="sp-spinner"></span>
+                                <span ng-if="deletingName !== b.name">Delete</span>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="margin-top:16px;" ng-if="!loading">
+                <button class="sp-btn sp-btn--secondary" ng-click="setTab('create')">+ Create New Backup</button>
+            </div>
+        </div>
+
+        <!-- Create Backup panel -->
+        <div class="sp-backups__panel" ng-show="activeTab === 'create'">
+            <div class="sp-form">
+                <div class="sp-field">
+                    <label class="sp-label">Backup name <span style="font-weight:400;color:#9ca3af;">(optional — auto-generated if blank)</span></label>
+                    <input class="sp-input" type="text" ng-model="newBackup.name" placeholder="my-backup-2025-01-01" />
+                </div>
+
+                <div class="sp-field">
+                    <label class="sp-label">Scope</label>
+                    <select class="sp-select" ng-model="newBackup.scope">
+                        <option ng-repeat="s in scopes" value="{{s.value}}">{{s.label}}</option>
+                    </select>
+                </div>
+
+                <div class="sp-field">
+                    <label class="sp-checkbox-row">
+                        <input type="checkbox" ng-model="newBackup.compress" />
+                        Compress backup (zip)
+                    </label>
+                </div>
+
+                <div class="sp-field">
+                    <label class="sp-checkbox-row">
+                        <input type="checkbox" ng-model="newBackup.encrypt" />
+                        Encrypt backup
+                    </label>
+                    <div ng-if="newBackup.encrypt" style="margin-top:8px;">
+                        <input class="sp-input" type="password" ng-model="newBackup.encryptionKey" placeholder="Encryption key" style="width:100%;box-sizing:border-box;" />
+                        <p class="sp-hint">Store this key securely — you will need it to restore the backup.</p>
+                    </div>
+                </div>
+
+                <div class="sp-field" ng-if="providers.length > 0">
+                    <label class="sp-label">Upload to cloud providers</label>
+                    <div class="sp-providers-select">
+                        <label class="sp-provider-check" ng-repeat="p in providers" ng-if="p.enabled">
+                            <input type="checkbox"
+                                   ng-checked="providerSelected(p.id)"
+                                   ng-click="toggleProvider(p.id)" />
+                            {{p.providerType}} <span style="color:#9ca3af;font-size:.8rem;">({{p.id}})</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div style="display:flex;gap:10px;align-items:center;">
+                    <button class="sp-btn sp-btn--primary"
+                            ng-click="createBackup()"
+                            ng-disabled="creating">
+                        <span ng-if="creating" class="sp-spinner"></span>
+                        <span ng-if="!creating">Create Backup</span>
+                    </button>
+                    <button class="sp-btn sp-btn--secondary" ng-click="setTab('backups')">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cloud Providers panel -->
+        <div class="sp-backups__panel" ng-show="activeTab === 'providers'">
+            <div ng-if="providers.length === 0" class="sp-empty">
+                <p style="font-size:2rem;margin:0 0 8px;">☁️</p>
+                <p>No cloud providers configured. Add providers in <code>appsettings.json</code> under <code>Backups:CloudProviders</code>.</p>
+            </div>
+
+            <div ng-if="providers.length > 0">
+                <p class="sp-section-title">Configured providers</p>
+                <div class="sp-provider-card" ng-repeat="p in providers">
+                    <div>
+                        <div class="sp-provider-card__name">{{p.providerType}}</div>
+                        <div class="sp-provider-card__type">ID: {{p.id}}</div>
+                        <span class="sp-badge sp-badge--green" ng-if="p.enabled" style="margin-top:4px;">Enabled</span>
+                        <span class="sp-badge sp-badge--gray" ng-if="!p.enabled" style="margin-top:4px;">Disabled</span>
+                    </div>
+                    <button class="sp-btn sp-btn--secondary"
+                            ng-click="testProvider(p.id)"
+                            ng-disabled="testingId !== null">
+                        <span ng-if="testingId === p.id" class="sp-spinner"></span>
+                        <span ng-if="testingId !== p.id">Test Connection</span>
+                    </button>
+                </div>
+
+                <div class="sp-empty" style="padding:20px 0 0;">
+                    <p style="font-size:.8125rem;">To add or modify providers, edit <code>appsettings.json</code> → <code>Backups:CloudProviders</code>.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>

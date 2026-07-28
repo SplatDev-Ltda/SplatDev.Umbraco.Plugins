@@ -1,0 +1,41 @@
+{
+  "$schema": "../../umbraco-package-schema.json",
+  "id": "SplatDev.Workflow.V17",
+  "name": "SplatDev Workflow",
+  "version": "17.0.0",
+  "allowPublicAccess": false,
+  "extensions": [
+    {
+      "type": "section",
+      "alias": "SplatDev.Workflow.Section",
+      "name": "Workflow",
+      "element": "/App_Plugins/SplatDev.Workflow.V17/dist/workflow-v17.element.js",
+      "elementName": "workflow-section",
+      "meta": {
+        "label": "Workflow",
+        "pathname": "workflow"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.SectionUserPermission",
+          "match": "Umb.Section.Content"
+        }
+      ]
+    },
+    {
+      "type": "sectionSidebarApp",
+      "alias": "SplatDev.Workflow.SidebarApp",
+      "name": "Workflow Sidebar",
+      "kind": "menuWithEntityActions",
+      "meta": {
+        "label": "Workflow"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.SectionAlias",
+          "match": "SplatDev.Workflow.Section"
+        }
+      ]
+    }
+  ]
+}

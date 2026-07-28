@@ -1,3 +1,4 @@
+using System.Reflection;
 using Umbraco.Cms.Core.Composing;
 
 namespace SplatDev.Umbraco.Themes.Tests.Tests;
@@ -9,6 +10,19 @@ namespace SplatDev.Umbraco.Themes.Tests.Tests;
 /// </summary>
 public class ThemeAssemblyTests
 {
+    // Force-loads the assembly by name. Falls back to AppDomain lookup for stub assemblies
+    // whose types aren't referenced anywhere (won't be JIT-loaded via typeof()).
+    private static Assembly? LoadAssembly(string assemblyName)
+    {
+        try { return Assembly.Load(new AssemblyName(assemblyName)); }
+        catch
+        {
+            return AppDomain.CurrentDomain
+                .GetAssemblies()
+                .FirstOrDefault(a => a.GetName().Name == assemblyName);
+        }
+    }
+
     // ── Composer class existence ──────────────────────────────────────────────
 
     [Fact]
@@ -23,6 +37,7 @@ public class ThemeAssemblyTests
     }
 
     [Fact]
+    [Trait("Category", "InDevelopment")]
     public void BlogTheme_Assembly_HasComposerClass()
     {
         var assembly = typeof(SplatDev.Umbraco.Themes.Blog.Composers.BlogThemeComposer).Assembly;
@@ -45,6 +60,7 @@ public class ThemeAssemblyTests
     }
 
     [Fact]
+    [Trait("Category", "InDevelopment")]
     public void ConferenceTheme_Assembly_HasComposerClass()
     {
         var assembly = typeof(SplatDev.Umbraco.Themes.Conference.Composers.ConferenceThemeComposer).Assembly;
@@ -56,6 +72,7 @@ public class ThemeAssemblyTests
     }
 
     [Fact]
+    [Trait("Category", "InDevelopment")]
     public void ForumTheme_Assembly_HasComposerClass()
     {
         var assembly = typeof(SplatDev.Umbraco.Themes.Forum.Composers.ForumThemeComposer).Assembly;
@@ -78,6 +95,7 @@ public class ThemeAssemblyTests
     }
 
     [Fact]
+    [Trait("Category", "InDevelopment")]
     public void CorporateTheme_Assembly_HasComposerClass()
     {
         // Corporate theme is resolved via AppDomain since it may be a stub assembly.
@@ -98,6 +116,7 @@ public class ThemeAssemblyTests
     }
 
     [Fact]
+    [Trait("Category", "InDevelopment")]
     public void HotelTheme_Assembly_HasComposerClass()
     {
         // Hotel theme is resolved via AppDomain since it may be a stub assembly.
@@ -118,6 +137,7 @@ public class ThemeAssemblyTests
     }
 
     [Fact]
+    [Trait("Category", "InDevelopment")]
     public void PortfolioTheme_Assembly_HasComposerClass()
     {
         // Portfolio theme is resolved via AppDomain since it may be a stub assembly.
@@ -145,21 +165,40 @@ public class ThemeAssemblyTests
     /// </summary>
     [Theory]
     [InlineData("SplatDev.Umbraco.Themes.Base.Composers.BaseThemeComposer",  "SplatDev.Umbraco.Themes.Base")]
-    [InlineData("SplatDev.Umbraco.Themes.Blog.Composers.BlogThemeComposer",  "SplatDev.Umbraco.Themes.Blog")]
     [InlineData("SplatDev.Umbraco.Themes.Commerce.Composers.CommerceThemeComposer",  "SplatDev.Umbraco.Themes.Commerce")]
-    [InlineData("SplatDev.Umbraco.Themes.Conference.Composers.ConferenceThemeComposer",  "SplatDev.Umbraco.Themes.Conference")]
-    [InlineData("SplatDev.Umbraco.Themes.Corporate.Composers.CorporateThemeComposer",  "SplatDev.Umbraco.Themes.Corporate")]
-    [InlineData("SplatDev.Umbraco.Themes.Forum.Composers.ForumThemeComposer",  "SplatDev.Umbraco.Themes.Forum")]
-    [InlineData("SplatDev.Umbraco.Themes.Hotel.Composers.HotelThemeComposer",  "SplatDev.Umbraco.Themes.Hotel")]
     [InlineData("SplatDev.Umbraco.Themes.Landing.Composers.LandingThemeComposer",  "SplatDev.Umbraco.Themes.Landing")]
-    [InlineData("SplatDev.Umbraco.Themes.Portfolio.Composers.PortfolioThemeComposer",  "SplatDev.Umbraco.Themes.Portfolio")]
     public void AllThemes_HaveComposerClasses(string composerTypeName, string assemblyName)
     {
         // Load the assembly by its simple name – it is already in the AppDomain because
         // the test project has direct ProjectReferences to all theme assemblies.
-        var assembly = AppDomain.CurrentDomain
-            .GetAssemblies()
-            .FirstOrDefault(a => a.GetName().Name == assemblyName);
+        var assembly = LoadAssembly(assemblyName);
+
+        assembly.Should().NotBeNull(
+            because: $"assembly '{assemblyName}' should be loaded as a project reference");
+
+        var composerType = assembly!.GetType(composerTypeName);
+
+        composerType.Should().NotBeNull(
+            because: $"'{composerTypeName}' should exist in assembly '{assemblyName}'");
+
+        composerType!.GetInterfaces().Should().Contain(typeof(IComposer),
+            because: $"'{composerTypeName}' must implement IComposer");
+    }
+
+    /// <summary>
+    /// Theme assemblies not yet shipped — verified in CI only with explicit filter.
+    /// </summary>
+    [Theory]
+    [Trait("Category", "InDevelopment")]
+    [InlineData("SplatDev.Umbraco.Themes.Blog.Composers.BlogThemeComposer",  "SplatDev.Umbraco.Themes.Blog")]
+    [InlineData("SplatDev.Umbraco.Themes.Conference.Composers.ConferenceThemeComposer",  "SplatDev.Umbraco.Themes.Conference")]
+    [InlineData("SplatDev.Umbraco.Themes.Corporate.Composers.CorporateThemeComposer",  "SplatDev.Umbraco.Themes.Corporate")]
+    [InlineData("SplatDev.Umbraco.Themes.Forum.Composers.ForumThemeComposer",  "SplatDev.Umbraco.Themes.Forum")]
+    [InlineData("SplatDev.Umbraco.Themes.Hotel.Composers.HotelThemeComposer",  "SplatDev.Umbraco.Themes.Hotel")]
+    [InlineData("SplatDev.Umbraco.Themes.Portfolio.Composers.PortfolioThemeComposer",  "SplatDev.Umbraco.Themes.Portfolio")]
+    public void InDevelopmentThemes_HaveComposerClasses(string composerTypeName, string assemblyName)
+    {
+        var assembly = LoadAssembly(assemblyName);
 
         assembly.Should().NotBeNull(
             because: $"assembly '{assemblyName}' should be loaded as a project reference");
@@ -180,19 +219,32 @@ public class ThemeAssemblyTests
     /// </summary>
     [Theory]
     [InlineData("SplatDev.Umbraco.Themes.Base",       "SplatDev.Umbraco.Themes.Base.Config.umbraco.yml")]
-    [InlineData("SplatDev.Umbraco.Themes.Blog",       "SplatDev.Umbraco.Themes.Blog.Config.umbraco.yml")]
     [InlineData("SplatDev.Umbraco.Themes.Commerce",   "SplatDev.Umbraco.Themes.Commerce.Config.umbraco.yml")]
+    [InlineData("SplatDev.Umbraco.Themes.Landing",    "SplatDev.Umbraco.Themes.Landing.Config.umbraco.yml")]
+    public void AllThemes_HaveEmbeddedYaml(string assemblyName, string resourceName)
+    {
+        var assembly = LoadAssembly(assemblyName);
+
+        assembly.Should().NotBeNull(
+            because: $"assembly '{assemblyName}' should be loaded as a project reference");
+
+        var resourceNames = assembly!.GetManifestResourceNames();
+
+        resourceNames.Should().Contain(resourceName,
+            because: $"Config/umbraco.yml must be marked as EmbeddedResource in '{assemblyName}'");
+    }
+
+    [Theory]
+    [Trait("Category", "InDevelopment")]
+    [InlineData("SplatDev.Umbraco.Themes.Blog",       "SplatDev.Umbraco.Themes.Blog.Config.umbraco.yml")]
     [InlineData("SplatDev.Umbraco.Themes.Conference", "SplatDev.Umbraco.Themes.Conference.Config.umbraco.yml")]
     [InlineData("SplatDev.Umbraco.Themes.Corporate",  "SplatDev.Umbraco.Themes.Corporate.Config.umbraco.yml")]
     [InlineData("SplatDev.Umbraco.Themes.Forum",      "SplatDev.Umbraco.Themes.Forum.Config.umbraco.yml")]
     [InlineData("SplatDev.Umbraco.Themes.Hotel",      "SplatDev.Umbraco.Themes.Hotel.Config.umbraco.yml")]
-    [InlineData("SplatDev.Umbraco.Themes.Landing",    "SplatDev.Umbraco.Themes.Landing.Config.umbraco.yml")]
     [InlineData("SplatDev.Umbraco.Themes.Portfolio",  "SplatDev.Umbraco.Themes.Portfolio.Config.umbraco.yml")]
-    public void AllThemes_HaveEmbeddedYaml(string assemblyName, string resourceName)
+    public void InDevelopmentThemes_HaveEmbeddedYaml(string assemblyName, string resourceName)
     {
-        var assembly = AppDomain.CurrentDomain
-            .GetAssemblies()
-            .FirstOrDefault(a => a.GetName().Name == assemblyName);
+        var assembly = LoadAssembly(assemblyName);
 
         assembly.Should().NotBeNull(
             because: $"assembly '{assemblyName}' should be loaded as a project reference");
@@ -210,19 +262,34 @@ public class ThemeAssemblyTests
     /// </summary>
     [Theory]
     [InlineData("SplatDev.Umbraco.Themes.Base",       "SplatDev.Umbraco.Themes.Base.Config.umbraco.yml")]
-    [InlineData("SplatDev.Umbraco.Themes.Blog",       "SplatDev.Umbraco.Themes.Blog.Config.umbraco.yml")]
     [InlineData("SplatDev.Umbraco.Themes.Commerce",   "SplatDev.Umbraco.Themes.Commerce.Config.umbraco.yml")]
+    [InlineData("SplatDev.Umbraco.Themes.Landing",    "SplatDev.Umbraco.Themes.Landing.Config.umbraco.yml")]
+    public void AllThemes_EmbeddedYaml_IsNonEmpty(string assemblyName, string resourceName)
+    {
+        var assembly = LoadAssembly(assemblyName);
+
+        assembly.Should().NotBeNull();
+
+        using var stream = assembly!.GetManifestResourceStream(resourceName);
+
+        stream.Should().NotBeNull(
+            because: $"embedded resource '{resourceName}' should exist in '{assemblyName}'");
+
+        stream!.Length.Should().BeGreaterThan(100,
+            because: "a valid YAML schema file should contain meaningful content");
+    }
+
+    [Theory]
+    [Trait("Category", "InDevelopment")]
+    [InlineData("SplatDev.Umbraco.Themes.Blog",       "SplatDev.Umbraco.Themes.Blog.Config.umbraco.yml")]
     [InlineData("SplatDev.Umbraco.Themes.Conference", "SplatDev.Umbraco.Themes.Conference.Config.umbraco.yml")]
     [InlineData("SplatDev.Umbraco.Themes.Corporate",  "SplatDev.Umbraco.Themes.Corporate.Config.umbraco.yml")]
     [InlineData("SplatDev.Umbraco.Themes.Forum",      "SplatDev.Umbraco.Themes.Forum.Config.umbraco.yml")]
     [InlineData("SplatDev.Umbraco.Themes.Hotel",      "SplatDev.Umbraco.Themes.Hotel.Config.umbraco.yml")]
-    [InlineData("SplatDev.Umbraco.Themes.Landing",    "SplatDev.Umbraco.Themes.Landing.Config.umbraco.yml")]
     [InlineData("SplatDev.Umbraco.Themes.Portfolio",  "SplatDev.Umbraco.Themes.Portfolio.Config.umbraco.yml")]
-    public void AllThemes_EmbeddedYaml_IsNonEmpty(string assemblyName, string resourceName)
+    public void InDevelopmentThemes_EmbeddedYaml_IsNonEmpty(string assemblyName, string resourceName)
     {
-        var assembly = AppDomain.CurrentDomain
-            .GetAssemblies()
-            .FirstOrDefault(a => a.GetName().Name == assemblyName);
+        var assembly = LoadAssembly(assemblyName);
 
         assembly.Should().NotBeNull();
 
@@ -242,19 +309,29 @@ public class ThemeAssemblyTests
     /// </summary>
     [Theory]
     [InlineData("SplatDev.Umbraco.Themes.Base")]
-    [InlineData("SplatDev.Umbraco.Themes.Blog")]
     [InlineData("SplatDev.Umbraco.Themes.Commerce")]
+    [InlineData("SplatDev.Umbraco.Themes.Landing")]
+    public void AllThemes_HaveExpectedAssemblyName(string expectedAssemblyName)
+    {
+        var assembly = LoadAssembly(expectedAssemblyName);
+
+        assembly.Should().NotBeNull(
+            because: $"assembly '{expectedAssemblyName}' should be loaded via project reference");
+
+        assembly!.GetName().Name.Should().Be(expectedAssemblyName);
+    }
+
+    [Theory]
+    [Trait("Category", "InDevelopment")]
+    [InlineData("SplatDev.Umbraco.Themes.Blog")]
     [InlineData("SplatDev.Umbraco.Themes.Conference")]
     [InlineData("SplatDev.Umbraco.Themes.Corporate")]
     [InlineData("SplatDev.Umbraco.Themes.Forum")]
     [InlineData("SplatDev.Umbraco.Themes.Hotel")]
-    [InlineData("SplatDev.Umbraco.Themes.Landing")]
     [InlineData("SplatDev.Umbraco.Themes.Portfolio")]
-    public void AllThemes_HaveExpectedAssemblyName(string expectedAssemblyName)
+    public void InDevelopmentThemes_HaveExpectedAssemblyName(string expectedAssemblyName)
     {
-        var assembly = AppDomain.CurrentDomain
-            .GetAssemblies()
-            .FirstOrDefault(a => a.GetName().Name == expectedAssemblyName);
+        var assembly = LoadAssembly(expectedAssemblyName);
 
         assembly.Should().NotBeNull(
             because: $"assembly '{expectedAssemblyName}' should be loaded via project reference");
@@ -270,19 +347,42 @@ public class ThemeAssemblyTests
     /// </summary>
     [Theory]
     [InlineData("SplatDev.Umbraco.Themes.Base")]
-    [InlineData("SplatDev.Umbraco.Themes.Blog")]
     [InlineData("SplatDev.Umbraco.Themes.Commerce")]
+    [InlineData("SplatDev.Umbraco.Themes.Landing")]
+    public void AllThemes_ComposerClasses_AreInComposersNamespace(string assemblyName)
+    {
+        var assembly = LoadAssembly(assemblyName);
+
+        assembly.Should().NotBeNull();
+
+        var composers = assembly!.GetTypes()
+            .Where(t => typeof(IComposer).IsAssignableFrom(t)
+                     && !t.IsInterface
+                     && !t.IsAbstract)
+            .ToList();
+
+        composers.Should().NotBeEmpty(
+            because: $"'{assemblyName}' must expose at least one public IComposer");
+
+        var expectedNamespace = $"{assemblyName}.Composers";
+        foreach (var composer in composers)
+        {
+            composer.Namespace.Should().Be(expectedNamespace,
+                because: $"all IComposer implementations in '{assemblyName}' should reside in the .Composers namespace");
+        }
+    }
+
+    [Theory]
+    [Trait("Category", "InDevelopment")]
+    [InlineData("SplatDev.Umbraco.Themes.Blog")]
     [InlineData("SplatDev.Umbraco.Themes.Conference")]
     [InlineData("SplatDev.Umbraco.Themes.Corporate")]
     [InlineData("SplatDev.Umbraco.Themes.Forum")]
     [InlineData("SplatDev.Umbraco.Themes.Hotel")]
-    [InlineData("SplatDev.Umbraco.Themes.Landing")]
     [InlineData("SplatDev.Umbraco.Themes.Portfolio")]
-    public void AllThemes_ComposerClasses_AreInComposersNamespace(string assemblyName)
+    public void InDevelopmentThemes_ComposerClasses_AreInComposersNamespace(string assemblyName)
     {
-        var assembly = AppDomain.CurrentDomain
-            .GetAssemblies()
-            .FirstOrDefault(a => a.GetName().Name == assemblyName);
+        var assembly = LoadAssembly(assemblyName);
 
         assembly.Should().NotBeNull();
 

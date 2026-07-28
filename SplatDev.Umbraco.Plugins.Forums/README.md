@@ -1,6 +1,21 @@
-# UmbracoCms.Plugins.Forums
+# SplatDev.Umbraco.Plugins.Forums
 
 Discussion forums plugin for Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
+
+[![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Forums.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Forums)
+
+## Compatibility
+
+| Umbraco | .NET | Package Version |
+|---------|------|-----------------|
+| 13.x    | 8.0  | 2.0.1           |
+| 17.x    | 10.0 | 2.0.1           |
+
+## Installation
+
+```sh
+dotnet add package SplatDev.Umbraco.Plugins.Forums
+```
 
 ## Features
 
@@ -43,3 +58,7 @@ cd client
 npm install
 npm run build
 ```
+
+## License
+
+MIT © [SplatDev](https://github.com/SplatDev-Ltda)

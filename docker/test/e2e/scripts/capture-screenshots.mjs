@@ -124,6 +124,12 @@ async function captureBackoffice(page, plugin, pluginDir) {
   try {
     const url = `${BASE_URL}${plugin.backofficePath}`;
     await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+    // Wait for backoffice content to render (AngularJS digest cycle + DOM update)
+    await Promise.any([
+      page.waitForSelector('.umb-panel, [ng-view], .ng-scope, uui-box', { timeout: 10000 }),
+      sleep(4000),
+    ]);
+    // Extra wait for dynamic content
     await sleep(2000);
     const filename = `${plugin.name}-backoffice.png`;
     await page.screenshot({
@@ -145,12 +151,13 @@ async function captureFrontend(page, plugin) {
     await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
     if (plugin.frontendSelector) {
       try {
-        await page.waitForSelector(plugin.frontendSelector, { timeout: 5000 });
+        await page.waitForSelector(plugin.frontendSelector, { timeout: 10000 });
       } catch {
         // selector not found, still capture page as-is
       }
     }
-    await sleep(1000);
+    // Wait for any remaining lazy-loaded content
+    await sleep(2000);
     const filename = `${plugin.name}-frontend.png`;
     await page.screenshot({
       path: join(OUTPUT_DIR, filename),

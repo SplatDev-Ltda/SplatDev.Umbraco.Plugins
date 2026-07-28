@@ -23,13 +23,19 @@ jobs:
             9.0.x
             10.0.x
 
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/Directory.Build.props') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
       - name: Restore dependencies
-        run: |
-          dotnet restore SplatDev.Core.sln
-          dotnet restore SplatDev.Umbraco.Plugins.D4Sign/SplatDev.Umbraco.Plugins.D4Sign.csproj
-          dotnet restore SplatDev.Umbraco.Plugins.ENotAssina/SplatDev.Umbraco.Plugins.ENotAssina.csproj
-          dotnet restore "SplatDev.Umbraco.Plugins.Yaml/SplatDev.Umbraco.Plugins.Schema2Yaml/SplatDev.Umbraco.Plugins.Schema2Yaml.csproj"
-          dotnet restore "SplatDev.Umbraco.Plugins.Yaml/SplatDev.Umbraco.Plugins.Yaml2Schema/SplatDev.Umbraco.Plugins.Yaml2Schema.csproj"
+        # The solution restore covers every member project (D4Sign, ENotAssina,
+        # Schema2Yaml, Yaml2Schema included), so the per-csproj restores that used
+        # to follow were redundant.
+        run: dotnet restore SplatDev.Core.sln
 
       - name: Build & Pack publishable plugins
         run: |

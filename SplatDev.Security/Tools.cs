@@ -1,8 +1,9 @@
-﻿namespace SplatDev.Security
+namespace SplatDev.Security
 {
     using Google.Apis.Safebrowsing.v4.Data;
 
-    using Newtonsoft.Json;
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
 
     using RestSharp;
 
@@ -10,6 +11,7 @@
 
     using System;
     using System.Linq;
+    using System.Net.Http;
     using System.Security.Cryptography;
     using System.Text;
     using System.Text.RegularExpressions;
@@ -18,7 +20,22 @@
 
     public static class Tools
     {
+        private static readonly JsonSerializerOptions _jsonDeserializeOptions = new()
+        {
+            PropertyNameCaseInsensitive = true,
+        };
+
         private static readonly Regex _regex = new Regex("[^a-zA-Z0-9]");
+
+        private static RestClient CreateRestClient(string baseUrl, HttpMessageHandler? handler = null)
+        {
+            if (handler != null)
+            {
+                var httpClient = new HttpClient(handler);
+                return new RestClient(httpClient, new RestClientOptions(baseUrl));
+            }
+            return new RestClient(baseUrl);
+        }
 
         /// <summary>
         /// Checks the phish.
@@ -27,18 +44,16 @@
         /// <param name="url">The URL.</param>
         /// <param name="insights">if set to <c>true</c> [insights].</param>
         /// <returns></returns>
-        public static async Task<CheckPhishResponse> CheckPhish(string apiKey, string url, bool insights = false)
+        public static async Task<CheckPhishResponse> CheckPhish(string apiKey, string url, bool insights = false, HttpMessageHandler? handler = null)
         {
-            var client = new RestClient(Constants.CHECK_PHISH_URL);
+            var client = CreateRestClient(Constants.CHECK_PHISH_URL, handler);
             var request = new RestRequest("api/neo/scan");
             request.AddJsonBody(new { apiKey, urlInfo = new { url } });
             await Task.FromResult(0);
             var response = client.Post(request);
 
-            var job = JsonConvert.DeserializeObject<CheckPhishResponse>(response.Content);
-            //var response = await client.PostAsync<CheckPhishResponse>(request);
+            var job = JsonSerializer.Deserialize<CheckPhishResponse>(response.Content, _jsonDeserializeOptions);
 
-            // check for finished
             if (job == null || job.jobID == "none") return new CheckPhishResponse
             {
                 status = "PENDING",
@@ -50,10 +65,7 @@
             requestStatus.AddJsonBody(new { apiKey, job.jobID, insights });
             var responseStatus = client.Post(requestStatus);
 
-            //var responseStatus = await client.PostAsync<CheckPhishResponse>(requestStatus);
-            //return responseStatus;
-
-            return JsonConvert.DeserializeObject<CheckPhishResponse>(responseStatus.Content);
+            return JsonSerializer.Deserialize<CheckPhishResponse>(responseStatus.Content, _jsonDeserializeOptions);
         }
 
         /// <summary>
@@ -63,14 +75,14 @@
         /// <param name="jobId">The job identifier.</param>
         /// <param name="insights">if set to <c>true</c> [insights].</param>
         /// <returns></returns>
-        public static async Task<CheckPhishResponse> CheckPhishPendingJob(string apiKey, string jobId, bool insights = false)
+        public static async Task<CheckPhishResponse> CheckPhishPendingJob(string apiKey, string jobId, bool insights = false, HttpMessageHandler? handler = null)
         {
-            var client = new RestClient(Constants.CHECK_PHISH_URL);
+            var client = CreateRestClient(Constants.CHECK_PHISH_URL, handler);
             var requestStatus = new RestRequest("api/neo/scan/status");
             requestStatus.AddJsonBody(new { apiKey, jobID = jobId, insights });
             var responseStatus = client.Post(requestStatus);
             await Task.FromResult(0);
-            return JsonConvert.DeserializeObject<CheckPhishResponse>(responseStatus.Content);
+            return JsonSerializer.Deserialize<CheckPhishResponse>(responseStatus.Content, _jsonDeserializeOptions);
         }
 
         /// <summary>
@@ -116,7 +128,7 @@
         /// <param name="clientId">The client identifier.</param>
         /// <param name="clientVersion">The client version.</param>
         /// <returns></returns>
-        public static async Task<GoogleSecuritySafebrowsingV4FindThreatMatchesResponse> GoogleSafeBrowing(string apiKey, string[] urls, string clientId = "dotnet-client", string clientVersion = "1.0.0")
+        public static async Task<GoogleSecuritySafebrowsingV4FindThreatMatchesResponse> GoogleSafeBrowing(string apiKey, string[] urls, string clientId = "dotnet-client", string clientVersion = "1.0.0", HttpMessageHandler? handler = null)
         {
             GoogleSecuritySafebrowsingV4ThreatEntry[] entries = new GoogleSecuritySafebrowsingV4ThreatEntry[urls.Length];
             for (int i = 0; i < urls.Length; i++)
@@ -137,14 +149,14 @@
                     ThreatEntries = entries
                 }
             };
-            var jsonSettings = new JsonSerializerSettings
+            var jsonOptions = new JsonSerializerOptions
             {
-                ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver(),
-                NullValueHandling = NullValueHandling.Ignore
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             };
-            var client = new RestClient(Constants.GOOGLE_SAFE_BROWSING);
+            var client = CreateRestClient(Constants.GOOGLE_SAFE_BROWSING, handler);
             var request = new RestRequest($"v4/threatMatches:find");
-            request.AddStringBody(JsonConvert.SerializeObject(body, jsonSettings), ContentType.Json);
+            request.AddStringBody(JsonSerializer.Serialize(body, jsonOptions), ContentType.Json);
             request.AddQueryParameter("key", apiKey);
             var response = await client.PostAsync<GoogleSecuritySafebrowsingV4FindThreatMatchesResponse>(request);
             return response;
@@ -156,9 +168,9 @@
         /// <param name="apiKey">The API key.</param>
         /// <param name="url">The URL.</param>
         /// <returns></returns>
-        public static async Task<IpQualityScoreResponse> IpQualityScore(string apiKey, string url)
+        public static async Task<IpQualityScoreResponse> IpQualityScore(string apiKey, string url, HttpMessageHandler? handler = null)
         {
-            var client = new RestClient(Constants.IP_QUALITY_SCORE);
+            var client = CreateRestClient(Constants.IP_QUALITY_SCORE, handler);
             var request = new RestRequest($"json/url/{apiKey}/{Uri.EscapeDataString(url)}");
             await Task.FromResult(0);
             var response = await client.PostAsync<IpQualityScoreResponse>(request);

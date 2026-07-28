@@ -8,15 +8,14 @@
     <Version>1.0.0</Version>
     <Authors>SplatDev-Ltda</Authors>
     <Company>SplatDev Ltda</Company>
-    <Description>PagSeguro payment provider for SplatDev.Payments</Description>
+    <Description>PagSeguro / PagBank Order API v4 payment provider for SplatDev.Payments</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</PackageProjectUrl>
     <RepositoryUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="RestSharp" Version="112.1.0" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../SplatDev.Payments/SplatDev.Payments.csproj" />

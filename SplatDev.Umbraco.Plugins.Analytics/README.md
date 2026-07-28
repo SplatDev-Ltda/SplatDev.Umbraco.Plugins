@@ -1,6 +1,6 @@
 # Analytics
 
-Google Analytics integration for Umbraco — store tracking/measurement ID in settings, inject GA4 script via view component. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
+Google Analytics (GA4) integration for Umbraco — inject tracking scripts and view page analytics from a backoffice dashboard.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Analytics.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Analytics)
 
@@ -36,10 +36,31 @@ Add to `appsettings.json`:
 ```json
 {
   "Analytics": {
-    "MeasurementId": "G-XXXXXXXXXX"
+    "MeasurementId": "G-XXXXXXXXXX",
+    "Enabled": true
   }
 }
 ```
+
+Find your Measurement ID in the Google Analytics admin panel under Data Streams.
+
+## API Endpoints
+
+| Method | Route | Description |
+|--------|-------|-------------|
+| GET | `/umbraco/api/analytics/GetSettings` | Retrieve current analytics settings |
+| POST | `/umbraco/api/analytics/SaveSettings` | Update analytics configuration |
+| GET | `/umbraco/api/analytics/GetPageViews?measurementId=` | Fetch page view data from GA4 |
+
+## Usage
+
+Once configured with a valid Measurement ID, the plugin automatically injects the GA4 tracking script into front-end pages. View page analytics and manage settings from the Analytics dashboard in the Umbraco backoffice.
+
+## Known Limitations
+
+- Only supports Google Analytics 4 (GA4) — Universal Analytics (UA-*) properties are not supported
+- `GetPageViews` endpoint requires the Google Analytics Data API to be enabled and properly authenticated
+- No support for Google Tag Manager or other analytics platforms
 
 ## License
 

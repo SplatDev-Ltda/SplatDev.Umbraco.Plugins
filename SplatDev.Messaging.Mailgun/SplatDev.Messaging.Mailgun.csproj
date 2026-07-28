@@ -8,16 +8,18 @@
     <Version>1.0.0</Version>
     <Authors>SplatDev-Ltda</Authors>
     <Company>SplatDev Ltda</Company>
-    <Description>Mailgun email provider for SplatDev.Messaging</Description>
+    <Description>Mailgun email provider for SplatDev.Messaging. Uses HttpClient directly — no third-party Mailgun SDK required.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</PackageProjectUrl>
     <RepositoryUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>mailgun email messaging splatdev</PackageTags>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="mailgun_csharp" Version="0.9.0" />
+    <ProjectReference Include="../SplatDev.Messaging/SplatDev.Messaging.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="../SplatDev.Messaging/SplatDev.Messaging.csproj" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 </Project>

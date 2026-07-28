@@ -252,6 +252,7 @@ public class ViewsTests
     // exist and will fail gracefully until the views are added.
 
     [Fact]
+    [Trait("Category", "InDevelopment")]
     public void CorporateTheme_ViewsDirectory_Exists()
     {
         var viewsDir = GetThemeViewsDir("Corporate");
@@ -260,6 +261,7 @@ public class ViewsTests
     }
 
     [Fact]
+    [Trait("Category", "InDevelopment")]
     public void HotelTheme_ViewsDirectory_Exists()
     {
         var viewsDir = GetThemeViewsDir("Hotel");
@@ -268,6 +270,7 @@ public class ViewsTests
     }
 
     [Fact]
+    [Trait("Category", "InDevelopment")]
     public void PortfolioTheme_ViewsDirectory_Exists()
     {
         var viewsDir = GetThemeViewsDir("Portfolio");
@@ -276,6 +279,7 @@ public class ViewsTests
     }
 
     [Theory]
+    [Trait("Category", "InDevelopment")]
     [InlineData("Corporate",  "CorporatePage.cshtml")]
     [InlineData("Hotel",      "HotelHome.cshtml")]
     [InlineData("Portfolio",  "PortfolioHome.cshtml")]

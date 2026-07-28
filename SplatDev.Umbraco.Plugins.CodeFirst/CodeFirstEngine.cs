@@ -255,7 +255,7 @@ namespace SplatDev.Umbraco.Plugins.CodeFirst
 
                     if (docType == null && string.IsNullOrEmpty(nodeAlias)) throw new MissingMemberException("Either DocumentTypeAlias or DocumentType is required");
 
-                    var attribute = docType?.GetType().GetAttribute<DocumentTypeAttribute>();
+                    var attribute = docType?.GetType().GetCustomAttribute<DocumentTypeAttribute>(false);
                     var documentTypeAlias = docType == null ? nodeAlias : attribute!.Value<string>("Alias");
 
                     int? parentNodeId = node.GetProperty(Constants.ContentNode.ParentNodeId).Value<int?>();
@@ -287,12 +287,12 @@ namespace SplatDev.Umbraco.Plugins.CodeFirst
                     foreach (var property in node.GetType().GetProperties())
                     {
                         var instance = property.DeclaringType!.GetInstance();
-                        if (property.GetAttribute<ContentNodePropertyAttributes>() != null)
+                        if (property.GetCustomAttribute<ContentNodePropertyAttributes>() != null)
                         {
-                            if (property.GetAttribute<ContentNodePropertyAttributes>().Value<string>(Constants.ContentNode.DocumentTypePropertyAlias) != null &&
-                                thisNode.HasProperty(property.GetAttribute<ContentNodePropertyAttributes>().Value<string>(Constants.ContentNode.DocumentTypePropertyAlias)))
+                            if (property.GetCustomAttribute<ContentNodePropertyAttributes>().Value<string>(Constants.ContentNode.DocumentTypePropertyAlias) != null &&
+                                thisNode.HasProperty(property.GetCustomAttribute<ContentNodePropertyAttributes>().Value<string>(Constants.ContentNode.DocumentTypePropertyAlias)))
                             {
-                                thisNode.SetValue(property.GetAttribute<ContentNodePropertyAttributes>().Value<string>(Constants.ContentNode.DocumentTypePropertyAlias), instance.GetProperty(property.Name).Value());
+                                thisNode.SetValue(property.GetCustomAttribute<ContentNodePropertyAttributes>().Value<string>(Constants.ContentNode.DocumentTypePropertyAlias), instance.GetProperty(property.Name).Value());
                             }
                         }
                     }
@@ -399,7 +399,7 @@ namespace SplatDev.Umbraco.Plugins.CodeFirst
                 foreach (var documentType in orderedDocumentTypes)
                 {
                     var type = documentType.GetType();
-                    var attribute = type.GetAttribute<DocumentTypeAttribute>();
+                    var attribute = type.GetCustomAttribute<DocumentTypeAttribute>(false);
                     var level = attribute.Value<int?>(Constants.DocumentType.ContainerLevel);
                     ContentType docType;
 
@@ -447,7 +447,7 @@ namespace SplatDev.Umbraco.Plugins.CodeFirst
                         List<ContentTypeSort> ids = new List<ContentTypeSort>();
                         foreach (var child in children)
                         {
-                            string _alias = child.GetType().GetAttribute<DocumentTypeAttribute>().Value<string>(Constants.DocumentType.Alias);
+                            string _alias = child.GetType().GetCustomAttribute<DocumentTypeAttribute>(false).Value<string>(Constants.DocumentType.Alias);
                             var content = contentTypeService.Get(_alias);
                             ids.Add(new ContentTypeSort(content!.Id, content.SortOrder));
                             //TODO: change logic to create child if it does not exist
@@ -478,7 +478,7 @@ namespace SplatDev.Umbraco.Plugins.CodeFirst
                     var documentTypeProperties = documentType.GetProperty(Constants.DocumentType.Properties).Value<IDocumentTypeProperties>()?.GetType();
                     if (documentTypeProperties != null)
                     {
-                        PropertiesHelpers.AddProperties<DocumentTypePropertyAttributesAttribute>(documentTypeProperties.GetAllPropertiesNoConflict(), docType, dataTypeService);
+                        PropertiesHelpers.AddProperties<DocumentTypePropertyAttributesAttribute>(documentTypeProperties.GetAllProperties(), docType, dataTypeService);
                     }
                     contentTypeService.Save(docType);
                 }
@@ -607,9 +607,9 @@ namespace SplatDev.Umbraco.Plugins.CodeFirst
 
                     foreach (var property in m.Properties.GetType().GetProperties())
                     {
-                        if (property.GetAttribute<MemberNodePropertyAttribute>() != null)
+                        if (property.GetCustomAttribute<MemberNodePropertyAttribute>() != null)
                         {
-                            var propName = property.GetAttribute<MemberNodePropertyAttribute>().Value<string>(Constants.Member.MemberTypePropertyAlias);
+                            var propName = property.GetCustomAttribute<MemberNodePropertyAttribute>().Value<string>(Constants.Member.MemberTypePropertyAlias);
                             if (propName != null && mm != null && mm.HasProperty(propName))
                             {
                                 mm.SetValue(propName, m.Properties.GetType().GetProperty(property.Name)!.Value());
@@ -648,7 +648,7 @@ namespace SplatDev.Umbraco.Plugins.CodeFirst
 
                     if (mType != null)
                     {
-                        var memberProperties = m.Properties.GetType()?.GetAllPropertiesNoConflict();
+                        var memberProperties = m.Properties.GetType()?.GetAllProperties();
                         PropertiesHelpers.AddMemberProperties<MemberPropertyAttributesAttribute>(memberProperties, mType, dataTypeService);
                     }
                     memberGroupService?.SaveMemberType(mType);

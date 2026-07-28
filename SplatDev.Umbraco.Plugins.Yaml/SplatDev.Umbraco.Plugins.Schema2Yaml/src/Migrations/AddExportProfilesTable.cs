@@ -51,11 +51,11 @@ public class AddExportProfilesTableMigration : AsyncMigrationBase
     }
 }
 #else
-public class AddExportProfilesTableMigration : AsyncMigrationBase
+public class AddExportProfilesTableMigration : MigrationBase
 {
     public AddExportProfilesTableMigration(IMigrationContext context) : base(context) { }
 
-    protected override async Task MigrateAsync()
+    protected override void Migrate()
     {
         if (!TableExists("schema2yamlExportProfiles"))
             Create.Table<ExportProfileDto>().Do();

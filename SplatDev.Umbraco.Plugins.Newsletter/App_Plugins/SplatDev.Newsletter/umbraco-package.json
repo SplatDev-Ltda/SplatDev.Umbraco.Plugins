@@ -15,6 +15,24 @@
       }
     },
     {
+      "type": "dashboard",
+      "alias": "SplatDev.Newsletter.Dashboard",
+      "name": "Newsletter Dashboard",
+      "element": "/App_Plugins/SplatDev.Newsletter/dist/newsletter-dashboard.js",
+      "elementName": "newsletter-dashboard",
+      "weight": 10,
+      "meta": {
+        "label": "Newsletter",
+        "pathname": "newsletter"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.SectionAlias",
+          "match": "SplatDev.Section.Newsletter"
+        }
+      ]
+    },
+    {
       "type": "menuItem",
       "alias": "SplatDev.MenuItem.Newsletter.Subscribers",
       "name": "Newsletter Subscribers",
@@ -60,6 +78,60 @@
         "label": "Analytics",
         "icon": "icon-chart",
         "menus": ["Umb.Menu.Default"]
+      }
+    },
+    {
+      "type": "localization",
+      "alias": "SplatDev.Newsletter.Localization.En",
+      "name": "Newsletter — English",
+      "meta": {
+        "culture": "en",
+        "localizations": {
+          "section": {
+            "newsletter_heading": "Newsletter",
+            "newsletter_description": "Manage subscriber lists, campaigns, and analytics.",
+            "newsletter_tabSubscribers": "Subscribers",
+            "newsletter_tabCampaigns": "Campaigns",
+            "newsletter_tabAnalytics": "Analytics",
+            "newsletter_createList": "Create List",
+            "newsletter_deleteList": "Delete",
+            "newsletter_addSubscriber": "Add Subscriber",
+            "newsletter_unsubscribe": "Unsub",
+            "newsletter_deleteSubscriber": "Delete",
+            "newsletter_newCampaign": "New Campaign",
+            "newsletter_editCampaign": "Edit",
+            "newsletter_sendCampaign": "Send",
+            "newsletter_deleteCampaign": "Delete",
+            "newsletter_fetchStats": "Fetch from Mailgun"
+          }
+        }
+      }
+    },
+    {
+      "type": "localization",
+      "alias": "SplatDev.Newsletter.Localization.PtBr",
+      "name": "Newsletter — Portugues (Brasil)",
+      "meta": {
+        "culture": "pt-BR",
+        "localizations": {
+          "section": {
+            "newsletter_heading": "Newsletter",
+            "newsletter_description": "Gerencie listas de assinantes, campanhas e analises.",
+            "newsletter_tabSubscribers": "Assinantes",
+            "newsletter_tabCampaigns": "Campanhas",
+            "newsletter_tabAnalytics": "Analises",
+            "newsletter_createList": "Criar Lista",
+            "newsletter_deleteList": "Excluir",
+            "newsletter_addSubscriber": "Adicionar Assinante",
+            "newsletter_unsubscribe": "Cancelar",
+            "newsletter_deleteSubscriber": "Excluir",
+            "newsletter_newCampaign": "Nova Campanha",
+            "newsletter_editCampaign": "Editar",
+            "newsletter_sendCampaign": "Enviar",
+            "newsletter_deleteCampaign": "Excluir",
+            "newsletter_fetchStats": "Buscar do Mailgun"
+          }
+        }
       }
     }
   ]

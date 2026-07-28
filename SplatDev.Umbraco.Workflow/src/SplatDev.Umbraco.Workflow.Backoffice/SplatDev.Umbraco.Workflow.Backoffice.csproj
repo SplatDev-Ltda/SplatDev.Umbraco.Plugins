@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup>
+    <RootNamespace>SplatDev.Umbraco.Workflow.Backoffice</RootNamespace>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="13.13.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SplatDev.Umbraco.Workflow.Api\SplatDev.Umbraco.Workflow.Api.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_Plugins\**\*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

@@ -24,10 +24,15 @@ The `LandingThemeComposer` runs automatically on first application start. It:
 
 ## Document Types
 
-| Alias         | Description                                                    |
-|---------------|----------------------------------------------------------------|
-| `landingPage` | Full landing page (allowAsRoot). All sections in one document. |
-| `pricingPlan` | Element type for individual pricing plans (blockList item).    |
+| Alias             | Description                                                    |
+|-------------------|----------------------------------------------------------------|
+| `landingPage`     | Full landing page (allowAsRoot). All sections in one document. |
+| `pricingPlan`     | Element type for individual pricing plans (blockList item).    |
+| `featureItem`     | Element type for feature highlight cards.                      |
+| `testimonialItem` | Element type for testimonial/customer quotes.                  |
+| `pricingFeature`  | Element type for per-plan feature checklists.                  |
+| `faqItem`         | Element type for FAQ accordion items.                          |
+| `counterItem`     | Element type for animated stat counters.                       |
 
 ### landingPage Tabs
 

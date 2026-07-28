@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>SplatDev.Umbraco.Plugins.Getnet</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>SplatDev-Ltda</Authors>
+    <Company>SplatDev Ltda</Company>
+    <Description>Umbraco 17 plugin that registers the Getnet (Santander acquirer) SDK (SplatDev.Payments.Getnet): options binding, the API client, and the named Getnet HttpClient. Webhook/backoffice controllers and payment orchestration are application-specific and stay in the consuming app.</Description>
+    <PackageTags>umbraco umbraco-marketplace getnet santander pix boleto payments</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Umbraco.Cms.Core" Version="17.4.2" />
+    <PackageReference Include="Umbraco.Cms.Web.Common" Version="17.4.2" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="[8.0.0,)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SplatDev.Payments.Getnet\SplatDev.Payments.Getnet.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" Condition="Exists('README.md')" />
+  </ItemGroup>
+</Project>

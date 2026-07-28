@@ -1,0 +1,12 @@
+[data-swf-theme="compact"] {
+    --swf-chart-step-pending-bg: #cbd5e1;
+    --swf-chart-step-active-bg: #0f766e;
+    --swf-chart-step-active-fg: #ffffff;
+    --swf-chart-step-done-bg: #4d7c0f;
+    --swf-chart-step-done-fg: #ffffff;
+    --swf-chart-step-radius: 2px;
+    --swf-chart-step-padding: 0.25rem 0.5rem;
+    --swf-chart-font: "JetBrains Mono", ui-monospace, monospace;
+    --swf-queue-row-padding: 0.25rem 0.5rem;
+    --swf-queue-row-font-size: 0.8125rem;
+}

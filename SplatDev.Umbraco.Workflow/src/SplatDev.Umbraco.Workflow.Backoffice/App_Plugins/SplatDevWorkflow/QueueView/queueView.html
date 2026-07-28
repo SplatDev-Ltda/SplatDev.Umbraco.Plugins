@@ -1,0 +1,113 @@
+<div ng-controller="SplatDevWorkflow.QueueViewController" class="swf-dashboard" data-swf-theme="{{activeTheme}}">
+    <div class="swf-dashboard-header">
+        <h1>Queue</h1>
+        <div>
+            <button class="swf-btn swf-btn--sm" ng-click="refresh()" ng-disabled="loading">
+                <span class="swf-spinner" ng-if="loading"></span>
+                Refresh
+            </button>
+        </div>
+    </div>
+
+    <div ng-if="toast" class="swf-toast swf-toast--{{toast.type}}">{{toast.message}}</div>
+
+    <!-- Filter bar -->
+    <div class="swf-filter-bar">
+        <select ng-model="filters.workflowKey" ng-change="applyFilters()"
+                ng-options="w.key as w.label for w in workflows">
+            <option value="">All Workflows</option>
+        </select>
+
+        <select ng-model="filters.status" ng-change="applyFilters()">
+            <option value="">All Statuses</option>
+            <option value="0">Open</option>
+            <option value="1">Completed</option>
+            <option value="2">Cancelled</option>
+        </select>
+
+        <select ng-model="filters.assignedToMe" ng-change="applyFilters()">
+            <option value="">All Assignments</option>
+            <option value="true">Assigned to Me</option>
+        </select>
+
+        <select ng-model="filters.group" ng-change="applyFilters()">
+            <option value="">All Groups</option>
+            <option value="manager">Manager</option>
+            <option value="payroll">Payroll</option>
+            <option value="hr">HR</option>
+            <option value="it">IT</option>
+        </select>
+
+        <input type="text" ng-model="filters.search" ng-change="applyFilters()"
+               placeholder="Search..." ng-model-options="{debounce: 300}" />
+    </div>
+
+    <!-- Queue table -->
+    <div class="swf-panel" ng-if="instances.length > 0 && !loading">
+        <div class="swf-panel-body" style="padding:0;">
+            <table class="swf-table">
+                <thead>
+                    <tr>
+                        <th ng-repeat="col in activeColumns" ng-style="{width: col.width || 'auto'}">
+                            {{col.header}}
+                        </th>
+                        <th>Status</th>
+                        <th>Current Step</th>
+                        <th>Updated</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="inst in instances"
+                        ng-class="{'swf-selected': selectedInstance && selectedInstance.id === inst.id}"
+                        ng-click="selectInstance(inst)">
+                        <td ng-repeat="col in activeColumns">
+                            {{inst[col.fieldKey] || '-'}}
+                        </td>
+                        <td>
+                            <span class="swf-badge"
+                                  ng-class="inst.status === 0 ? 'swf-badge--open' : (inst.status === 1 ? 'swf-badge--completed' : 'swf-badge--cancelled')">
+                                {{inst.status === 0 ? 'Open' : (inst.status === 1 ? 'Done' : 'Canceled')}}
+                            </span>
+                        </td>
+                        <td>{{inst.currentStepKey}}</td>
+                        <td>{{inst.updatedAt | date:'short'}}</td>
+                        <td>
+                            <button class="swf-btn swf-btn--sm"
+                                    ng-click="openDetail(inst); $event.stopPropagation();">
+                                View
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="swf-pagination" ng-if="totalCount > pageSize">
+        <button class="swf-btn swf-btn--sm" ng-click="goToPage(currentPage - 1)"
+                ng-disabled="currentPage <= 1">&larr; Prev</button>
+        <span>Page {{currentPage}} of {{totalPages}}</span>
+        <button class="swf-btn swf-btn--sm" ng-click="goToPage(currentPage + 1)"
+                ng-disabled="currentPage >= totalPages">Next &rarr;</button>
+    </div>
+
+    <!-- Empty state -->
+    <div class="swf-panel" ng-if="instances.length === 0 && !loading">
+        <div class="swf-empty-state">
+            <h3>No instances found</h3>
+            <p>No workflow instances match your current filters.</p>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div ng-if="loading" style="text-align:center; padding:32px;">
+        <span class="swf-spinner"></span> Loading instances...
+    </div>
+
+    <!-- Detail flyout -->
+    <div ng-if="detailInstance" style="margin-top:20px;">
+        <div ng-include="'/App_Plugins/SplatDevWorkflow/InstanceDetail/instanceDetail.html'"></div>
+    </div>
+</div>

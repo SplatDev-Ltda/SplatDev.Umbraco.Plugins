@@ -26,12 +26,14 @@ The `BlogThemeComposer` runs automatically on first application start. It:
 
 | Alias          | Description                                      |
 |----------------|--------------------------------------------------|
-| `blogRoot`     | Root node (allowAsRoot). Blog-wide settings.     |
-| `blogListing`  | Listing page with pagination and sidebar config. |
-| `blogPost`     | Individual post with content, author, metadata.  |
-| `blogCategory` | Category archive page.                           |
-| `blogTag`      | Tag archive page.                                |
-| `blogAuthor`   | Author profile page.                             |
+| `blogRoot`          | Root node (allowAsRoot). Blog-wide settings.     |
+| `blogListing`       | Listing page with pagination and sidebar config. |
+| `blogPost`          | Individual post with content, author, metadata.  |
+| `blogCategory`      | Category archive page.                           |
+| `blogTag`           | Tag archive page.                                |
+| `blogAuthor`        | Author profile page.                             |
+| `commentElement`    | Element type for post comments.                  |
+| `relatedPostElement`| Element type for related posts block.            |
 
 ## Templates
 

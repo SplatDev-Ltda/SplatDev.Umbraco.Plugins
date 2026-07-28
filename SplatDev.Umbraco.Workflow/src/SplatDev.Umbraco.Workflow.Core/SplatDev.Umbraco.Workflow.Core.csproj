@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>SplatDev.Umbraco.Workflow.Core</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="SplatDev.Umbraco.Workflow.Persistence" />
+    <InternalsVisibleTo Include="SplatDev.Umbraco.Workflow.Core.Tests" />
+  </ItemGroup>
+</Project>

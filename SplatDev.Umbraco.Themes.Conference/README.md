@@ -36,19 +36,41 @@ On first startup the theme auto-installs its Umbraco schema (data types, documen
 
 | Alias               | Description                                              |
 |---------------------|----------------------------------------------------------|
-| `conferenceRoot`    | Site root – holds global conference settings             |
-| `conferenceHome`    | Home page with hero, countdown, stats, schedule preview  |
-| `speakersListing`   | Speakers index page                                      |
-| `speaker`           | Individual speaker profile                               |
-| `schedulePage`      | Full conference schedule                                 |
-| `venuePage`         | Venue details, gallery, map, travel info                 |
-| `registrationPage`  | Registration info and CTA                                |
-| `sponsorsPage`      | Sponsor tiers listing                                    |
-| `standardPage`      | Generic content page                                     |
+| `basePage`            | Shared base page with common properties                |
+| `conferenceRoot`      | Site root – holds global conference settings           |
+| `conferenceHome`      | Home page with hero, countdown, stats, schedule preview |
+| `speakersListing`     | Speakers index page                                    |
+| `speaker`             | Individual speaker profile                             |
+| `schedulePage`        | Full conference schedule                               |
+| `venuePage`           | Venue details, gallery, map, travel info               |
+| `registrationPage`    | Registration info and CTA                              |
+| `sponsorsPage`        | Sponsor tiers listing                                  |
+| `standardPage`        | Generic content page                                   |
+
+### Element Types
+
+| Alias                  | Description                           |
+|------------------------|---------------------------------------|
+| `scheduleSessionElement` | Individual session in a schedule day |
+| `scheduleDayElement`    | Day container in a multi-day schedule |
+| `speakerLinkElement`    | Social link for speaker profile      |
+| `socialLinkElement`     | Generic social media link            |
+| `venueRoomElement`      | Room within the venue                |
+| `ticketTypeElement`     | Ticket tier with pricing             |
+| `sponsorTierElement`    | Sponsor tier (Gold/Silver/Bronze)    |
+| `sponsorElement`        | Individual sponsor listing           |
 
 ## Templates
 
-`ConferenceHome`, `SpeakersListing`, `Speaker`, `SchedulePage`, `VenuePage`, `RegistrationPage`, `SponsorsPage`
+| Template           | View File                       |
+|--------------------|---------------------------------|
+| ConferenceHome     | Views/ConferenceHome.cshtml     |
+| SpeakersListing    | Views/SpeakersListing.cshtml    |
+| Speaker            | Views/Speaker.cshtml            |
+| SchedulePage       | Views/SchedulePage.cshtml       |
+| VenuePage          | Views/VenuePage.cshtml          |
+| RegistrationPage   | Views/RegistrationPage.cshtml   |
+| SponsorsPage       | Views/SponsorsPage.cshtml       |
 
 ## Stylesheet
 

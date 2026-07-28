@@ -1,6 +1,6 @@
 # Security
 
-Umbraco security headers plugin supporting Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
+Umbraco security headers plugin — adds Content-Security-Policy, HSTS, X-Frame-Options, and other HTTP security headers via middleware, plus ASP.NET Data Protection configuration.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Security.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Security)
 
@@ -35,13 +35,41 @@ Add to `appsettings.json`:
 
 ```json
 {
-  "Security": {
-    "ContentSecurityPolicy": "default-src 'self'",
-    "XFrameOptions": "SAMEORIGIN",
-    "ReferrerPolicy": "no-referrer-when-downgrade"
+  "CSP": {
+    "default-src": "'self'",
+    "script-src": "'self' 'unsafe-inline'",
+    "font-src": "'self'",
+    "frame-src": "'self'",
+    "frame-ancestors": "'self'",
+    "image-src": "'self' data:",
+    "connection-src": "'self'"
+  },
+  "DataProtection": {
+    "Enabled": true,
+    "PathToPersistKeys": "/var/data/keys",
+    "ApplicationName": "MyUmbracoApp",
+    "PathToCertificate": null,
+    "Password": null
   }
 }
 ```
+
+## Headers Applied
+
+| Header | Value | Configuration |
+|--------|-------|---------------|
+| `Content-Security-Policy` | Configured via `CSP:*` keys | Customizable per directive |
+| `Strict-Transport-Security` | max-age=604800 (7 days) | Hardcoded |
+| `X-Frame-Options` | SAMEORIGIN | Default |
+| `X-Content-Type-Options` | nosniff | Always set |
+| `Referrer-Policy` | no-referrer-when-downgrade | Default |
+
+## Known Limitations
+
+- CSP is entirely disabled for all `/umbraco` paths (backoffice pages are excluded from policy enforcement)
+- HSTS max-age is hardcoded to 7 days with no configuration option; non-production environments skip HSTS entirely
+- Uses both `NWebsec.AspNetCore.Middleware` and `Joonasw.SecurityHeaders` for different headers, which is a maintenance concern
+- Windows Data Protection key path is hardcoded to `C:\temp`
 
 ## License
 

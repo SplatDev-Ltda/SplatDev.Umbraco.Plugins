@@ -21,7 +21,7 @@ namespace SplatDev.Umbraco.Plugins.CodeFirst.Helpers
                 {
                     if (property.GetCustomAttributes().Any())
                     {
-                        var attr = property.GetAttribute<T>();
+                        var attr = property.GetCustomAttribute<T>();
                         var propAlias = attr.Value<string>("Alias");
 
                         if (!content.PropertyTypeExists(propAlias))
@@ -79,7 +79,7 @@ namespace SplatDev.Umbraco.Plugins.CodeFirst.Helpers
                 {
                     if (property.GetCustomAttributes().Any())
                     {
-                        var attr = property.GetAttribute<T>();
+                        var attr = property.GetCustomAttribute<T>();
                         var propAlias = attr.Value<string>("Alias");
 
                         if (!member.PropertyTypeExists(propAlias))

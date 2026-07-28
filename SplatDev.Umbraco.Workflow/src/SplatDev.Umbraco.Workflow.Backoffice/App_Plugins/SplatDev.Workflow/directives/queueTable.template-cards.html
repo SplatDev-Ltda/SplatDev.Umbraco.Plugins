@@ -1,0 +1,8 @@
+<div class="swf-queue-cards" data-swf-theme="{{themeName}}">
+    <div class="swf-queue-card" ng-repeat="row in rows track by row.instanceId">
+        <div class="swf-card-field" ng-repeat="col in columns track by col.key">
+            <span class="swf-card-label">{{ col.label }}:</span>
+            <span class="swf-card-value">{{ row.values[col.key] }}</span>
+        </div>
+    </div>
+</div>

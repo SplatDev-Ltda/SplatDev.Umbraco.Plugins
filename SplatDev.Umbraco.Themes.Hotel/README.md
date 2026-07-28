@@ -37,6 +37,7 @@ On first startup the theme auto-installs its Umbraco schema (data types, documen
 
 | Alias            | Description                                              |
 |------------------|----------------------------------------------------------|
+| `basePage`       | Shared base page with common properties                  |
 | `hotelRoot`      | Site root – global settings, social links                |
 | `hotelHome`      | Home page with hero, booking widget, rooms, reviews      |
 | `roomsListing`   | Rooms catalog with filter sidebar                        |
@@ -47,9 +48,27 @@ On first startup the theme auto-installs its Umbraco schema (data types, documen
 | `reviewsPage`    | Guest reviews with rating summary                        |
 | `contactPage`    | Contact info, map embed, directions                      |
 
+### Element Types
+
+| Alias          | Description                       |
+|----------------|-----------------------------------|
+| `amenityItem`  | Individual amenity with icon      |
+| `reviewItem`   | Guest review with rating          |
+| `roomFeature`  | Room feature/specification        |
+| `galleryItem`  | Gallery image with caption        |
+
 ## Templates
 
-`HotelHome`, `RoomsListing`, `Room`, `AmenitiesPage`, `DiningPage`, `GalleryPage`, `ReviewsPage`, `ContactPage`
+| Template       | View File                     |
+|----------------|-------------------------------|
+| HotelHome      | Views/HotelHome.cshtml        |
+| RoomsListing   | Views/RoomsListing.cshtml     |
+| Room           | Views/Room.cshtml             |
+| AmenitiesPage  | Views/AmenitiesPage.cshtml    |
+| DiningPage     | Views/DiningPage.cshtml       |
+| GalleryPage    | Views/GalleryPage.cshtml      |
+| ReviewsPage    | Views/ReviewsPage.cshtml      |
+| ContactPage    | Views/ContactPage.cshtml      |
 
 ## Stylesheet
 

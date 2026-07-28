@@ -12,6 +12,10 @@
     <Project Path="test-environments/Umbraco17.Baseline/Umbraco17.Baseline.csproj" />
   </Folder>
   <Folder Name="/Core Libraries/">
+    <Project Path="SplatDev.Cache/SplatDev.Cache.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
     <Project Path="SplatDev.Content/SplatDev.Content.csproj">
       <Platform Solution="*|x64" Project="x64" />
       <Platform Solution="*|x86" Project="x86" />
@@ -48,7 +52,17 @@
       <Platform Solution="*|x64" Project="x64" />
       <Platform Solution="*|x86" Project="x86" />
     </Project>
+    <Project Path="SplatDev.Search/SplatDev.Search.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
     <Project Path="SplatDev.Security/SplatDev.Security.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Cache/">
+    <Project Path="SplatDev.Cache.Redis/SplatDev.Cache.Redis.csproj">
       <Platform Solution="*|x64" Project="x64" />
       <Platform Solution="*|x86" Project="x86" />
     </Project>

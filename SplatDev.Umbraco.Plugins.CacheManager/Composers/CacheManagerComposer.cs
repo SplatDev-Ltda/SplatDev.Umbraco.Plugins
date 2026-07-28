@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
+using SplatDev.Cache;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Web.Common.ApplicationBuilder;
@@ -107,7 +108,9 @@ namespace SplatDev.Umbraco.Plugins.CacheManager.Composers
             });
 
             //Method Caching
-            builder.Services.AddSingleton<ICacheService, CacheService>();
+            builder.Services.AddSingleton<CacheService>();
+            builder.Services.AddSingleton<ICacheService>(sp => sp.GetRequiredService<CacheService>());
+            builder.Services.AddSingleton<ICacheProvider>(sp => sp.GetRequiredService<CacheService>());
 
             #endregion
             //Repository

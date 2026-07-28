@@ -13,14 +13,14 @@
     using System.Threading;
 
 
-    public class TaskScheduler
+    public class TaskScheduler : IDisposable
     {
         private readonly DbContext context;
         public IEnumerable<ScheduledTask> ScheduledTasks { get; private set; }
 
         public IEnumerable<ScheduledTask> RuntimeTasks { get; set; }
 
-        private Timer stateTimer;
+        private readonly List<Timer> timers = new();
 
         public TaskScheduler(DbContext context, IEnumerable<ScheduledTask>? runtime = null)
         {
@@ -30,6 +30,15 @@
             RuntimeTasks = runtime ?? new List<ScheduledTask>();
             Schedule();
             ScheduleRuntime();
+        }
+
+        public void Dispose()
+        {
+            foreach (var timer in timers)
+            {
+                timer?.Dispose();
+            }
+            timers.Clear();
         }
 
         public delegate void ScheduleElapsed(ScheduledEventArgs args);
@@ -80,7 +89,8 @@
                             DependentTaskId = task.TaskId
                         }
                     };
-                    stateTimer = new Timer(callback: CheckSchedule, args, 0, (int)due.TotalMilliseconds);
+                    var timer = new Timer(callback: CheckSchedule, args, 0, (int)due.TotalMilliseconds);
+                    timers.Add(timer);
                     OnTriggerEvent?.Invoke(args);
 
                     task.LastRunOnUtc = DateTime.UtcNow;
@@ -165,7 +175,7 @@
                 eventArgs.AutoReset?.Set();
                 if (task.StopOnError)
                 {
-                    stateTimer?.Dispose();
+                    Dispose();
                 }
                 return false;
             }

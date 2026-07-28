@@ -6,12 +6,17 @@ using SplatDev.DigitalBookCurator.Core.Models;
 using SplatDev.DigitalBookCurator.Core.Repositories;
 using SplatDev.Umbraco.Plugins.PdfCurator.Models;
 
-using Umbraco.Cms.Web.Common.Controllers;
+#if NET10_0_OR_GREATER
+using Umbraco.Cms.Api.Management.Controllers;
+using UmbracoAuthorizedBase = Umbraco.Cms.Api.Management.Controllers.ManagementApiControllerBase;
+#else
+using Umbraco.Cms.Web.BackOffice.Controllers;
+using UmbracoAuthorizedBase = Umbraco.Cms.Web.BackOffice.Controllers.UmbracoAuthorizedApiController;
+#endif
 
 namespace SplatDev.Umbraco.Plugins.PdfCurator.Controllers;
 
-
-public class ImportApiController : ControllerBase
+public class ImportApiController : UmbracoAuthorizedBase
 {
     private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly IConfiguration _config;
@@ -30,7 +35,7 @@ public class ImportApiController : ControllerBase
         _fileManagerService = fileManagerService;
     }
 
-    [HttpGet]
+    [HttpGet("ready")]
     public async Task<IEnumerable<FileImportAvailable>> GetAllReadyAsync(bool done = false)
     {
         var path = Path.Combine(_contentRootPath, _path);
@@ -50,13 +55,13 @@ public class ImportApiController : ControllerBase
         return list;
     }
 
-    [HttpGet]
+    [HttpGet("done")]
     public async Task<IEnumerable<FileImportAvailable>> GetAllDoneAsync()
     {
         return await GetAllReadyAsync(done: true);
     }
 
-    [HttpPost]
+    [HttpPost("import")]
     public IAsyncEnumerable<BookImportResult> ImportAll()
     {
         var path = Path.Combine(_contentRootPath, _path);

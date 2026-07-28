@@ -15,12 +15,27 @@
         public IDatabase Database { get; }
 
         protected DbService() { }
-        protected DbService(string tableName) { _tableName = tableName; }
+        protected DbService(string tableName) { _tableName = ValidateTableName(tableName); }
 
         protected DbService(IDatabase database, string tableName = "")
         {
             Database = database;
-            _tableName = tableName;
+            _tableName = ValidateTableName(tableName);
+        }
+
+        private static string ValidateTableName(string tableName)
+        {
+            if (string.IsNullOrWhiteSpace(tableName))
+            {
+                return tableName;
+            }
+
+            if (tableName.IndexOfAny([';', '\'', '"', ' ', '\\', '/', '(', ')', '\0']) >= 0)
+            {
+                throw new ArgumentException($"Invalid table name: {tableName}", nameof(tableName));
+            }
+
+            return tableName;
         }
 
         #region virtual Methods
@@ -31,7 +46,7 @@
         /// <returns>Async Task</returns>
         public virtual async Task DeleteAll()
         {
-            await Task.FromResult(Database.Execute($"DELETE FROM {_tableName}")).ConfigureAwait(false);
+            await Task.Run(() => Database.Execute($"DELETE FROM {_tableName}")).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -41,7 +56,7 @@
         /// <returns>IEnumerable of all records</returns>
         public virtual async Task<IEnumerable<T>> GetAll()
         {
-            return await Task.FromResult(Database.Query<T>($"SELECT * FROM {_tableName}")).ConfigureAwait(false);
+            return await Task.Run(() => Database.Query<T>($"SELECT * FROM {_tableName}")).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -52,7 +67,7 @@
         /// <returns>A record of type T</returns>
         public virtual async Task<T> GetById(string id, params string[] navigationProperties)
         {
-            return await Task.FromResult(Database.Single<T>(id, navigationProperties)).ConfigureAwait(false);
+            return await Task.Run(() => Database.Single<T>(id, navigationProperties)).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -62,7 +77,7 @@
         /// <returns>IEnumerable of records</returns>
         public virtual async Task<IEnumerable<T>> Query(string sql)
         {
-            return await Task.FromResult(Database.Query<T>(sql)).ConfigureAwait(false);
+            return await Task.Run(() => Database.Query<T>(sql)).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -73,7 +88,7 @@
         /// <returns>IEnumerable of records</returns>
         public virtual async Task<IEnumerable<T>> GetAllIds(params int[] ids)
         {
-            return await Task.FromResult(Database.Query<T>($"SELECT * FROM {_tableName} WHERE Id in ({ids})")).ConfigureAwait(false);
+            return await Task.Run(() => Database.Query<T>($"SELECT * FROM {_tableName} WHERE Id in ({ids})")).ConfigureAwait(false);
         }
         #endregion
 
@@ -85,8 +100,8 @@
         public async Task<bool> Delete(int id)
         {
             var item = GetById(id);
-            var result = Database.Delete(item);
-            return await Task.FromResult<bool>(Convert.ToBoolean(result)).ConfigureAwait(false);
+            var result = await Task.Run(() => Database.Delete(item)).ConfigureAwait(false);
+            return Convert.ToBoolean(result);
         }
 
         /// <summary>
@@ -97,7 +112,7 @@
         public async Task<T> GetById(int id)
         {
             if (await Exists(id).ConfigureAwait(false))
-                return await Task.FromResult(Database.Single<T>(id.ToString())).ConfigureAwait(false);
+                return await Task.Run(() => Database.Single<T>(id.ToString())).ConfigureAwait(false);
             else return new T();
         }
 
@@ -108,7 +123,7 @@
         /// <returns>True or False (Success or Failure)</returns>
         public async Task<bool> Insert(T data)
         {
-            var result = await Task.FromResult(Database.Insert(data)).ConfigureAwait(false);
+            var result = await Task.Run(() => Database.Insert(data)).ConfigureAwait(false);
             return Convert.ToBoolean(result);
         }
 
@@ -122,7 +137,7 @@
         {
             try
             {
-                var result = await Task.FromResult(Database.Update(data, primaryKeyValue)).ConfigureAwait(false);
+                var result = await Task.Run(() => Database.Update(data, primaryKeyValue)).ConfigureAwait(false);
                 return Convert.ToBoolean(result);
 
             }
@@ -139,7 +154,7 @@
         /// <returns>True or False (Exists or Does not exist)</returns>
         public async Task<bool> Exists(int id)
         {
-            return await Task.FromResult(Database.Exists<T>(id)).ConfigureAwait(false);
+            return await Task.Run(() => Database.Exists<T>(id)).ConfigureAwait(false);
         }
     }
 }

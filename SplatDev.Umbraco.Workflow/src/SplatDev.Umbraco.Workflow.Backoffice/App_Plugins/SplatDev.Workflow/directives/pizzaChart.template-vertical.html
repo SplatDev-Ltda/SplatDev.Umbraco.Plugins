@@ -1,0 +1,10 @@
+<div class="swf-chart swf-chart--vertical">
+    <div class="swf-chart-donut"></div>
+    <ol class="swf-chart-steps">
+        <li ng-repeat="step in steps track by step.key"
+            ng-class="{ 'is-active': $index === currentIndex, 'is-done': $index < currentIndex, 'is-pending': $index > currentIndex }">
+            <span class="swf-chart-step-dot"></span>
+            <span class="swf-chart-step-label">{{ step.label }}</span>
+        </li>
+    </ol>
+</div>

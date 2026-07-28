@@ -2,8 +2,8 @@ using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
 using SplatDev.Umbraco.Plugins.Schema2Yaml.Models;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace SplatDev.Umbraco.Plugins.Schema2Yaml.Services;
 
@@ -105,17 +105,17 @@ public class DataTypeExporter
 
         try
         {
-            // Serialize configuration to JSON first
-            var json = JsonConvert.SerializeObject(configObj);
-            var jObject = JObject.Parse(json);
+            var json = JsonSerializer.Serialize(configObj);
+            var jObject = JsonNode.Parse(json) as JsonObject;
 
-            // Convert JObject to dictionary
-            foreach (var property in jObject.Properties())
+            if (jObject is not null)
             {
-                config[property.Name] = ConvertJToken(property.Value);
+                foreach (var property in jObject)
+                {
+                    config[property.Key] = ConvertJsonNode(property.Value);
+                }
             }
 
-            // Handle special cases
             config = ProcessSpecialConfigurations(dataType.EditorAlias ?? string.Empty, config);
         }
         catch (Exception ex)
@@ -127,19 +127,26 @@ public class DataTypeExporter
     }
 
     /// <summary>
-    /// Converts JToken to appropriate .NET type for YAML serialization.
+    /// Converts JsonNode to appropriate .NET type for YAML serialization.
     /// </summary>
-    private object ConvertJToken(JToken token)
+    private static object ConvertJsonNode(JsonNode? token)
     {
-        return token.Type switch
+        return token switch
         {
-            JTokenType.Object => token.ToObject<Dictionary<string, object>>() ?? new Dictionary<string, object>(),
-            JTokenType.Array => token.ToObject<List<object>>() ?? new List<object>(),
-            JTokenType.Integer => token.Value<long>(),
-            JTokenType.Float => token.Value<double>(),
-            JTokenType.Boolean => token.Value<bool>(),
-            JTokenType.Null => null!,
-            _ => token.Value<string>() ?? string.Empty
+            null => null!,
+            JsonObject obj => obj.Aggregate(
+                new Dictionary<string, object>(),
+                (dict, kvp) =>
+                {
+                    dict[kvp.Key] = ConvertJsonNode(kvp.Value);
+                    return dict;
+                }),
+            JsonArray arr => arr.Select(ConvertJsonNode).ToList()!,
+            JsonValue val when val.TryGetValue<long>(out var l) => l,
+            JsonValue val when val.TryGetValue<double>(out var d) => d,
+            JsonValue val when val.TryGetValue<bool>(out var b) => b,
+            JsonValue val => val.ToString(),
+            _ => token.ToString()
         };
     }
 

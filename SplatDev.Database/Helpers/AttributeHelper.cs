@@ -8,6 +8,9 @@
     using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Reflection;
+
+    using SplatDev.Reflection;
+
     public static class AttributeHelper
     {
         public static IEnumerable<PropertyInfo> NvarcharMaxProperties<Type>(this Type source)
@@ -34,13 +37,13 @@
         public static Type[] OrderByCreateOrderAttribute(this IEnumerable<Type> classes)
         {
             List<Type> withOrder = new List<Type>();
-            foreach (var _class in classes) if (_class.HasAttribute<CreateOrderAttribute>()) withOrder.Add(_class);
+            foreach (var _class in classes) if (_class.GetCustomAttribute<CreateOrderAttribute>() != null) withOrder.Add(_class);
             if (withOrder.Count > 0)
             {
                 Type[] ordered = new Type[withOrder.Count];
                 foreach (var _class in withOrder)
                 {
-                    var attribute = _class.GetAttribute<CreateOrderAttribute>();
+                    var attribute = _class.GetCustomAttribute<CreateOrderAttribute>();
                     if (attribute != null)
                     {
                         var index = attribute.Value<int>("Order");

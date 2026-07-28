@@ -1,0 +1,18 @@
+<div class="swf-definition-editor" ng-controller="SplatWorkflow.DefinitionEditorController as vm">
+    <div class="swf-editor-sidebar">
+        <h3>Workflow Definitions</h3>
+        <ul class="swf-definition-list">
+            <li ng-repeat="def in vm.definitions track by def.key" ng-click="vm.select(def)" ng-class="{ 'is-selected': vm.selected && vm.selected.key === def.key }">
+                <strong>{{ def.label }}</strong>
+                <span class="swf-def-version">v{{ def.version }}</span>
+            </li>
+        </ul>
+        <button ng-click="vm.createNew()" class="swf-btn-new">+ New Definition</button>
+    </div>
+
+    <div class="swf-editor-main" ng-if="vm.selected || vm.isNew">
+        <h3>{{ vm.isNew ? 'New Definition' : 'Edit ' + vm.selected.label }}</h3>
+        <textarea ng-model="vm.editJson" class="swf-json-editor" rows="20"></textarea>
+        <button ng-click="vm.save()" class="swf-btn-save">Save</button>
+    </div>
+</div>

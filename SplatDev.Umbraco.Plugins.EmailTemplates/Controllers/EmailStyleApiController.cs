@@ -12,11 +12,11 @@ public class EmailStyleApiController(
     IEmailStyleService styleService,
     ILogger<EmailStyleApiController> logger) : ManagementApiControllerBase
 {
-    [HttpGet]
+    [HttpGet("")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult Get() => Ok(styleService.Get());
 
-    [HttpPut]
+    [HttpPut("")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult Save([FromBody] EmailStyle style)
     {

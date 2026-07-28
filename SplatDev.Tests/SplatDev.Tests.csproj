@@ -18,6 +18,7 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="../SplatDev.Cache/SplatDev.Cache.csproj" />
     <ProjectReference Include="../SplatDev.GeoLocation/SplatDev.GeoLocation.csproj" />
     <ProjectReference Include="../SplatDev.Messaging/SplatDev.Messaging.csproj" />
     <ProjectReference Include="../SplatDev.Messaging.SendGrid/SplatDev.Messaging.SendGrid.csproj" />
@@ -26,6 +27,9 @@
     <ProjectReference Include="../SplatDev.Messaging.Twilio/SplatDev.Messaging.Twilio.csproj" />
     <ProjectReference Include="../SplatDev.Mobile.Detection/SplatDev.Mobile.Detection.csproj" />
     <ProjectReference Include="../SplatDev.Payments.MercadoPago/SplatDev.Payments.MercadoPago.csproj" />
+    <ProjectReference Include="../SplatDev.Search/SplatDev.Search.csproj" />
     <ProjectReference Include="../SplatDev.Security/SplatDev.Security.csproj" />
+    <ProjectReference Include="../SplatDev.Database.MSSQLAdmin/SplatDev.Database.MSSQLAdmin.csproj" />
+    <ProjectReference Include="../SplatDev.Messaging.Newsletter/SplatDev.Messaging.Newsletter.csproj" />
   </ItemGroup>
 </Project>

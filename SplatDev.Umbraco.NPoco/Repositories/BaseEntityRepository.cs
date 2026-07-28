@@ -22,9 +22,11 @@ namespace SplatDev.Umbraco.NPoco.Repositories
 {
     public abstract class BaseEntityRepository<T>(IScopeProvider scopeProvider) : IDisposable, IRepository<T> where T : class, IBaseEntity
     {
+        private static readonly Guid SuperUserKey = new("1E70F841-C261-413B-ABB2-2D68CDB96094");
+
         private bool _disposedValue;
         private SafeHandle? _safeHandle = new SafeFileHandle(nint.Zero, true);
-        private Guid? _userId = Constants.Security.SuperUserKey;
+        private Guid? _userId = SuperUserKey;
         public Guid? UserId { get => _userId; set => _userId = value; }
         private readonly IScopeProvider _scopeProvider = scopeProvider;
 
@@ -43,7 +45,7 @@ namespace SplatDev.Umbraco.NPoco.Repositories
             {
                 AuditType = AuditType.Delete,
                 Id = id,
-                UserId = UserId ?? Constants.Security.SuperUserKey,
+                UserId = UserId ?? SuperUserKey,
                 Message = $"T with id {id} has been deleted",
                 Log = true
             });
@@ -58,7 +60,7 @@ namespace SplatDev.Umbraco.NPoco.Repositories
                 AuditType = AuditType.Delete,
                 Entity = entity,
                 Id = entity.Id,
-                UserId = UserId ?? Constants.Security.SuperUserKey,
+                UserId = UserId ?? SuperUserKey,
                 Message = $"T (id: {entity.Id}) has been deleted",
                 Log = true
             });
@@ -74,7 +76,7 @@ namespace SplatDev.Umbraco.NPoco.Repositories
                 {
                     AuditType = AuditType.Delete,
                     Id = id,
-                    UserId = UserId ?? Constants.Security.SuperUserKey,
+                    UserId = UserId ?? SuperUserKey,
                     Message = $"T with id {id} has been deleted",
                     Log = true
                 });
@@ -92,7 +94,7 @@ namespace SplatDev.Umbraco.NPoco.Repositories
                     AuditType = AuditType.Delete,
                     Entity = entity,
                     Id = entity.Id,
-                    UserId = UserId ?? Constants.Security.SuperUserKey,
+                    UserId = UserId ?? SuperUserKey,
                     Message = $"T (id: {entity.Id}) has been deleted",
                     Log = true
                 });
@@ -221,7 +223,7 @@ namespace SplatDev.Umbraco.NPoco.Repositories
                 AuditType = AuditType.Save,
                 Entity = entity,
                 Id = id,
-                UserId = UserId ?? Constants.Security.SuperUserKey,
+                UserId = UserId ?? SuperUserKey,
             });
             return entity;
         }
@@ -237,7 +239,7 @@ namespace SplatDev.Umbraco.NPoco.Repositories
                     AuditType = AuditType.Save,
                     Entity = entity,
                     Id = entity.Id,
-                    UserId = UserId ?? Constants.Security.SuperUserKey
+                    UserId = UserId ?? SuperUserKey
                 });
             }
         }
@@ -251,7 +253,7 @@ namespace SplatDev.Umbraco.NPoco.Repositories
                 AuditType = AuditType.Save,
                 Entity = entity,
                 Id = entity.Id,
-                UserId = UserId ?? Constants.Security.SuperUserKey
+                UserId = UserId ?? SuperUserKey
             });
         }
 

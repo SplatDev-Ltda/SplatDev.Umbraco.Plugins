@@ -81,7 +81,6 @@
   <!-- Version-independent packages -->
   <ItemGroup>
     <PackageReference Include="YamlDotNet" Version="15.1.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <!-- Include README, icon, and Umbraco Marketplace metadata in the NuGet package -->

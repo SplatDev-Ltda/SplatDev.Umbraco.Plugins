@@ -12,7 +12,7 @@ Professional corporate theme for Umbraco. Provides home, about, services, team, 
 ## Features
 
 - Auto-installs Umbraco content schema via embedded YAML on first startup
-- Document types: `corporateRoot`, `homePage`, `aboutPage`, `servicesPage`, `teamPage`, `contactPage`, `standardPage`
+- Document types: `basePage`, `corporateRoot`, `homePage`, `aboutPage`, `servicesPage`, `teamPage`, `contactPage`, `standardPage`
 - Element types: `serviceFeature`, `testimonialItem`, `teamMemberElement`, `statsItem`, `timelineItem`, `serviceItemElement`
 - Full-width hero section with overlay, dual CTA buttons, background image
 - Stats counter row with animation on scroll
@@ -42,6 +42,8 @@ corporateRoot (allowAsRoot)
   ├── teamPage
   ├── contactPage
   └── standardPage (nestable)
+
+All pages extend from `basePage` which provides shared properties.
 ```
 
 ## Views

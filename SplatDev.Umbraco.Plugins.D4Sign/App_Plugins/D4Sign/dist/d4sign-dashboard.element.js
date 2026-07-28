@@ -1,16 +1,16 @@
-import { LitElement as h, html as r, nothing as u, css as p, state as d, customElement as g } from "@umbraco-cms/backoffice/external/lit";
+import { LitElement as h, html as o, nothing as u, css as p, state as d, customElement as g } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin as _ } from "@umbraco-cms/backoffice/element-api";
 import { UMB_AUTH_CONTEXT as f } from "@umbraco-cms/backoffice/auth";
 import { UMB_NOTIFICATION_CONTEXT as b } from "@umbraco-cms/backoffice/notification";
 var m = Object.defineProperty, v = Object.getOwnPropertyDescriptor, n = (t, a, e, s) => {
-  for (var o = s > 1 ? void 0 : s ? v(a, e) : a, c = t.length - 1, l; c >= 0; c--)
-    (l = t[c]) && (o = (s ? l(a, e, o) : l(o)) || o);
-  return s && o && m(a, e, o), o;
+  for (var i = s > 1 ? void 0 : s ? v(a, e) : a, c = t.length - 1, l; c >= 0; c--)
+    (l = t[c]) && (i = (s ? l(a, e, i) : l(i)) || i);
+  return s && i && m(a, e, i), i;
 };
 const x = "/umbraco/api/d4sign";
-let i = class extends _(h) {
+let r = class extends _(h) {
   constructor() {
-    super(...arguments), this._loading = !1, this._checkingUuid = null, this._documents = [], this._search = "", this._statusFilter = "", this._stats = { total: 0, aguardando: 0, assinados: 0, cancelados: 0 }, this._error = null;
+    super(), this._loading = !1, this._checkingUuid = null, this._documents = [], this._search = "", this._statusFilter = "", this._stats = { total: 0, aguardando: 0, assinados: 0, cancelados: 0 }, this._authContext = null, this._notifContext = null, this._error = null;
   }
   connectedCallback() {
     super.connectedCallback(), this.consumeContext(f, (t) => {
@@ -20,13 +20,10 @@ let i = class extends _(h) {
     });
   }
   async _fetch(t, a = {}) {
-    const e = {
-      "Content-Type": "application/json",
-      ...a.headers ?? {}
-    }, s = this._authContext;
-    if (s != null && s.getLatestToken) {
-      const o = await s.getLatestToken();
-      o && (e.Authorization = `Bearer ${o}`);
+    const e = { "Content-Type": "application/json" };
+    if (a.headers && (Object.assign(e, a.headers), delete a.headers), this._authContext) {
+      const s = await this._authContext.getLatestToken();
+      s && (e.Authorization = `Bearer ${s}`);
     }
     return fetch(`${x}${t}`, { ...a, headers: e });
   }
@@ -41,7 +38,8 @@ let i = class extends _(h) {
       const a = await t.json();
       this._documents = a.documents ?? [], this._recalcStats();
     } catch (t) {
-      this._error = t.message ?? "Erro desconhecido ao carregar documentos.", this._notify("danger", "Erro", this._error);
+      const a = t instanceof Error ? t.message : "Erro desconhecido ao carregar documentos.";
+      this._error = a, this._notify("danger", "Erro", a);
     } finally {
       this._loading = !1;
     }
@@ -64,21 +62,14 @@ let i = class extends _(h) {
           body: JSON.stringify({ docUuid: t, locacaoId: a })
         });
         if (!e.ok) {
-          const o = await e.json().catch(() => ({ message: e.statusText }));
-          throw new Error(o.message ?? e.statusText);
+          const i = await e.json().catch(() => ({ message: e.statusText }));
+          throw new Error(i.message ?? e.statusText);
         }
         const s = await e.json();
-        s.updated ? (this._notify(
-          "positive",
-          "Atualizado",
-          `Status atualizado para: ${this._statusLabel(s.status)}`
-        ), await this._loadDocuments()) : this._notify(
-          "default",
-          "Status",
-          `Status atual: ${this._statusLabel(s.status)}`
-        );
+        s.updated ? (this._notify("positive", "Atualizado", `Status atualizado para: ${this._statusLabel(s.status)}`), await this._loadDocuments()) : this._notify("default", "Status", `Status atual: ${this._statusLabel(s.status)}`);
       } catch (e) {
-        this._notify("danger", "Erro", `Não foi possível verificar o status: ${e.message ?? ""}`);
+        const s = e instanceof Error ? e.message : "";
+        this._notify("danger", "Erro", `Não foi possível verificar o status: ${s}`);
       } finally {
         this._checkingUuid = null;
       }
@@ -110,10 +101,7 @@ let i = class extends _(h) {
   }
   _notify(t, a, e) {
     var s;
-    (s = this._notifContext) == null || s.peek(
-      t,
-      { data: { headline: a, message: e } }
-    );
+    (s = this._notifContext) == null || s.peek(t, { data: { headline: a, message: e } });
   }
   get _filteredDocuments() {
     const t = this._search.toLowerCase();
@@ -121,28 +109,30 @@ let i = class extends _(h) {
   }
   _renderStats() {
     const t = this._stats;
-    return r`
+    return o`
       <div class="stats-grid">
         ${this._statCard("Total", t.total, "")}
         ${this._statCard("Aguardando", t.aguardando, "aguardando_assinatura")}
         ${this._statCard("Assinados", t.assinados, "assinado")}
         ${this._statCard("Cancelados", t.cancelados, "cancelado")}
-      </div>`;
+      </div>
+    `;
   }
   _statCard(t, a, e) {
     const s = this._statusFilter === e && e !== "";
-    return r`
+    return o`
       <div
         class="stat-card ${s ? "active" : ""}"
-        @click=${() => e ? this._setStatusFilter(e) : null}
+        @click=${() => e ? this._setStatusFilter(e) : void 0}
       >
         <div class="stat-label">${t}</div>
         <div class="stat-value">${a}</div>
-      </div>`;
+      </div>
+    `;
   }
   _renderTable() {
     const t = this._filteredDocuments;
-    return t.length ? r`
+    return t.length ? o`
       <table>
         <thead>
           <tr>
@@ -152,20 +142,22 @@ let i = class extends _(h) {
             <th>Status</th>
             <th>Criado em</th>
             <th>Assinado em</th>
-            <th>Ações</th>
+            <th>A&ccedil;&otilde;es</th>
           </tr>
         </thead>
         <tbody>
           ${t.map((a) => this._renderRow(a))}
         </tbody>
-      </table>` : r`
+      </table>
+    ` : o`
         <div class="empty-state">
           ${this._search || this._statusFilter ? "Nenhum documento encontrado com os filtros aplicados." : "Nenhum documento D4Sign encontrado."}
-        </div>`;
+        </div>
+      `;
   }
   _renderRow(t) {
     const a = this._checkingUuid === t.docUuid;
-    return r`
+    return o`
       <tr>
         <td>${t.razaoSocial ?? "—"}</td>
         <td>${t.cnpj ?? "—"}</td>
@@ -186,31 +178,27 @@ let i = class extends _(h) {
               ?disabled=${!!this._checkingUuid}
               @click=${() => this._checkStatus(t.docUuid, t.locacaoId)}
             >
-              ${a ? r`<uui-loader-circle></uui-loader-circle>` : u}
+              ${a ? o`<uui-loader-circle></uui-loader-circle>` : u}
               ${a ? "Verificando…" : "Verificar"}
             </uui-button>
-
-            ${t.status === "assinado" ? r`
-                  <uui-button
-                    look="secondary"
-                    compact
-                    label="Baixar PDF"
-                    @click=${() => this._downloadPdf(t.pdfBlobUrl)}
-                  >
+            ${t.status === "assinado" ? o`
+                  <uui-button look="secondary" compact label="Baixar PDF" @click=${() => this._downloadPdf(t.pdfBlobUrl)}>
                     Baixar PDF
-                  </uui-button>` : u}
+                  </uui-button>
+                ` : u}
           </div>
         </td>
-      </tr>`;
+      </tr>
+    `;
   }
   render() {
-    return r`
+    return o`
       <div class="header">
-        <h1>D4Sign — Assinaturas Digitais</h1>
+        <h1>D4Sign &mdash; Assinaturas Digitais</h1>
         <p>Gerencie documentos enviados para assinatura digital via D4Sign.</p>
       </div>
 
-      ${this._error ? r`<div class="error-box">${this._error}</div>` : u}
+      ${this._error ? o`<div class="error-box">${this._error}</div>` : u}
 
       ${this._renderStats()}
 
@@ -218,28 +206,20 @@ let i = class extends _(h) {
         <uui-input
           placeholder="Buscar por empresa, CNPJ ou UUID\u2026"
           .value=${this._search}
-          @input=${(t) => {
-      this._search = t.target.value;
-    }}
+          @input=${(t) => this._search = t.target.value}
         >
         </uui-input>
-
-        <uui-button
-          look="secondary"
-          label="Atualizar"
-          ?disabled=${this._loading}
-          @click=${this._loadDocuments}
-        >
-          ${this._loading ? r`<uui-loader-circle></uui-loader-circle>` : u}
+        <uui-button look="secondary" label="Atualizar" ?disabled=${this._loading} @click=${this._loadDocuments}>
+          ${this._loading ? o`<uui-loader-circle></uui-loader-circle>` : u}
           Atualizar
         </uui-button>
       </div>
 
-      ${this._loading && !this._documents.length ? r`<uui-loader-bar></uui-loader-bar>` : this._renderTable()}
+      ${this._loading && !this._documents.length ? o`<uui-loader-bar></uui-loader-bar>` : this._renderTable()}
     `;
   }
 };
-i.styles = p`
+r.styles = p`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -339,9 +319,13 @@ i.styles = p`
       vertical-align: middle;
     }
 
-    tr:last-child td { border-bottom: none; }
+    tr:last-child td {
+      border-bottom: none;
+    }
 
-    tr:hover td { background: var(--uui-color-surface-alt, #f9f9f9); }
+    tr:hover td {
+      background: var(--uui-color-surface-alt, #f9f9f9);
+    }
 
     .badge {
       display: inline-block;
@@ -395,30 +379,27 @@ i.styles = p`
   `;
 n([
   d()
-], i.prototype, "_loading", 2);
+], r.prototype, "_loading", 2);
 n([
   d()
-], i.prototype, "_checkingUuid", 2);
+], r.prototype, "_checkingUuid", 2);
 n([
   d()
-], i.prototype, "_documents", 2);
+], r.prototype, "_documents", 2);
 n([
   d()
-], i.prototype, "_search", 2);
+], r.prototype, "_search", 2);
 n([
   d()
-], i.prototype, "_statusFilter", 2);
+], r.prototype, "_statusFilter", 2);
 n([
   d()
-], i.prototype, "_stats", 2);
-n([
-  d()
-], i.prototype, "_error", 2);
-i = n([
+], r.prototype, "_stats", 2);
+r = n([
   g("d4sign-dashboard")
-], i);
-const C = i;
+], r);
+const k = r;
 export {
-  i as D4SignDashboardElement,
-  C as default
+  r as D4SignDashboardElement,
+  k as default
 };

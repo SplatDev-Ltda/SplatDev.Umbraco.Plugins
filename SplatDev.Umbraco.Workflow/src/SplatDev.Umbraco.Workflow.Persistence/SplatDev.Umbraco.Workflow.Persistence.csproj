@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>SplatDev.Umbraco.Workflow.Persistence</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Umbraco.Cms.Infrastructure" Version="13.13.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SplatDev.Umbraco.Workflow.Core\SplatDev.Umbraco.Workflow.Core.csproj" />
+  </ItemGroup>
+</Project>

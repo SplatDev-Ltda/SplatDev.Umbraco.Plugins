@@ -36,7 +36,10 @@ namespace SplatDev.Logger
                 });
                 context.SaveChanges();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Logger] Failed to write log: {ex.Message}");
+            }
         }
 
         public static void Log(string message, Exception exception, LogType type = LogType.Error, string user = "System")
@@ -54,7 +57,10 @@ namespace SplatDev.Logger
                 });
                 context.SaveChanges();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Logger] Failed to write exception log: {ex.Message}");
+            }
         }
     }
 }

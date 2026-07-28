@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>SplatDev.Umbraco.Plugins.Santander</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>SplatDev-Ltda</Authors>
+    <Company>SplatDev Ltda</Company>
+    <Description>Umbraco 17 plugin for the Santander Open Banking suite: a composer that registers SplatDev.Payments.Santander (options, client, the 8 product services, and the named mTLS HttpClient with the ICP-Brasil e-CNPJ certificate) plus a guarded backoffice/server-to-server banking API controller.</Description>
+    <PackageTags>umbraco umbraco-marketplace santander open-banking pix boleto payments mtls</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Umbraco.Cms.Core" Version="17.4.2" />
+    <PackageReference Include="Umbraco.Cms.Web.Common" Version="17.4.2" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="[8.0.0,)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SplatDev.Payments.Santander\SplatDev.Payments.Santander.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" Condition="Exists('README.md')" />
+  </ItemGroup>
+</Project>

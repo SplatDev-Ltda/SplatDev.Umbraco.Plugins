@@ -1,0 +1,12 @@
+<table class="swf-queue-table" data-swf-theme="{{themeName}}">
+    <thead>
+        <tr>
+            <th ng-repeat="col in columns track by col.key">{{ col.label }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="row in rows track by row.instanceId">
+            <td ng-repeat="col in columns track by col.key">{{ row.values[col.key] }}</td>
+        </tr>
+    </tbody>
+</table>

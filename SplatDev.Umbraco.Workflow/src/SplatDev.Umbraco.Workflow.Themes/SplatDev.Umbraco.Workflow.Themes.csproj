@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>SplatDev.Umbraco.Workflow.Themes</RootNamespace>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="App_Plugins\**\*" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="contentFiles/any/any/App_Plugins" />
+  </ItemGroup>
+</Project>

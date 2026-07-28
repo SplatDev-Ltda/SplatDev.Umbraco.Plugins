@@ -23,7 +23,7 @@ public class NotificationsAdminController(
 {
     public record CreateNotificationRequest(string MemberId, NotificationType Type, string Message);
 
-    [HttpGet]
+    [HttpGet("")]
     public async Task<IActionResult> GetForMember([FromQuery] string memberId, CancellationToken ct)
     {
         if (string.IsNullOrWhiteSpace(memberId))
@@ -32,7 +32,7 @@ public class NotificationsAdminController(
         return Ok(await notificationService.GetAllAsync(memberId, ct));
     }
 
-    [HttpPost]
+    [HttpPost("create")]
     public async Task<IActionResult> Create([FromBody] CreateNotificationRequest request, CancellationToken ct)
     {
         if (string.IsNullOrWhiteSpace(request.MemberId) || string.IsNullOrWhiteSpace(request.Message))

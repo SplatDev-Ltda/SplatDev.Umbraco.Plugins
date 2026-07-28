@@ -1,0 +1,230 @@
+{
+  "version": "umbraco13",
+  "generatedBy": "generate-mock-screenshots.mjs (SPL-2000)",
+  "capturedAt": "2026-06-08T12:50:26.434Z",
+  "pluginCount": 55,
+  "successCount": 55,
+  "failCount": 0,
+  "plugins": [
+    {
+      "name": "Analytics",
+      "status": "ok"
+    },
+    {
+      "name": "AdminBar",
+      "status": "ok"
+    },
+    {
+      "name": "Backups",
+      "status": "ok"
+    },
+    {
+      "name": "Blog",
+      "status": "ok"
+    },
+    {
+      "name": "CacheManager",
+      "status": "ok"
+    },
+    {
+      "name": "CharLimit",
+      "status": "ok"
+    },
+    {
+      "name": "CustomLogin",
+      "status": "ok"
+    },
+    {
+      "name": "D4Sign",
+      "status": "ok"
+    },
+    {
+      "name": "DictionaryManager",
+      "status": "ok"
+    },
+    {
+      "name": "ENotAssina",
+      "status": "ok"
+    },
+    {
+      "name": "ExamineExtensions",
+      "status": "ok"
+    },
+    {
+      "name": "ExceptionManager",
+      "status": "ok"
+    },
+    {
+      "name": "Faqs",
+      "status": "ok"
+    },
+    {
+      "name": "FormBuilder",
+      "status": "ok"
+    },
+    {
+      "name": "Gdrp",
+      "status": "ok"
+    },
+    {
+      "name": "HiddenContent",
+      "status": "ok"
+    },
+    {
+      "name": "ImageProcessor",
+      "status": "ok"
+    },
+    {
+      "name": "LiveVideo",
+      "status": "ok"
+    },
+    {
+      "name": "Mailer",
+      "status": "ok"
+    },
+    {
+      "name": "MemberGroups",
+      "status": "ok"
+    },
+    {
+      "name": "MemberLogin",
+      "status": "ok"
+    },
+    {
+      "name": "MemberRegistration",
+      "status": "ok"
+    },
+    {
+      "name": "MemberTypes",
+      "status": "ok"
+    },
+    {
+      "name": "MostViewed",
+      "status": "ok"
+    },
+    {
+      "name": "NewsTicker",
+      "status": "ok"
+    },
+    {
+      "name": "Newsletters",
+      "status": "ok"
+    },
+    {
+      "name": "OnOff",
+      "status": "ok"
+    },
+    {
+      "name": "PasswordSettings",
+      "status": "ok"
+    },
+    {
+      "name": "PropertiesReport",
+      "status": "ok"
+    },
+    {
+      "name": "QuickPoll",
+      "status": "ok"
+    },
+    {
+      "name": "RdpManager",
+      "status": "ok"
+    },
+    {
+      "name": "RedirectManager",
+      "status": "ok"
+    },
+    {
+      "name": "Restricted",
+      "status": "ok"
+    },
+    {
+      "name": "Rsvp",
+      "status": "ok"
+    },
+    {
+      "name": "SEO",
+      "status": "ok"
+    },
+    {
+      "name": "Schema2Yaml",
+      "status": "ok"
+    },
+    {
+      "name": "Settings",
+      "status": "ok"
+    },
+    {
+      "name": "ShopCart",
+      "status": "ok"
+    },
+    {
+      "name": "ShortUrls",
+      "status": "ok"
+    },
+    {
+      "name": "Smtp",
+      "status": "ok"
+    },
+    {
+      "name": "SocialChannels",
+      "status": "ok"
+    },
+    {
+      "name": "SocialLogin",
+      "status": "ok"
+    },
+    {
+      "name": "SocialShare",
+      "status": "ok"
+    },
+    {
+      "name": "StarRatings",
+      "status": "ok"
+    },
+    {
+      "name": "Surveys",
+      "status": "ok"
+    },
+    {
+      "name": "SvgViewer",
+      "status": "ok"
+    },
+    {
+      "name": "ToastNotifications",
+      "status": "ok"
+    },
+    {
+      "name": "Tweets",
+      "status": "ok"
+    },
+    {
+      "name": "VideoPreview",
+      "status": "ok"
+    },
+    {
+      "name": "VisitorCounter",
+      "status": "ok"
+    },
+    {
+      "name": "WhatsApp",
+      "status": "ok"
+    },
+    {
+      "name": "Yaml2Schema",
+      "status": "ok"
+    },
+    {
+      "name": "BancoInter",
+      "status": "ok"
+    },
+    {
+      "name": "MercadoPago",
+      "status": "ok"
+    },
+    {
+      "name": "PagSeguro",
+      "status": "ok"
+    }
+  ]
+}
