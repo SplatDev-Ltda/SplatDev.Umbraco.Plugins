@@ -2,6 +2,8 @@
 
 A complete form-building plugin for Umbraco CMS, modeled after the commercial Umbraco Forms package. Provides drag-and-drop form creation, entry management, workflows, data sources, email templates, theme support, reCAPTCHA integration, and multi-language localization — all inside the Umbraco backoffice.
 
+> **Headless plugin** — Core operates as a service layer. The AngularJS backoffice UI (legacy, needs Bellissima migration) is provided separately. Form entries, workflows, data sources, and API endpoints all function headless.
+
 ## Features
 
 - **Form Builder UI** — Create and edit forms in the Umbraco backoffice with a property-editor-based form designer

@@ -1,5 +1,7 @@
 # SplatDev.Umbraco.Plugins.CodeFirst — DEPRECATED
 
+> **Headless plugin** — No backoffice UI. This was a code-first content-type definition library (C# attributes only). Superseded by YAML-based tooling. Kept for reference; not packable.
+
 > **This package is deprecated and will not receive new features or bug fixes.**
 >
 > Use [SplatDev.Umbraco.Plugins.Yaml2Schema](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Yaml2Schema) instead.

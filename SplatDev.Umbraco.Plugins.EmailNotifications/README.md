@@ -2,6 +2,8 @@
 
 Email template engine, Mailgun mail provider, newsletter campaigns, and member notifications for Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
+> **Headless plugin** — No backoffice UI. Operates as DI-registered middleware (`AddEmailNotifications()`). Provides email templating, Mailgun transport, and newsletter services consumed programmatically by other plugins.
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.EmailNotifications.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.EmailNotifications)
 
 ## Compatibility

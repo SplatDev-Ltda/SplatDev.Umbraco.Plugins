@@ -2,6 +2,8 @@
 
 Examine search extensions for Umbraco — query helpers, index inspection, and rebuild management via a backoffice dashboard.
 
+> **Headless / API plugin** — Backoffice dashboard is optional and provided by the companion `SplatDev.Umbraco.Plugins.ExamineExtensions` client package. The core operates as a service layer with API endpoints.
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.ExamineExtensions.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.ExamineExtensions)
 
 ## Compatibility

@@ -2,6 +2,8 @@
 
 An open-source Umbraco Forms alternative — a fully functional form builder for Umbraco CMS without any per-site licensing requirements.
 
+> **Headless plugin** — Operates primarily as a service layer with API endpoints. The optional backoffice UI and Swagger dashboard are provided via the companion client package. Core functionality (form definitions, workflows, migrations, frontend submissions) runs headless.
+
 ## Overview
 
 FormBuilder provides the same core capabilities as Umbraco Forms (form definition, field types, workflows, email notifications, submission storage) as a free, MIT-licensed NuGet package. It targets Umbraco 13 LTS and Umbraco 17 LTS via multi-targeted builds.

@@ -2,6 +2,8 @@
 
 Security utilities for .NET applications — phishing detection via CheckPhish.ai, Google Safe Browsing integration, IP quality scoring via IPQualityScore, IP blacklist/whitelist management with EF Core persistence, HTTP basic auth encoding, and API response validation.
 
+> **Headless library** — No backoffice UI, no Umbraco dependency. Pure .NET utility library — provides phishing detection, IP quality scoring, blacklist management, and API response validation consumed by other projects at compile time.
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Security.svg)](https://www.nuget.org/packages/SplatDev.Security)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 

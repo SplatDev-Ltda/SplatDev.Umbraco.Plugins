@@ -2,6 +2,8 @@
 
 Umbraco countries data plugin — seeds and maintains a `countries` database table with ISO country codes, names, and nationality data. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
+> **Headless plugin** — No backoffice UI. Operates as database middleware — seeds and maintains a `countries` table via Umbraco migrations. Exposes a `Country` NPoco entity for programmatic querying.
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Countries.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Countries)
 
 ## Compatibility

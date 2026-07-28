@@ -2,6 +2,8 @@
 
 Base/shared constants library for UmbracoCms plugin development.
 
+> **Headless library** — No backoffice UI. Pure constants/helpers library — provides static `Icons`, `Colors`, `DataTypes`, `Permissions`, `Formats`, and `MediaTypes` classes consumed by other plugins at compile time.
+
 ## What it provides
 
 Static constant classes grouped under the `UmbracoCms.Plugins` namespace, all as nested classes of the `Default` partial class:

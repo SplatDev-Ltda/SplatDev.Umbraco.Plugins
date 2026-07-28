@@ -2,6 +2,8 @@
 
 Umbraco Words API plugin — validate English word classification (noun detection) using the WordsAPI service via RapidAPI. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
+> **Headless plugin** — No backoffice UI. Operates as DI-registered API service (`IWordsApiService`). Validates English word classification (noun detection) via RapidAPI WordsAPI.
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.WordsApi.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.WordsApi)
 
 ## Compatibility
