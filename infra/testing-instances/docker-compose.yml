@@ -1,0 +1,78 @@
+services:
+  u17-web:
+    build:
+      context: ./u17
+      dockerfile: Dockerfile
+    container_name: u17-testing-web
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:9080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__umbracoDbDSN=Server=testing-sql,1433;Database=U17Testing;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;Encrypt=False
+      - Umbraco__CMS__Unattended__InstallUnattended=true
+      - Umbraco__CMS__Unattended__UnattendedUserName=admin@splatdev.tech
+      - Umbraco__CMS__Unattended__UnattendedUserPassword=${UMBRACO_ADMIN_PASSWORD}
+      - Umbraco__CMS__Unattended__UnattendedUserEmail=${UMBRACO_ADMIN_EMAIL}
+    volumes:
+      - u17_media:/app/wwwroot/media
+      - u17_plugins:/app/wwwroot/App_Plugins
+    networks:
+      - testing-net
+    depends_on:
+      testing-sql:
+        condition: service_healthy
+
+  u13-web:
+    build:
+      context: ./u13
+      dockerfile: Dockerfile
+    container_name: u13-testing-web
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:9081:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__umbracoDbDSN=Server=testing-sql,1433;Database=U13Testing;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;Encrypt=False
+      - Umbraco__CMS__Unattended__InstallUnattended=true
+      - Umbraco__CMS__Unattended__UnattendedUserName=admin@splatdev.tech
+      - Umbraco__CMS__Unattended__UnattendedUserPassword=${UMBRACO_ADMIN_PASSWORD}
+      - Umbraco__CMS__Unattended__UnattendedUserEmail=${UMBRACO_ADMIN_EMAIL}
+    volumes:
+      - u13_media:/app/wwwroot/media
+      - u13_plugins:/app/wwwroot/App_Plugins
+    networks:
+      - testing-net
+    depends_on:
+      testing-sql:
+        condition: service_healthy
+
+  testing-sql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: testing-sql
+    restart: unless-stopped
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD}
+      - MSSQL_PID=Developer
+    volumes:
+      - testing_sql_data:/var/opt/mssql
+    networks:
+      - testing-net
+    healthcheck:
+      test: /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$${MSSQL_SA_PASSWORD}" -C -Q "SELECT 1" || exit 1
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+
+volumes:
+  u17_media:
+  u17_plugins:
+  u13_media:
+  u13_plugins:
+  testing_sql_data:
+
+networks:
+  testing-net:
+    driver: bridge

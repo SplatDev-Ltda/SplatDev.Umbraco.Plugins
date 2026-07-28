@@ -8,7 +8,8 @@
       "type": "dashboard",
       "alias": "svgViewer.dashboard",
       "name": "SVG Viewer Dashboard",
-      "element": "/App_Plugins/SvgViewer/svg-viewer-dashboard.js",
+      "element": "/App_Plugins/SvgViewer/dist/svg-viewer-dashboard.js",
+      "elementName": "svg-viewer-dashboard",
       "weight": -10,
       "meta": {
         "label": "SVG Viewer",
@@ -20,6 +21,28 @@
           "match": "Umb.Section.Settings"
         }
       ]
+    },
+    {
+      "type": "propertyEditorSchema",
+      "alias": "svgCustomView",
+      "name": "Custom SVG Viewer",
+      "meta": {
+        "defaultPropertyEditorUiAlias": "SplatDev.SvgViewer.PropertyEditorUi"
+      }
+    },
+    {
+      "type": "propertyEditorUi",
+      "alias": "SplatDev.SvgViewer.PropertyEditorUi",
+      "name": "SVG Viewer Property Editor UI",
+      "element": "/App_Plugins/SvgViewer/dist/svg-viewer-property-editor.js",
+      "elementName": "svg-viewer-property-editor",
+      "meta": {
+        "label": "Custom SVG Viewer",
+        "propertyEditorSchemaAlias": "svgCustomView",
+        "icon": "icon-umb-media",
+        "group": "common",
+        "supportsReadOnly": true
+      }
     }
   ]
 }
