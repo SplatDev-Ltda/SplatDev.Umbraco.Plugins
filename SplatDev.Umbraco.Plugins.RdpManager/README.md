@@ -1,6 +1,6 @@
 # RdpManager
 
-Umbraco Remote Desktop connection manager plugin — store RDP configs and generate .rdp file downloads. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
+Umbraco Remote Desktop connection manager — store RDP configurations and generate `.rdp` file downloads from the backoffice.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.RdpManager.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.RdpManager)
 
@@ -19,15 +19,43 @@ dotnet add package SplatDev.Umbraco.Plugins.RdpManager
 
 ## Quick Start
 
-Register in `Program.cs`:
+The plugin auto-registers via `RdpManagerComposer`, which sets up the EF Core DbContext and registers `IRdpManagerService`.
 
-```csharp
-builder.CreateUmbracoBuilder()
-    .AddBackOffice()
-    .AddWebsite()
-    .AddRdpManager()   // <-- add this
-    .Build();
+## Configuration
+
+Add to `appsettings.json`:
+
+```json
+{
+  "ConnectionStrings": {
+    "umbracoDbDSN": "Server=localhost;Database=umbraco;Trusted_Connection=True;"
+  }
+}
 ```
+
+The plugin uses the Umbraco database connection string for storing RDP configurations.
+
+## API Endpoints
+
+| Method | Route | Description |
+|--------|-------|-------------|
+| GET | `/umbraco/api/RdpManagerApi/GetAll` | List all RDP connections |
+| GET | `/umbraco/api/RdpManagerApi/GetById?id=` | Get a specific connection |
+| POST | `/umbraco/api/RdpManagerApi/Create` | Create a new connection |
+| PUT | `/umbraco/api/RdpManagerApi/Update` | Update an existing connection |
+| DELETE | `/umbraco/api/RdpManagerApi/Delete?id=` | Delete a connection |
+| GET | `/umbraco/api/RdpManagerApi/DownloadRdpFile?id=` | Download `.rdp` file |
+
+## Usage
+
+Manage RDP connections through the backoffice dashboard. Each connection stores hostname, port, username, and domain. Click "Download RDP" to generate and download a ready-to-use `.rdp` file.
+
+## Known Limitations
+
+- RDP credentials (username, domain) are stored in the database without encryption
+- Generated `.rdp` files use hardcoded settings (wallpaper enabled, no gateway support)
+- No authentication or authorization on API endpoints — any authenticated backoffice user can access all connections
+- Uses the same `ConnectionStrings:umbracoDbDSN` as Umbraco (no separate connection string support)
 
 ## License
 

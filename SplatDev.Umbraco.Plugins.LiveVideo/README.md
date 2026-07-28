@@ -1,6 +1,6 @@
 # LiveVideo
 
-Live video embed for Umbraco — YouTube Live, Twitch, and Vimeo live stream integration. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
+Live video embed for Umbraco — generate embed URLs for YouTube Live, Twitch, and Vimeo live streams.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.LiveVideo.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.LiveVideo)
 
@@ -19,15 +19,40 @@ dotnet add package SplatDev.Umbraco.Plugins.LiveVideo
 
 ## Quick Start
 
-Register in `Program.cs`:
+The plugin auto-registers via `LiveVideoComposer`. Inject `ILiveVideoService` and call the API:
 
 ```csharp
-builder.CreateUmbracoBuilder()
-    .AddBackOffice()
-    .AddWebsite()
-    .AddLiveVideo()   // <-- add this
-    .Build();
+public class StreamController : SurfaceController
+{
+    private readonly ILiveVideoService _liveVideo;
+
+    public StreamController(ILiveVideoService liveVideo)
+    {
+        _liveVideo = liveVideo;
+    }
+}
 ```
+
+## API Endpoints
+
+| Method | Route | Description |
+|--------|-------|-------------|
+| GET | `/umbraco/api/livevideo/GetEmbed?platform=&channelId=` | Returns embed URL for the specified platform and channel |
+
+Supported platforms: `youtube`, `twitch`, `vimeo`.
+
+## Usage Example
+
+```html
+<iframe src="@liveVideoEmbedUrl" width="800" height="450"
+    frameborder="0" allowfullscreen></iframe>
+```
+
+## Known Limitations
+
+- Only generates embed URLs — does not detect or verify live stream status
+- No caching of embed URLs or platform availability checks
+- No support for custom embed parameters (width, height, autoplay, mute)
 
 ## License
 

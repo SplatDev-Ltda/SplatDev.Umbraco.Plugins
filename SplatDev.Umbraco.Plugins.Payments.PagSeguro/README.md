@@ -1,6 +1,6 @@
 # Payments.PagSeguro
 
-PagSeguro payment integration for Umbraco. Supports checkout session creation, transaction status lookup. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
+PagSeguro payment integration for Umbraco — create checkout sessions, track transactions, and manage payment status from a backoffice dashboard.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Payments.PagSeguro.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Payments.PagSeguro)
 
@@ -19,15 +19,7 @@ dotnet add package SplatDev.Umbraco.Plugins.Payments.PagSeguro
 
 ## Quick Start
 
-Register in `Program.cs`:
-
-```csharp
-builder.CreateUmbracoBuilder()
-    .AddBackOffice()
-    .AddWebsite()
-    .AddPagSeguro()   // <-- add this
-    .Build();
-```
+The plugin auto-registers via `PagSeguroComposer`, which sets up the EF Core DbContext, `HttpClient`, and `IPagSeguroService`.
 
 ## Configuration
 
@@ -36,11 +28,49 @@ Add to `appsettings.json`:
 ```json
 {
   "PagSeguro": {
-    "Token": "",
-    "Environment": "sandbox"
+    "Email": "your-email@example.com",
+    "Token": "your-api-token",
+    "Sandbox": true
+  },
+  "ConnectionStrings": {
+    "umbracoDbDSN": "Server=localhost;Database=umbraco;Trusted_Connection=True;"
   }
 }
 ```
+
+Set `Sandbox: true` for testing, `false` for production.
+
+## API Endpoints
+
+| Method | Route | Description |
+|--------|-------|-------------|
+| GET | `/umbraco/api/pagseguro/GetConfig` | Returns public config (email, sandbox mode) |
+| POST | `/umbraco/api/pagseguro/CreateTransaction` | Initiate a payment transaction |
+| GET | `/umbraco/api/pagseguro/GetTransactionStatus?code=` | Query transaction status |
+
+## Usage
+
+```javascript
+// Create a transaction
+const response = await fetch('/umbraco/api/pagseguro/CreateTransaction', {
+    method: 'POST',
+    body: JSON.stringify({
+        reference: 'ORDER-001',
+        amount: 99.90,
+        description: 'Product purchase'
+    }),
+    headers: { 'Content-Type': 'application/json' }
+});
+const { paymentUrl } = await response.json();
+window.location.href = paymentUrl;
+```
+
+## Known Limitations
+
+- No built-in checkout UI or front-end integration — API-only payment initiation
+- The `Token` config value is never exposed to the frontend (only Email and Sandbox are returned by `GetConfig`)
+- No webhook/IPN handling in the Umbraco plugin layer; depends on the parent `SplatDev.Payments.PagSeguro` library
+- Lower-level API calls are delegated to the `SplatDev.Payments.PagSeguro` library
 
 ## License
 
