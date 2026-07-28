@@ -1,6 +1,8 @@
 version: "3.8"
 
 services:
+  # Umbraco 13 testing instance — internal Docker network only, not exposed to internet.
+  # TrustServerCertificate is required for SQL Server container self-signed certs.
   u13-testing:
     build:
       context: ..
@@ -12,7 +14,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - Umbraco__CMS__Global__MainDomLock=SqlMainDomLock
-      - ConnectionStrings__umbracoDbDSN=Server=hostmssql,1433;Database=UmbracoU13Testing;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=true
+      - ConnectionStrings__umbracoDbDSN=Server=hostmssql,1433;Database=UmbracoU13Testing;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=true;Encrypt=true
     networks:
       - umbraco-testing
     depends_on:
@@ -22,6 +24,8 @@ services:
       - u13-media:/app/wwwroot/media
       - u13-logs:/app/umbraco/Logs
 
+  # Umbraco 17 testing instance — internal Docker network only, not exposed to internet.
+  # TrustServerCertificate is required for SQL Server container self-signed certs.
   u17-testing:
     build:
       context: ..
@@ -33,7 +37,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - Umbraco__CMS__Global__MainDomLock=SqlMainDomLock
-      - ConnectionStrings__umbracoDbDSN=Server=hostmssql,1433;Database=UmbracoU17Testing;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=true
+      - ConnectionStrings__umbracoDbDSN=Server=hostmssql,1433;Database=UmbracoU17Testing;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=true;Encrypt=true
     networks:
       - umbraco-testing
     depends_on:
