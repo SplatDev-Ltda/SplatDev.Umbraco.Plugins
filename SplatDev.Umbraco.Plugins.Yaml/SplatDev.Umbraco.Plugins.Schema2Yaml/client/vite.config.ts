@@ -7,11 +7,12 @@ export default defineConfig({
       formats: ["es"],
       fileName: "schema2yaml-dashboard",
     },
-    outDir: "../wwwroot/App_Plugins/Schema2Yaml",
-    emptyOutDir: false,
+    outDir: "../wwwroot/App_Plugins/Schema2Yaml/dist",
+    emptyOutDir: true,
     sourcemap: true,
     rollupOptions: {
       external: [/^@umbraco/],
     },
   },
+  base: "/App_Plugins/Schema2Yaml/dist/",
 });

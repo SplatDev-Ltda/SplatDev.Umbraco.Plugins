@@ -7,7 +7,7 @@
       "type": "dashboard",
       "alias": "Schema.Export.Dashboard",
       "name": "Schema Export",
-      "element": "/App_Plugins/Schema2Yaml/dashboard.js",
+      "element": "/App_Plugins/Schema2Yaml/dist/schema2yaml-dashboard.js",
       "elementName": "schema2yaml-dashboard",
       "weight": 100,
       "meta": {
@@ -23,4 +23,3 @@
     }
   ]
 }
-

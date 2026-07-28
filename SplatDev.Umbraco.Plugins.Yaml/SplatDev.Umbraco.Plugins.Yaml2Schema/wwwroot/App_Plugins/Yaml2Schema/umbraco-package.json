@@ -7,7 +7,7 @@
       "type": "dashboard",
       "alias": "Yaml.Import.Dashboard",
       "name": "YAML Import",
-      "element": "/App_Plugins/Yaml2Schema/dashboard.js",
+      "element": "/App_Plugins/Yaml2Schema/dist/yaml2schema-dashboard.js",
       "elementName": "yaml2schema-dashboard",
       "weight": 110,
       "meta": {
