@@ -264,7 +264,10 @@ public sealed class GetnetApiClient(
 
     private static string EscapeJson(string value) =>
         value.Replace("\\", "\\\\", StringComparison.Ordinal)
-             .Replace("\"", "\\\"", StringComparison.Ordinal);
+             .Replace("\"", "\\\"", StringComparison.Ordinal)
+             .Replace("\n", "\\n", StringComparison.Ordinal)
+             .Replace("\r", "\\r", StringComparison.Ordinal)
+             .Replace("\t", "\\t", StringComparison.Ordinal);
 
     private sealed class TokenResponse
     {

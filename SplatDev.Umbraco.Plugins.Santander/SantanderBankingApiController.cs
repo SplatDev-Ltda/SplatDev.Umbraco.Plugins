@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using SplatDev.Payments.Santander;
@@ -24,36 +25,6 @@ public class SantanderBankingApiController(
     ILogger<SantanderBankingApiController> logger) : ControllerBase
 {
     public const string ApiKeyHeader = "X-RISIN-Api-Key";
-
-    // ── diagnostics ──────────────────────────────────────────────────────────
-
-    [HttpGet("diagnostics")]
-    public IActionResult Diagnostics()
-    {
-        if (Unauthorized(out var challenge)) return challenge;
-
-        return Ok(new
-        {
-            environment = options.BaseUrl.Contains("sandbox", StringComparison.OrdinalIgnoreCase) ? "sandbox" : "production",
-            baseUrl = options.BaseUrl,
-            hasClientId = !string.IsNullOrWhiteSpace(options.ClientId),
-            hasClientSecret = !string.IsNullOrWhiteSpace(options.ClientSecret),
-            hasCertificate = !string.IsNullOrWhiteSpace(options.CertificatePath) || !string.IsNullOrWhiteSpace(options.CertificateBase64),
-            hasPixKey = !string.IsNullOrWhiteSpace(options.PixKey),
-            hasWorkspaceId = !string.IsNullOrWhiteSpace(options.WorkspaceId),
-            products = new
-            {
-                pixQrCode = Describe(options.PixQrCode),
-                balanceStatement = Describe(options.BalanceStatement),
-                payments = Describe(options.Payments),
-                boletos = Describe(options.Boletos),
-                openFx = Describe(options.OpenFx),
-                exportCharge = Describe(options.ExportCharge),
-                vouchers = Describe(options.Vouchers),
-                pixAutomatico = Describe(options.PixAutomatico),
-            },
-        });
-    }
 
     // ── saldo e extrato ──────────────────────────────────────────────────────
 
@@ -182,7 +153,9 @@ public class SantanderBankingApiController(
     private bool Unauthorized(out IActionResult challenge)
     {
         var supplied = Request.Headers[ApiKeyHeader].ToString();
-        if (string.IsNullOrWhiteSpace(options.ApiKey) || supplied != options.ApiKey)
+        if (string.IsNullOrWhiteSpace(options.ApiKey) || !CryptographicOperations.FixedTimeEquals(
+            System.Text.Encoding.UTF8.GetBytes(supplied),
+            System.Text.Encoding.UTF8.GetBytes(options.ApiKey)))
         {
             challenge = StatusCode(401, new { error = "Missing or invalid API key." });
             return true;
@@ -203,10 +176,4 @@ public class SantanderBankingApiController(
         try { return JsonSerializer.Deserialize<JsonElement>(body); }
         catch { return body; }
     }
-
-    private static object Describe(SantanderProductOptions p) => new
-    {
-        baseUrl = string.IsNullOrWhiteSpace(p.BaseUrl) ? null : p.BaseUrl,
-        basePath = p.BasePath,
-    };
 }

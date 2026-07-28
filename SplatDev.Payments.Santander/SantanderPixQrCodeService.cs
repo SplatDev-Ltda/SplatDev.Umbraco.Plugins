@@ -44,9 +44,14 @@ public sealed class SantanderPixQrCodeService(
         return await apiClient.GetAsync(url, cancellationToken);
     }
 
-    /// <summary>BACEN txid: 26-35 alphanumeric chars.</summary>
-    public static string GerarTxid() =>
-        ("RISIN" + Guid.NewGuid().ToString("N")).ToUpperInvariant()[..32];
+    /// <summary>BACEN txid: 26-35 alphanumeric chars. Uses SHA256 hash of full GUID for uniqueness.</summary>
+    public static string GerarTxid()
+    {
+        var raw = Guid.NewGuid().ToString("N");
+        var hash = System.Security.Cryptography.SHA256.HashData(
+            System.Text.Encoding.UTF8.GetBytes(raw));
+        return "RISIN" + Convert.ToHexString(hash)[..27];
+    }
 }
 
 public sealed record SantanderPixCharge(string Txid, string Status, string? PixCopiaECola, string? Location, string Raw);
