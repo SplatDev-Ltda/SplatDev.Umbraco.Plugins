@@ -1,0 +1,40 @@
+{
+  "$schema": "../../umbraco-package-schema.json",
+  "name": "SplatDev Santander",
+  "version": "1.0.0",
+  "allowPublicAccess": false,
+  "extensions": [
+    {
+      "type": "dashboard",
+      "alias": "SplatDev.Santander.Dashboard",
+      "name": "Santander Banking",
+      "element": "/App_Plugins/SplatDev.Santander/dist/santander-banking-dashboard.element.js",
+      "elementName": "santander-banking-dashboard",
+      "weight": -80,
+      "meta": {
+        "label": "#santander_dashboardLabel",
+        "pathname": "santander-banking"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.SectionAlias",
+          "match": "Umb.Section.Content"
+        }
+      ]
+    },
+    {
+      "type": "localization",
+      "alias": "SplatDev.Santander.Localization.En",
+      "name": "Santander Banking — English",
+      "meta": {
+        "culture": "en",
+        "localizations": {
+          "section": {
+            "santander_dashboardLabel": "Santander Banking",
+            "santander_description": "Santander Open Banking suite — diagnostics, balance, PIX, payments, boletos, FX, vouchers"
+          }
+        }
+      }
+    }
+  ]
+}
