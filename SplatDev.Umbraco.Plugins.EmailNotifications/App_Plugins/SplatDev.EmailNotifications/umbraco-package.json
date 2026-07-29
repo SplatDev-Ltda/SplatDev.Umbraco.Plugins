@@ -3,5 +3,38 @@
   "name": "SplatDev Email Notifications",
   "version": "1.0.0",
   "allowPublicAccess": false,
-  "extensions": []
+  "extensions": [
+    {
+      "type": "dashboard",
+      "alias": "SplatDev.EmailNotifications.Dashboard",
+      "name": "Email Notifications",
+      "element": "/App_Plugins/SplatDev.EmailNotifications/dist/email-notifications-dashboard.element.js",
+      "elementName": "email-notifications-dashboard",
+      "weight": -80,
+      "meta": {
+        "label": "#emailNotifications_dashboardLabel",
+        "pathname": "email-notifications"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.SectionAlias",
+          "match": "Umb.Section.Content"
+        }
+      ]
+    },
+    {
+      "type": "localization",
+      "alias": "SplatDev.EmailNotifications.Localization.En",
+      "name": "Email Notifications — English",
+      "meta": {
+        "culture": "en",
+        "localizations": {
+          "section": {
+            "emailNotifications_dashboardLabel": "Email Notifications",
+            "emailNotifications_description": "Manage member notifications, subscribers, campaigns, and templates"
+          }
+        }
+      }
+    }
+  ]
 }
