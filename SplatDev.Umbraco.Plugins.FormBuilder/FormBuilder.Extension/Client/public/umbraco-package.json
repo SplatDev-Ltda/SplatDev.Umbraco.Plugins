@@ -2,7 +2,7 @@
   "$schema": "../../umbraco-package-schema.json",
   "id": "FormBuilder.Extension",
   "name": "Form Builder",
-  "version": "1.0.1",
+  "version": "2.1.0",
   "extensions": [
     {
       "type": "section",

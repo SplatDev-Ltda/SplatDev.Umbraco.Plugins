@@ -47,16 +47,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Don't include the client folder as part of packaging nuget build -->
-    <Content Remove="Client\**" />
-
-    <!-- However make the Umbraco-package.json included for dotnet pack or nuget package and visible to the solution -->
+    <!-- Ship built client assets in the NuGet package -->
+    <Content Include="wwwroot\App_Plugins\**\*" Pack="true" CopyToPublishDirectory="Always" />
     <None Include="Client\public\umbraco-package.json" Pack="false" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Client\scripts\" />
-    <Folder Include="wwwroot\App_Plugins\" />
   </ItemGroup>
 
   <ItemGroup>
