@@ -156,3 +156,22 @@ MIT © [SplatDev](https://github.com/splatdevtech)
 ---
 
 [Feedback](mailto:feedback@splatdev.com)
+
+## Deployment (stg1 hosts)
+
+Drop-in DLL deployment does **not** work: the SplatDev.Umbraco host resolves
+assemblies via its `deps.json`, so an unreferenced plugin assembly crashes the
+site at startup (`FindAssembliesWithReferencesTo` → FileNotFoundException).
+
+Deploy by referencing the plugin from the host and republishing:
+
+1. In the SplatDev eCommerce repo (`/root/build-main` on the .25 VPS), add a
+   `ProjectReference` to `SplatDev.Umbraco.Plugins.PdfCurator.csproj` in
+   `src/SplatDev.Umbraco/SplatDev.Umbraco.csproj` (use a scratch copy, e.g.
+   `/root/build-pdfc`).
+2. `dotnet publish src/SplatDev.Umbraco -c Release -o <out>` and rsync over
+   `/www/wwwroot/stg1-umbraco-staging/`, then `systemctl restart
+   stg1-umbraco-staging`.
+3. Verify: `/App_Plugins/PdfCurator/umbraco-package.json` 200, anonymous
+   `/umbraco/pdfcurator/api/v1/ping` 401, backoffice shows the Book Library
+   section. Rollback snapshot: `/root/stg1-umbraco-staging.pre-pdfc.tar.gz`.

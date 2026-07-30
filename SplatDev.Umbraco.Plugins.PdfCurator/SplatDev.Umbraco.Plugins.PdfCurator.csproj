@@ -35,10 +35,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\SplatDev.DigitalBookCurator.Core\SplatDev.DigitalBookCurator.Core.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<Content Include="App_Plugins\**" ExcludeFromSingleFile="true" CopyToPublishDirectory="Always" />
 	</ItemGroup>
 
