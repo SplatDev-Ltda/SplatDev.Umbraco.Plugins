@@ -1,0 +1,51 @@
+{
+  "$schema": "../../umbraco-package-schema.json",
+  "id": "SplatDev.FormBuilder",
+  "name": "Form Builder",
+  "version": "2.0.0",
+  "allowPublicAccess": false,
+  "extensions": [
+    {
+      "type": "section",
+      "alias": "formBuilder.Section",
+      "name": "FormBuilder",
+      "meta": {
+        "label": "#formbuilder_sectionLabel",
+        "pathname": "formbuilder"
+      }
+    },
+    {
+      "type": "dashboard",
+      "alias": "formbuilder.dashboard",
+      "name": "Form Builder Dashboard",
+      "element": "/App_Plugins/SplatDev.FormBuilder/dist/form-builder-dashboard.element.js",
+      "elementName": "form-builder-dashboard",
+      "weight": 10,
+      "meta": {
+        "label": "#formbuilder_dashboardLabel",
+        "pathname": "formbuilder-dashboard"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.SectionAlias",
+          "match": "formBuilder.Section"
+        }
+      ]
+    },
+    {
+      "type": "localization",
+      "alias": "SplatDev.FormBuilder.Localization.En",
+      "name": "Form Builder — English",
+      "meta": {
+        "culture": "en",
+        "localizations": {
+          "section": {
+            "formbuilder_sectionLabel": "Form Builder",
+            "formbuilder_dashboardLabel": "Form Builder Dashboard",
+            "formbuilder_description": "Create and manage custom forms with drag-and-drop field builder"
+          }
+        }
+      }
+    }
+  ]
+}
