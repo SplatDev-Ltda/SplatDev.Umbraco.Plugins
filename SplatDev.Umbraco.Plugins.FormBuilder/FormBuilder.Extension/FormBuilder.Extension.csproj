@@ -50,6 +50,7 @@
     <Content Remove="Client\**" />
     <Content Remove="client\**" />
     <Content Remove="Client.legacy\**" />
+    <Content Include="wwwroot\**\*" />
   </ItemGroup>
 
   <ItemGroup>
