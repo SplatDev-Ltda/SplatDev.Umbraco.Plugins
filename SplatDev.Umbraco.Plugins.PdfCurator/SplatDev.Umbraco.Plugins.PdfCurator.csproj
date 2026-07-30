@@ -35,11 +35,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\SplatDev.DigitalBookCurator.Core\SplatDev.DigitalBookCurator.Core.csproj" />
+		<Content Include="App_Plugins\**" ExcludeFromSingleFile="true" CopyToPublishDirectory="Always" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Remove="client\**" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<None Include="umbraco-marketplace.json" Pack="true" PackagePath="\" />
+		<None Include="README.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
 </Project>
