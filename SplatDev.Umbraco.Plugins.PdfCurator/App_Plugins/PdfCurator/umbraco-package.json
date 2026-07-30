@@ -89,20 +89,20 @@
     {
       "type": "localization",
       "alias": "PdfCurator.Localization.En",
-      "name": "Book Library \u2014 English",
+      "name": "Book Library — English",
       "meta": {
         "culture": "en",
         "localizations": {
-          "section": {
-            "pdfCurator_sectionLabel": "Book Library",
-            "pdfCurator_dashboardLabel": "Dashboard",
-            "pdfCurator_libraryLabel": "Library",
-            "pdfCurator_reviewLabel": "Review",
-            "pdfCurator_reportsLabel": "Reports",
-            "pdfCurator_heading": "Book Library",
-            "pdfCurator_description": "Manage your digital book and PDF library",
-            "pdfCurator_upload": "Upload PDF",
-            "pdfCurator_comingSoon": "Coming soon \u2014 Phase B will integrate the full PDF Curator component suite."
+          "pdfCurator": {
+            "sectionLabel": "Book Library",
+            "dashboardLabel": "Dashboard",
+            "libraryLabel": "Library",
+            "reviewLabel": "Review",
+            "reportsLabel": "Reports",
+            "heading": "Book Library",
+            "description": "Manage your digital book and PDF library",
+            "upload": "Upload PDF",
+            "comingSoon": "Coming soon — Phase B will integrate the full PDF Curator component suite."
           }
         }
       }
@@ -110,20 +110,20 @@
     {
       "type": "localization",
       "alias": "PdfCurator.Localization.Es",
-      "name": "Book Library \u2014 Espa\u00f1ol",
+      "name": "Book Library — Español",
       "meta": {
         "culture": "es",
         "localizations": {
-          "section": {
-            "pdfCurator_sectionLabel": "Biblioteca",
-            "pdfCurator_dashboardLabel": "Panel",
-            "pdfCurator_libraryLabel": "Biblioteca",
-            "pdfCurator_reviewLabel": "Revisi\u00f3n",
-            "pdfCurator_reportsLabel": "Informes",
-            "pdfCurator_heading": "Biblioteca",
-            "pdfCurator_description": "Administre su biblioteca digital de libros y PDFs",
-            "pdfCurator_upload": "Subir PDF",
-            "pdfCurator_comingSoon": "Pr\u00f3ximamente \u2014 La Fase B integrar\u00e1 el conjunto completo de componentes PDF Curator."
+          "pdfCurator": {
+            "sectionLabel": "Biblioteca",
+            "dashboardLabel": "Panel",
+            "libraryLabel": "Biblioteca",
+            "reviewLabel": "Revisión",
+            "reportsLabel": "Informes",
+            "heading": "Biblioteca",
+            "description": "Administre su biblioteca digital de libros y PDFs",
+            "upload": "Subir PDF",
+            "comingSoon": "Próximamente — La Fase B integrará el conjunto completo de componentes PDF Curator."
           }
         }
       }
