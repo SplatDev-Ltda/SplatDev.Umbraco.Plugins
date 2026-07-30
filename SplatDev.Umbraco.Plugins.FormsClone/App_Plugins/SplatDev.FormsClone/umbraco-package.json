@@ -1,0 +1,146 @@
+{
+  "$schema": "../../umbraco-package-schema.json",
+  "id": "SplatDev.FormsClone",
+  "name": "SplatDev FormsClone",
+  "version": "1.0.0",
+  "allowPackageTelemetry": true,
+  "extensions": [
+    {
+      "type": "propertyEditorSchema",
+      "name": "Form Picker",
+      "alias": "FormBuilder.FormPicker",
+      "meta": {
+        "defaultPropertyEditorUiAlias": "Forms.PropertyEditorUi.FormPicker.Single",
+        "settings": {
+          "properties": [
+            {
+              "alias": "allowedFolders",
+              "label": "Allowed Folders",
+              "description": "Select folders from which forms can be chosen, or leave empty to allow all.",
+              "propertyEditorUiAlias": "Forms.PropertyEditorUi.FolderPicker.Multiple"
+            },
+            {
+              "alias": "allowedForms",
+              "label": "Allowed Forms",
+              "description": "Select individual forms that can be chosen, or leave empty to allow all.",
+              "propertyEditorUiAlias": "Forms.PropertyEditorUi.FormPicker.Multiple"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "propertyEditorSchema",
+      "name": "Form Details Picker",
+      "alias": "FormBuilder.FormDetailsPicker",
+      "meta": {
+        "defaultPropertyEditorUiAlias": "Forms.PropertyEditorUi.FormDetailsPicker",
+        "settings": {
+          "properties": [
+            {
+              "alias": "allowedFolders",
+              "label": "Allowed Folders",
+              "propertyEditorUiAlias": "Forms.PropertyEditorUi.FolderPicker.Multiple"
+            },
+            {
+              "alias": "allowedForms",
+              "label": "Allowed Forms",
+              "propertyEditorUiAlias": "Forms.PropertyEditorUi.FormPicker.Multiple"
+            },
+            {
+              "alias": "includeThemePicker",
+              "label": "Include Theme Picker",
+              "propertyEditorUiAlias": "Umb.PropertyEditorUi.Toggle"
+            },
+            {
+              "alias": "includeRedirectPicker",
+              "label": "Include Redirect Picker",
+              "propertyEditorUiAlias": "Umb.PropertyEditorUi.Toggle"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "propertyEditorSchema",
+      "name": "Theme Picker",
+      "alias": "FormBuilder.ThemePicker",
+      "meta": {
+        "defaultPropertyEditorUiAlias": "Forms.PropertyEditorUi.ThemePicker"
+      }
+    },
+    {
+      "type": "propertyEditorSchema",
+      "name": "Folder Picker",
+      "alias": "FormBuilder.FolderPicker",
+      "meta": {
+        "defaultPropertyEditorUiAlias": "Forms.PropertyEditorUi.FolderPicker.Multiple"
+      }
+    },
+    {
+      "type": "propertyEditorUi",
+      "alias": "Forms.PropertyEditorUi.FormPicker.Single",
+      "name": "Single Form Picker Property Editor",
+      "js": "/App_Plugins/SplatDev.FormsClone/dist/formsclone-property-editors.js",
+      "elementName": "splatdev-form-picker-single-property-editor",
+      "meta": {
+        "label": "Form Picker (Single)",
+        "propertyEditorSchemaAlias": "FormBuilder.FormPicker",
+        "icon": "icon-umb-contour",
+        "group": "forms"
+      }
+    },
+    {
+      "type": "propertyEditorUi",
+      "alias": "Forms.PropertyEditorUi.FormPicker.Multiple",
+      "name": "Multiple Form Picker Property Editor",
+      "js": "/App_Plugins/SplatDev.FormsClone/dist/formsclone-property-editors.js",
+      "elementName": "splatdev-form-picker-multiple-property-editor",
+      "meta": {
+        "label": "Form Picker (Multiple)",
+        "propertyEditorSchemaAlias": "FormBuilder.FormPicker",
+        "icon": "icon-umb-contour",
+        "group": "forms"
+      }
+    },
+    {
+      "type": "propertyEditorUi",
+      "alias": "Forms.PropertyEditorUi.FormDetailsPicker",
+      "name": "Form Details Picker Property Editor",
+      "js": "/App_Plugins/SplatDev.FormsClone/dist/formsclone-property-editors.js",
+      "elementName": "splatdev-form-details-picker-property-editor",
+      "meta": {
+        "label": "Form Details Picker",
+        "propertyEditorSchemaAlias": "FormBuilder.FormDetailsPicker",
+        "icon": "icon-umb-contour",
+        "group": "forms"
+      }
+    },
+    {
+      "type": "propertyEditorUi",
+      "alias": "Forms.PropertyEditorUi.ThemePicker",
+      "name": "Theme Picker Property Editor",
+      "js": "/App_Plugins/SplatDev.FormsClone/dist/formsclone-property-editors.js",
+      "elementName": "splatdev-theme-picker-property-editor",
+      "meta": {
+        "label": "Theme Picker",
+        "propertyEditorSchemaAlias": "FormBuilder.ThemePicker",
+        "icon": "icon-brush",
+        "group": "forms"
+      }
+    },
+    {
+      "type": "propertyEditorUi",
+      "alias": "Forms.PropertyEditorUi.FolderPicker.Multiple",
+      "name": "Multiple Folder Picker Property Editor",
+      "js": "/App_Plugins/SplatDev.FormsClone/dist/formsclone-property-editors.js",
+      "elementName": "splatdev-folder-picker-property-editor",
+      "meta": {
+        "label": "Folder Picker (Multiple)",
+        "propertyEditorSchemaAlias": "FormBuilder.FolderPicker",
+        "icon": "icon-umb-contour",
+        "group": "forms"
+      }
+    }
+  ]
+}
