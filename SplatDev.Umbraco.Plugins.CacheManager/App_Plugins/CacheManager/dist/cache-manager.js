@@ -46,7 +46,7 @@ let t = class extends p(d) {
   async _clearCache() {
     this._loading = !0;
     try {
-      const a = await fetch(`${o}/ClearCache`);
+      const a = await fetch(`${o}/ClearCache`, { method: "POST" });
       this._message = a.ok ? "Cache cleared successfully." : "Failed to clear cache.";
     } catch {
       this._message = "Error clearing cache.";
@@ -56,7 +56,7 @@ let t = class extends p(d) {
   async _refreshCache() {
     this._loading = !0, this._message = "Refreshing cache — this may take a moment...";
     try {
-      const a = await fetch(`${o}/RefreshCache`);
+      const a = await fetch(`${o}/RefreshCache`, { method: "POST" });
       this._message = a.ok ? "Cache refreshed successfully." : "Failed to refresh cache.", a.ok && await this._loadHistory();
     } catch {
       this._message = "Error refreshing cache.";
@@ -65,7 +65,7 @@ let t = class extends p(d) {
   }
   async _clearLog() {
     try {
-      await fetch(`${o}/ClearLog`), this._history = [], this._message = "Cache log cleared.";
+      await fetch(`${o}/ClearLog`, { method: "POST" }), this._history = [], this._message = "Cache log cleared.";
     } catch {
       this._message = "Error clearing log.";
     }

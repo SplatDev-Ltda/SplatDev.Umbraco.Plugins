@@ -1,11 +1,11 @@
 ﻿angular.module("umbraco.resources").factory("cacheResources", function ($http) {
     const baseAuthApiUrl = "/umbraco/backoffice/api/CacheWarmer/";
     function clearCache() {
-        return $http.get(`${baseAuthApiUrl}ClearCache`, { timeout: 360 * 1000 });
+        return $http.post(`${baseAuthApiUrl}ClearCache`, null, { timeout: 360 * 1000 });
     }
 
     function refreshCache() {
-        return $http.get(`${baseAuthApiUrl}RefreshCache`, { timeout: 360 * 1000 });
+        return $http.post(`${baseAuthApiUrl}RefreshCache`, null, { timeout: 360 * 1000 });
     }
 
     function getLatestTask() {

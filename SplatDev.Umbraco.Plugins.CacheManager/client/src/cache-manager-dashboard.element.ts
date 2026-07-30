@@ -82,7 +82,7 @@ export class CacheManagerDashboardElement extends UmbElementMixin(LitElement) {
   private async _clearCache() {
     this._loading = true;
     try {
-      const r = await fetch(`${API_BASE}/ClearCache`);
+      const r = await fetch(`${API_BASE}/ClearCache`, { method: "POST" });
       this._message = r.ok ? "Cache cleared successfully." : "Failed to clear cache.";
     } catch {
       this._message = "Error clearing cache.";
@@ -94,7 +94,7 @@ export class CacheManagerDashboardElement extends UmbElementMixin(LitElement) {
     this._loading = true;
     this._message = "Refreshing cache — this may take a moment...";
     try {
-      const r = await fetch(`${API_BASE}/RefreshCache`);
+      const r = await fetch(`${API_BASE}/RefreshCache`, { method: "POST" });
       this._message = r.ok ? "Cache refreshed successfully." : "Failed to refresh cache.";
       if (r.ok) await this._loadHistory();
     } catch {
@@ -105,7 +105,7 @@ export class CacheManagerDashboardElement extends UmbElementMixin(LitElement) {
 
   private async _clearLog() {
     try {
-      await fetch(`${API_BASE}/ClearLog`);
+      await fetch(`${API_BASE}/ClearLog`, { method: "POST" });
       this._history = [];
       this._message = "Cache log cleared.";
     } catch {

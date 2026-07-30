@@ -42,7 +42,7 @@ namespace SplatDev.Umbraco.Plugins.CacheManager.Controllers
             return Ok(0);
         }
 
-        [HttpGet("clear-cache")]
+        [HttpPost("clear-cache")]
         public async Task<IActionResult> ClearCache()
         {
             await Task.FromResult(0);
@@ -54,7 +54,7 @@ namespace SplatDev.Umbraco.Plugins.CacheManager.Controllers
             return Ok();
         }
 
-        [HttpGet("refresh-cache")]
+        [HttpPost("refresh-cache")]
         public async Task<IActionResult> RefreshCache()
         {
             if (_memoryCache is MemoryCache concreteMemoryCache)
@@ -75,7 +75,7 @@ namespace SplatDev.Umbraco.Plugins.CacheManager.Controllers
             return Ok(history);
         }
 
-        [HttpGet("clear-log")]
+        [HttpPost("clear-log")]
         public async Task<IActionResult> ClearLog()
         {
             await Task.FromResult(0);
