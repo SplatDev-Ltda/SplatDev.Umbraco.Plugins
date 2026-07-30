@@ -1,54 +1,129 @@
 {
   "$schema": "../../umbraco-package-schema.json",
-  "name": "PDF Curator",
-  "version": "1.0.0",
+  "id": "PdfCurator",
+  "name": "Book Library",
+  "version": "2.0.0",
+  "allowPublicAccess": false,
   "extensions": [
     {
-      "type": "dashboard",
-      "alias": "SplatDev.PdfCurator.Dashboard",
-      "name": "PDF Curator Dashboard",
-      "element": "/App_Plugins/PdfCurator/dist/pdf-curator-dashboard.element.js",
-      "elementName": "pdf-curator-dashboard",
-      "weight": 100,
+      "type": "section",
+      "alias": "PdfCurator.Section",
+      "name": "Book Library",
+      "meta": {
+        "label": "#pdfCurator_sectionLabel",
+        "pathname": "pdf-curator"
+      }
+    },
+    {
+      "type": "sectionView",
+      "alias": "PdfCurator.SectionView.Dashboard",
+      "name": "Dashboard",
+      "element": "/App_Plugins/PdfCurator/dist/pdfc-dashboard-wrapper.element.js",
+      "elementName": "pdfc-dashboard-wrapper",
+      "weight": 10,
       "meta": {
         "label": "#pdfCurator_dashboardLabel",
-        "pathname": "pdf-curator"
+        "pathname": "dashboard"
       },
       "conditions": [
         {
           "alias": "Umb.Condition.SectionAlias",
-          "match": "Umb.Section.Settings"
+          "match": "PdfCurator.Section"
+        }
+      ]
+    },
+    {
+      "type": "sectionView",
+      "alias": "PdfCurator.SectionView.Library",
+      "name": "Library",
+      "element": "/App_Plugins/PdfCurator/dist/pdfc-library-wrapper.element.js",
+      "elementName": "pdfc-library-wrapper",
+      "weight": 20,
+      "meta": {
+        "label": "#pdfCurator_libraryLabel",
+        "pathname": "library"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.SectionAlias",
+          "match": "PdfCurator.Section"
+        }
+      ]
+    },
+    {
+      "type": "sectionView",
+      "alias": "PdfCurator.SectionView.Review",
+      "name": "Review",
+      "element": "/App_Plugins/PdfCurator/dist/pdfc-review-wrapper.element.js",
+      "elementName": "pdfc-review-wrapper",
+      "weight": 30,
+      "meta": {
+        "label": "#pdfCurator_reviewLabel",
+        "pathname": "review"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.SectionAlias",
+          "match": "PdfCurator.Section"
+        }
+      ]
+    },
+    {
+      "type": "sectionView",
+      "alias": "PdfCurator.SectionView.Reports",
+      "name": "Reports",
+      "element": "/App_Plugins/PdfCurator/dist/pdfc-reports-wrapper.element.js",
+      "elementName": "pdfc-reports-wrapper",
+      "weight": 40,
+      "meta": {
+        "label": "#pdfCurator_reportsLabel",
+        "pathname": "reports"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.SectionAlias",
+          "match": "PdfCurator.Section"
         }
       ]
     },
     {
       "type": "localization",
-      "alias": "SplatDev.PdfCurator.Localization.En",
-      "name": "PDF Curator — English",
+      "alias": "PdfCurator.Localization.En",
+      "name": "Book Library \u2014 English",
       "meta": {
         "culture": "en",
         "localizations": {
           "section": {
-            "pdfCurator_heading": "PDF Curator",
-            "pdfCurator_description": "Manage PDF digital books and documents",
-            "pdfCurator_library": "Library",
-            "pdfCurator_upload": "Upload PDF"
+            "pdfCurator_sectionLabel": "Book Library",
+            "pdfCurator_dashboardLabel": "Dashboard",
+            "pdfCurator_libraryLabel": "Library",
+            "pdfCurator_reviewLabel": "Review",
+            "pdfCurator_reportsLabel": "Reports",
+            "pdfCurator_heading": "Book Library",
+            "pdfCurator_description": "Manage your digital book and PDF library",
+            "pdfCurator_upload": "Upload PDF",
+            "pdfCurator_comingSoon": "Coming soon \u2014 Phase B will integrate the full PDF Curator component suite."
           }
         }
       }
     },
     {
       "type": "localization",
-      "alias": "SplatDev.PdfCurator.Localization.PtBr",
-      "name": "PDF Curator — Português (Brasil)",
+      "alias": "PdfCurator.Localization.Es",
+      "name": "Book Library \u2014 Espa\u00f1ol",
       "meta": {
-        "culture": "pt-BR",
+        "culture": "es",
         "localizations": {
           "section": {
-            "pdfCurator_heading": "Curador de PDF",
-            "pdfCurator_description": "Gerenciar PDFs e livros digitais",
-            "pdfCurator_library": "Biblioteca",
-            "pdfCurator_upload": "Enviar PDF"
+            "pdfCurator_sectionLabel": "Biblioteca",
+            "pdfCurator_dashboardLabel": "Panel",
+            "pdfCurator_libraryLabel": "Biblioteca",
+            "pdfCurator_reviewLabel": "Revisi\u00f3n",
+            "pdfCurator_reportsLabel": "Informes",
+            "pdfCurator_heading": "Biblioteca",
+            "pdfCurator_description": "Administre su biblioteca digital de libros y PDFs",
+            "pdfCurator_upload": "Subir PDF",
+            "pdfCurator_comingSoon": "Pr\u00f3ximamente \u2014 La Fase B integrar\u00e1 el conjunto completo de componentes PDF Curator."
           }
         }
       }

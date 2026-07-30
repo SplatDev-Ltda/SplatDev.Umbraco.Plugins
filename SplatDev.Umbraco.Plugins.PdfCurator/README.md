@@ -1,6 +1,6 @@
-# PdfCurator
+# Book Library (PdfCurator)
 
-Umbraco PDF curator/manager plugin — upload, import, and manage PDF digital books from the backoffice. Provides a backoffice dashboard for admins to add, process, and browse PDFs with full CRUD. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
+Umbraco 17 backoffice section for managing PDF digital books, documents, and publications. Provides a dedicated **Book Library** section with Dashboard, Library, Review, and Reports views — all built as pluggable Lit web components ready for the full PdfCurator component suite.
 
 Built on top of the `SplatDev.DigitalBookCurator.Core` library which handles PDF parsing, metadata extraction, and digital book storage.
 
@@ -21,7 +21,7 @@ dotnet add package SplatDev.Umbraco.Plugins.PdfCurator
 
 ## Quick Start
 
-Register in `Program.cs` (the `CuratorComposer` auto-wires via Umbraco's `IComposer` discovery):
+Register in `Program.cs` (the `PdfCuratorComposer` auto-wires via Umbraco's `IComposer` discovery):
 
 ```csharp
 builder.CreateUmbracoBuilder()
@@ -39,6 +39,10 @@ Add to `appsettings.json`:
   "ConnectionStrings": {
     "CuratorDb": "Data Source=curator.db"
   },
+  "PdfCurator": {
+    "ApiBase": "/umbraco/pdfcurator/api/v1",
+    "LibraryRoot": "wwwroot/uploads/pdfs"
+  },
   "CuratorSettings": {
     "Origin": "wwwroot\\uploads\\pdfs",
     "Destination": "wwwroot\\ebooks",
@@ -50,6 +54,8 @@ Add to `appsettings.json`:
 | Key | Default | Description |
 |-----|---------|-------------|
 | `ConnectionStrings:CuratorDb` | *(required)* | SQLite connection string for the curator database |
+| `PdfCurator:ApiBase` | `/umbraco/pdfcurator/api/v1` | Base route for the PdfCurator API |
+| `PdfCurator:LibraryRoot` | `wwwroot/uploads/pdfs` | Root folder for the PDF library |
 | `CuratorSettings:Origin` | `wwwroot\uploads\pdfs` | Folder where uploaded PDFs land before processing |
 | `CuratorSettings:Destination` | `wwwroot\ebooks` | Folder where processed digital books are stored |
 | `CuratorSettings:DeleteEmptyFolders` | `false` | Whether to remove empty directories after processing |
@@ -60,13 +66,34 @@ The import folder can also be set via the `Imports` appsetting key. If neither i
 
 The plugin wraps `SplatDev.DigitalBookCurator.Core` and wires it into Umbraco via an `IComposer`:
 
-- **`CuratorComposer`** — registers `CuratorDbContext` (SQLite/EF Core), `IBookRepository`, `BookRepository`, and `FileManagerService` in the DI container. Reads `CuratorSettings` from configuration.
+- **`PdfCuratorComposer`** — registers `CuratorDbContext` (SQLite/EF Core), `IBookRepository`, `BookRepository`, and `FileManagerService` in the DI container. Binds `PdfCuratorOptions` from the `PdfCurator` configuration section.
 - **SQLite database** — stores parsed book metadata and processing state.
-- **Dual backoffice** — AngularJS dashboard for Umbraco 13, Lit (Bellissima) dashboard for Umbraco 17.
+- **Lit web components** — Umbraco 17 (Bellissima) backoffice section built from `client/` (Vite 5 + TypeScript strict + Lit 3).
+
+### Backoffice Section
+
+The plugin registers a **Book Library** section (`PdfCurator.Section`) in the Umbraco backoffice with four menu items:
+
+| View | Element | Description |
+|------|---------|-------------|
+| Dashboard | `pdfc-dashboard-wrapper` | Library overview, KPIs, and pipeline health |
+| Library | `pdfc-library-wrapper` | Browse, search, and manage the PDF collection |
+| Review | `pdfc-review-wrapper` | Review queue for processing uploaded PDFs |
+| Reports | `pdfc-reports-wrapper` | Usage reports and analytics |
+
+Each view renders a placeholder `<pdfc-*>` mount inside `uui-box` chrome — ready for Phase B integration with the full PdfCurator.Web component suite. A token bridge maps `--pdfc-*` custom properties to `--uui-*` design tokens for seamless visual blending.
 
 ### API Controllers
 
-All controllers inherit `Umbraco.Cms.Web.Common.Controllers.ControllerBase` and are available at `/umbraco/backoffice/api/`:
+All controllers require backoffice authentication.
+
+#### `PingController`
+
+| Method | Route | Description |
+|--------|-------|-------------|
+| `GET` | `ping` | Health check — returns `{status:"ok", version}` (200 for authenticated users, 401 anonymously) |
+
+Base route: `/umbraco/pdfcurator/api/v1/`
 
 #### `UploadApiController`
 
@@ -95,14 +122,25 @@ All controllers inherit `Umbraco.Cms.Web.Common.Controllers.ControllerBase` and 
 | `POST` | `UpdateBookAsync` | Update book metadata |
 | `DELETE` | `DeleteBookAsync` | Delete a book and its associated files |
 
-## Backoffice Dashboard
+## Client Build
 
-The plugin adds a **PDF Curator** dashboard under the **Settings** section in the Umbraco backoffice:
+The Lit web components live in `client/` and are built with Vite 5:
 
-- **Umbraco 13**: AngularJS dashboard bundled in `App_Plugins/PdfCurator/`
-- **Umbraco 17**: Lit (Bellissima) web component dashboard built from `client/` (Vite + TypeScript)
+```sh
+cd client
+npm run build      # production build to ../App_Plugins/PdfCurator/dist/
+npm run dev        # build in watch mode
+```
 
-Localized in English (`en`) and Portuguese — Brazil (`pt-BR`).
+Output files:
+- `pdfc-dashboard-wrapper.element.js` — Dashboard view
+- `pdfc-library-wrapper.element.js` — Library view
+- `pdfc-review-wrapper.element.js` — Review queue view
+- `pdfc-reports-wrapper.element.js` — Reports view
+
+## Localization
+
+Localized in English (`en`) and Spanish (`es`).
 
 ## Dependencies
 
