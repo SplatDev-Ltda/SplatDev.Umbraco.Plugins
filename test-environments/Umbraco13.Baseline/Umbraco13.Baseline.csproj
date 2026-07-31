@@ -85,7 +85,6 @@
     <ProjectReference Include="../../SplatDev.Umbraco.Plugins.Payments.BancoInter/SplatDev.Umbraco.Plugins.Payments.BancoInter.csproj" PrivateAssets="none" />
     <ProjectReference Include="../../SplatDev.Umbraco.Plugins.Payments.MercadoPago/SplatDev.Umbraco.Plugins.Payments.MercadoPago.csproj" PrivateAssets="none" />
     <ProjectReference Include="../../SplatDev.Umbraco.Plugins.Payments.PagSeguro/SplatDev.Umbraco.Plugins.Payments.PagSeguro.csproj" PrivateAssets="none" />
-    <ProjectReference Include="../../SplatDev.Umbraco.Plugins.PdfCurator/SplatDev.Umbraco.Plugins.PdfCurator.csproj" PrivateAssets="none" />
     <ProjectReference Include="../../SplatDev.Umbraco.Plugins.PhotoGallery/SplatDev.Umbraco.Plugins.PhotoGallery.csproj" PrivateAssets="none" />
     <ProjectReference Include="../../SplatDev.Umbraco.Plugins.PropertiesReport/SplatDev.Umbraco.Plugins.PropertiesReport.csproj" PrivateAssets="none" />
     <ProjectReference Include="../../SplatDev.Umbraco.Plugins.QuickPoll/SplatDev.Umbraco.Plugins.QuickPoll.csproj" PrivateAssets="none" />
