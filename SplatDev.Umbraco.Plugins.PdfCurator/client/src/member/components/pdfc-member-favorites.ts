@@ -377,16 +377,19 @@ export class PdfcMemberFavorites extends LitElement {
 
     return html`
       <div class="favorites-page">
-        ${this._renderReadingNow()
-          ? html`
-              <section>
-                <h2 class="section-title">
-                  ${t("favorites_reading_now")}
-                </h2>
-                ${this._renderReadingNow()}
-              </section>
-            `
-          : null}
+        ${(() => {
+          const readingNow = this._renderReadingNow();
+          return readingNow
+            ? html`
+                <section>
+                  <h2 class="section-title">
+                    ${t("favorites_reading_now")}
+                  </h2>
+                  ${readingNow}
+                </section>
+              `
+            : null;
+        })()}
         <section>
           <h2 class="section-title">${t("favorites_title")}</h2>
           ${this._renderFavoritesGrid()}

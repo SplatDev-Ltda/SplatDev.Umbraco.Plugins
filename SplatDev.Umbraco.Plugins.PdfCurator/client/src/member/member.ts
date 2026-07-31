@@ -10,7 +10,7 @@ interface PdfCuratorShell extends HTMLElement {
 }
 
 class PdfCuratorApp {
-  private _host: PdfCuratorShell;
+  private _host!: PdfCuratorShell;
 
   constructor() {
     const host = document.getElementById("pdfc-app") as PdfCuratorShell | null;
@@ -75,9 +75,6 @@ class PdfCuratorApp {
   private _closeReader(): void {
     const reader = document.querySelector("pdfc-reader");
     if (reader) reader.remove();
-    this._host
-      .querySelector("pdfc-member-book")
-      ?.setAttribute("bookid", this._host.querySelector("pdfc-member-book")!.getAttribute("bookid") || "");
   }
 
   private _route(): void {

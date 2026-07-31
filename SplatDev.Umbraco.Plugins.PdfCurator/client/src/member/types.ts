@@ -23,6 +23,7 @@ export interface BookDetail extends BookEntry {
 }
 
 export interface ReadingProgress {
+  bookId: number;
   page: number;
   pageCount: number;
   updatedAt: string;

@@ -1,8 +1,8 @@
-import { r as m, t as u, i as _, a as d, b as y, f as x, c as t, d as o, e as g, g as k, n as $, h as C, j as I, k as w, l as P, m as z, o as E, p as F, s as S } from "./chunks/reader-Dw4iFi_B.js";
-var T = Object.defineProperty, R = Object.getOwnPropertyDescriptor, p = (e, r, a, s) => {
-  for (var i = s > 1 ? void 0 : s ? R(r, a) : r, n = e.length - 1, c; n >= 0; n--)
-    (c = e[n]) && (i = (s ? c(r, a, i) : c(i)) || i);
-  return s && i && T(r, a, i), i;
+import { r as m, t as u, i as _, a as d, b as y, f as x, c as a, d as o, e as g, g as k, n as $, h as C, j as I, k as w, l as P, m as z, o as E, p as F, s as S } from "./chunks/reader-CVX3JKbe.js";
+var T = Object.defineProperty, R = Object.getOwnPropertyDescriptor, p = (e, r, t, s) => {
+  for (var i = s > 1 ? void 0 : s ? R(r, t) : r, n = e.length - 1, c; n >= 0; n--)
+    (c = e[n]) && (i = (s ? c(r, t, i) : c(i)) || i);
+  return s && i && T(r, t, i), i;
 };
 let l = class extends y {
   constructor() {
@@ -18,8 +18,8 @@ let l = class extends y {
       sort: this._sort,
       page: this._page
     }).then((e) => {
-      this._books = e.items, this._total = e.total, this._pageSize = e.pageSize, this._state = e.items.length === 0 && !this._query ? "empty" : "loaded";
-      const r = new Set(e.items.map((a) => a.category));
+      this._books = e.items, this._total = e.total, this._pageSize = e.pageSize, this._state = e.items.length === 0 ? "empty" : "loaded";
+      const r = new Set(e.items.map((t) => t.category));
       this._categories = [...r].sort();
     }).catch(() => {
       this._state = "error";
@@ -37,8 +37,8 @@ let l = class extends y {
     this._sort = e.target.value, this._page = 1, this._load();
   }
   _goToPage(e) {
-    var r, a;
-    this._page = e, this._load(), (a = (r = this.shadowRoot) == null ? void 0 : r.querySelector(".library")) == null || a.scrollIntoView({ behavior: "smooth" });
+    var r, t;
+    this._page = e, this._load(), (t = (r = this.shadowRoot) == null ? void 0 : r.querySelector(".library")) == null || t.scrollIntoView({ behavior: "smooth" });
   }
   _onCardClick(e) {
     this.dispatchEvent(
@@ -73,10 +73,10 @@ let l = class extends y {
           <input
             class="search-input"
             type="search"
-            .placeholder=${t("library_search_placeholder")}
+            .placeholder=${a("library_search_placeholder")}
             .value=${this._query}
             @input=${this._onSearchInput}
-            aria-label=${t("library_search_placeholder")}
+            aria-label=${a("library_search_placeholder")}
           />
         </div>
         <select
@@ -85,7 +85,7 @@ let l = class extends y {
           @change=${this._onCategoryChange}
           aria-label="Filter by category"
         >
-          <option value="">${t("library_all_categories")}</option>
+          <option value="">${a("library_all_categories")}</option>
           ${this._categories.map(
       (e) => o`<option value=${e}>${e}</option>`
     )}
@@ -96,9 +96,9 @@ let l = class extends y {
           @change=${this._onSortChange}
           aria-label="Sort books"
         >
-          <option value="recent">${t("library_sort_recent")}</option>
-          <option value="title">${t("library_sort_title")}</option>
-          <option value="author">${t("library_sort_author")}</option>
+          <option value="recent">${a("library_sort_recent")}</option>
+          <option value="title">${a("library_sort_title")}</option>
+          <option value="author">${a("library_sort_author")}</option>
         </select>
       </div>
     `;
@@ -146,7 +146,7 @@ let l = class extends y {
           &laquo;
         </button>
         <span class="page-info"
-          >${t("library_page")} ${this._page} ${t("library_of")}
+          >${a("library_page")} ${this._page} ${a("library_of")}
           ${e}</span
         >
         <button
@@ -165,17 +165,17 @@ let l = class extends y {
         <div class="state">
           <span class="spinner"></span>
         </div>
-      ` : this._state === "error" ? o`<div class="state error-state">${t("library_error")}</div>` : this._state === "empty" && this._query ? o`<div class="state">${t("library_no_results")}</div>` : this._state === "empty" ? o`
+      ` : this._state === "error" ? o`<div class="state error-state">${a("library_error")}</div>` : this._state === "empty" && this._query ? o`<div class="state">${a("library_no_results")}</div>` : this._state === "empty" ? o`
         <div class="state">
           <span class="state-icon" aria-hidden="true">&#128218;</span>
-          ${t("library_empty")}
+          ${a("library_empty")}
         </div>
       ` : null;
   }
   render() {
     return o`
       <div class="library">
-        <h2 class="sr-only">${t("library_title")}</h2>
+        <h2 class="sr-only">${a("library_title")}</h2>
         ${this._renderToolbar()}
         ${this._state === "loaded" ? this._renderGrid() : this._renderEmpty()}
         ${this._renderPagination()}
@@ -438,10 +438,10 @@ p([
 l = p([
   k("pdfc-member-library")
 ], l);
-var q = Object.defineProperty, B = Object.getOwnPropertyDescriptor, f = (e, r, a, s) => {
-  for (var i = s > 1 ? void 0 : s ? B(r, a) : r, n = e.length - 1, c; n >= 0; n--)
-    (c = e[n]) && (i = (s ? c(r, a, i) : c(i)) || i);
-  return s && i && q(r, a, i), i;
+var B = Object.defineProperty, D = Object.getOwnPropertyDescriptor, f = (e, r, t, s) => {
+  for (var i = s > 1 ? void 0 : s ? D(r, t) : r, n = e.length - 1, c; n >= 0; n--)
+    (c = e[n]) && (i = (s ? c(r, t, i) : c(i)) || i);
+  return s && i && B(r, t, i), i;
 };
 let b = class extends y {
   constructor() {
@@ -514,7 +514,7 @@ let b = class extends y {
   _renderError() {
     return o`
       <div class="error-state">
-        <p>${t("book_error")}</p>
+        <p>${a("book_error")}</p>
         <button class="btn" @click=${this._load}>Retry</button>
       </div>
     `;
@@ -542,27 +542,27 @@ let b = class extends y {
               class="btn btn-primary"
               href=${z(this.bookId)}
               download
-              >${t("book_download")}</a
+              >${a("book_download")}</a
             >
             ${e.readingProgress ? o`
                   <button class="btn btn-primary" @click=${this._openReader}>
-                    ${t("book_continue_reading", {
+                    ${a("book_continue_reading", {
       page: e.readingProgress.page
     })}
                   </button>
                 ` : o`
                   <button class="btn btn-primary" @click=${this._openReader}>
-                    ${t("book_start_reading")}
+                    ${a("book_start_reading")}
                   </button>
                 `}
             <button
               class="btn ${e.isFavorite ? "btn-favorite" : ""}"
               @click=${this._toggleFavorite}
               ?disabled=${this._savingFavorite}
-              .aria-label=${e.isFavorite ? t("book_favorite_remove") : t("book_favorite_add")}
+              .aria-label=${e.isFavorite ? a("book_favorite_remove") : a("book_favorite_add")}
             >
               ${e.isFavorite ? "★" : "☆"}
-              ${e.isFavorite ? t("book_favorite_remove") : t("book_favorite_add")}
+              ${e.isFavorite ? a("book_favorite_remove") : a("book_favorite_add")}
             </button>
           </div>
           ${e.readingProgress ? o`
@@ -570,31 +570,31 @@ let b = class extends y {
                   <div class="progress-fill" style="width:${r}%"></div>
                 </div>
                 <p class="progress-text">
-                  ${t("book_continue_reading", { page: e.readingProgress.page })}
+                  ${a("book_continue_reading", { page: e.readingProgress.page })}
                 </p>
               ` : null}
         </div>
         <div class="main">
           <button class="back-link" @click=${this._navigateBack}>
-            &larr; ${t("library_title")}
+            &larr; ${a("library_title")}
           </button>
           <div class="header">
             <h1 class="title">${e.title}</h1>
             <div class="meta">
               <span class="meta-item"
-                ><span class="meta-label">${t("book_author")}:</span>
+                ><span class="meta-label">${a("book_author")}:</span>
                 ${e.author}</span
               >
               <span class="meta-item"
-                ><span class="meta-label">${t("book_category")}:</span>
+                ><span class="meta-label">${a("book_category")}:</span>
                 ${e.category}</span
               >
               <span class="meta-item"
-                ><span class="meta-label">${t("book_pages")}:</span>
+                ><span class="meta-label">${a("book_pages")}:</span>
                 ${e.pageCount}</span
               >
               <span class="meta-item"
-                ><span class="meta-label">${t("book_added")}:</span>
+                ><span class="meta-label">${a("book_added")}:</span>
                 ${this._formatDate(e.createdAt)}</span
               >
             </div>
@@ -608,7 +608,7 @@ let b = class extends y {
   _renderSimilarSection() {
     return this._similar.length ? o`
       <section>
-        <h2 class="section-title">${t("book_similar_title")}</h2>
+        <h2 class="section-title">${a("book_similar_title")}</h2>
         <div class="similar-rail">
           ${this._similar.map(
       (e) => o`
@@ -918,10 +918,10 @@ f([
 b = f([
   k("pdfc-member-book")
 ], b);
-var D = Object.defineProperty, L = Object.getOwnPropertyDescriptor, v = (e, r, a, s) => {
-  for (var i = s > 1 ? void 0 : s ? L(r, a) : r, n = e.length - 1, c; n >= 0; n--)
-    (c = e[n]) && (i = (s ? c(r, a, i) : c(i)) || i);
-  return s && i && D(r, a, i), i;
+var L = Object.defineProperty, j = Object.getOwnPropertyDescriptor, v = (e, r, t, s) => {
+  for (var i = s > 1 ? void 0 : s ? j(r, t) : r, n = e.length - 1, c; n >= 0; n--)
+    (c = e[n]) && (i = (s ? c(r, t, i) : c(i)) || i);
+  return s && i && L(r, t, i), i;
 };
 let h = class extends y {
   constructor() {
@@ -961,7 +961,7 @@ let h = class extends y {
     );
   }
   _openReader(e) {
-    const r = this._favorites.find((a) => a.bookId === e);
+    const r = this._favorites.find((t) => t.bookId === e);
     this.dispatchEvent(
       new CustomEvent("pdfc-open-reader", {
         detail: { bookId: e, title: r == null ? void 0 : r.bookTitle },
@@ -982,7 +982,7 @@ let h = class extends y {
     return e.length ? o`
       <div>
         ${e.map((r) => {
-      const a = this._readingProgressFor(r.bookId);
+      const t = this._readingProgressFor(r.bookId);
       return o`
             <div
               class="reading-item"
@@ -1003,16 +1003,16 @@ let h = class extends y {
               <div class="reading-info">
                 <p class="reading-title">${r.bookTitle}</p>
                 <p class="reading-author">${r.bookAuthor}</p>
-                ${a ? o`<p class="reading-progress">
-                      ${t("reader_page")} ${a.page}
-                      ${t("reader_of")} ${a.pageCount}
+                ${t ? o`<p class="reading-progress">
+                      ${a("reader_page")} ${t.page}
+                      ${a("reader_of")} ${t.pageCount}
                     </p>` : null}
               </div>
             </div>
           `;
     })}
       </div>
-    ` : o`<div class="state">${t("favorites_no_reading")}</div>`;
+    ` : o`<div class="state">${a("favorites_no_reading")}</div>`;
   }
   _renderFavoritesGrid() {
     return this._favorites.length ? o`
@@ -1046,7 +1046,7 @@ let h = class extends y {
       }}
                     ?disabled=${this._removingId === e.bookId}
                   >
-                    ${t("book_favorite_remove")}
+                    ${a("book_favorite_remove")}
                   </button>
                 </div>
               </div>
@@ -1054,21 +1054,24 @@ let h = class extends y {
           `
     )}
       </div>
-    ` : o`<div class="state">${t("favorites_no_favorites")}</div>`;
+    ` : o`<div class="state">${a("favorites_no_favorites")}</div>`;
   }
   render() {
-    return this._state === "loading" ? o`<div class="state"><span class="spinner"></span></div>` : this._state === "error" ? o`<div class="error-state">${t("favorites_error")}</div>` : o`
+    return this._state === "loading" ? o`<div class="state"><span class="spinner"></span></div>` : this._state === "error" ? o`<div class="error-state">${a("favorites_error")}</div>` : o`
       <div class="favorites-page">
-        ${this._renderReadingNow() ? o`
-              <section>
-                <h2 class="section-title">
-                  ${t("favorites_reading_now")}
-                </h2>
-                ${this._renderReadingNow()}
-              </section>
-            ` : null}
+        ${(() => {
+      const e = this._renderReadingNow();
+      return e ? o`
+                <section>
+                  <h2 class="section-title">
+                    ${a("favorites_reading_now")}
+                  </h2>
+                  ${e}
+                </section>
+              ` : null;
+    })()}
         <section>
-          <h2 class="section-title">${t("favorites_title")}</h2>
+          <h2 class="section-title">${a("favorites_title")}</h2>
           ${this._renderFavoritesGrid()}
         </section>
       </div>
@@ -1279,7 +1282,7 @@ v([
 h = v([
   k("pdfc-member-favorites")
 ], h);
-class j {
+class O {
   constructor() {
     const r = document.getElementById("pdfc-app");
     if (!r) {
@@ -1287,8 +1290,8 @@ class j {
       return;
     }
     this._host = r;
-    const a = r.dataset.lang || "en";
-    S(a), this._listen(), this._route();
+    const t = r.dataset.lang || "en";
+    S(t), this._listen(), this._route();
   }
   _listen() {
     document.addEventListener("pdfc-navigate", (r) => {
@@ -1309,22 +1312,21 @@ class j {
     this._host.innerHTML = `<pdfc-member-book bookId="${r}"></pdfc-member-book>`, window.scrollTo({ top: 0, behavior: "smooth" });
   }
   _openReader(r) {
-    const a = document.querySelector("pdfc-reader");
-    a && a.remove();
+    const t = document.querySelector("pdfc-reader");
+    t && t.remove();
     const s = document.createElement("pdfc-reader");
     s.bookId = r.bookId, s.bookTitle = r.title || "", document.body.appendChild(s);
   }
   _closeReader() {
-    var a;
     const r = document.querySelector("pdfc-reader");
-    r && r.remove(), (a = this._host.querySelector("pdfc-member-book")) == null || a.setAttribute("bookid", this._host.querySelector("pdfc-member-book").getAttribute("bookid") || "");
+    r && r.remove();
   }
   _route() {
     const r = window.location.hash.replace("#", "");
     if (r.startsWith("book/")) {
-      const a = parseInt(r.split("/")[1], 10);
-      if (!isNaN(a)) {
-        this._showBook(a);
+      const t = parseInt(r.split("/")[1], 10);
+      if (!isNaN(t)) {
+        this._showBook(t);
         return;
       }
     }
@@ -1335,11 +1337,11 @@ class j {
     this._showLibrary();
   }
 }
-const O = new j();
-Object.assign(window, { __pdfCuratorApp: O });
+const q = new O();
+Object.assign(window, { __pdfCuratorApp: q });
 export {
-  j as PdfCuratorApp,
+  O as PdfCuratorApp,
   S as setLanguage,
-  t
+  a as t
 };
 //# sourceMappingURL=member.js.map

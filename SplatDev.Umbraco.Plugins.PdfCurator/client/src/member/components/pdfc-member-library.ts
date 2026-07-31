@@ -264,7 +264,7 @@ export class PdfcMemberLibrary extends LitElement {
         this._books = res.items;
         this._total = res.total;
         this._pageSize = res.pageSize;
-        this._state = res.items.length === 0 && !this._query ? "empty" : "loaded";
+        this._state = res.items.length === 0 ? "empty" : "loaded";
         const cats = new Set(res.items.map((b) => b.category));
         this._categories = [...cats].sort();
       })

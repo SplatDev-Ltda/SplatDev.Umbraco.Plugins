@@ -226,16 +226,19 @@ export class PdfcReader extends LitElement {
   private _progressTimer: ReturnType<typeof setTimeout> | null = null;
   private _focusTrapEl: HTMLElement | null = null;
   private _pinchDist = 0;
+  private _pendingRender = false;
 
   override connectedCallback(): void {
     super.connectedCallback();
     document.addEventListener("keydown", this._onKeyDown);
+    document.addEventListener("keydown", this._onFocusTrap);
     this._load();
   }
 
   override disconnectedCallback(): void {
     super.disconnectedCallback();
     document.removeEventListener("keydown", this._onKeyDown);
+    document.removeEventListener("keydown", this._onFocusTrap);
     if (this._progressTimer) clearTimeout(this._progressTimer);
     this._pdfDoc = null;
   }
@@ -258,7 +261,7 @@ export class PdfcReader extends LitElement {
       this._pdfDoc = (await loadingTask.promise) as PDFDocumentProxy;
       this._numPages = this._pdfDoc.numPages;
       this._state = "loaded";
-      await this._renderPage();
+      this._pendingRender = true;
     } catch {
       this._state = "error";
     }
@@ -326,6 +329,29 @@ export class PdfcReader extends LitElement {
     }
   };
 
+  private _onFocusTrap = (e: KeyboardEvent): void => {
+    if (e.key !== "Tab") return;
+    const root = this.shadowRoot;
+    if (!root) return;
+    const focusable = root.querySelectorAll<HTMLElement>(
+      'button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey) {
+      if (root.activeElement === first || root.activeElement === this._focusTrapEl) {
+        e.preventDefault();
+        last.focus();
+      }
+    } else {
+      if (root.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  };
+
   private _onPageInput(e: Event): void {
     const val = parseInt((e.target as HTMLInputElement).value, 10);
     if (!isNaN(val)) this._goToPage(val);
@@ -370,9 +396,9 @@ export class PdfcReader extends LitElement {
     this._pinchDist = 0;
   }
 
-  private _close(): void {
+  private async _close(): Promise<void> {
     if (this._progressTimer) clearTimeout(this._progressTimer);
-    updateProgress(this.bookId, this._page).catch(() => {});
+    await updateProgress(this.bookId, this._page).catch(() => {});
     this.dispatchEvent(
       new CustomEvent("pdfc-close-reader", {
         bubbles: true,
@@ -517,6 +543,10 @@ export class PdfcReader extends LitElement {
 
   protected override updated(): void {
     this._canvasEl = this.shadowRoot?.querySelector("canvas") ?? null;
+    if (this._pendingRender && this._canvasEl && this._pdfDoc) {
+      this._pendingRender = false;
+      this._renderPage();
+    }
   }
 }
 

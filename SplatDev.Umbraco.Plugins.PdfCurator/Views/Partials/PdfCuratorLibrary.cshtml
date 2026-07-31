@@ -1,6 +1,4 @@
-@using Umbraco.Cms.Core.Security
-@using Umbraco.Cms.Web.Common.Security
-@inject IMemberSignInManager _memberSignInManager
+@using System.Web
 @{
     var isLoggedIn = Context.User?.Identity?.IsAuthenticated == true;
     var lang = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
@@ -13,7 +11,7 @@
         <div class="pdfc-login-prompt">
             <h2>Member Library</h2>
             <p>Please log in to access the PDF library.</p>
-            <a href="/login?returnUrl=@Context.Request.Path" class="pdfc-login-btn">Log In</a>
+            <a href="/login?returnUrl=@HttpUtility.UrlEncode(Context.Request.Path)" class="pdfc-login-btn">Log In</a>
         </div>
     }
     else
