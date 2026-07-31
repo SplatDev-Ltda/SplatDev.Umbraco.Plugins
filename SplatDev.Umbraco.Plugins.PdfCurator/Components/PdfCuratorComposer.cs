@@ -9,6 +9,7 @@ using PdfCurator.Core.Data;
 using SplatDev.Umbraco.Plugins.PdfCurator.Authorization;
 using SplatDev.Umbraco.Plugins.PdfCurator.Migrations;
 using SplatDev.Umbraco.Plugins.PdfCurator.Models;
+using SplatDev.Umbraco.Plugins.PdfCurator.Services;
 
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
@@ -50,5 +51,8 @@ public class PdfCuratorComposer : IComposer
 
         builder.AddNotificationAsyncHandler<UmbracoApplicationStartingNotification, PdfCuratorDatabaseHandler>();
 #endif
+
+        builder.Services.AddScoped<MemberGroupScopingService>();
+        builder.Services.AddMemoryCache();
     }
 }

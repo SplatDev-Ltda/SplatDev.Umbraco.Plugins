@@ -5,6 +5,7 @@ using PdfCurator.Core.Data;
 using PdfCurator.Core.Entities;
 
 using SplatDev.Umbraco.Plugins.PdfCurator.Authorization;
+using SplatDev.Umbraco.Plugins.PdfCurator.Services;
 
 namespace SplatDev.Umbraco.Plugins.PdfCurator.Controllers.Member;
 
@@ -14,10 +15,14 @@ namespace SplatDev.Umbraco.Plugins.PdfCurator.Controllers.Member;
 public class MemberBooksController : ControllerBase
 {
     private readonly IDbContextFactory<CuratorDbContext> _dbFactory;
+    private readonly MemberGroupScopingService _scopingService;
 
-    public MemberBooksController(IDbContextFactory<CuratorDbContext> dbFactory)
+    public MemberBooksController(
+        IDbContextFactory<CuratorDbContext> dbFactory,
+        MemberGroupScopingService scopingService)
     {
         _dbFactory = dbFactory;
+        _scopingService = scopingService;
     }
 
     [HttpGet]
@@ -32,6 +37,13 @@ public class MemberBooksController : ControllerBase
     {
         await using var db = await _dbFactory.CreateDbContextAsync(ct);
         var books = db.Books.Where(b => b.Status == BookStatus.Filed);
+
+        if (_scopingService.IsConfigured())
+        {
+            var allowedCategories = await _scopingService.GetAllowedCategoriesAsync();
+            var categoriesList = allowedCategories.ToList();
+            books = books.Where(b => b.Category != null && categoriesList.Contains(b.Category));
+        }
 
         if (!string.IsNullOrWhiteSpace(query))
         {
@@ -114,6 +126,11 @@ public class MemberBooksController : ControllerBase
             return NotFound(new { error = "Book not found." });
         }
 
+        if (!await IsCategoryAllowedAsync(book.Category))
+        {
+            return NotFound(new { error = "Book not found." });
+        }
+
         return Ok(book);
     }
 
@@ -123,10 +140,15 @@ public class MemberBooksController : ControllerBase
         await using var db = await _dbFactory.CreateDbContextAsync(ct);
         var book = await db.Books
             .Where(b => b.Id == id)
-            .Select(b => new { b.Sha256, b.Thumbnail })
+            .Select(b => new { b.Sha256, b.Thumbnail, b.Category })
             .FirstOrDefaultAsync(ct);
 
         if (book is null || book.Thumbnail.Length == 0)
+        {
+            return NotFound();
+        }
+
+        if (!await IsCategoryAllowedAsync(book.Category))
         {
             return NotFound();
         }
@@ -150,12 +172,17 @@ public class MemberBooksController : ControllerBase
         await using var db = await _dbFactory.CreateDbContextAsync(ct);
         var book = await db.Books
             .Where(b => b.Id == id && b.Status == BookStatus.Filed)
-            .Select(b => new { b.Sha256, b.LibraryPath, b.SourcePath })
+            .Select(b => new { b.Sha256, b.LibraryPath, b.SourcePath, b.Category })
             .FirstOrDefaultAsync(ct);
 
         if (book is null)
         {
             return NotFound(new { error = "Book not found or not available." });
+        }
+
+        if (!await IsCategoryAllowedAsync(book.Category))
+        {
+            return NotFound(new { error = "Book not found." });
         }
 
         var filePath = book.LibraryPath ?? book.SourcePath;
@@ -178,5 +205,21 @@ public class MemberBooksController : ControllerBase
             "application/pdf",
             fileInfo.Name,
             enableRangeProcessing: true);
+    }
+
+    private async Task<bool> IsCategoryAllowedAsync(string? category)
+    {
+        if (!_scopingService.IsConfigured() || string.IsNullOrEmpty(category))
+        {
+            return true;
+        }
+
+        var allowedCategories = await _scopingService.GetAllowedCategoriesAsync();
+        if (allowedCategories.Count == 0)
+        {
+            return true;
+        }
+
+        return allowedCategories.Contains(category);
     }
 }

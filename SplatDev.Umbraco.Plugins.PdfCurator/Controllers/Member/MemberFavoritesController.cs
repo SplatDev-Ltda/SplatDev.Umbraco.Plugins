@@ -44,8 +44,8 @@ public class MemberFavoritesController : ControllerBase
         return Ok(favs);
     }
 
-    [HttpPost("{bookId:int}")]
-    public async Task<IActionResult> ToggleFavorite(int bookId, CancellationToken ct = default)
+    [HttpPut("{bookId:int}")]
+    public async Task<IActionResult> AddFavorite(int bookId, CancellationToken ct = default)
     {
         var memberKey = await GetMemberKeyAsync();
         if (memberKey is null)
@@ -59,9 +59,7 @@ public class MemberFavoritesController : ControllerBase
 
         if (existing is not null)
         {
-            db.Favorites.Remove(existing);
-            await db.SaveChangesAsync(ct);
-            return Ok(new { favorited = false, bookId });
+            return Ok(new { favorited = true, bookId });
         }
 
         db.Favorites.Add(new MemberFavorite { MemberKey = memberKey.Value, BookId = bookId });

@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 using PdfCurator.Core.Data;
 using PdfCurator.Core.Entities;
 
 using SplatDev.Umbraco.Plugins.PdfCurator.Authorization;
+using SplatDev.Umbraco.Plugins.PdfCurator.Services;
 
 namespace SplatDev.Umbraco.Plugins.PdfCurator.Controllers.Member;
 
@@ -13,16 +15,31 @@ namespace SplatDev.Umbraco.Plugins.PdfCurator.Controllers.Member;
 [Route("umbraco/pdfcurator/api/v1/member/books")]
 public class MemberSimilarController : ControllerBase
 {
-    private readonly IDbContextFactory<CuratorDbContext> _dbFactory;
+    private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(10);
 
-    public MemberSimilarController(IDbContextFactory<CuratorDbContext> dbFactory)
+    private readonly IDbContextFactory<CuratorDbContext> _dbFactory;
+    private readonly IMemoryCache _cache;
+    private readonly MemberGroupScopingService _scopingService;
+
+    public MemberSimilarController(
+        IDbContextFactory<CuratorDbContext> dbFactory,
+        IMemoryCache cache,
+        MemberGroupScopingService scopingService)
     {
         _dbFactory = dbFactory;
+        _cache = cache;
+        _scopingService = scopingService;
     }
 
     [HttpGet("{id:int}/similar")]
     public async Task<IActionResult> GetSimilar(int id, CancellationToken ct = default)
     {
+        var cacheKey = $"similar_{id}";
+        if (_cache.TryGetValue(cacheKey, out List<object>? cached) && cached is not null)
+        {
+            return Ok(cached);
+        }
+
         await using var db = await _dbFactory.CreateDbContextAsync(ct);
         var book = await db.Books
             .Where(b => b.Id == id && b.Status == BookStatus.Filed)
@@ -30,6 +47,11 @@ public class MemberSimilarController : ControllerBase
             .FirstOrDefaultAsync(ct);
 
         if (book is null)
+        {
+            return NotFound(new { error = "Book not found." });
+        }
+
+        if (!await IsCategoryAllowedAsync(book.Category))
         {
             return NotFound(new { error = "Book not found." });
         }
@@ -46,8 +68,17 @@ public class MemberSimilarController : ControllerBase
             return Ok(new List<object>());
         }
 
-        var candidates = await db.Books
-            .Where(b => b.Status == BookStatus.Filed && b.Id != id)
+        var candidatesQuery = db.Books
+            .Where(b => b.Status == BookStatus.Filed && b.Id != id);
+
+        if (_scopingService.IsConfigured())
+        {
+            var allowedCategories = await _scopingService.GetAllowedCategoriesAsync();
+            var categoriesList = allowedCategories.ToList();
+            candidatesQuery = candidatesQuery.Where(b => b.Category != null && categoriesList.Contains(b.Category));
+        }
+
+        var candidates = await candidatesQuery
             .Select(b => new
             {
                 b.Id,
@@ -96,8 +127,26 @@ public class MemberSimilarController : ControllerBase
             .OrderByDescending(x => x.Score)
             .ThenBy(x => x.Title)
             .Take(5)
-            .ToList();
+            .ToList<object>();
+
+        _cache.Set(cacheKey, scored, CacheDuration);
 
         return Ok(scored);
+    }
+
+    private async Task<bool> IsCategoryAllowedAsync(string? category)
+    {
+        if (!_scopingService.IsConfigured() || string.IsNullOrEmpty(category))
+        {
+            return true;
+        }
+
+        var allowedCategories = await _scopingService.GetAllowedCategoriesAsync();
+        if (allowedCategories.Count == 0)
+        {
+            return true;
+        }
+
+        return allowedCategories.Contains(category);
     }
 }
