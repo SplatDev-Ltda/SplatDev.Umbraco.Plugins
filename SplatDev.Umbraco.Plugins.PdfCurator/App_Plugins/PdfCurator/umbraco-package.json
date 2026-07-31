@@ -2,7 +2,7 @@
   "$schema": "../../umbraco-package-schema.json",
   "id": "PdfCurator",
   "name": "Book Library",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "allowPublicAccess": false,
   "extensions": [
     {
@@ -12,6 +12,18 @@
       "meta": {
         "label": "#pdfCurator_sectionLabel",
         "pathname": "pdf-curator"
+      }
+    },
+    {
+      "type": "importmap",
+      "alias": "PdfCurator.ImportMap.PdfCuratorWeb",
+      "name": "PdfCurator.Web Import Map",
+      "meta": {
+        "importMap": {
+          "imports": {
+            "pdfcurator-web": "/_content/PdfCurator.Web/pdfc.js"
+          }
+        }
       }
     },
     {
@@ -101,8 +113,7 @@
             "reportsLabel": "Reports",
             "heading": "Book Library",
             "description": "Manage your digital book and PDF library",
-            "upload": "Upload PDF",
-            "comingSoon": "Coming soon — Phase B will integrate the full PDF Curator component suite."
+            "upload": "Upload PDF"
           }
         }
       }
@@ -122,8 +133,7 @@
             "reportsLabel": "Informes",
             "heading": "Biblioteca",
             "description": "Administre su biblioteca digital de libros y PDFs",
-            "upload": "Subir PDF",
-            "comingSoon": "Próximamente — La Fase B integrará el conjunto completo de componentes PDF Curator."
+            "upload": "Subir PDF"
           }
         }
       }

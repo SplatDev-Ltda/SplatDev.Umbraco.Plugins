@@ -45,7 +45,7 @@ jobs:
           PASS_COUNT=0
           FAILED=""
           for csproj in $(find . -maxdepth 3 -name "SplatDev.Umbraco.Plugins.*.csproj" \
-            | grep -v "Tests\|BackupManager\|FormsClone\|obj\|bin\|CodeFirst\|PdfCurator" \
+            | grep -v "Tests\|BackupManager\|FormsClone\|obj\|bin\|CodeFirst" \
             | sort); do
             name=$(basename "$csproj" .csproj)
             # Some publishable plugins (e.g. Getnet, Santander, Schema2Yaml)
