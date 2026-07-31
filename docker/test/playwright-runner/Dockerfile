@@ -35,4 +35,8 @@ RUN mkdir -p /output/screenshots/u13 /output/screenshots/u17 /output/test-result
 
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+    CMD pgrep -f run-screenshots || exit 1
+
+USER pwuser
 CMD ["/app/scripts/run-screenshots.sh"]
