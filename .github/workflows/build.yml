@@ -8,10 +8,15 @@ on:
 
 env:
   DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: 1
+  # nuget.config resolves the github-splatdevtech feed credentials from these
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
 
     steps:
       - uses: actions/checkout@v4
