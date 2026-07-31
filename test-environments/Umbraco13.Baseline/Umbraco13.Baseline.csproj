@@ -129,5 +129,6 @@
     <ProjectReference Include="../../SplatDev.Umbraco.Tools.PackageActions/SplatDev.Umbraco.Tools.PackageActions.csproj" PrivateAssets="none" />
     <ProjectReference Include="../../SplatDev.Umbraco.Tools.T4.Plugins/SplatDev.Umbraco.Tools.T4.Plugins.csproj" PrivateAssets="none" />
     <ProjectReference Include="../../SplatDev.Umbraco.Tools.T4.Themes/SplatDev.Umbraco.Tools.T4.Themes.csproj" PrivateAssets="none" />
+  <ProjectReference Include="../../SplatDev.Umbraco.Plugins.PdfCurator/SplatDev.Umbraco.Plugins.PdfCurator.csproj" PrivateAssets="none" />
   </ItemGroup>
 </Project>
