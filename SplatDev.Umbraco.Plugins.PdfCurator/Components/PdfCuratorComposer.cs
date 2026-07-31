@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 #if NET10_0_OR_GREATER
 using PdfCurator.Core.Data;
@@ -24,8 +25,16 @@ public class PdfCuratorComposer : IComposer
         builder.Services.Configure<PdfCuratorOptions>(
             builder.Config.GetSection(PdfCuratorOptions.SectionName));
 
+        // Default DBs live under the host's umbraco/Data. Paths must be ABSOLUTE:
+        // Umbraco sets the DataDirectory AppDomain property, and Microsoft.Data.Sqlite
+        // resolves relative Data Source paths against it, not the content root.
+        var dataDir = Path.Combine(
+            builder.Config[HostDefaults.ContentRootKey] ?? Directory.GetCurrentDirectory(),
+            "umbraco",
+            "Data");
+
         var memberDbPath = builder.Config["ConnectionStrings:PdfCuratorMemberDb"]
-            ?? "Data Source=Data/Umbraco/pdfcurator-member.db";
+            ?? $"Data Source={Path.Combine(dataDir, "pdfcurator-member.db")}";
 
         builder.Services.AddDbContextFactory<MemberDbContext>(o =>
             o.UseSqlite(memberDbPath));
@@ -34,7 +43,7 @@ public class PdfCuratorComposer : IComposer
 
 #if NET10_0_OR_GREATER
         var curatorDbPath = builder.Config["ConnectionStrings:PdfCuratorDb"]
-            ?? "Data Source=Data/Umbraco/pdfcurator.db";
+            ?? $"Data Source={Path.Combine(dataDir, "pdfcurator.db")}";
 
         builder.Services.AddDbContextFactory<CuratorDbContext>(o =>
             o.UseSqlite(curatorDbPath));
