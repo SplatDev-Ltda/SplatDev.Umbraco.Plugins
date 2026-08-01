@@ -44,7 +44,7 @@ export abstract class PdfcSectionWrapper extends UmbElementMixin(LitElement) {
               style="font-size:3rem;color:var(--uui-color-danger)"
             ></uui-icon>
             <p>
-              Failed to load Book Library components. Please rebuild the
+              Failed to load PdfCurator components. Please rebuild the
               project and ensure PdfCurator.Web is installed.
             </p>
           </div>
@@ -57,7 +57,7 @@ export abstract class PdfcSectionWrapper extends UmbElementMixin(LitElement) {
         <uui-box headline="${this.headline}">
           <div class="loading-state">
             <uui-loader-circle></uui-loader-circle>
-            <p>Loading Book Library components…</p>
+            <p>Loading PdfCurator components…</p>
           </div>
         </uui-box>
       `;

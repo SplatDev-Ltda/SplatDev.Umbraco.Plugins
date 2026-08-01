@@ -15,18 +15,6 @@
       }
     },
     {
-      "type": "importmap",
-      "alias": "PdfCurator.ImportMap.PdfCuratorWeb",
-      "name": "PdfCurator.Web Import Map",
-      "meta": {
-        "importMap": {
-          "imports": {
-            "pdfcurator-web": "/_content/PdfCurator.Web/pdfc.js"
-          }
-        }
-      }
-    },
-    {
       "type": "sectionView",
       "alias": "PdfCurator.SectionView.Dashboard",
       "name": "Dashboard",
