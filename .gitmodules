@@ -1,0 +1,3 @@
+[submodule "samples/Umbraco17"]
+	path = samples/Umbraco17
+	url = https://github.com/splatdevtech/pdf-curator.git
