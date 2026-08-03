@@ -51,6 +51,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<EmbeddedResource Include="App_Plugins\**\*" />
+		<None Include="Views\**\*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
 		<None Include="umbraco-marketplace.json" Pack="true" PackagePath="\" />
 		<None Include="README.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
