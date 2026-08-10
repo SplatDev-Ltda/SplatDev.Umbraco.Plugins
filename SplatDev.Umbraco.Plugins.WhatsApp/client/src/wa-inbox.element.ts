@@ -45,11 +45,14 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
       }
 
       .list {
-        border: 1px solid var(--uui-color-border);
-        border-radius: var(--uui-border-radius, 3px);
+        border: 1px solid var(--wa-hairline);
+        border-radius: var(--wa-radius);
         background: var(--uui-color-surface);
+        box-shadow: var(--wa-shadow);
         max-height: 70vh;
         overflow-y: auto;
+        /* Keeps the first/last row corners inside the rounded container. */
+        overflow-x: hidden;
       }
 
       .thread {
@@ -57,16 +60,23 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
         width: 100%;
         text-align: left;
         border: 0;
-        border-bottom: 1px solid var(--uui-color-border);
+        border-bottom: 1px solid var(--wa-hairline);
         background: transparent;
         color: inherit;
         font: inherit;
         padding: var(--uui-size-space-4, 12px);
         cursor: pointer;
+        /* Comfortably above the 44px touch target minimum. */
+        min-height: 56px;
+        transition: background 140ms var(--wa-ease);
+      }
+
+      .thread:last-child {
+        border-bottom: 0;
       }
 
       .thread:hover {
-        background: var(--uui-color-surface-alt);
+        background: color-mix(in srgb, var(--uui-color-surface-alt) 70%, transparent);
       }
 
       .thread[aria-current="true"] {
@@ -120,23 +130,27 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
       }
 
       .pane {
-        border: 1px solid var(--uui-color-border);
-        border-radius: var(--uui-border-radius, 3px);
+        border: 1px solid var(--wa-hairline);
+        border-radius: var(--wa-radius);
         background: var(--uui-color-surface);
+        box-shadow: var(--wa-shadow);
         display: flex;
         flex-direction: column;
         min-height: 400px;
         max-height: 70vh;
+        overflow: hidden;
       }
 
       .pane-head {
         padding: var(--uui-size-space-4, 12px);
-        border-bottom: 1px solid var(--uui-color-border);
+        border-bottom: 1px solid var(--wa-hairline);
         display: flex;
         justify-content: space-between;
         align-items: center;
         gap: 8px;
         flex-wrap: wrap;
+        /* Subtle lift so the header reads as fixed while the transcript scrolls. */
+        background: color-mix(in srgb, var(--uui-color-surface-alt) 35%, var(--uui-color-surface));
       }
 
       .transcript {
@@ -149,25 +163,39 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
       }
 
       .bubble {
-        max-width: 78%;
+        max-width: min(78%, 62ch);
         padding: var(--uui-size-space-3, 8px) var(--uui-size-space-4, 12px);
-        border-radius: 10px;
+        /* Asymmetric radius: the corner nearest the speaker is squared, which is the
+           familiar chat idiom and makes direction readable without colour alone. */
+        border-radius: 12px;
         font-size: 0.875rem;
-        line-height: 1.45;
+        line-height: 1.5;
         overflow-wrap: anywhere;
         white-space: pre-wrap;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.04);
+        animation: bubble-in 200ms var(--wa-ease) both;
+      }
+
+      @keyframes bubble-in {
+        from {
+          opacity: 0;
+          transform: translateY(4px);
+        }
       }
 
       .bubble.in {
         align-self: flex-start;
+        border-bottom-left-radius: 4px;
         background: var(--uui-color-surface-alt);
-        border: 1px solid var(--uui-color-border);
+        border: 1px solid var(--wa-hairline);
       }
 
       /* WhatsApp brand green, with an explicit dark foreground so it stays
-         readable in both light and dark backoffice themes. */
+         readable in both light and dark backoffice themes. Fixed rather than tokenised
+         on purpose: operators read direction by this colour, and it must not invert. */
       .bubble.out {
         align-self: flex-end;
+        border-bottom-right-radius: 4px;
         background: #d9fdd3;
         color: #111b21;
         border: 1px solid #b9e7b0;
@@ -233,14 +261,42 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
   @state() private _loadingThread = false;
   @state() private _sending = false;
 
+  /** Heartbeat + refresh timers, cleared on disconnect so a closed tab stops reporting presence. */
+  #heartbeatTimer?: number;
+  #refreshTimer?: number;
+
   override connectedCallback() {
     super.connectedCallback();
     void this.#loadConversations();
+
+    // Tell the server the inbox is being watched, which suppresses the
+    // unattended-message email. Fires immediately so a freshly-opened tab counts
+    // straight away, then on an interval well inside the server's idle window.
+    void this.#api.heartbeat();
+    this.#heartbeatTimer = window.setInterval(() => void this.#api.heartbeat(), 60_000);
+
+    // Poll for inbound messages. Cheap, and it means an operator watching the inbox
+    // sees a reply arrive without reaching for Refresh.
+    this.#refreshTimer = window.setInterval(() => {
+      if (document.visibilityState === "visible") void this.#loadConversations({ quiet: true });
+    }, 20_000);
   }
 
-  async #loadConversations() {
-    this._loadingList = true;
-    this._error = "";
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    if (this.#heartbeatTimer) window.clearInterval(this.#heartbeatTimer);
+    if (this.#refreshTimer) window.clearInterval(this.#refreshTimer);
+  }
+
+  /**
+   * @param quiet Background poll — must not flash the loading state or clobber an error
+   *              the user is still reading.
+   */
+  async #loadConversations(opts: { quiet?: boolean } = {}) {
+    if (!opts.quiet) {
+      this._loadingList = true;
+      this._error = "";
+    }
     try {
       this._conversations = await this.#api.getConversations();
 
@@ -250,9 +306,12 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
         if (updated) this._selected = updated;
       }
     } catch (error) {
-      this._error = error instanceof Error ? error.message : String(error);
+      // A failed background poll stays silent — the visible list is still valid.
+      if (!opts.quiet) {
+        this._error = error instanceof Error ? error.message : String(error);
+      }
     } finally {
-      this._loadingList = false;
+      if (!opts.quiet) this._loadingList = false;
     }
   }
 

@@ -53,6 +53,11 @@ public class WhatsAppComposer : IComposer
 
         builder.Services.AddScoped<IWhatsAppStore, WhatsAppStore>();
 
+        // Singleton: presence is a single in-process fact shared by the UI heartbeat
+        // and the webhook that reads it.
+        builder.Services.AddSingleton<IDashboardPresence, DashboardPresence>();
+        builder.Services.AddScoped<INewMessageNotifier, NewMessageNotifier>();
+
         builder.AddNotificationAsyncHandler<UmbracoApplicationStartingNotification, WhatsAppDatabaseHandler>();
     }
 }

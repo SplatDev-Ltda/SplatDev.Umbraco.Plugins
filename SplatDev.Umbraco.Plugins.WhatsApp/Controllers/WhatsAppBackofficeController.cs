@@ -21,16 +21,30 @@ public class WhatsAppBackofficeController : ControllerBase
 {
     private readonly IWhatsAppClient _client;
     private readonly IWhatsAppStore _store;
+    private readonly IDashboardPresence _presence;
     private readonly WhatsAppOptions _options;
 
     public WhatsAppBackofficeController(
         IWhatsAppClient client,
         IWhatsAppStore store,
+        IDashboardPresence presence,
         IOptions<WhatsAppOptions> options)
     {
         _client = client;
         _store = store;
+        _presence = presence;
         _options = options.Value;
+    }
+
+    /// <summary>
+    /// Called periodically while the inbox is open, so an inbound message can tell
+    /// whether anyone is watching before emailing an administrator.
+    /// </summary>
+    [HttpPost("heartbeat")]
+    public IActionResult Heartbeat()
+    {
+        _presence.Heartbeat();
+        return NoContent();
     }
 
     /// <summary>Configuration state, so the dashboard can guide setup instead of failing blankly.</summary>
@@ -48,6 +62,11 @@ public class WhatsAppBackofficeController : ControllerBase
             businessAccountId = _options.BusinessAccountId,
             windowHours = _options.CustomerServiceWindowHours,
             webhookPath = "/umbraco/whatsapp/webhook",
+            notificationsEnabled = _options.NotificationsEnabled,
+            notificationEmail = _options.NotificationEmail,
+            dashboardIdleMinutes = _options.DashboardIdleMinutes,
+            notificationCooldownMinutes = _options.NotificationCooldownMinutes,
+            dashboardLastSeenUtc = _presence.LastSeenUtc,
             phone,
         });
     }

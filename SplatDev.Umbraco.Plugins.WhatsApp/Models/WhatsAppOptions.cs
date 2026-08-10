@@ -51,6 +51,35 @@ public class WhatsAppOptions
     /// </summary>
     public int CustomerServiceWindowHours { get; set; } = 24;
 
+    /// <summary>
+    /// Address notified when an inbound message arrives and nobody has the dashboard
+    /// open. Empty disables notifications entirely.
+    /// </summary>
+    public string NotificationEmail { get; set; } = string.Empty;
+
+    /// <summary>From address for notifications. Falls back to Umbraco's configured sender.</summary>
+    public string NotificationFromEmail { get; set; } = string.Empty;
+
+    /// <summary>
+    /// How long after the last dashboard heartbeat the inbox counts as unattended.
+    /// </summary>
+    public int DashboardIdleMinutes { get; set; } = 5;
+
+    /// <summary>
+    /// Minimum gap between notification emails, so a burst of messages produces one
+    /// email rather than one per message.
+    /// </summary>
+    public int NotificationCooldownMinutes { get; set; } = 15;
+
+    /// <summary>
+    /// Public backoffice base URL, used to build the "open the inbox" link in the email.
+    /// The webhook request comes from Meta, so its host cannot be used.
+    /// </summary>
+    public string BackofficeUrl { get; set; } = string.Empty;
+
+    /// <summary>True when notifications are configured.</summary>
+    public bool NotificationsEnabled => !string.IsNullOrWhiteSpace(NotificationEmail);
+
     /// <summary>True when enough is configured to talk to the Graph API at all.</summary>
     public bool IsConfigured =>
         !string.IsNullOrWhiteSpace(PhoneNumberId) && !string.IsNullOrWhiteSpace(AccessToken);

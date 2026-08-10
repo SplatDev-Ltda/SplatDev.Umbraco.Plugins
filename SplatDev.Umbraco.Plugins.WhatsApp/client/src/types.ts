@@ -55,6 +55,11 @@ export interface WhatsAppStatus {
   businessAccountId: string;
   windowHours: number;
   webhookPath: string;
+  notificationsEnabled: boolean;
+  notificationEmail?: string | null;
+  dashboardIdleMinutes: number;
+  notificationCooldownMinutes: number;
+  dashboardLastSeenUtc?: string | null;
   phone?: PhoneNumberStatus | null;
 }
 

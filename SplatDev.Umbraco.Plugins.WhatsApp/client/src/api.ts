@@ -106,6 +106,19 @@ export class WhatsAppApi {
     return this.#post<void>(`/conversations/${id}/read`);
   }
 
+  /**
+   * Tells the server someone is watching the inbox, which suppresses the
+   * unattended-message email. Failures are swallowed: a missed heartbeat should send an
+   * extra email, never break the UI.
+   */
+  async heartbeat(): Promise<void> {
+    try {
+      await this.#post<void>("/heartbeat");
+    } catch {
+      // Intentionally ignored.
+    }
+  }
+
   getTemplates(): Promise<MessageTemplate[]> {
     return this.#get<MessageTemplate[]>("/templates");
   }

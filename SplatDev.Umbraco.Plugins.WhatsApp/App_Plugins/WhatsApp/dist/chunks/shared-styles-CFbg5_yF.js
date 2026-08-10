@@ -1,15 +1,103 @@
-import { css } from "@umbraco-cms/backoffice/external/lit";
-
-/**
- * Styles shared across the WhatsApp views.
- *
- * Everything is expressed in --uui-* design tokens so the dashboard follows the
- * backoffice theme (including dark mode) instead of hardcoding a palette. The one
- * deliberate exception is WhatsApp brand green on outbound bubbles, which is the
- * visual cue operators expect; it carries an explicit readable foreground rather
- * than inheriting one.
- */
-export const sharedStyles = css`
+var w = (t) => {
+  throw TypeError(t);
+};
+var g = (t, e, r) => e.has(t) || w("Cannot " + r);
+var u = (t, e, r) => (g(t, e, "read from private field"), r ? r.call(t) : e.get(t)), l = (t, e, r) => e.has(t) ? w("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, r), c = (t, e, r, a) => (g(t, e, "write to private field"), a ? a.call(t, r) : e.set(t, r), r), i = (t, e, r) => (g(t, e, "access private method"), r);
+import { UMB_AUTH_CONTEXT as x } from "@umbraco-cms/backoffice/auth";
+import { css as b } from "@umbraco-cms/backoffice/external/lit";
+const y = "/umbraco/whatsapp/api/v1";
+var h, n, m, o, f, d, p;
+class A {
+  constructor(e) {
+    l(this, o);
+    l(this, h);
+    l(this, n, null);
+    l(this, m);
+    c(this, h, e), c(this, m, new Promise((r) => {
+      u(this, h).consumeContext(x, async (a) => {
+        var s;
+        try {
+          c(this, n, await ((s = a == null ? void 0 : a.getLatestToken) == null ? void 0 : s.call(a)) ?? null);
+        } catch {
+          c(this, n, null);
+        }
+        r();
+      }), setTimeout(r, 3e3);
+    }));
+  }
+  getStatus() {
+    return i(this, o, d).call(this, "/status");
+  }
+  getConversations() {
+    return i(this, o, d).call(this, "/conversations");
+  }
+  getThread(e) {
+    return i(this, o, d).call(this, `/conversations/${e}/messages`);
+  }
+  markRead(e) {
+    return i(this, o, p).call(this, `/conversations/${e}/read`);
+  }
+  /**
+   * Tells the server someone is watching the inbox, which suppresses the
+   * unattended-message email. Failures are swallowed: a missed heartbeat should send an
+   * extra email, never break the UI.
+   */
+  async heartbeat() {
+    try {
+      await i(this, o, p).call(this, "/heartbeat");
+    } catch {
+    }
+  }
+  getTemplates() {
+    return i(this, o, d).call(this, "/templates");
+  }
+  sendText(e, r) {
+    return i(this, o, p).call(this, "/send/text", { to: e, body: r });
+  }
+  sendTemplate(e, r, a, s) {
+    return i(this, o, p).call(this, "/send/template", {
+      to: e,
+      templateName: r,
+      language: a,
+      variables: s
+    });
+  }
+}
+h = new WeakMap(), n = new WeakMap(), m = new WeakMap(), o = new WeakSet(), f = async function(e, r = {}) {
+  await u(this, m);
+  const a = new Headers(r.headers);
+  return a.set("Accept", "application/json"), u(this, n) && a.set("Authorization", `Bearer ${u(this, n)}`), fetch(`${y}${e}`, {
+    ...r,
+    credentials: "same-origin",
+    headers: a
+  });
+}, d = async function(e) {
+  const r = await i(this, o, f).call(this, e);
+  if (!r.ok)
+    throw new Error(await v(r));
+  return await r.json();
+}, p = async function(e, r) {
+  const a = new Headers();
+  r !== void 0 && a.set("Content-Type", "application/json");
+  const s = await i(this, o, f).call(this, e, {
+    method: "POST",
+    headers: a,
+    body: r === void 0 ? void 0 : JSON.stringify(r)
+  });
+  if (!s.ok)
+    throw new Error(await v(s));
+  return s.status === 204 ? void 0 : await s.json();
+};
+async function v(t) {
+  try {
+    const e = await t.json();
+    if (e != null && e.error)
+      return e.code ? `${e.error} (code ${e.code})` : String(e.error);
+  } catch {
+  }
+  return t.status === 401 || t.status === 403 ? "Not authorised. Sign in to the backoffice again." : `Request failed: HTTP ${t.status}`;
+}
+const S = b`
   :host {
     display: block;
     /* Fluid gutter: tight on a narrow split-view, generous on a wide monitor. */
@@ -161,3 +249,8 @@ export const sharedStyles = css`
     overflow-x: auto;
   }
 `;
+export {
+  A as W,
+  S as s
+};
+//# sourceMappingURL=shared-styles-CFbg5_yF.js.map

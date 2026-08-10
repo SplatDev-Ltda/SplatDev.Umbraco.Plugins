@@ -1,6 +1,6 @@
 import { LitElement as y, nothing as b, html as o, css as w, state as u, customElement as x } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin as $ } from "@umbraco-cms/backoffice/element-api";
-import { W as C, s as E } from "./chunks/shared-styles-NOSfU0-v.js";
+import { W as C, s as E } from "./chunks/shared-styles-CFbg5_yF.js";
 var W = Object.defineProperty, k = Object.getOwnPropertyDescriptor, _ = (t) => {
   throw TypeError(t);
 }, n = (t, e, a, l) => {

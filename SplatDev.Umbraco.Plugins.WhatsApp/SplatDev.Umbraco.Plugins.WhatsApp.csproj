@@ -7,7 +7,7 @@
     <PackageId>SplatDev.Umbraco.Plugins.WhatsApp</PackageId>
     <Product>SplatDev.Umbraco.Plugins.WhatsApp</Product>
     <Title>SplatDev.Umbraco.Plugins.WhatsApp</Title>
-    <Version>3.0.1</Version>
+    <Version>3.1.0</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Authors>SplatDev</Authors>
     <Description>WhatsApp Business Cloud API integration for Umbraco — backoffice inbox, template and free-form sending, and an inbound webhook receiver. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0); the Lit 3 dashboard requires Umbraco 17.</Description>

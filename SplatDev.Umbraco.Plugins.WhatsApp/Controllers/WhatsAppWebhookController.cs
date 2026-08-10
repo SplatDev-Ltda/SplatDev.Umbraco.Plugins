@@ -25,15 +25,18 @@ namespace SplatDev.Umbraco.Plugins.WhatsApp.Controllers;
 public class WhatsAppWebhookController : ControllerBase
 {
     private readonly IWhatsAppStore _store;
+    private readonly INewMessageNotifier _notifier;
     private readonly WhatsAppOptions _options;
     private readonly ILogger<WhatsAppWebhookController> _logger;
 
     public WhatsAppWebhookController(
         IWhatsAppStore store,
+        INewMessageNotifier notifier,
         IOptions<WhatsAppOptions> options,
         ILogger<WhatsAppWebhookController> logger)
     {
         _store = store;
+        _notifier = notifier;
         _options = options.Value;
         _logger = logger;
     }
@@ -152,7 +155,18 @@ public class WhatsAppWebhookController : ControllerBase
                         .FirstOrDefault(c => c.WaId == waId)?
                         .Profile?.Name;
 
-                    await _store.RecordInboundAsync(waId!, profileName, message, ct).ConfigureAwait(false);
+                    var isNew = await _store
+                        .RecordInboundAsync(waId!, profileName, message, ct)
+                        .ConfigureAwait(false);
+
+                    // Only notify for genuinely new messages. Meta retries deliveries, and
+                    // emailing on every retry would turn one message into a mail loop.
+                    if (isNew)
+                    {
+                        await _notifier
+                            .NotifyIfUnattendedAsync(waId!, profileName, message.ToDisplayText(), ct)
+                            .ConfigureAwait(false);
+                    }
                 }
 
                 foreach (var status in value.Statuses ?? new List<WebhookStatus>())
