@@ -1,16 +1,93 @@
 {
   "$schema": "../../umbraco-package-schema.json",
-  "name": "WhatsApp Chat Button",
-  "version": "2.0.0",
+  "id": "SplatDev.WhatsApp",
+  "name": "WhatsApp Business",
+  "version": "3.0.0",
+  "allowPublicAccess": false,
   "extensions": [
     {
-      "type": "dashboard",
-      "alias": "whatsapp.dashboard",
-      "name": "WhatsApp Dashboard",
-      "element": "/App_Plugins/WhatsApp/dist/dashboard.js",
-      "weight": -99,
+      "type": "section",
+      "alias": "SplatDev.WhatsApp.Section",
+      "name": "WhatsApp",
+      "meta": {
+        "label": "WhatsApp",
+        "pathname": "whatsapp"
+      }
+    },
+    {
+      "type": "sectionView",
+      "alias": "SplatDev.WhatsApp.SectionView.Inbox",
+      "name": "Inbox",
+      "element": "/App_Plugins/WhatsApp/dist/wa-inbox.element.js",
+      "elementName": "wa-inbox",
+      "weight": 100,
+      "meta": {
+        "label": "Inbox",
+        "pathname": "inbox",
+        "icon": "icon-chat"
+      },
       "conditions": [
-        { "alias": "Umb.Condition.SectionAlias", "match": "Umb.Section.Content" }
+        {
+          "alias": "Umb.Condition.SectionAlias",
+          "match": "SplatDev.WhatsApp.Section"
+        }
+      ]
+    },
+    {
+      "type": "sectionView",
+      "alias": "SplatDev.WhatsApp.SectionView.Send",
+      "name": "Send",
+      "element": "/App_Plugins/WhatsApp/dist/wa-send.element.js",
+      "elementName": "wa-send",
+      "weight": 90,
+      "meta": {
+        "label": "Send",
+        "pathname": "send",
+        "icon": "icon-message"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.SectionAlias",
+          "match": "SplatDev.WhatsApp.Section"
+        }
+      ]
+    },
+    {
+      "type": "sectionView",
+      "alias": "SplatDev.WhatsApp.SectionView.Templates",
+      "name": "Templates",
+      "element": "/App_Plugins/WhatsApp/dist/wa-templates.element.js",
+      "elementName": "wa-templates",
+      "weight": 80,
+      "meta": {
+        "label": "Templates",
+        "pathname": "templates",
+        "icon": "icon-documents"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.SectionAlias",
+          "match": "SplatDev.WhatsApp.Section"
+        }
+      ]
+    },
+    {
+      "type": "sectionView",
+      "alias": "SplatDev.WhatsApp.SectionView.Status",
+      "name": "Status",
+      "element": "/App_Plugins/WhatsApp/dist/wa-status.element.js",
+      "elementName": "wa-status",
+      "weight": 70,
+      "meta": {
+        "label": "Status",
+        "pathname": "status",
+        "icon": "icon-settings"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.SectionAlias",
+          "match": "SplatDev.WhatsApp.Section"
+        }
       ]
     }
   ]

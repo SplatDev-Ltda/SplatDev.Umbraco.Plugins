@@ -106,3 +106,6 @@ Credentials.md
 
 .bin/
 **/.bin/
+
+# WhatsApp plugin: local client build artefacts
+SplatDev.Umbraco.Plugins.WhatsApp/client/node_modules/

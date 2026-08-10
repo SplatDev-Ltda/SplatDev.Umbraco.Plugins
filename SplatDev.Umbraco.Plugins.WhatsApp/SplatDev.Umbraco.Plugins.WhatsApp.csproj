@@ -3,12 +3,15 @@
     <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <ContentTargetFolders>.</ContentTargetFolders>
     <PackageId>SplatDev.Umbraco.Plugins.WhatsApp</PackageId>
-    <Version>2.0.1</Version>
+    <Product>SplatDev.Umbraco.Plugins.WhatsApp</Product>
+    <Title>SplatDev.Umbraco.Plugins.WhatsApp</Title>
+    <Version>3.0.0</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Authors>SplatDev</Authors>
-    <Description>Floating WhatsApp chat button for Umbraco — one-click WhatsApp chat initiation with configurable settings. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).</Description>
-    <PackageTags>umbraco umbraco-marketplace whatsapp chat button</PackageTags>
+    <Description>WhatsApp Business Cloud API integration for Umbraco — backoffice inbox, template and free-form sending, and an inbound webhook receiver. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0); the Lit 3 dashboard requires Umbraco 17.</Description>
+    <PackageTags>umbraco umbraco-marketplace whatsapp messaging cloud-api business</PackageTags>
     <Company>SplatDev Ltda</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</PackageProjectUrl>
@@ -20,18 +23,30 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Pure helpers (window arithmetic, recipient normalisation, template variable
+         counting) are internal by design but are exactly the logic worth unit testing. -->
+    <InternalsVisibleTo Include="SplatDev.Umbraco.Plugins.WhatsApp.Tests" />
+  </ItemGroup>
+
   <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
     <PackageReference Include="Umbraco.Cms.Core" Version="13.12.0" />
+    <PackageReference Include="Umbraco.Cms.Infrastructure" Version="13.12.0" />
     <PackageReference Include="Umbraco.Cms.Web.Common" Version="13.12.0" />
+    <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="13.12.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.20" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
     <PackageReference Include="Umbraco.Cms.Core" Version="17.3.4" />
+    <PackageReference Include="Umbraco.Cms.Infrastructure" Version="17.3.4" />
+    <PackageReference Include="Umbraco.Cms.Api.Management" Version="17.3.4" />
     <PackageReference Include="Umbraco.Cms.Web.Common" Version="17.3.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.10" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="App_Plugins\**\*" />
+    <Content Include="App_Plugins\**" ExcludeFromSingleFile="true" CopyToPublishDirectory="Always" />
   </ItemGroup>
 
   <ItemGroup>
