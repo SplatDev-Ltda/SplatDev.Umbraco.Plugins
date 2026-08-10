@@ -78,6 +78,28 @@ public class LiveApiTests
         Assert.False(string.IsNullOrWhiteSpace(status.VerifiedName));
     }
 
+    /// <summary>
+    /// Sends a real template message. Opt-in via <c>WA_TEST_RECIPIENT</c> so a normal
+    /// integration run never messages anyone.
+    /// </summary>
+    [Fact]
+    public async Task Template_send_reaches_the_live_api()
+    {
+        var options = ReadOptions();
+        var recipient = Environment.GetEnvironmentVariable("WA_TEST_RECIPIENT");
+
+        if (options is null || string.IsNullOrWhiteSpace(recipient))
+        {
+            return;
+        }
+
+        var result = await CreateClient(options)
+            .SendTemplateAsync(recipient!, "hello_world", "en_US");
+
+        Assert.True(result.Success, $"Send failed: {result.Error} (code {result.ErrorCode})");
+        Assert.StartsWith("wamid.", result.MessageId);
+    }
+
     [Fact]
     public async Task Templates_deserialize_from_the_live_api()
     {
