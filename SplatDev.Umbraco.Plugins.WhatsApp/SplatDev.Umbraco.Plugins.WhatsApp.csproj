@@ -7,7 +7,7 @@
     <PackageId>SplatDev.Umbraco.Plugins.WhatsApp</PackageId>
     <Product>SplatDev.Umbraco.Plugins.WhatsApp</Product>
     <Title>SplatDev.Umbraco.Plugins.WhatsApp</Title>
-    <Version>3.0.0</Version>
+    <Version>3.0.1</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Authors>SplatDev</Authors>
     <Description>WhatsApp Business Cloud API integration for Umbraco — backoffice inbox, template and free-form sending, and an inbound webhook receiver. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0); the Lit 3 dashboard requires Umbraco 17.</Description>
@@ -47,6 +47,10 @@
 
   <ItemGroup>
     <Content Include="App_Plugins\**" ExcludeFromSingleFile="true" CopyToPublishDirectory="Always" />
+    <!-- Ships the MSBuild target that copies App_Plugins into the consuming site.
+         Without it the package installs the assembly only and the dashboard never
+         appears — see the comment in the .targets file. -->
+    <None Include="buildTransitive\**" Pack="true" PackagePath="buildTransitive" />
   </ItemGroup>
 
   <ItemGroup>

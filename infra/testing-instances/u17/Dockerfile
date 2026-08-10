@@ -14,6 +14,19 @@ WORKDIR /src
 # NB: `dotnet new umbraco` has no --version flag; the installed template pins the version.
 RUN dotnet new umbraco --name U17Testing --force
 WORKDIR /src/U17Testing
+
+# Install SplatDev plugins from local .nupkg files so a plugin can be tested before it
+# is published to NuGet. Drop packages into u17/local-packages/ and add a matching
+# `dotnet add package` line below.
+#
+# The loop is deliberately not "install everything in the folder": each plugin needs an
+# explicit, reviewable line, and a stale nupkg left in the folder should not silently
+# end up installed.
+COPY local-packages/ /local-packages/
+RUN dotnet nuget add source /local-packages --name local-plugins
+
+RUN dotnet add package SplatDev.Umbraco.Plugins.WhatsApp --version 3.0.1
+
 RUN dotnet restore
 RUN dotnet build -c Release --no-restore
 RUN dotnet publish -c Release -o /app/publish --no-restore
