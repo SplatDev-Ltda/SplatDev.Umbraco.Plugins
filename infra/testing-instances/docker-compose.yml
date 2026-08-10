@@ -9,6 +9,7 @@ services:
       - "127.0.0.1:9080:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
       - ConnectionStrings__umbracoDbDSN=Server=testing-sql,1433;Database=U17Testing;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;Encrypt=False
       - Umbraco__CMS__Unattended__InstallUnattended=true
       - Umbraco__CMS__Unattended__UnattendedUserName=admin@splatdev.tech
@@ -33,6 +34,7 @@ services:
       - "127.0.0.1:9081:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
       - ConnectionStrings__umbracoDbDSN=Server=testing-sql,1433;Database=U13Testing;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;Encrypt=False
       - Umbraco__CMS__Unattended__InstallUnattended=true
       - Umbraco__CMS__Unattended__UnattendedUserName=admin@splatdev.tech
