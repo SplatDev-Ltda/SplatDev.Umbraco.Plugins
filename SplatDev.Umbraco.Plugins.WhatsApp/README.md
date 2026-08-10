@@ -35,7 +35,7 @@ Bound from the `SplatDev:WhatsApp` section.
 {
   "SplatDev": {
     "WhatsApp": {
-      "PhoneNumberId": "1104024519459873",
+      "PhoneNumberId": "1311077628745755",
       "BusinessAccountId": "1777491496760147",
       "AccessToken": "",
       "WebhookVerifyToken": "",
@@ -92,9 +92,21 @@ subscribed apps** (`POST /{waba-id}/subscribed_apps`). Each app receives the sam
 its own callback URL, and Meta resolves overrides per app
 (phone-number override → WABA override → app default).
 
-So if another system already consumes this number's webhooks, **do not repoint it**. Create
-a second Meta app, subscribe it to the same WABA, and point only that app at Umbraco. Both
-integrations then receive events independently, and both can send.
+So if another system already consumes a number's webhooks, **do not repoint the app-level
+callback** — you would silently cut that system off. There are two safe routes:
+
+1. **Per-number override** (simplest). Overrides are resolved per phone number, so point
+   only the number Umbraco owns at this plugin and leave the others alone:
+
+   ```sh
+   curl -X POST "https://graph.facebook.com/v21.0/{PHONE_NUMBER_ID}/settings" \
+     -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+     -d '{"webhooks":{"override_callback_uri":"https://your-site/umbraco/whatsapp/webhook",
+          "verify_token":"YOUR_VERIFY_TOKEN"}}'
+   ```
+
+2. **A second Meta app** subscribed to the same WABA, with its own callback URL. Use this
+   when the two integrations need separate tokens or permissions.
 
 ## The 24-hour customer-service window
 
