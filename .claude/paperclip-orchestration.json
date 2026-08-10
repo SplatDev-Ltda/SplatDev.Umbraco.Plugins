@@ -1,0 +1,35 @@
+{
+  "_comment": "GitHub-mode fleet config (no azure section \u2014 merge gate is run manually with gh by the operator). DRY-RUN until first PR reviewed.",
+  "paperclip": {
+    "baseUrl": "http://192.168.68.230:3100/api",
+    "companyId": "801b4864-f9fa-47ba-8379-908dbdf45c8e",
+    "projectId": "09c14008-3898-40e7-ba31-3bc1ca5a21bf",
+    "goalId": "",
+    "rootEpicId": "",
+    "issuePrefix": "SPL",
+    "agents": {
+      "backend": "360cd1c1-29fe-4d57-87de-97c4e86fdfad",
+      "frontend": "829676b7-60e3-4ddd-836a-98988a65d8be",
+      "devops": "4cbf96d0-3dd0-4e6e-b223-7a0d122078d7",
+      "qa": "79966457-1d3a-404a-9861-2c1200b9bb76"
+    },
+    "tokenFile": "/mnt/e/credentials.txt"
+  },
+  "github": {
+    "repo": "splatdevtech/SplatDev.Umbraco.Plugins",
+    "defaultBranch": "master"
+  },
+  "deploy": {
+    "credFile": "/mnt/e/credentials.txt",
+    "_comment": "stg1-umbraco on 169.197.183.25: /www/wwwroot/stg1-umbraco (Umbraco 17.3.5, https://stg1.splatdev.com)"
+  },
+  "verify": {
+    "checks": [
+      {
+        "path": "/umbraco",
+        "status": "200"
+      }
+    ]
+  },
+  "_sequencing": "SPL-3255 Phase A; verify on stg1 before merge."
+}

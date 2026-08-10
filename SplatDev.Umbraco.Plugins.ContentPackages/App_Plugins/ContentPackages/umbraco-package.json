@@ -1,0 +1,18 @@
+{
+  "$schema": "../../umbraco-package-schema.json",
+  "id": "SplatDev.ContentPackages",
+  "name": "Content Packages",
+  "version": "0.1.0",
+  "allowPublicAccess": false,
+  "extensions": [
+    {
+      "type": "section",
+      "alias": "SplatDev.ContentPackages.Section",
+      "name": "Content Packages",
+      "meta": {
+        "label": "Content Packages",
+        "pathname": "content-packages"
+      }
+    }
+  ]
+}

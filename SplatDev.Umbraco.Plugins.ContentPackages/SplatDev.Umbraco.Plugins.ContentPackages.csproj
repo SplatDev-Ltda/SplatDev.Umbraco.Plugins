@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <ContentTargetFolders>.</ContentTargetFolders>
+    <PackageId>SplatDev.Umbraco.Plugins.ContentPackages</PackageId>
+    <Product>SplatDev.Umbraco.Plugins.ContentPackages</Product>
+    <Title>SplatDev.Umbraco.Plugins.ContentPackages</Title>
+    <Version>0.1.0</Version>
+    <!-- Skeleton only. CI packs and pushes every SplatDev.Umbraco.Plugins.* on a v* tag,
+         so this stays unpackable until the phases in PLAN.md are done. It still builds in
+         CI, which is the point — regressions get caught without publishing a half-finished
+         package to NuGet. Flip to true at Phase 8. -->
+    <IsPackable>false</IsPackable>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Authors>SplatDev</Authors>
+    <Description>Gated content packages for Umbraco — a newsletter signup unlocks HTML, PDF, PPTX and LLM-ready Markdown behind signed, expiring links. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).</Description>
+    <PackageTags>umbraco umbraco-marketplace newsletter lead-magnet gated-content downloads</PackageTags>
+    <Company>SplatDev Ltda</Company>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="SplatDev.Umbraco.Plugins.ContentPackages.Tests" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <PackageReference Include="Umbraco.Cms.Core" Version="13.12.0" />
+    <PackageReference Include="Umbraco.Cms.Infrastructure" Version="13.12.0" />
+    <PackageReference Include="Umbraco.Cms.Web.Common" Version="13.12.0" />
+    <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="13.12.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.20" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <PackageReference Include="Umbraco.Cms.Core" Version="17.3.4" />
+    <PackageReference Include="Umbraco.Cms.Infrastructure" Version="17.3.4" />
+    <PackageReference Include="Umbraco.Cms.Api.Management" Version="17.3.4" />
+    <PackageReference Include="Umbraco.Cms.Web.Common" Version="17.3.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="App_Plugins\**" ExcludeFromSingleFile="true" CopyToPublishDirectory="Always" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+</Project>
