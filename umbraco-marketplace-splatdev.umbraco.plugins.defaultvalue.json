@@ -1,0 +1,19 @@
+{
+  "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
+  "Description": "Set default values for Umbraco content properties by document type and property alias. Automatically populate properties when new content nodes are created. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).",
+  "Category": "Utilities",
+  "PackageType": "Package",
+  "LicenseTypes": [
+    "Free"
+  ],
+  "DocumentationUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/blob/master/SplatDev.Umbraco.Plugins.DefaultValue/README.md",
+  "IssueTrackerUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/issues",
+  "AuthorDetails": {
+    "Name": "SplatDev",
+    "Description": "SplatDev Ltda — building Umbraco plugins and tools for agencies and developers.",
+    "Url": "https://github.com/splatdevtech",
+    "ImageUrl": "https://github.com/splatdevtech.png",
+    "SyncContributorsFromRepository": true
+  },
+  "Screenshots": []
+}

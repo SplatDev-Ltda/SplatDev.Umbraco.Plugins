@@ -1,0 +1,19 @@
+{
+  "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
+  "Description": "Lazy loading image plugin for Umbraco — intercepts content rendering to add loading=lazy to img tags.",
+  "Category": "Media",
+  "PackageType": "Package",
+  "LicenseTypes": [
+    "Free"
+  ],
+  "DocumentationUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/blob/master/SplatDev.Umbraco.Plugins.LazyLoad/README.md",
+  "IssueTrackerUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/issues",
+  "AuthorDetails": {
+    "Name": "SplatDev",
+    "Description": "SplatDev Ltda — building Umbraco plugins and tools for agencies and developers.",
+    "Url": "https://github.com/splatdevtech",
+    "ImageUrl": "https://github.com/splatdevtech.png",
+    "SyncContributorsFromRepository": true
+  },
+  "Screenshots": []
+}

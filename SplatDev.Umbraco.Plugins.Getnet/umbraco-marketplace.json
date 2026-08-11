@@ -1,6 +1,6 @@
 {
   "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
-  "AuthorDetails": { "Name": "SplatDev Ltda", "Url": "https://github.com/SplatDev-Ltda" },
+  "AuthorDetails": { "Name": "SplatDev Ltda", "Url": "https://github.com/splatdevtech" },
   "Category": "Payments",
   "Description": "Umbraco 17 plugin for the Getnet payment integration (SplatDev.Payments.Getnet).",
   "PackageType": "Package"

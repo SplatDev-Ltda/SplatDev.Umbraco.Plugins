@@ -4,8 +4,8 @@
     <Company>SplatDev Ltda</Company>
     <Copyright>Copyright (c) SplatDev Ltda 2026</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
