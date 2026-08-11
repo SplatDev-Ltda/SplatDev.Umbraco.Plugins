@@ -1,9 +1,7 @@
 using System.Net.Http.Headers;
 
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
@@ -22,25 +20,6 @@ public class WhatsAppComposer : IComposer
 {
     public void Compose(IUmbracoBuilder builder)
     {
-        // Serve App_Plugins straight out of the assembly. The files are embedded
-        // (see the .csproj), so installing the NuGet package copies nothing into the
-        // consuming site — there is no content-copy step that can silently not happen,
-        // which is exactly how this plugin previously installed with an invisible
-        // dashboard.
-        //
-        // No `root` is passed on purpose: the manifest mirrors the project layout, so an
-        // embedded "App_Plugins/WhatsApp/x.js" answers a request for
-        // "/App_Plugins/WhatsApp/x.js". Rooting the provider at "App_Plugins" would make
-        // it look for "App_Plugins/App_Plugins/..." and every asset would 404.
-        builder.Services.Configure<StaticFileOptions>(options =>
-        {
-            var embedded = new ManifestEmbeddedFileProvider(typeof(WhatsAppComposer).Assembly);
-
-            options.FileProvider = options.FileProvider is null
-                ? embedded
-                : new CompositeFileProvider(options.FileProvider, embedded);
-        });
-
         builder.Services.Configure<WhatsAppOptions>(
             builder.Config.GetSection(WhatsAppOptions.SectionName));
 

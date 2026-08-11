@@ -26,9 +26,7 @@ public class D4SignComposer : IComposer
         // references and NuGet package installs.
         builder.Services.Configure<StaticFileOptions>(opts =>
         {
-            var embeddedProvider = new ManifestEmbeddedFileProvider(
-                typeof(D4SignComposer).Assembly,
-                root: "App_Plugins");
+            var embeddedProvider = new ManifestEmbeddedFileProvider(typeof(EmbeddedAppPluginsComposer).Assembly);
 
             opts.FileProvider = opts.FileProvider is null
                 ? embeddedProvider
