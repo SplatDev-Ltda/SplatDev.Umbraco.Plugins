@@ -1,81 +1,122 @@
-import { LitElement as N, nothing as v, html as a, css as L, state as c, customElement as A } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as I } from "@umbraco-cms/backoffice/element-api";
-import { W as O, s as R } from "./chunks/shared-styles-QWL_Oc-v.js";
+import { LitElement as E, nothing as f, html as r, css as U, state as p, customElement as O } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as P } from "@umbraco-cms/backoffice/element-api";
+import { W as R, s as q } from "./chunks/shared-styles-QWL_Oc-v.js";
 function k(e) {
   if (e <= 0) return "closed";
-  const t = Math.floor(e / 60), i = e % 60;
-  return t > 0 ? `${t}h ${i}m left` : `${i}m left`;
+  const i = Math.floor(e / 60), a = e % 60;
+  return i > 0 ? `${i}h ${a}m left` : `${a}m left`;
 }
 function z(e) {
+  const i = (e ?? "").replace(/\D/g, "");
+  if (!i) return "";
+  const a = [
+    // Brazil: 2-digit area code, then 9-digit mobile (99999-9999) or 8-digit landline.
+    ["55", (t) => t.length === 11 ? `(${t.slice(0, 2)}) ${t.slice(2, 7)}-${t.slice(7)}` : t.length === 10 ? `(${t.slice(0, 2)}) ${t.slice(2, 6)}-${t.slice(6)}` : null],
+    // NANP: (NPA) NXX-XXXX
+    ["1", (t) => t.length === 10 ? `(${t.slice(0, 3)}) ${t.slice(3, 6)}-${t.slice(6)}` : null],
+    // UK: 4-3-4 / 4-6 are the common readable groupings.
+    ["44", (t) => t.length === 10 ? `${t.slice(0, 4)} ${t.slice(4, 7)} ${t.slice(7)}` : t.length === 9 ? `${t.slice(0, 4)} ${t.slice(4)}` : null],
+    // Portugal / Spain / France / Germany / Italy: 3-3-3 style groups read well.
+    ["351", (t) => t.length === 9 ? `${t.slice(0, 3)} ${t.slice(3, 6)} ${t.slice(6)}` : null],
+    ["34", (t) => t.length === 9 ? `${t.slice(0, 3)} ${t.slice(3, 6)} ${t.slice(6)}` : null],
+    ["33", (t) => t.length === 9 ? `${t.slice(0, 1)} ${t.slice(1, 3)} ${t.slice(3, 5)} ${t.slice(5, 7)} ${t.slice(7)}` : null],
+    ["49", (t) => t.length >= 10 ? `${t.slice(0, 3)} ${t.slice(3)}` : null],
+    ["39", (t) => t.length >= 9 ? `${t.slice(0, 3)} ${t.slice(3)}` : null]
+  ];
+  for (const [t, s] of a) {
+    if (!i.startsWith(t)) continue;
+    const l = i.slice(t.length), g = s(l);
+    if (g) return `+${t} ${g}`;
+  }
+  return `+${i}`;
+}
+function T(e, i) {
+  return (e ?? "").trim() || z(i);
+}
+function B(e, i) {
+  const a = (e ?? "").trim().split(/\s+/).filter(Boolean);
+  if (a.length >= 2) return (a[0][0] + a[a.length - 1][0]).toUpperCase();
+  if (a.length === 1) return a[0].slice(0, 2).toUpperCase();
+  const t = (i ?? "").replace(/\D/g, "");
+  return t ? t.slice(-2) : "?";
+}
+function Z(e) {
+  const i = e ?? "";
+  let a = 0;
+  for (let t = 0; t < i.length; t++) a = a * 31 + i.charCodeAt(t) | 0;
+  return Math.abs(a) % 360;
+}
+function C(e) {
   if (!e) return "";
-  const t = /[Zz]|[+-]\d{2}:?\d{2}$/.test(e) ? e : `${e}Z`, i = new Date(t);
-  return Number.isNaN(i.getTime()) ? "" : i.toLocaleString();
+  const i = /[Zz]|[+-]\d{2}:?\d{2}$/.test(e) ? e : `${e}Z`, a = new Date(i);
+  if (Number.isNaN(a.getTime())) return "";
+  const t = a.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }), s = /* @__PURE__ */ new Date();
+  s.setHours(0, 0, 0, 0);
+  const l = Math.floor((s.getTime() - a.getTime()) / 864e5);
+  return l < 0 ? t : l < 1 ? `Yesterday ${t}` : l < 7 ? `${a.toLocaleDateString([], { weekday: "short" })} ${t}` : a.toLocaleDateString([], { day: "2-digit", month: "short" });
 }
-function x(e) {
-  return e != null && e.startsWith("+") ? e : `+${e ?? ""}`;
-}
-var P = Object.defineProperty, q = Object.getOwnPropertyDescriptor, W = (e) => {
+var j = Object.defineProperty, H = Object.getOwnPropertyDescriptor, S = (e) => {
   throw TypeError(e);
-}, l = (e, t, i, u) => {
-  for (var p = u > 1 ? void 0 : u ? q(t, i) : t, w = e.length - 1, g; w >= 0; w--)
-    (g = e[w]) && (p = (u ? g(t, i, p) : g(p)) || p);
-  return u && p && P(t, i, p), p;
-}, _ = (e, t, i) => t.has(e) || W("Cannot " + i), n = (e, t, i) => (_(e, t, "read from private field"), i ? i.call(e) : t.get(e)), m = (e, t, i) => t.has(e) ? W("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, i), $ = (e, t, i, u) => (_(e, t, "write to private field"), t.set(e, i), i), o = (e, t, i) => (_(e, t, "access private method"), i), d, h, f, r, b, y, C, S, T, M, E;
-let s = class extends I(N) {
+}, h = (e, i, a, t) => {
+  for (var s = t > 1 ? void 0 : t ? H(i, a) : i, l = e.length - 1, g; l >= 0; l--)
+    (g = e[l]) && (s = (t ? g(i, a, s) : g(s)) || s);
+  return t && s && j(i, a, s), s;
+}, x = (e, i, a) => i.has(e) || S("Cannot " + a), c = (e, i, a) => (x(e, i, "read from private field"), a ? a.call(e) : i.get(e)), w = (e, i, a) => i.has(e) ? S("Cannot add the same private member more than once") : i instanceof WeakSet ? i.add(e) : i.set(e, a), $ = (e, i, a, t) => (x(e, i, "write to private field"), i.set(e, a), a), n = (e, i, a) => (x(e, i, "access private method"), a), u, v, m, o, b, y, W, M, _, N, I, D, L, A;
+let d = class extends P(E) {
   constructor() {
-    super(...arguments), m(this, r), m(this, d, new O(this)), this._conversations = [], this._messages = [], this._draft = "", this._error = "", this._loadingList = !0, this._loadingThread = !1, this._sending = !1, m(this, h), m(this, f);
+    super(...arguments), w(this, o), w(this, u, new R(this)), this._conversations = [], this._messages = [], this._draft = "", this._error = "", this._loadingList = !0, this._loadingThread = !1, this._sending = !1, w(this, v), w(this, m);
   }
   connectedCallback() {
-    super.connectedCallback(), o(this, r, b).call(this), n(this, d).heartbeat(), $(this, h, window.setInterval(() => void n(this, d).heartbeat(), 6e4)), $(this, f, window.setInterval(() => {
-      document.visibilityState === "visible" && o(this, r, b).call(this, { quiet: !0 });
+    super.connectedCallback(), n(this, o, b).call(this), c(this, u).heartbeat(), $(this, v, window.setInterval(() => void c(this, u).heartbeat(), 6e4)), $(this, m, window.setInterval(() => {
+      document.visibilityState === "visible" && n(this, o, b).call(this, { quiet: !0 });
     }, 2e4));
   }
   disconnectedCallback() {
-    super.disconnectedCallback(), n(this, h) && window.clearInterval(n(this, h)), n(this, f) && window.clearInterval(n(this, f));
+    super.disconnectedCallback(), c(this, v) && window.clearInterval(c(this, v)), c(this, m) && window.clearInterval(c(this, m));
   }
   render() {
-    return a`
+    return r`
       <div class="head">
         <h1>Inbox</h1>
         <p>Conversations with your WhatsApp Business number.</p>
       </div>
 
-      ${this._error ? a`<div class="error">${this._error}</div>` : v}
+      ${this._error ? r`<div class="error">${this._error}</div>` : f}
 
       <div class="row" style="margin-bottom:12px">
         <uui-button
           look="secondary"
           label="Refresh conversations"
           ?disabled=${this._loadingList}
-          @click=${() => void o(this, r, b).call(this)}
+          @click=${() => void n(this, o, b).call(this)}
         >Refresh</uui-button>
       </div>
 
       <div class="layout">
         <div class="list">
-          ${this._loadingList ? a`<uui-loader></uui-loader>` : this._conversations.length === 0 ? a`<div class="empty">
+          ${this._loadingList ? r`<uui-loader></uui-loader>` : this._conversations.length === 0 ? r`<div class="empty">
                   No conversations yet. They appear here once the webhook is registered
                   and someone messages your number.
-                </div>` : this._conversations.map((e) => o(this, r, S).call(this, e))}
+                </div>` : this._conversations.map((e) => n(this, o, M).call(this, e))}
         </div>
-        ${o(this, r, E).call(this)}
+        ${n(this, o, A).call(this)}
       </div>
     `;
   }
 };
-d = /* @__PURE__ */ new WeakMap();
-h = /* @__PURE__ */ new WeakMap();
-f = /* @__PURE__ */ new WeakMap();
-r = /* @__PURE__ */ new WeakSet();
+u = /* @__PURE__ */ new WeakMap();
+v = /* @__PURE__ */ new WeakMap();
+m = /* @__PURE__ */ new WeakMap();
+o = /* @__PURE__ */ new WeakSet();
 b = async function(e = {}) {
   e.quiet || (this._loadingList = !0, this._error = "");
   try {
-    if (this._conversations = await n(this, d).getConversations(), this._selected) {
-      const t = this._conversations.find((i) => i.id === this._selected.id);
-      t && (this._selected = t);
+    if (this._conversations = await c(this, u).getConversations(), this._selected) {
+      const i = this._conversations.find((a) => a.id === this._selected.id);
+      i && (this._selected = i);
     }
-  } catch (t) {
-    e.quiet || (this._error = t instanceof Error ? t.message : String(t));
+  } catch (i) {
+    e.quiet || (this._error = i instanceof Error ? i.message : String(i));
   } finally {
     e.quiet || (this._loadingList = !1);
   }
@@ -83,65 +124,109 @@ b = async function(e = {}) {
 y = async function(e) {
   this._selected = e, this._loadingThread = !0, this._error = "", this._messages = [];
   try {
-    const t = await n(this, d).getThread(e.id);
-    this._messages = t.messages, this._selected = t.conversation, e.unreadCount > 0 && (await n(this, d).markRead(e.id), this._conversations = this._conversations.map(
-      (i) => i.id === e.id ? { ...i, unreadCount: 0 } : i
+    const i = await c(this, u).getThread(e.id);
+    this._messages = i.messages, this._selected = i.conversation, e.unreadCount > 0 && (await c(this, u).markRead(e.id), this._conversations = this._conversations.map(
+      (a) => a.id === e.id ? { ...a, unreadCount: 0 } : a
     ));
-  } catch (t) {
-    this._error = t instanceof Error ? t.message : String(t);
+  } catch (i) {
+    this._error = i instanceof Error ? i.message : String(i);
   } finally {
     this._loadingThread = !1;
   }
 };
-C = async function() {
-  const e = this._selected, t = this._draft.trim();
-  if (!(!e || !t || this._sending)) {
+W = async function() {
+  const e = this._selected, i = this._draft.trim();
+  if (!(!e || !i || this._sending)) {
     this._sending = !0, this._error = "";
     try {
-      await n(this, d).sendText(e.waId, t), this._draft = "", await o(this, r, y).call(this, e), await o(this, r, b).call(this);
-    } catch (i) {
-      this._error = i instanceof Error ? i.message : String(i);
+      await c(this, u).sendText(e.waId, i), this._draft = "", await n(this, o, y).call(this, e), await n(this, o, b).call(this);
+    } catch (a) {
+      this._error = a instanceof Error ? a.message : String(a);
     } finally {
       this._sending = !1;
     }
   }
 };
-S = function(e) {
-  var i;
-  const t = ((i = this._selected) == null ? void 0 : i.id) === e.id;
-  return a`
+M = function(e) {
+  var a;
+  const i = ((a = this._selected) == null ? void 0 : a.id) === e.id;
+  return r`
       <button
         class="thread"
-        aria-current=${t ? "true" : "false"}
-        @click=${() => void o(this, r, y).call(this, e)}
+        aria-current=${i ? "true" : "false"}
+        @click=${() => void n(this, o, y).call(this, e)}
       >
-        <span class="top">
-          <span class="name">
-            ${e.profileName || x(e.waId)}
+        <span class="thread-row">
+          ${n(this, o, _).call(this, e)}
+          <span class="thread-text">
+            <span class="top">
+              <span class="name">
+                ${T(e.profileName, e.waId)}
+              </span>
+              <span class="when">${C(e.lastMessageUtc)}</span>
+            </span>
+            <span class="preview">${e.lastMessagePreview || "—"}</span>
           </span>
-          <span class="when">${z(e.lastMessageUtc)}</span>
         </span>
-        <span class="preview">${e.lastMessagePreview || "—"}</span>
-        ${e.unreadCount > 0 ? a`<span class="unread">${e.unreadCount}</span>` : v}
+        ${e.unreadCount > 0 ? r`<span class="unread">${e.unreadCount}</span>` : f}
       </button>
     `;
 };
-T = function(e) {
-  const t = e.status === "failed", i = `bubble ${e.inbound ? "in" : "out"}${t ? " failed" : ""}`;
-  return a`
-      <div class=${i}>
-        <span class="body">${e.body || a`<em>[${e.messageType}]</em>`}</span>
+_ = function(e, i = !1) {
+  const a = Z(e.waId);
+  return r`
+      <span
+        class=${i ? "avatar lg" : "avatar"}
+        style="background: hsl(${a} 45% 45%)"
+        aria-hidden="true"
+      >${B(e.profileName, e.waId)}</span>
+    `;
+};
+N = function(e) {
+  const i = (e || "").toLowerCase();
+  if (i === "failed") return r` · failed`;
+  const a = i === "delivered" || i === "read", t = i === "read" ? "ticks read" : "ticks", s = r`
+      <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M2 8.5 5.5 12 14 3.5" stroke="currentColor" stroke-width="1.6"
+              stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    `;
+  return r` ·
+      <span class=${t} role="img" aria-label=${i || "sent"}>
+        ${s}${a ? s : f}
+      </span>
+    `;
+};
+I = function(e) {
+  const i = e.status === "failed", a = `bubble ${e.inbound ? "in" : "out"}${i ? " failed" : ""}`;
+  return r`
+      <div class=${a}>
+        <span class="body">${e.body || r`<em>[${e.messageType}]</em>`}</span>
         <span class="meta">
-          ${z(e.timestampUtc)}
-          ${e.inbound ? v : a` · ${e.status}`}
-          ${e.templateName ? a` · template: ${e.templateName}` : v}
-          ${e.errorMessage ? a` · ${e.errorMessage}` : v}
+          ${C(e.timestampUtc)}
+          ${e.inbound ? f : n(this, o, N).call(this, e.status)}
+          ${e.templateName ? r` · template: ${e.templateName}` : f}
+          ${e.errorMessage ? r` · ${e.errorMessage}` : f}
         </span>
       </div>
     `;
 };
-M = function(e) {
-  return e.windowOpen ? a`
+D = function(e) {
+  let i = "";
+  return e.map((a) => {
+    const t = new Date(
+      /[Zz]|[+-]\d{2}:?\d{2}$/.test(a.timestampUtc) ? a.timestampUtc : `${a.timestampUtc}Z`
+    ), s = Number.isNaN(t.getTime()) ? "" : t.toDateString(), l = s !== "" && s !== i;
+    return l && (i = s), r`
+        ${l ? r`<span class="day-sep">
+              ${t.toLocaleDateString([], { day: "numeric", month: "short", year: "numeric" })}
+            </span>` : f}
+        ${n(this, o, I).call(this, a)}
+      `;
+  });
+};
+L = function(e) {
+  return e.windowOpen ? r`
       <div class="reply">
         <div class="reply-row">
           <uui-textarea
@@ -149,8 +234,8 @@ M = function(e) {
             placeholder="Write a reply…"
             .value=${this._draft}
             ?disabled=${this._sending}
-            @input=${(t) => {
-    this._draft = t.target.value;
+            @input=${(i) => {
+    this._draft = i.target.value;
   }}
           ></uui-textarea>
           <uui-button
@@ -158,12 +243,12 @@ M = function(e) {
             color="positive"
             label="Send reply"
             ?disabled=${this._sending || !this._draft.trim()}
-            @click=${() => void o(this, r, C).call(this)}
+            @click=${() => void n(this, o, W).call(this)}
           >${this._sending ? "Sending…" : "Send"}</uui-button>
         </div>
         <p class="hint">${k(e.windowMinutesRemaining)} in this window.</p>
       </div>
-    ` : a`
+    ` : r`
         <div class="reply">
           <div class="warn">
             <span>
@@ -175,14 +260,19 @@ M = function(e) {
         </div>
       `;
 };
-E = function() {
+A = function() {
   const e = this._selected;
-  return e ? a`
+  return e ? r`
       <div class="pane">
         <div class="pane-head">
-          <div>
-            <strong>${e.profileName || x(e.waId)}</strong>
-            <div class="hint">${x(e.waId)}</div>
+          <div class="head-id">
+            ${n(this, o, _).call(this, e, !0)}
+            <div>
+              <div class="head-name">
+                ${T(e.profileName, e.waId)}
+              </div>
+              <div class="head-number">${z(e.waId)}</div>
+            </div>
           </div>
           <span class="window-pill ${e.windowOpen ? "open" : "closed"}">
             ${e.windowOpen ? k(e.windowMinutesRemaining) : "window closed"}
@@ -190,20 +280,20 @@ E = function() {
         </div>
 
         <div class="transcript">
-          ${this._loadingThread ? a`<uui-loader></uui-loader>` : this._messages.length === 0 ? a`<div class="empty">No messages yet.</div>` : this._messages.map((t) => o(this, r, T).call(this, t))}
+          ${this._loadingThread ? r`<uui-loader></uui-loader>` : this._messages.length === 0 ? r`<div class="empty">No messages in this conversation yet.</div>` : n(this, o, D).call(this, this._messages)}
         </div>
 
-        ${o(this, r, M).call(this, e)}
+        ${n(this, o, L).call(this, e)}
       </div>
-    ` : a`
+    ` : r`
         <div class="pane">
-          <div class="empty">Select a conversation to read it.</div>
+          <div class="empty">Select a conversation on the left to read it.</div>
         </div>
       `;
 };
-s.styles = [
-  R,
-  L`
+d.styles = [
+  q,
+  U`
       .layout {
         display: grid;
         grid-template-columns: minmax(240px, 320px) 1fr;
@@ -334,6 +424,94 @@ s.styles = [
         display: flex;
         flex-direction: column;
         gap: var(--uui-size-space-3, 8px);
+        /* Anchor the conversation to the bottom like every chat client, so a short
+           thread sits above the reply box instead of floating at the top of a tall pane.
+           justify-content does this without the bubbles themselves having to grow --
+           previously a single message stretched to fill the pane. */
+        justify-content: flex-end;
+      }
+
+      /* Never let a bubble absorb the transcript's spare height. */
+      .bubble {
+        flex: 0 0 auto;
+      }
+
+      .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        color: #fff;
+        flex: 0 0 auto;
+        user-select: none;
+      }
+
+      .avatar.lg {
+        width: 40px;
+        height: 40px;
+        font-size: 0.85rem;
+      }
+
+      .thread-row {
+        display: flex;
+        gap: var(--uui-size-space-3, 8px);
+        align-items: center;
+      }
+
+      .thread-text {
+        min-width: 0;
+        flex: 1;
+      }
+
+      .head-id {
+        display: flex;
+        align-items: center;
+        gap: var(--uui-size-space-3, 8px);
+        min-width: 0;
+      }
+
+      .head-name {
+        font-weight: 700;
+        line-height: 1.25;
+      }
+
+      .head-number {
+        font-size: 0.78rem;
+        opacity: 0.7;
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* Delivery state. Ticks carry the WhatsApp idiom (one sent, two delivered,
+         blue read); the label beside them keeps it accessible rather than colour-only. */
+      .ticks {
+        display: inline-flex;
+        align-items: center;
+        gap: 2px;
+        vertical-align: -1px;
+      }
+
+      .ticks svg {
+        width: 14px;
+        height: 14px;
+      }
+
+      .ticks.read {
+        color: #53bdeb;
+      }
+
+      .day-sep {
+        align-self: center;
+        margin: 4px 0;
+        padding: 2px 10px;
+        border-radius: 9999px;
+        background: var(--uui-color-surface-alt);
+        border: 1px solid var(--wa-hairline);
+        font-size: 0.68rem;
+        opacity: 0.85;
       }
 
       .bubble {
@@ -427,36 +605,36 @@ s.styles = [
       }
     `
 ];
-l([
-  c()
-], s.prototype, "_conversations", 2);
-l([
-  c()
-], s.prototype, "_selected", 2);
-l([
-  c()
-], s.prototype, "_messages", 2);
-l([
-  c()
-], s.prototype, "_draft", 2);
-l([
-  c()
-], s.prototype, "_error", 2);
-l([
-  c()
-], s.prototype, "_loadingList", 2);
-l([
-  c()
-], s.prototype, "_loadingThread", 2);
-l([
-  c()
-], s.prototype, "_sending", 2);
-s = l([
-  A("wa-inbox")
-], s);
-const Z = s;
+h([
+  p()
+], d.prototype, "_conversations", 2);
+h([
+  p()
+], d.prototype, "_selected", 2);
+h([
+  p()
+], d.prototype, "_messages", 2);
+h([
+  p()
+], d.prototype, "_draft", 2);
+h([
+  p()
+], d.prototype, "_error", 2);
+h([
+  p()
+], d.prototype, "_loadingList", 2);
+h([
+  p()
+], d.prototype, "_loadingThread", 2);
+h([
+  p()
+], d.prototype, "_sending", 2);
+d = h([
+  O("wa-inbox")
+], d);
+const K = d;
 export {
-  s as WaInboxElement,
-  Z as default
+  d as WaInboxElement,
+  K as default
 };
 //# sourceMappingURL=wa-inbox.element.js.map
