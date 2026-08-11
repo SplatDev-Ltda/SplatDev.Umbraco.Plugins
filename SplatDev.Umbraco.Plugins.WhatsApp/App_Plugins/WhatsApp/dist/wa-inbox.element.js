@@ -1,25 +1,25 @@
-import { LitElement as L, nothing as u, html as i, css as D, state as h, customElement as O } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as P } from "@umbraco-cms/backoffice/element-api";
-import { W as R, s as U } from "./chunks/shared-styles-DntHce3s.js";
-import { b as $, d as z, c as q, a as B, f as j, e as T } from "./chunks/types-BWOc9hyT.js";
-var Z = Object.defineProperty, F = Object.getOwnPropertyDescriptor, C = (e) => {
-  throw TypeError(e);
-}, c = (e, t, a, l) => {
-  for (var o = l > 1 ? void 0 : l ? F(t, a) : t, f = e.length - 1, g; f >= 0; f--)
-    (g = e[f]) && (o = (l ? g(t, a, o) : g(o)) || o);
-  return l && o && Z(t, a, o), o;
-}, x = (e, t, a) => t.has(e) || C("Cannot " + a), d = (e, t, a) => (x(e, t, "read from private field"), a ? a.call(e) : t.get(e)), w = (e, t, a) => t.has(e) ? C("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), k = (e, t, a, l) => (x(e, t, "write to private field"), t.set(e, a), a), s = (e, t, a) => (x(e, t, "access private method"), a), p, v, b, r, m, y, S, N, _, W, I, M, E, A;
-let n = class extends P(L) {
+import { LitElement as U, nothing as p, html as i, css as q, state as h, customElement as B } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as j } from "@umbraco-cms/backoffice/element-api";
+import { W as F, s as G } from "./chunks/shared-styles-DntHce3s.js";
+import { b as C, d as z, c as Z, a as H, f as D, e as N } from "./chunks/types-BWOc9hyT.js";
+var K = Object.defineProperty, Y = Object.getOwnPropertyDescriptor, I = (t) => {
+  throw TypeError(t);
+}, d = (t, e, a, o) => {
+  for (var n = o > 1 ? void 0 : o ? Y(e, a) : e, f = t.length - 1, _; f >= 0; f--)
+    (_ = t[f]) && (n = (o ? _(e, a, n) : _(n)) || n);
+  return o && n && K(e, a, n), n;
+}, x = (t, e, a) => e.has(t) || I("Cannot " + a), c = (t, e, a) => (x(t, e, "read from private field"), a ? a.call(t) : e.get(t)), g = (t, e, a) => e.has(t) ? I("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, a), k = (t, e, a, o) => (x(t, e, "write to private field"), e.set(t, a), a), r = (t, e, a) => (x(t, e, "access private method"), a), u, v, m, s, b, y, S, T, $, E, W, M, A, L, P, w, O, R;
+let l = class extends j(U) {
   constructor() {
-    super(...arguments), w(this, r), w(this, p, new R(this)), this._conversations = [], this._messages = [], this._draft = "", this._error = "", this._loadingList = !0, this._loadingThread = !1, this._sending = !1, w(this, v), w(this, b);
+    super(...arguments), g(this, s), g(this, u, new F(this)), this._conversations = [], this._messages = [], this._draft = "", this._error = "", this._loadingList = !0, this._loadingThread = !1, this._sending = !1, this._contact = null, this._contactDraft = null, this._savingContact = !1, g(this, v), g(this, m);
   }
   connectedCallback() {
-    super.connectedCallback(), s(this, r, m).call(this), d(this, p).heartbeat(), k(this, v, window.setInterval(() => void d(this, p).heartbeat(), 6e4)), k(this, b, window.setInterval(() => {
-      document.visibilityState === "visible" && s(this, r, m).call(this, { quiet: !0 });
+    super.connectedCallback(), r(this, s, b).call(this), c(this, u).heartbeat(), k(this, v, window.setInterval(() => void c(this, u).heartbeat(), 6e4)), k(this, m, window.setInterval(() => {
+      document.visibilityState === "visible" && r(this, s, b).call(this, { quiet: !0 });
     }, 2e4));
   }
   disconnectedCallback() {
-    super.disconnectedCallback(), d(this, v) && window.clearInterval(d(this, v)), d(this, b) && window.clearInterval(d(this, b));
+    super.disconnectedCallback(), c(this, v) && window.clearInterval(c(this, v)), c(this, m) && window.clearInterval(c(this, m));
   }
   render() {
     return i`
@@ -28,14 +28,14 @@ let n = class extends P(L) {
         <p>Conversations with your WhatsApp Business number.</p>
       </div>
 
-      ${this._error ? i`<div class="error">${this._error}</div>` : u}
+      ${this._error ? i`<div class="error">${this._error}</div>` : p}
 
       <div class="row" style="margin-bottom:12px">
         <uui-button
           look="secondary"
           label="Refresh conversations"
           ?disabled=${this._loadingList}
-          @click=${() => void s(this, r, m).call(this)}
+          @click=${() => void r(this, s, b).call(this)}
         >Refresh</uui-button>
       </div>
 
@@ -44,49 +44,53 @@ let n = class extends P(L) {
           ${this._loadingList ? i`<uui-loader></uui-loader>` : this._conversations.length === 0 ? i`<div class="empty">
                   No conversations yet. They appear here once the webhook is registered
                   and someone messages your number.
-                </div>` : this._conversations.map((e) => s(this, r, N).call(this, e))}
+                </div>` : this._conversations.map((t) => r(this, s, T).call(this, t))}
         </div>
-        ${s(this, r, A).call(this)}
+        ${r(this, s, R).call(this)}
       </div>
     `;
   }
 };
-p = /* @__PURE__ */ new WeakMap();
+u = /* @__PURE__ */ new WeakMap();
 v = /* @__PURE__ */ new WeakMap();
-b = /* @__PURE__ */ new WeakMap();
-r = /* @__PURE__ */ new WeakSet();
-m = async function(e = {}) {
-  e.quiet || (this._loadingList = !0, this._error = "");
+m = /* @__PURE__ */ new WeakMap();
+s = /* @__PURE__ */ new WeakSet();
+b = async function(t = {}) {
+  t.quiet || (this._loadingList = !0, this._error = "");
   try {
-    if (this._conversations = await d(this, p).getConversations(), this._selected) {
-      const t = this._conversations.find((a) => a.id === this._selected.id);
-      t && (this._selected = t);
+    if (this._conversations = await c(this, u).getConversations(), this._selected) {
+      const e = this._conversations.find((a) => a.id === this._selected.id);
+      e && (this._selected = e);
     }
-  } catch (t) {
-    e.quiet || (this._error = t instanceof Error ? t.message : String(t));
+  } catch (e) {
+    t.quiet || (this._error = e instanceof Error ? e.message : String(e));
   } finally {
-    e.quiet || (this._loadingList = !1);
+    t.quiet || (this._loadingList = !1);
   }
 };
-y = async function(e) {
-  this._selected = e, this._loadingThread = !0, this._error = "", this._messages = [];
+y = async function(t) {
+  this._selected = t, this._loadingThread = !0, this._error = "", this._messages = [], this._contact = null, this._contactDraft = null;
   try {
-    const t = await d(this, p).getThread(e.id);
-    this._messages = t.messages, this._selected = t.conversation, e.unreadCount > 0 && (await d(this, p).markRead(e.id), this._conversations = this._conversations.map(
-      (a) => a.id === e.id ? { ...a, unreadCount: 0 } : a
+    const e = await c(this, u).getThread(t.id);
+    this._messages = e.messages, this._selected = e.conversation, c(this, u).getContactByWaId(e.conversation.waId).then((a) => {
+      this._contact = a;
+    }).catch(() => {
+      this._contact = null;
+    }), t.unreadCount > 0 && (await c(this, u).markRead(t.id), this._conversations = this._conversations.map(
+      (a) => a.id === t.id ? { ...a, unreadCount: 0 } : a
     ));
-  } catch (t) {
-    this._error = t instanceof Error ? t.message : String(t);
+  } catch (e) {
+    this._error = e instanceof Error ? e.message : String(e);
   } finally {
     this._loadingThread = !1;
   }
 };
 S = async function() {
-  const e = this._selected, t = this._draft.trim();
-  if (!(!e || !t || this._sending)) {
+  const t = this._selected, e = this._draft.trim();
+  if (!(!t || !e || this._sending)) {
     this._sending = !0, this._error = "";
     try {
-      await d(this, p).sendText(e.waId, t), this._draft = "", await s(this, r, y).call(this, e), await s(this, r, m).call(this);
+      await c(this, u).sendText(t.waId, e), this._draft = "", await r(this, s, y).call(this, t), await r(this, s, b).call(this);
     } catch (a) {
       this._error = a instanceof Error ? a.message : String(a);
     } finally {
@@ -94,86 +98,86 @@ S = async function() {
     }
   }
 };
-N = function(e) {
+T = function(t) {
   var a;
-  const t = ((a = this._selected) == null ? void 0 : a.id) === e.id;
+  const e = ((a = this._selected) == null ? void 0 : a.id) === t.id;
   return i`
       <button
         class="thread"
-        aria-current=${t ? "true" : "false"}
-        @click=${() => void s(this, r, y).call(this, e)}
+        aria-current=${e ? "true" : "false"}
+        @click=${() => void r(this, s, y).call(this, t)}
       >
         <span class="thread-row">
-          ${s(this, r, _).call(this, e)}
+          ${r(this, s, $).call(this, t)}
           <span class="thread-text">
             <span class="top">
               <span class="name">
-                ${$(e.profileName, e.waId, e.contactName)}
+                ${C(t.profileName, t.waId, t.contactName)}
               </span>
-              <span class="when">${z(e.lastMessageUtc)}</span>
+              <span class="when">${z(t.lastMessageUtc)}</span>
             </span>
-            <span class="preview">${e.lastMessagePreview || "—"}</span>
+            <span class="preview">${t.lastMessagePreview || "—"}</span>
           </span>
         </span>
-        ${e.unreadCount > 0 ? i`<span class="unread">${e.unreadCount}</span>` : u}
+        ${t.unreadCount > 0 ? i`<span class="unread">${t.unreadCount}</span>` : p}
       </button>
     `;
 };
-_ = function(e, t = !1) {
-  const a = q(e.waId);
+$ = function(t, e = !1) {
+  const a = Z(t.waId);
   return i`
       <span
-        class=${t ? "avatar lg" : "avatar"}
+        class=${e ? "avatar lg" : "avatar"}
         style="background: hsl(${a} 45% 45%)"
         aria-hidden="true"
-      >${B(e.profileName, e.waId, e.contactName)}</span>
+      >${H(t.profileName, t.waId, t.contactName)}</span>
     `;
 };
-W = function(e) {
-  const t = (e || "").toLowerCase();
-  if (t === "failed") return i` · failed`;
-  const a = t === "delivered" || t === "read", l = t === "read" ? "ticks read" : "ticks", o = i`
+E = function(t) {
+  const e = (t || "").toLowerCase();
+  if (e === "failed") return i` · failed`;
+  const a = e === "delivered" || e === "read", o = e === "read" ? "ticks read" : "ticks", n = i`
       <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
         <path d="M2 8.5 5.5 12 14 3.5" stroke="currentColor" stroke-width="1.6"
               stroke-linecap="round" stroke-linejoin="round" />
       </svg>
     `;
   return i` ·
-      <span class=${l} role="img" aria-label=${t || "sent"}>
-        ${o}${a ? o : u}
+      <span class=${o} role="img" aria-label=${e || "sent"}>
+        ${n}${a ? n : p}
       </span>
     `;
 };
-I = function(e) {
-  const t = e.status === "failed", a = `bubble ${e.inbound ? "in" : "out"}${t ? " failed" : ""}`;
+W = function(t) {
+  const e = t.status === "failed", a = `bubble ${t.inbound ? "in" : "out"}${e ? " failed" : ""}`;
   return i`
       <div class=${a}>
-        <span class="body">${e.body || i`<em>[${e.messageType}]</em>`}</span>
+        <span class="body">${t.body || i`<em>[${t.messageType}]</em>`}</span>
         <span class="meta">
-          ${z(e.timestampUtc)}
-          ${e.inbound ? u : s(this, r, W).call(this, e.status)}
-          ${e.templateName ? i` · template: ${e.templateName}` : u}
-          ${e.errorMessage ? i` · ${e.errorMessage}` : u}
+          ${z(t.timestampUtc)}
+          ${t.inbound ? p : r(this, s, E).call(this, t.status)}
+          ${t.templateName ? i` · template: ${t.templateName}` : p}
+          ${t.errorMessage ? i` · ${t.errorMessage}` : p}
         </span>
       </div>
     `;
 };
-M = function(e) {
-  let t = "";
-  return e.map((a) => {
-    const l = new Date(
+M = function(t) {
+  let e = "";
+  return t.map((a) => {
+    const o = new Date(
       /[Zz]|[+-]\d{2}:?\d{2}$/.test(a.timestampUtc) ? a.timestampUtc : `${a.timestampUtc}Z`
-    ), o = Number.isNaN(l.getTime()) ? "" : l.toDateString(), f = o !== "" && o !== t;
-    return f && (t = o), i`
+    ), n = Number.isNaN(o.getTime()) ? "" : o.toDateString(), f = n !== "" && n !== e;
+    return f && (e = n), i`
         ${f ? i`<span class="day-sep">
-              ${l.toLocaleDateString([], { day: "numeric", month: "short", year: "numeric" })}
-            </span>` : u}
-        ${s(this, r, I).call(this, a)}
+              ${o.toLocaleDateString([], { day: "numeric", month: "short", year: "numeric" })}
+            </span>` : p}
+        ${r(this, s, W).call(this, a)}
       `;
   });
 };
-E = function(e) {
-  return e.windowOpen ? i`
+A = function(t) {
+  return t.windowOpen ? i`
       <div class="reply">
         <div class="reply-row">
           <uui-textarea
@@ -181,8 +185,8 @@ E = function(e) {
             placeholder="Write a reply…"
             .value=${this._draft}
             ?disabled=${this._sending}
-            @input=${(t) => {
-    this._draft = t.target.value;
+            @input=${(e) => {
+    this._draft = e.target.value;
   }}
           ></uui-textarea>
           <uui-button
@@ -190,10 +194,10 @@ E = function(e) {
             color="positive"
             label="Send reply"
             ?disabled=${this._sending || !this._draft.trim()}
-            @click=${() => void s(this, r, S).call(this)}
+            @click=${() => void r(this, s, S).call(this)}
           >${this._sending ? "Sending…" : "Send"}</uui-button>
         </div>
-        <p class="hint">${T(e.windowMinutesRemaining)} in this window.</p>
+        <p class="hint">${N(t.windowMinutesRemaining)} in this window.</p>
       </div>
     ` : i`
         <div class="reply">
@@ -207,30 +211,143 @@ E = function(e) {
         </div>
       `;
 };
-A = function() {
-  const e = this._selected;
-  return e ? i`
+L = function(t) {
+  var e, a, o, n;
+  if (this._contactDraft) {
+    this._contactDraft = null;
+    return;
+  }
+  this._contactDraft = {
+    waId: t.waId,
+    // Seed a new contact with WhatsApp's profile name so the common case is one click.
+    displayName: ((e = this._contact) == null ? void 0 : e.displayName) ?? t.profileName ?? "",
+    company: ((a = this._contact) == null ? void 0 : a.company) ?? "",
+    email: ((o = this._contact) == null ? void 0 : o.email) ?? "",
+    notes: ((n = this._contact) == null ? void 0 : n.notes) ?? ""
+  };
+};
+P = async function() {
+  var t;
+  if (this._contactDraft) {
+    this._savingContact = !0, this._error = "";
+    try {
+      const e = await c(this, u).saveContact(this._contactDraft);
+      this._contact = e, this._contactDraft = null, this._conversations = this._conversations.map(
+        (a) => a.waId === e.waId ? { ...a, contactName: e.displayName } : a
+      ), ((t = this._selected) == null ? void 0 : t.waId) === e.waId && (this._selected = { ...this._selected, contactName: e.displayName });
+    } catch (e) {
+      this._error = e instanceof Error ? e.message : String(e);
+    } finally {
+      this._savingContact = !1;
+    }
+  }
+};
+w = function(t, e, a = "") {
+  var o;
+  return i`
+      <div>
+        <label>${t}</label>
+        <uui-input
+          .value=${((o = this._contactDraft) == null ? void 0 : o[e]) ?? ""}
+          placeholder=${a}
+          @input=${(n) => {
+    this._contactDraft && (this._contactDraft = {
+      ...this._contactDraft,
+      [e]: n.target.value
+    });
+  }}
+        ></uui-input>
+      </div>
+    `;
+};
+O = function(t) {
+  if (!this._contactDraft) {
+    if (!this._contact) return p;
+    const e = [this._contact.company, this._contact.email].filter(Boolean);
+    return e.length === 0 && !this._contact.notes ? p : i`
+        <div class="contact-panel">
+          <span class="contact-meta">
+            ${e.join(" · ")}
+            ${this._contact.notes ? i`<div>${this._contact.notes}</div>` : p}
+          </span>
+        </div>
+      `;
+  }
+  return i`
+      <div class="contact-panel">
+        <strong>${this._contact ? "Edit contact" : "Add contact"}</strong>
+        <div class="contact-meta">${D(t.waId)}</div>
+
+        <div class="contact-grid">
+          ${r(this, s, w).call(this, "Name", "displayName", "Maria Silva")}
+          ${r(this, s, w).call(this, "Company", "company")}
+          ${r(this, s, w).call(this, "Email", "email", "maria@example.com")}
+        </div>
+
+        <div>
+          <label>Notes</label>
+          <uui-textarea
+            .value=${this._contactDraft.notes ?? ""}
+            rows="2"
+            @input=${(e) => {
+    this._contactDraft && (this._contactDraft = {
+      ...this._contactDraft,
+      notes: e.target.value
+    });
+  }}
+          ></uui-textarea>
+        </div>
+
+        <div class="contact-actions">
+          <uui-button label="Cancel" @click=${() => {
+    this._contactDraft = null;
+  }}></uui-button>
+          <uui-button
+            look="primary"
+            color="positive"
+            label=${this._savingContact ? "Saving…" : "Save contact"}
+            ?disabled=${this._savingContact}
+            @click=${() => void r(this, s, P).call(this)}
+          ></uui-button>
+        </div>
+      </div>
+    `;
+};
+R = function() {
+  const t = this._selected;
+  return t ? i`
       <div class="pane">
         <div class="pane-head">
           <div class="head-id">
-            ${s(this, r, _).call(this, e, !0)}
+            ${r(this, s, $).call(this, t, !0)}
             <div>
               <div class="head-name">
-                ${$(e.profileName, e.waId, e.contactName)}
+                ${C(t.profileName, t.waId, t.contactName)}
               </div>
-              <div class="head-number">${j(e.waId)}</div>
+              <div class="head-number">${D(t.waId)}</div>
             </div>
           </div>
-          <span class="window-pill ${e.windowOpen ? "open" : "closed"}">
-            ${e.windowOpen ? T(e.windowMinutesRemaining) : "window closed"}
+          <span class="head-actions">
+            <uui-button
+              look="secondary"
+              compact
+              label=${this._contact ? "Edit contact" : "Add contact"}
+              title=${this._contact ? "Edit this contact" : "Give this number a name your team controls"}
+              @click=${() => r(this, s, L).call(this, t)}
+            ></uui-button>
+            <span class="window-pill ${t.windowOpen ? "open" : "closed"}">
+              ${t.windowOpen ? N(t.windowMinutesRemaining) : "window closed"}
+            </span>
           </span>
         </div>
 
+        ${r(this, s, O).call(this, t)}
+
         <div class="transcript">
-          ${this._loadingThread ? i`<uui-loader></uui-loader>` : this._messages.length === 0 ? i`<div class="empty">No messages in this conversation yet.</div>` : s(this, r, M).call(this, this._messages)}
+          ${this._loadingThread ? i`<uui-loader></uui-loader>` : this._messages.length === 0 ? i`<div class="empty">No messages in this conversation yet.</div>` : r(this, s, M).call(this, this._messages)}
         </div>
 
-        ${s(this, r, E).call(this, e)}
+        ${r(this, s, A).call(this, t)}
       </div>
     ` : i`
         <div class="pane">
@@ -238,9 +355,9 @@ A = function() {
         </div>
       `;
 };
-n.styles = [
-  U,
-  D`
+l.styles = [
+  G,
+  q`
       .layout {
         display: grid;
         grid-template-columns: minmax(240px, 320px) 1fr;
@@ -426,6 +543,13 @@ n.styles = [
         line-height: 1.25;
       }
 
+      .head-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--uui-size-space-3, 8px);
+        flex-wrap: wrap;
+      }
+
       .head-number {
         font-size: 0.78rem;
         opacity: 0.7;
@@ -448,6 +572,45 @@ n.styles = [
 
       .ticks.read {
         color: #53bdeb;
+      }
+
+      .contact-panel {
+        padding: var(--uui-size-space-4, 12px);
+        border-bottom: 1px solid var(--wa-hairline);
+        background: var(--uui-color-surface-alt);
+        display: grid;
+        gap: var(--uui-size-space-3, 8px);
+      }
+
+      .contact-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--uui-size-space-3, 8px);
+      }
+
+      @media (max-width: 720px) {
+        .contact-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .contact-panel label {
+        display: block;
+        font-size: 0.74rem;
+        font-weight: 600;
+        opacity: 0.85;
+        margin-bottom: 3px;
+      }
+
+      .contact-actions {
+        display: flex;
+        gap: var(--uui-size-space-3, 8px);
+        justify-content: flex-end;
+      }
+
+      .contact-meta {
+        font-size: 0.78rem;
+        opacity: 0.8;
       }
 
       .day-sep {
@@ -552,36 +715,45 @@ n.styles = [
       }
     `
 ];
-c([
+d([
   h()
-], n.prototype, "_conversations", 2);
-c([
+], l.prototype, "_conversations", 2);
+d([
   h()
-], n.prototype, "_selected", 2);
-c([
+], l.prototype, "_selected", 2);
+d([
   h()
-], n.prototype, "_messages", 2);
-c([
+], l.prototype, "_messages", 2);
+d([
   h()
-], n.prototype, "_draft", 2);
-c([
+], l.prototype, "_draft", 2);
+d([
   h()
-], n.prototype, "_error", 2);
-c([
+], l.prototype, "_error", 2);
+d([
   h()
-], n.prototype, "_loadingList", 2);
-c([
+], l.prototype, "_loadingList", 2);
+d([
   h()
-], n.prototype, "_loadingThread", 2);
-c([
+], l.prototype, "_loadingThread", 2);
+d([
   h()
-], n.prototype, "_sending", 2);
-n = c([
-  O("wa-inbox")
-], n);
-const J = n;
+], l.prototype, "_sending", 2);
+d([
+  h()
+], l.prototype, "_contact", 2);
+d([
+  h()
+], l.prototype, "_contactDraft", 2);
+d([
+  h()
+], l.prototype, "_savingContact", 2);
+l = d([
+  B("wa-inbox")
+], l);
+const tt = l;
 export {
-  n as WaInboxElement,
-  J as default
+  l as WaInboxElement,
+  tt as default
 };
 //# sourceMappingURL=wa-inbox.element.js.map

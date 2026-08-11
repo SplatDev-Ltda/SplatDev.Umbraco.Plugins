@@ -18,6 +18,8 @@ import {
   formatTime,
   formatTimeShort,
   formatWindow,
+  type Contact,
+  type ContactUpsert,
   type ConversationSummary,
   type MessageView,
 } from "./types";
@@ -219,6 +221,13 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
         line-height: 1.25;
       }
 
+      .head-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--uui-size-space-3, 8px);
+        flex-wrap: wrap;
+      }
+
       .head-number {
         font-size: 0.78rem;
         opacity: 0.7;
@@ -241,6 +250,45 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
 
       .ticks.read {
         color: #53bdeb;
+      }
+
+      .contact-panel {
+        padding: var(--uui-size-space-4, 12px);
+        border-bottom: 1px solid var(--wa-hairline);
+        background: var(--uui-color-surface-alt);
+        display: grid;
+        gap: var(--uui-size-space-3, 8px);
+      }
+
+      .contact-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--uui-size-space-3, 8px);
+      }
+
+      @media (max-width: 720px) {
+        .contact-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .contact-panel label {
+        display: block;
+        font-size: 0.74rem;
+        font-weight: 600;
+        opacity: 0.85;
+        margin-bottom: 3px;
+      }
+
+      .contact-actions {
+        display: flex;
+        gap: var(--uui-size-space-3, 8px);
+        justify-content: flex-end;
+      }
+
+      .contact-meta {
+        font-size: 0.78rem;
+        opacity: 0.8;
       }
 
       .day-sep {
@@ -356,6 +404,10 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
   @state() private _loadingList = true;
   @state() private _loadingThread = false;
   @state() private _sending = false;
+  /** Contact for the open conversation, or null when the number has none yet. */
+  @state() private _contact: Contact | null = null;
+  @state() private _contactDraft: ContactUpsert | null = null;
+  @state() private _savingContact = false;
 
   /** Heartbeat + refresh timers, cleared on disconnect so a closed tab stops reporting presence. */
   #heartbeatTimer?: number;
@@ -417,10 +469,20 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
     this._error = "";
     this._messages = [];
 
+    this._contact = null;
+    this._contactDraft = null;
+
     try {
       const thread = await this.#api.getThread(conversation.id);
       this._messages = thread.messages;
       this._selected = thread.conversation;
+
+      // Fetch alongside the thread. A missing contact is the normal case, not an error,
+      // so a failure here must not stop the transcript rendering.
+      this.#api
+        .getContactByWaId(thread.conversation.waId)
+        .then((c) => { this._contact = c; })
+        .catch(() => { this._contact = null; });
 
       if (conversation.unreadCount > 0) {
         await this.#api.markRead(conversation.id);
@@ -606,6 +668,130 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
     `;
   }
 
+  #startContactEdit(conversation: ConversationSummary) {
+    if (this._contactDraft) {
+      this._contactDraft = null;   // toggle closed
+      return;
+    }
+
+    this._contactDraft = {
+      waId: conversation.waId,
+      // Seed a new contact with WhatsApp's profile name so the common case is one click.
+      displayName: this._contact?.displayName ?? conversation.profileName ?? "",
+      company: this._contact?.company ?? "",
+      email: this._contact?.email ?? "",
+      notes: this._contact?.notes ?? "",
+    };
+  }
+
+  async #saveContact() {
+    if (!this._contactDraft) return;
+
+    this._savingContact = true;
+    this._error = "";
+    try {
+      const saved = await this.#api.saveContact(this._contactDraft);
+      this._contact = saved;
+      this._contactDraft = null;
+
+      // Reflect the new name in the list without refetching everything.
+      this._conversations = this._conversations.map((c) =>
+        c.waId === saved.waId ? { ...c, contactName: saved.displayName } : c,
+      );
+      if (this._selected?.waId === saved.waId) {
+        this._selected = { ...this._selected, contactName: saved.displayName };
+      }
+    } catch (error) {
+      this._error = error instanceof Error ? error.message : String(error);
+    } finally {
+      this._savingContact = false;
+    }
+  }
+
+  #contactField(label: string, key: keyof ContactUpsert, placeholder = "") {
+    return html`
+      <div>
+        <label>${label}</label>
+        <uui-input
+          .value=${(this._contactDraft?.[key] as string) ?? ""}
+          placeholder=${placeholder}
+          @input=${(e: Event) => {
+            if (this._contactDraft) {
+              this._contactDraft = {
+                ...this._contactDraft,
+                [key]: (e.target as HTMLInputElement).value,
+              };
+            }
+          }}
+        ></uui-input>
+      </div>
+    `;
+  }
+
+  /**
+   * Inline contact editor. Deliberately in the conversation pane rather than only in the
+   * Contacts view: you notice a number needs a name while reading its thread, and making
+   * the operator leave the inbox to fix it means it does not get fixed.
+   */
+  #renderContactPanel(conversation: ConversationSummary) {
+    if (!this._contactDraft) {
+      // Not editing: show what is known, so the header is not the only place contact
+      // details exist.
+      if (!this._contact) return nothing;
+      const bits = [this._contact.company, this._contact.email].filter(Boolean);
+      if (bits.length === 0 && !this._contact.notes) return nothing;
+
+      return html`
+        <div class="contact-panel">
+          <span class="contact-meta">
+            ${bits.join(" · ")}
+            ${this._contact.notes ? html`<div>${this._contact.notes}</div>` : nothing}
+          </span>
+        </div>
+      `;
+    }
+
+    return html`
+      <div class="contact-panel">
+        <strong>${this._contact ? "Edit contact" : "Add contact"}</strong>
+        <div class="contact-meta">${formatPhone(conversation.waId)}</div>
+
+        <div class="contact-grid">
+          ${this.#contactField("Name", "displayName", "Maria Silva")}
+          ${this.#contactField("Company", "company")}
+          ${this.#contactField("Email", "email", "maria@example.com")}
+        </div>
+
+        <div>
+          <label>Notes</label>
+          <uui-textarea
+            .value=${this._contactDraft.notes ?? ""}
+            rows="2"
+            @input=${(e: Event) => {
+              if (this._contactDraft) {
+                this._contactDraft = {
+                  ...this._contactDraft,
+                  notes: (e.target as HTMLTextAreaElement).value,
+                };
+              }
+            }}
+          ></uui-textarea>
+        </div>
+
+        <div class="contact-actions">
+          <uui-button label="Cancel" @click=${() => { this._contactDraft = null; }}></uui-button>
+          <uui-button
+            look="primary"
+            color="positive"
+            label=${this._savingContact ? "Saving…" : "Save contact"}
+            ?disabled=${this._savingContact}
+            @click=${() => void this.#saveContact()}
+          ></uui-button>
+        </div>
+      </div>
+    `;
+  }
+
   #renderPane() {
     const conversation = this._selected;
 
@@ -629,12 +815,25 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
               <div class="head-number">${formatPhone(conversation.waId)}</div>
             </div>
           </div>
-          <span class="window-pill ${conversation.windowOpen ? "open" : "closed"}">
-            ${conversation.windowOpen
-              ? formatWindow(conversation.windowMinutesRemaining)
-              : "window closed"}
+          <span class="head-actions">
+            <uui-button
+              look="secondary"
+              compact
+              label=${this._contact ? "Edit contact" : "Add contact"}
+              title=${this._contact
+                ? "Edit this contact"
+                : "Give this number a name your team controls"}
+              @click=${() => this.#startContactEdit(conversation)}
+            ></uui-button>
+            <span class="window-pill ${conversation.windowOpen ? "open" : "closed"}">
+              ${conversation.windowOpen
+                ? formatWindow(conversation.windowMinutesRemaining)
+                : "window closed"}
+            </span>
           </span>
         </div>
+
+        ${this.#renderContactPanel(conversation)}
 
         <div class="transcript">
           ${this._loadingThread
