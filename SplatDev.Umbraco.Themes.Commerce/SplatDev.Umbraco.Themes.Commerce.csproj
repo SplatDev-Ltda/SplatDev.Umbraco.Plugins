@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>SplatDev.Umbraco.Themes.Commerce</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>SplatDev</Authors>
     <Description>E-commerce theme for Umbraco - product grid, product detail, cart, checkout, category browse</Description>
     <PackageTags>umbraco umbraco-marketplace theme commerce ecommerce</PackageTags>

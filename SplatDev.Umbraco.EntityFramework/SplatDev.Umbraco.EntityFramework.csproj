@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<PackageId>SplatDev.Umbraco.EntityFramework</PackageId>
-		<Version>2.0.0</Version>
+		<Version>2.0.1</Version>
 		<Authors>SplatDev</Authors>
 		<Description>Entity Framework Core integration for Umbraco 13 (net8.0) and Umbraco 17 (net10.0)</Description>
 		<PackageTags>umbraco umbraco-marketplace entityframework ef-core</PackageTags>

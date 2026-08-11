@@ -1,0 +1,19 @@
+{
+  "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
+  "Description": "A pre-configured Umbraco data type providing a dropdown of Brazil's 27 federative units — the 26 states plus the Distrito Federal. Values are stored in proper case with accents, as written in Portuguese. Umbraco 13 (net8.0) and 17 (net10.0); the data type installs itself on Umbraco 13.",
+  "Category": "Editor Tools",
+  "PackageType": "Package",
+  "LicenseTypes": [
+    "Free"
+  ],
+  "DocumentationUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/blob/master/SplatDev.Umbraco.DataTypes.BrazilStates/README.md",
+  "IssueTrackerUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/issues",
+  "AuthorDetails": {
+    "Name": "SplatDev",
+    "Description": "SplatDev Ltda — building Umbraco plugins and tools for agencies and developers.",
+    "Url": "https://github.com/splatdevtech",
+    "ImageUrl": "https://github.com/splatdevtech.png",
+    "SyncContributorsFromRepository": true
+  },
+  "Screenshots": []
+}

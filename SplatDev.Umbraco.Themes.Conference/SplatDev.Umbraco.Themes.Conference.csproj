@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <PackageId>SplatDev.Umbraco.Themes.Conference</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>SplatDev</Authors>
     <Description>Conference/event theme for Umbraco - schedule, speakers, venue, registration, countdown</Description>
     <PackageTags>umbraco umbraco-marketplace theme conference event</PackageTags>
