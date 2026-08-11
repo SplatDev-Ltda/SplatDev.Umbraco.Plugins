@@ -61,7 +61,11 @@ Spins up Umbraco 13 (`:5001`) and Umbraco 17 (`:5000`) baselines plus a Playwrig
 
 **Private feed.** `nuget.config` maps `PdfCurator.*` to `https://nuget.pkg.github.com/splatdevtech/` and reads `%GITHUB_ACTOR%` / `%GITHUB_TOKEN%` from the environment. Restore of PdfCurator fails without those set.
 
-**Versioning/publish.** `<Version>` is per-`.csproj` (no central version). Pushing a `v*` tag runs `publish.yml`, which packs each publishable plugin and pushes to NuGet.org (skipping versions that already exist) and GitHub Packages. `Directory.Build.props` supplies Authors/Company/Copyright/license and — unusually — a repo-wide `MailKit`/`MimeKit` `PackageReference` that every project inherits.
+**Versioning/publish.** `<Version>` is per-`.csproj` (no central version). Pushing a `v*` tag runs `publish.yml`, which packs each publishable plugin and pushes to NuGet.org (skipping versions that already exist) and GitHub Packages. `Directory.Build.props` supplies Authors/Company/Copyright/license only — keep it that way. It used to declare `MailKit`/`MimeKit` repo-wide, which made every package depend on an email stack it never used and silently overrode Mailer's own pinned version; add package references to the project that needs them.
+
+**Shipping `App_Plugins` in a NuGet package needs a `buildTransitive` target.** `ContentTargetFolders=.` puts `App_Plugins/` at the nupkg root, and under `PackageReference` nothing copies package-root content into the consuming project — the assembly installs and the backoffice UI silently never appears. `SplatDev.Umbraco.Plugins.CacheManager` and `…WhatsApp` carry the correct `buildTransitive/<PackageId>.targets`; copy that pattern. The defect is invisible under a project reference, so verify by installing the packed `.nupkg` into a clean site.
+
+**A custom backoffice section is not granted automatically.** Registering a `section` extension in `umbraco-package.json` makes it *available*, not *visible* — Umbraco only shows it once the alias is added to a user group's allowed sections. A freshly installed plugin therefore looks like it did nothing, even to an administrator.
 
 ## Branching
 
