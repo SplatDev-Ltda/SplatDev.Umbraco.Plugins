@@ -133,6 +133,7 @@ GLYPH_FOR: dict[str, str] = {
     "exception": "bug", "exceptions": "bug", "errors": "bug", "logging": "bug",
     "logs": "list", "audit": "list",
     "maps": "map", "gmaps": "map", "location": "map",
+    "states": "map", "usstates": "map", "brazilstates": "map", "regions": "map",
     "calendar": "calendar", "events": "calendar", "scheduler": "clock", "cron": "clock",
     "social": "share", "socialmedia": "share", "share": "share", "tweets": "share",
     "onoff": "power", "toggle": "power", "maintenance": "wrench", "tools": "wrench",
@@ -150,6 +151,16 @@ GLYPH_FOR: dict[str, str] = {
 }
 
 FALLBACK = "box"
+
+# Hand-made artwork, never regenerated even with --force. Everything else with an
+# icon.png in its project root came from this script and can be restyled.
+BESPOKE = {
+    "SplatDev.Umbraco.Plugins.Schema2Yaml",
+    "SplatDev.Umbraco.Plugins.Yaml2Schema",
+    "SplatDev.Umbraco.Plugins.OnOff",
+    "SplatDev.Umbraco.Plugins.WhatsApp",
+    "Umbraco.Community.AzureSSO",
+}
 
 
 def find_csprojs():
@@ -180,11 +191,18 @@ def render_svg(project_name: str) -> str:
       <stop offset="0%" stop-color="{BRAND}"/>
       <stop offset="100%" stop-color="{DEEP}"/>
     </linearGradient>
+    <clipPath id="tile">
+      <rect width="{SIZE}" height="{SIZE}" rx="28"/>
+    </clipPath>
   </defs>
   <rect width="{SIZE}" height="{SIZE}" rx="28" fill="url(#bg)"/>
-  <!-- The SplatDev mark, ghosted, so the family reads even without the wordmark. -->
-  <circle cx="100" cy="28" r="15" fill="{BRAND_LIGHT}" opacity="0.28"/>
-  <circle cx="112" cy="46" r="8" fill="{BRAND_LIGHT}" opacity="0.28"/>
+  <!-- SplatDev's mark as a watermark rather than a badge: two blobs, clipped to the tile
+       and held at low opacity so it reads as texture behind the glyph instead of
+       competing with it. Same treatment as the hand-made icons, so the set is one family. -->
+  <g clip-path="url(#tile)" fill="#FFFFFF" opacity="0.13">
+    <circle cx="104" cy="26" r="34"/>
+    <circle cx="132" cy="66" r="18"/>
+  </g>
   <g transform="translate(32 32) scale(2.667)" fill="none" stroke="#FFFFFF"
      stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
     {glyph}
@@ -195,6 +213,9 @@ def render_svg(project_name: str) -> str:
 
 def main() -> int:
     check_only = "--check" in sys.argv
+    # --force restyles previously generated icons (a house-style change), while still
+    # leaving BESPOKE artwork alone.
+    force = "--force" in sys.argv
 
     if not check_only and not subprocess.run(["which", "rsvg-convert"],
                                              capture_output=True).returncode == 0:
@@ -207,20 +228,21 @@ def main() -> int:
         text = csproj.read_text(encoding="utf-8", errors="replace")
         if re.search(r"<IsPackable>\s*false\s*</IsPackable>", text, re.I):
             continue
-        if "umbraco-marketplace" not in text:
+        if "umbraco-marketplace" not in text and ".Themes." not in csproj.stem:
             continue
 
-        # Leave any package that already has artwork completely alone, whether that is a
+        # Leave any package that already has artwork alone, whether that is a
         # <PackageIcon> declaration (WhatsApp keeps its own in docs/brand/) or a loose
         # icon.png that was never wired up (OnOff). An earlier pass tested only for the
         # declaration and overwrote OnOff's file; a later one tested only for the file and
         # shipped a generic glyph in place of WhatsApp's purpose-made one.
-        if "<PackageIcon>" in text:
+        if csproj.stem in BESPOKE:
             continue
 
         png = csproj.parent / "icon.png"
-        if png.exists():
-            continue
+        if not force:
+            if "<PackageIcon>" in text or png.exists():
+                continue
 
         if check_only:
             missing.append(str(csproj.parent.relative_to(ROOT)))
