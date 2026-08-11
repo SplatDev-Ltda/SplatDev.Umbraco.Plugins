@@ -47,6 +47,10 @@ public class NuGetCatalogController(ICatalogService catalog, ICatalogStore store
             });
         }
 
+        // Adding a package changes what should be fetched, so the warm cache is now
+        // wrong. Without this the row only appears after a manual Refresh, which looks
+        // like the add silently failed.
+        catalog.Invalidate();
         return Ok(new { packageId });
     }
 
@@ -54,7 +58,15 @@ public class NuGetCatalogController(ICatalogService catalog, ICatalogStore store
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult RemovePackage(string packageId)
-        => store.RemovePackage(packageId) ? Ok() : NotFound();
+    {
+        if (!store.RemovePackage(packageId))
+        {
+            return NotFound();
+        }
+
+        catalog.Invalidate();
+        return Ok();
+    }
 
     [HttpPost("hidden/{packageId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -93,6 +105,7 @@ public class NuGetCatalogController(ICatalogService catalog, ICatalogStore store
 
         settings.Owners.Add(owner);
         store.Save(settings);
+        catalog.Invalidate();
         return Ok(new { owner });
     }
 
@@ -106,6 +119,7 @@ public class NuGetCatalogController(ICatalogService catalog, ICatalogStore store
         {
             settings.Owners.Remove(existing);
             store.Save(settings);
+            catalog.Invalidate();
         }
 
         return Ok();

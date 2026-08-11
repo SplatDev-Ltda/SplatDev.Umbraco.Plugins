@@ -8,7 +8,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>SplatDev.Umbraco.Plugins.NuGetCatalog</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>SplatDev</Authors>
     <Description>Backoffice dashboard listing your published NuGet packages with download counts, latest version and a short summary. Add packages by URL, hide the ones you do not care about. Umbraco 17 (net10.0).</Description>
     <PackageTags>umbraco umbraco-marketplace nuget packages dashboard downloads</PackageTags>

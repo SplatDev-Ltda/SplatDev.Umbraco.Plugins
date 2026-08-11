@@ -9,6 +9,9 @@ namespace SplatDev.Umbraco.Plugins.NuGetCatalog.Services;
 public interface ICatalogService
 {
     Task<CatalogResponse> GetAsync(bool refresh = false, CancellationToken ct = default);
+
+    /// <summary>Drops the cached catalog so the next read refetches.</summary>
+    void Invalidate();
 }
 
 /// <summary>
@@ -25,6 +28,8 @@ internal sealed class CatalogService(
     private readonly NuGetCatalogOptions _options = options.Value;
 
     private sealed record Cached(List<PackageView> Packages, DateTime RefreshedUtc);
+
+    public void Invalidate() => cache.Remove(CacheKey);
 
     public async Task<CatalogResponse> GetAsync(bool refresh = false, CancellationToken ct = default)
     {
