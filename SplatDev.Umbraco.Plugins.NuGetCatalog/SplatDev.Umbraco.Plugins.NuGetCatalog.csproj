@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Umbraco 17 only. The repo convention is net8.0;net10.0, and this deliberately
+         does not follow it: the UI is Lit 3, and supporting Umbraco 13 would mean a
+         second AngularJS bundle for a dashboard that is a convenience, not a dependency. -->
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PackageId>SplatDev.Umbraco.Plugins.NuGetCatalog</PackageId>
+    <Version>1.0.1</Version>
+    <Authors>SplatDev</Authors>
+    <Description>Backoffice dashboard listing your published NuGet packages with download counts, latest version and a short summary. Add packages by URL, hide the ones you do not care about. Umbraco 17 (net10.0).</Description>
+    <PackageTags>umbraco umbraco-marketplace nuget packages dashboard downloads</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
+    <Company>SplatDev Ltda</Company>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.6" />
+    <PackageReference Include="Umbraco.Cms.Core" Version="17.3.4" />
+    <PackageReference Include="Umbraco.Cms.Web.Common" Version="17.3.4" />
+    <PackageReference Include="Umbraco.Cms.Api.Management" Version="17.3.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="App_Plugins\**\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="icon.png" Pack="true" PackagePath="\" />
+    <None Include="umbraco-marketplace.json" Pack="true" PackagePath="\" Condition="Exists('umbraco-marketplace.json')" />
+  </ItemGroup>
+
+</Project>

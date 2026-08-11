@@ -1,0 +1,26 @@
+{
+  "$schema": "../../umbraco-package-schema.json",
+  "name": "SplatDev NuGet Catalog",
+  "version": "1.0.0",
+  "allowTelemetry": false,
+  "extensions": [
+    {
+      "type": "dashboard",
+      "alias": "SplatDev.NuGetCatalog.Dashboard",
+      "name": "NuGet Catalog Dashboard",
+      "element": "/App_Plugins/NuGetCatalog/dist/nuget-catalog.element.js",
+      "elementName": "nuget-catalog",
+      "weight": 20,
+      "meta": {
+        "label": "NuGet Catalog",
+        "pathname": "nuget-catalog"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.SectionAlias",
+          "match": "Umb.Section.Settings"
+        }
+      ]
+    }
+  ]
+}

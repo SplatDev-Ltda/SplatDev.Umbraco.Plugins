@@ -1,0 +1,19 @@
+{
+  "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
+  "Description": "Backoffice dashboard listing the packages you publish to nuget.org — download counts, latest version and a short summary per package. Add specific packages by URL, hide the ones you don't care about. Umbraco 17 (net10.0).",
+  "Category": "Developer Tools",
+  "PackageType": "Package",
+  "LicenseTypes": [
+    "Free"
+  ],
+  "DocumentationUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/blob/master/SplatDev.Umbraco.Plugins.NuGetCatalog/README.md",
+  "IssueTrackerUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/issues",
+  "AuthorDetails": {
+    "Name": "SplatDev",
+    "Description": "SplatDev Ltda — building Umbraco plugins and tools for agencies and developers.",
+    "Url": "https://github.com/splatdevtech",
+    "ImageUrl": "https://github.com/splatdevtech.png",
+    "SyncContributorsFromRepository": true
+  },
+  "Screenshots": []
+}
