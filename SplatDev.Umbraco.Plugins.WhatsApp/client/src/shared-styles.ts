@@ -107,7 +107,11 @@ export const sharedStyles = css`
 
   /* Status banners share a shape; only the accent differs. Using a tinted surface with a
      coloured leading edge keeps them legible in dark mode, where a saturated fill with
-     white text tends to glare. */
+     white text tends to glare.
+
+     These are flex containers, so put the message in a single <span>. Passing bare text
+     with an inline <strong>/<code> in it makes each of those a separate flex item, and
+     the inline one gets squeezed into its own narrow column mid-sentence. */
   .error,
   .ok,
   .warn {

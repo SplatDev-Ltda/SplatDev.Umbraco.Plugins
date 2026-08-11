@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>SplatDev.Umbraco.Plugins.OnOff</PackageId>
-    <Version>2.1.0</Version>
+    <Version>2.1.1</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Authors>SplatDev</Authors>
     <Description>Feature toggle system for Umbraco — enable/disable site features via backoffice dashboard with scheduled activation support. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).</Description>

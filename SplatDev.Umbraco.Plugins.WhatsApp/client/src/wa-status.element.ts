@@ -104,21 +104,27 @@ export class WaStatusElement extends UmbElementMixin(LitElement) {
         ${status.configured
           ? nothing
           : html`<div class="error">
-              Not configured. Set <code>SplatDev:WhatsApp:PhoneNumberId</code> and
-              <code>SplatDev:WhatsApp:AccessToken</code> before sending.
+              <span>
+                Not configured. Set <code>SplatDev:WhatsApp:PhoneNumberId</code> and
+                <code>SplatDev:WhatsApp:AccessToken</code> before sending.
+              </span>
             </div>`}
         ${status.signatureValidation
           ? nothing
           : html`<div class="warn">
-              <code>AppSecret</code> is not set, so incoming webhooks are accepted without
-              verifying <code>X-Hub-Signature-256</code>. Set it before production — anyone
-              who learns the URL could otherwise post fake messages.
+              <span>
+                <code>AppSecret</code> is not set, so incoming webhooks are accepted without
+                verifying <code>X-Hub-Signature-256</code>. Set it before production — anyone
+                who learns the URL could otherwise post fake messages.
+              </span>
             </div>`}
         ${status.webhookConfigured
           ? nothing
           : html`<div class="warn">
-              No <code>WebhookVerifyToken</code> is set, so Meta's verification handshake
-              will fail and inbound messages will never arrive.
+              <span>
+                No <code>WebhookVerifyToken</code> is set, so Meta's verification handshake
+                will fail and inbound messages will never arrive.
+              </span>
             </div>`}
         <dl>
           <dt>Callback URL</dt>

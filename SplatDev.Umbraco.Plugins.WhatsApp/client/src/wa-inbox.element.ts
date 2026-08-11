@@ -171,7 +171,6 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
         font-size: 0.875rem;
         line-height: 1.5;
         overflow-wrap: anywhere;
-        white-space: pre-wrap;
         box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.04);
         animation: bubble-in 200ms var(--wa-ease) both;
       }
@@ -205,6 +204,11 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
         background: var(--uui-color-danger);
         color: var(--uui-color-selected-contrast, #fff);
         border-color: var(--uui-color-danger-emphasis);
+      }
+
+      .bubble .body {
+        display: block;
+        white-space: pre-wrap;
       }
 
       .meta {
@@ -388,9 +392,12 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
     const failed = message.status === "failed";
     const classes = `bubble ${message.inbound ? "in" : "out"}${failed ? " failed" : ""}`;
 
+    // The body sits in its own element because it is the only part that wants
+    // pre-wrap. Putting pre-wrap on the bubble instead makes the template's own
+    // indentation and newlines render as blank lines, which balloons every bubble.
     return html`
       <div class=${classes}>
-        ${message.body || html`<em>[${message.messageType}]</em>`}
+        <span class="body">${message.body || html`<em>[${message.messageType}]</em>`}</span>
         <span class="meta">
           ${formatTime(message.timestampUtc)}
           ${message.inbound ? nothing : html` · ${message.status}`}
@@ -406,9 +413,11 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
       return html`
         <div class="reply">
           <div class="warn">
-            The 24-hour customer-service window has closed, so WhatsApp will not deliver a
-            free-form reply. Use the <strong>Send</strong> view to send an approved template
-            instead — that reopens the window once they reply.
+            <span>
+              The 24-hour customer-service window has closed, so WhatsApp will not deliver a
+              free-form reply. Use the <strong>Send</strong> view to send an approved template
+              instead — that reopens the window once they reply.
+            </span>
           </div>
         </div>
       `;

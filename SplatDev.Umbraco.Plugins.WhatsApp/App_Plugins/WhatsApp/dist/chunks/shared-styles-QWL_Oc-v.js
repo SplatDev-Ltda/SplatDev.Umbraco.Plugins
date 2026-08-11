@@ -1,41 +1,41 @@
-var w = (t) => {
-  throw TypeError(t);
+var w = (r) => {
+  throw TypeError(r);
 };
-var g = (t, e, r) => e.has(t) || w("Cannot " + r);
-var u = (t, e, r) => (g(t, e, "read from private field"), r ? r.call(t) : e.get(t)), l = (t, e, r) => e.has(t) ? w("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, r), c = (t, e, r, a) => (g(t, e, "write to private field"), a ? a.call(t, r) : e.set(t, r), r), i = (t, e, r) => (g(t, e, "access private method"), r);
+var g = (r, e, t) => e.has(r) || w("Cannot " + t);
+var u = (r, e, t) => (g(r, e, "read from private field"), t ? t.call(r) : e.get(r)), l = (r, e, t) => e.has(r) ? w("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(r) : e.set(r, t), c = (r, e, t, a) => (g(r, e, "write to private field"), a ? a.call(r, t) : e.set(r, t), t), o = (r, e, t) => (g(r, e, "access private method"), t);
 import { UMB_AUTH_CONTEXT as x } from "@umbraco-cms/backoffice/auth";
 import { css as b } from "@umbraco-cms/backoffice/external/lit";
 const y = "/umbraco/whatsapp/api/v1";
-var h, n, m, o, f, d, p;
+var p, n, m, i, f, d, h;
 class A {
   constructor(e) {
-    l(this, o);
-    l(this, h);
+    l(this, i);
+    l(this, p);
     l(this, n, null);
     l(this, m);
-    c(this, h, e), c(this, m, new Promise((r) => {
-      u(this, h).consumeContext(x, async (a) => {
+    c(this, p, e), c(this, m, new Promise((t) => {
+      u(this, p).consumeContext(x, async (a) => {
         var s;
         try {
           c(this, n, await ((s = a == null ? void 0 : a.getLatestToken) == null ? void 0 : s.call(a)) ?? null);
         } catch {
           c(this, n, null);
         }
-        r();
-      }), setTimeout(r, 3e3);
+        t();
+      }), setTimeout(t, 3e3);
     }));
   }
   getStatus() {
-    return i(this, o, d).call(this, "/status");
+    return o(this, i, d).call(this, "/status");
   }
   getConversations() {
-    return i(this, o, d).call(this, "/conversations");
+    return o(this, i, d).call(this, "/conversations");
   }
   getThread(e) {
-    return i(this, o, d).call(this, `/conversations/${e}/messages`);
+    return o(this, i, d).call(this, `/conversations/${e}/messages`);
   }
   markRead(e) {
-    return i(this, o, p).call(this, `/conversations/${e}/read`);
+    return o(this, i, h).call(this, `/conversations/${e}/read`);
   }
   /**
    * Tells the server someone is watching the inbox, which suppresses the
@@ -44,58 +44,58 @@ class A {
    */
   async heartbeat() {
     try {
-      await i(this, o, p).call(this, "/heartbeat");
+      await o(this, i, h).call(this, "/heartbeat");
     } catch {
     }
   }
   getTemplates() {
-    return i(this, o, d).call(this, "/templates");
+    return o(this, i, d).call(this, "/templates");
   }
-  sendText(e, r) {
-    return i(this, o, p).call(this, "/send/text", { to: e, body: r });
+  sendText(e, t) {
+    return o(this, i, h).call(this, "/send/text", { to: e, body: t });
   }
-  sendTemplate(e, r, a, s) {
-    return i(this, o, p).call(this, "/send/template", {
+  sendTemplate(e, t, a, s) {
+    return o(this, i, h).call(this, "/send/template", {
       to: e,
-      templateName: r,
+      templateName: t,
       language: a,
       variables: s
     });
   }
 }
-h = new WeakMap(), n = new WeakMap(), m = new WeakMap(), o = new WeakSet(), f = async function(e, r = {}) {
+p = new WeakMap(), n = new WeakMap(), m = new WeakMap(), i = new WeakSet(), f = async function(e, t = {}) {
   await u(this, m);
-  const a = new Headers(r.headers);
+  const a = new Headers(t.headers);
   return a.set("Accept", "application/json"), u(this, n) && a.set("Authorization", `Bearer ${u(this, n)}`), fetch(`${y}${e}`, {
-    ...r,
+    ...t,
     credentials: "same-origin",
     headers: a
   });
 }, d = async function(e) {
-  const r = await i(this, o, f).call(this, e);
-  if (!r.ok)
-    throw new Error(await v(r));
-  return await r.json();
-}, p = async function(e, r) {
+  const t = await o(this, i, f).call(this, e);
+  if (!t.ok)
+    throw new Error(await v(t));
+  return await t.json();
+}, h = async function(e, t) {
   const a = new Headers();
-  r !== void 0 && a.set("Content-Type", "application/json");
-  const s = await i(this, o, f).call(this, e, {
+  t !== void 0 && a.set("Content-Type", "application/json");
+  const s = await o(this, i, f).call(this, e, {
     method: "POST",
     headers: a,
-    body: r === void 0 ? void 0 : JSON.stringify(r)
+    body: t === void 0 ? void 0 : JSON.stringify(t)
   });
   if (!s.ok)
     throw new Error(await v(s));
   return s.status === 204 ? void 0 : await s.json();
 };
-async function v(t) {
+async function v(r) {
   try {
-    const e = await t.json();
+    const e = await r.json();
     if (e != null && e.error)
       return e.code ? `${e.error} (code ${e.code})` : String(e.error);
   } catch {
   }
-  return t.status === 401 || t.status === 403 ? "Not authorised. Sign in to the backoffice again." : `Request failed: HTTP ${t.status}`;
+  return r.status === 401 || r.status === 403 ? "Not authorised. Sign in to the backoffice again." : `Request failed: HTTP ${r.status}`;
 }
 const S = b`
   :host {
@@ -195,7 +195,11 @@ const S = b`
 
   /* Status banners share a shape; only the accent differs. Using a tinted surface with a
      coloured leading edge keeps them legible in dark mode, where a saturated fill with
-     white text tends to glare. */
+     white text tends to glare.
+
+     These are flex containers, so put the message in a single <span>. Passing bare text
+     with an inline <strong>/<code> in it makes each of those a separate flex item, and
+     the inline one gets squeezed into its own narrow column mid-sentence. */
   .error,
   .ok,
   .warn {
@@ -253,4 +257,4 @@ export {
   A as W,
   S as s
 };
-//# sourceMappingURL=shared-styles-CFbg5_yF.js.map
+//# sourceMappingURL=shared-styles-QWL_Oc-v.js.map

@@ -1,29 +1,29 @@
-import { LitElement as M, nothing as h, html as o, css as E, state as d, customElement as k } from "@umbraco-cms/backoffice/external/lit";
+import { LitElement as M, nothing as h, html as n, css as E, state as d, customElement as k } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin as W } from "@umbraco-cms/backoffice/element-api";
-import { W as C, s as I } from "./chunks/shared-styles-CFbg5_yF.js";
+import { W as C, s as I } from "./chunks/shared-styles-QWL_Oc-v.js";
 var P = Object.defineProperty, z = Object.getOwnPropertyDescriptor, b = (e) => {
   throw TypeError(e);
-}, n = (e, t, s, l) => {
-  for (var a = l > 1 ? void 0 : l ? z(t, s) : t, v = e.length - 1, m; v >= 0; v--)
-    (m = e[v]) && (a = (l ? m(t, s, a) : m(a)) || a);
-  return l && a && P(t, s, a), a;
-}, y = (e, t, s) => t.has(e) || b("Cannot " + s), c = (e, t, s) => (y(e, t, "read from private field"), s ? s.call(e) : t.get(e)), f = (e, t, s) => t.has(e) ? b("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, s), u = (e, t, s) => (y(e, t, "access private method"), s), p, r, $, _, g, x, w, S, T;
-let i = class extends W(M) {
+}, o = (e, t, s, l) => {
+  for (var i = l > 1 ? void 0 : l ? z(t, s) : t, v = e.length - 1, m; v >= 0; v--)
+    (m = e[v]) && (i = (l ? m(t, s, i) : m(i)) || i);
+  return l && i && P(t, s, i), i;
+}, y = (e, t, s) => t.has(e) || b("Cannot " + s), u = (e, t, s) => (y(e, t, "read from private field"), s ? s.call(e) : t.get(e)), f = (e, t, s) => t.has(e) ? b("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, s), p = (e, t, s) => (y(e, t, "access private method"), s), c, r, $, _, g, x, w, S, T;
+let a = class extends W(M) {
   constructor() {
-    super(...arguments), f(this, r), f(this, p, new C(this)), this._mode = "template", this._to = "", this._body = "", this._templates = [], this._selectedIndex = 0, this._variables = [], this._error = "", this._success = "", this._sending = !1, this._loading = !0;
+    super(...arguments), f(this, r), f(this, c, new C(this)), this._mode = "template", this._to = "", this._body = "", this._templates = [], this._selectedIndex = 0, this._variables = [], this._error = "", this._success = "", this._sending = !1, this._loading = !0;
   }
   connectedCallback() {
-    super.connectedCallback(), u(this, r, $).call(this);
+    super.connectedCallback(), p(this, r, $).call(this);
   }
   render() {
-    return o`
+    return n`
       <div class="head">
         <h1>Send a message</h1>
         <p>Send an approved template, or a free-form message inside the 24-hour window.</p>
       </div>
 
-      ${this._error ? o`<div class="error">${this._error}</div>` : h}
-      ${this._success ? o`<div class="ok">${this._success}</div>` : h}
+      ${this._error ? n`<div class="error">${this._error}</div>` : h}
+      ${this._success ? n`<div class="ok">${this._success}</div>` : h}
 
       <uui-box headline="Compose">
         <div class="modes">
@@ -58,26 +58,26 @@ let i = class extends W(M) {
           </p>
         </div>
 
-        ${this._mode === "template" ? u(this, r, S).call(this) : u(this, r, T).call(this)}
+        ${this._mode === "template" ? p(this, r, S).call(this) : p(this, r, T).call(this)}
 
         <uui-button
           look="primary"
           color="positive"
           label="Send message"
           ?disabled=${this._sending || !this._to.trim()}
-          @click=${() => void u(this, r, w).call(this)}
+          @click=${() => void p(this, r, w).call(this)}
         >${this._sending ? "Sending…" : "Send"}</uui-button>
       </uui-box>
     `;
   }
 };
-p = /* @__PURE__ */ new WeakMap();
+c = /* @__PURE__ */ new WeakMap();
 r = /* @__PURE__ */ new WeakSet();
 $ = async function() {
   this._loading = !0;
   try {
-    const e = await c(this, p).getTemplates();
-    this._templates = e.filter((t) => t.isUsable), u(this, r, g).call(this);
+    const e = await u(this, c).getTemplates();
+    this._templates = e.filter((t) => t.isUsable), p(this, r, g).call(this);
   } catch (e) {
     this._error = e instanceof Error ? e.message : String(e);
   } finally {
@@ -89,17 +89,17 @@ _ = function() {
 };
 g = function() {
   var t;
-  const e = ((t = c(this, r, _)) == null ? void 0 : t.variableCount) ?? 0;
+  const e = ((t = u(this, r, _)) == null ? void 0 : t.variableCount) ?? 0;
   this._variables = Array.from({ length: e }, (s, l) => this._variables[l] ?? "");
 };
 x = function() {
-  const e = c(this, r, _);
+  const e = u(this, r, _);
   if (!(e != null && e.bodyText)) return h;
   const t = e.bodyText.replace(/\{\{(\d+)\}\}/g, (s, l) => {
-    const a = this._variables[Number(l) - 1];
-    return a != null && a.trim() ? a : s;
+    const i = this._variables[Number(l) - 1];
+    return i != null && i.trim() ? i : s;
   });
-  return o`
+  return n`
       <div class="field">
         <label>Preview</label>
         <div class="preview">${t}</div>
@@ -112,12 +112,12 @@ w = async function() {
     this._sending = !0, this._error = "", this._success = "";
     try {
       if (this._mode === "template") {
-        const t = c(this, r, _);
+        const t = u(this, r, _);
         if (!t) {
           this._error = "Select a template first.";
           return;
         }
-        const s = await c(this, p).sendTemplate(
+        const s = await u(this, c).sendTemplate(
           e,
           t.name,
           t.language,
@@ -130,7 +130,7 @@ w = async function() {
           this._error = "Enter a message.";
           return;
         }
-        const s = await c(this, p).sendText(e, t);
+        const s = await u(this, c).sendText(e, t);
         this._success = `Message sent. Message id ${s.messageId}`, this._body = "";
       }
     } catch (t) {
@@ -141,22 +141,24 @@ w = async function() {
   }
 };
 S = function() {
-  return this._loading ? o`<uui-loader></uui-loader>` : this._templates.length === 0 ? o`
+  return this._loading ? n`<uui-loader></uui-loader>` : this._templates.length === 0 ? n`
         <div class="warn">
-          No approved templates found. Create and get one approved in Meta Business Manager,
-          then refresh.
+          <span>
+            No approved templates found. Create and get one approved in Meta Business
+            Manager, then refresh.
+          </span>
         </div>
-      ` : o`
+      ` : n`
       <div class="field">
         <label for="tpl">Template</label>
         <select
           id="tpl"
           @change=${(e) => {
-    this._selectedIndex = e.target.selectedIndex, u(this, r, g).call(this);
+    this._selectedIndex = e.target.selectedIndex, p(this, r, g).call(this);
   }}
         >
           ${this._templates.map(
-    (e, t) => o`
+    (e, t) => n`
               <option value=${t} ?selected=${t === this._selectedIndex}>
                 ${e.name} (${e.language}) · ${e.category}
               </option>
@@ -165,12 +167,12 @@ S = function() {
         </select>
       </div>
 
-      ${this._variables.length > 0 ? o`
+      ${this._variables.length > 0 ? n`
             <div class="field">
               <label>Variables</label>
               <div class="var-grid">
                 ${this._variables.map(
-    (e, t) => o`
+    (e, t) => n`
                     <uui-input
                       label=${`Variable ${t + 1}`}
                       placeholder=${`{{${t + 1}}}`}
@@ -185,14 +187,16 @@ S = function() {
               </div>
             </div>
           ` : h}
-      ${u(this, r, x).call(this)}
+      ${p(this, r, x).call(this)}
     `;
 };
 T = function() {
-  return o`
+  return n`
       <div class="warn">
-        Free-form messages only reach people who messaged you in the last 24 hours.
-        Outside that window WhatsApp rejects the send — use a template instead.
+        <span>
+          Free-form messages only reach people who messaged you in the last 24 hours.
+          Outside that window WhatsApp rejects the send — use a template instead.
+        </span>
       </div>
       <div class="field">
         <label>Message</label>
@@ -207,7 +211,7 @@ T = function() {
       </div>
     `;
 };
-i.styles = [
+a.styles = [
   I,
   E`
       uui-box {
@@ -247,42 +251,42 @@ i.styles = [
       }
     `
 ];
-n([
+o([
   d()
-], i.prototype, "_mode", 2);
-n([
+], a.prototype, "_mode", 2);
+o([
   d()
-], i.prototype, "_to", 2);
-n([
+], a.prototype, "_to", 2);
+o([
   d()
-], i.prototype, "_body", 2);
-n([
+], a.prototype, "_body", 2);
+o([
   d()
-], i.prototype, "_templates", 2);
-n([
+], a.prototype, "_templates", 2);
+o([
   d()
-], i.prototype, "_selectedIndex", 2);
-n([
+], a.prototype, "_selectedIndex", 2);
+o([
   d()
-], i.prototype, "_variables", 2);
-n([
+], a.prototype, "_variables", 2);
+o([
   d()
-], i.prototype, "_error", 2);
-n([
+], a.prototype, "_error", 2);
+o([
   d()
-], i.prototype, "_success", 2);
-n([
+], a.prototype, "_success", 2);
+o([
   d()
-], i.prototype, "_sending", 2);
-n([
+], a.prototype, "_sending", 2);
+o([
   d()
-], i.prototype, "_loading", 2);
-i = n([
+], a.prototype, "_loading", 2);
+a = o([
   k("wa-send")
-], i);
-const V = i;
+], a);
+const V = a;
 export {
-  i as WaSendElement,
+  a as WaSendElement,
   V as default
 };
 //# sourceMappingURL=wa-send.element.js.map

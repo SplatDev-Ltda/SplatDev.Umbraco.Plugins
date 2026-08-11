@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>SplatDev.Umbraco.Plugins.Payments.MercadoPago</PackageId>
-    <Version>2.1.0</Version>
+    <Version>2.1.1</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Authors>SplatDev</Authors>
     <Description>MercadoPago payment integration for Umbraco. Supports preference creation, payment status lookup, and webhook handling. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).</Description>

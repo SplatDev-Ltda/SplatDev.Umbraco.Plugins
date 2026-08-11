@@ -8,7 +8,7 @@
     <AssemblyName>SplatDev.Umbraco.Plugins.SvgViewer</AssemblyName>
     <RootNamespace>SplatDev.Umbraco.Plugins.SvgViewer</RootNamespace>
     <PackageId>SplatDev.Umbraco.Plugins.SvgViewer</PackageId>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Authors>SplatDev</Authors>
     <Company>SplatDev Ltda</Company>
