@@ -125,7 +125,12 @@ public class DocumentTypeExporter
         {
             try
             {
+#if NET8_0
+                var dataType = _dataTypeService.GetDataType(prop.DataTypeKey);
+                await Task.CompletedTask;
+#else
                 var dataType = await _dataTypeService.GetAsync(prop.DataTypeKey);
+#endif
                 var dataTypeName = dataType?.Name ?? "Unknown";
 
                 var exportProp = new ExportProperty

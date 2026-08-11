@@ -12,6 +12,17 @@ namespace SplatDev.Umbraco.Plugins.OAuth.Extensions
     {
         public static IUmbracoBuilder AddFacebookMemberAuthentication(this IUmbracoBuilder builder)
         {
+            // Registering a provider with no credentials is fatal, not inert: ASP.NET Core
+            // validates OAuth options on every request and throws
+            // "The 'ClientId' option must be provided", which surfaces as a 500 on every
+            // page of the site - backoffice included - the moment this package is
+            // installed without being configured. An unconfigured external login should
+            // simply not be offered.
+            if (string.IsNullOrWhiteSpace(builder.Config.GetValue<string>("OAuth:Applications:Facebook:AppId")))
+            {
+                return builder;
+            }
+
             builder.Services.ConfigureOptions<FacebookMemberExternalLoginProviderOptions>();
 
             builder.AddMemberExternalLogins(logins =>

@@ -15,17 +15,17 @@ WORKDIR /src
 RUN dotnet new umbraco --name U17Testing --force
 WORKDIR /src/U17Testing
 
-# Install SplatDev plugins from local .nupkg files so a plugin can be tested before it
-# is published to NuGet. Drop packages into u17/local-packages/ and add a matching
-# `dotnet add package` line below.
-#
-# The loop is deliberately not "install everything in the folder": each plugin needs an
-# explicit, reviewable line, and a stale nupkg left in the folder should not silently
-# end up installed.
+# Install the SplatDev plugins from a local feed so they can be exercised before (or
+# without) being published to NuGet. Drop .nupkg files into u17/local-packages/.
 COPY local-packages/ /local-packages/
 RUN dotnet nuget add source /local-packages --name local-plugins
 
-RUN dotnet add package SplatDev.Umbraco.Plugins.WhatsApp --version 3.0.1
+# Every plugin that supports this target framework, as a single props file rather than a
+# `dotnet add package` per plugin: each of those triggers its own restore, which across
+# ~95 packages turns a two-minute build into an hours-long one. MSBuild picks up
+# Directory.Build.props from the project directory automatically, so one restore covers
+# the lot. Regenerate with tools/../make-props.py when the plugin set changes.
+COPY plugins.props /src/U17Testing/Directory.Build.props
 
 RUN dotnet restore
 RUN dotnet build -c Release --no-restore

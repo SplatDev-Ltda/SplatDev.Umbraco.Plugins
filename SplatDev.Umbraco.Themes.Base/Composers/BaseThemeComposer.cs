@@ -168,10 +168,22 @@ internal sealed class BaseThemeInitializationHandler
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
+            // Log and carry on rather than rethrow. This runs from
+            // UmbracoApplicationStartedNotification, so an exception here does not just
+            // abandon the seeding - it fails application startup and takes the whole site
+            // down, backoffice included. A theme that cannot install its schema should
+            // leave the site running and say so in the log.
+            //
+            // Seen for real: the shipped YAML gives 'basePage' two compositions that each
+            // define a 'heroImage' property, Umbraco rejects the duplicate alias with
+            // InvalidCompositionException, and every other plugin on the site went down
+            // with it.
+            //
+            // No sentinel is written, so a corrected schema still installs on next start.
             _logger.LogError(
                 ex,
-                "BaseThemeInitializationHandler: An error occurred during schema installation.");
-            throw;
+                "BaseThemeInitializationHandler: schema installation failed; the site will "
+                + "continue without the Base Theme schema. It will be retried on the next start.");
         }
 
         await Task.CompletedTask;

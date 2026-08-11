@@ -9,11 +9,20 @@ namespace SplatDev.Umbraco.Plugins.Schema2Yaml.Services;
 /// </summary>
 public class TemplateExporter
 {
+    // Templates moved from IFileService to a dedicated ITemplateService in Umbraco 14.
+#if NET8_0
+    private readonly IFileService _templateService;
+#else
     private readonly ITemplateService _templateService;
+#endif
     private readonly ILogger<TemplateExporter> _logger;
 
     public TemplateExporter(
+#if NET8_0
+        IFileService templateService,
+#else
         ITemplateService templateService,
+#endif
         ILogger<TemplateExporter> logger)
     {
         _templateService = templateService ?? throw new ArgumentNullException(nameof(templateService));
@@ -27,7 +36,12 @@ public class TemplateExporter
     {
         _logger.LogInformation("Starting Template export");
 
+#if NET8_0
+        var templates = _templateService.GetTemplates();
+        await Task.CompletedTask;
+#else
         var templates = await _templateService.GetAllAsync(Array.Empty<string>());
+#endif
         var exported = new List<ExportTemplate>();
 
         foreach (var template in templates)

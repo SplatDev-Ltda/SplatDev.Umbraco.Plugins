@@ -13,13 +13,22 @@ namespace SplatDev.Umbraco.Plugins.Schema2Yaml.Services;
 public class ContentExporter
 {
     private readonly IContentService _contentService;
+    // Templates moved from IFileService to ITemplateService in Umbraco 14.
+#if NET8_0
+    private readonly IFileService _templateService;
+#else
     private readonly ITemplateService _templateService;
+#endif
     private readonly Schema2YamlOptions _options;
     private readonly ILogger<ContentExporter> _logger;
 
     public ContentExporter(
         IContentService contentService,
+#if NET8_0
+        IFileService templateService,
+#else
         ITemplateService templateService,
+#endif
         IOptions<Schema2YamlOptions> options,
         ILogger<ContentExporter> logger)
     {
@@ -135,7 +144,12 @@ public class ContentExporter
 
         try
         {
+#if NET8_0
+            var template = _templateService.GetTemplate(content.TemplateId.Value);
+            await Task.CompletedTask;
+#else
             var template = await _templateService.GetAsync(content.TemplateId.Value);
+#endif
             return template?.Alias;
         }
         catch
