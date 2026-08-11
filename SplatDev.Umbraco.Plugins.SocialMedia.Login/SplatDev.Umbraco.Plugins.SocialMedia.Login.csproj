@@ -8,6 +8,7 @@
 		<PackageId>SplatDev.Umbraco.Plugins.SocialMedia.Login</PackageId>
 		<Version>2.1.1</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
 		<Authors>SplatDev</Authors>
 		<Description>Umbraco social login integration plugin — configure OAuth providers (Facebook, Google, Twitter/X, Apple) for member sign-in. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0)</Description>
 		<PackageTags>umbraco umbraco-marketplace</PackageTags>
@@ -42,6 +43,7 @@
 
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="icon.png" Pack="true" PackagePath="\" />
     <None Include="umbraco-marketplace.json" Pack="true" PackagePath="\" Condition="Exists('umbraco-marketplace.json')" />
   </ItemGroup>
 </Project>

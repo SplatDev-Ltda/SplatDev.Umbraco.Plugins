@@ -10,6 +10,7 @@
     <PackageId>SplatDev.Umbraco.Plugins.PhotoGallery</PackageId>
     <Version>1.1.1</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
     <Authors>SplatDev</Authors>
     <Company>SplatDev Ltda</Company>
     <Description>Photo gallery plugin for Umbraco — stores gallery albums and photos with EF Core, renders via view component. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0) with Bellissima Lit dashboard.</Description>
@@ -53,6 +54,7 @@
 
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="icon.png" Pack="true" PackagePath="\" />
     <None Include="umbraco-marketplace.json" Pack="true" PackagePath="\" Condition="Exists('umbraco-marketplace.json')" />
   </ItemGroup>
 </Project>

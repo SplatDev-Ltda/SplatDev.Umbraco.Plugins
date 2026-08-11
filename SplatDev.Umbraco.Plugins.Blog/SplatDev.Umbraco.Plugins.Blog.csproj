@@ -7,6 +7,7 @@
     <PackageId>SplatDev.Umbraco.Plugins.Blog</PackageId>
     <Version>2.1.1</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
     <Authors>SplatDev</Authors>
     <Description>Umbraco Blog plugin with posts, categories, tags, comments and RSS feed. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).</Description>
     <PackageTags>umbraco umbraco-marketplace blog</PackageTags>
@@ -46,6 +47,7 @@
 
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="icon.png" Pack="true" PackagePath="\" />
     <None Include="umbraco-marketplace.json" Pack="true" PackagePath="\" Condition="Exists('umbraco-marketplace.json')" />
   </ItemGroup>
 </Project>

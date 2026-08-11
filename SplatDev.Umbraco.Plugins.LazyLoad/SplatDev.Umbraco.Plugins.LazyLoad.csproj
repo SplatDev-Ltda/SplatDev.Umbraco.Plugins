@@ -10,6 +10,7 @@
     <PackageId>SplatDev.Umbraco.Plugins.LazyLoad</PackageId>
     <Version>1.1.1</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
     <Authors>SplatDev</Authors>
     <Company>SplatDev Ltda</Company>
     <Description>Lazy loading image plugin for Umbraco — intercepts content rendering to add loading=lazy to img tags.</Description>
@@ -43,6 +44,7 @@
 
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="icon.png" Pack="true" PackagePath="\" />
     <None Include="umbraco-marketplace.json" Pack="true" PackagePath="\" Condition="Exists('umbraco-marketplace.json')" />
   </ItemGroup>
 </Project>
