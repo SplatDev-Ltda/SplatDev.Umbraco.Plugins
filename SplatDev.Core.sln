@@ -243,8 +243,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SplatDev.Umbraco.Tools.Test
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API Common", "API Common", "{A1111111-1111-1111-1111-111111111111}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Features", "Features", "{B2222222-2222-2222-2222-222222222222}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Baselines", "Baselines", "{D26CF892-5472-4023-8480-5919C33A381E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco13.Baseline", "test-environments\Umbraco13.Baseline\Umbraco13.Baseline.csproj", "{ED4E79B4-BCD0-20F7-AA2E-44AA5E657994}"

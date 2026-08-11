@@ -50,7 +50,6 @@
     <ProjectReference Include="../../SplatDev.Umbraco.Plugins.Blog/SplatDev.Umbraco.Plugins.Blog.csproj" PrivateAssets="none" />
     <ProjectReference Include="../../SplatDev.Umbraco.Plugins.CacheManager/SplatDev.Umbraco.Plugins.CacheManager.csproj" PrivateAssets="none" />
     <ProjectReference Include="../../SplatDev.Umbraco.Plugins.CharLimit/SplatDev.Umbraco.Plugins.CharLimit.csproj" PrivateAssets="none" />
-    <!-- SplatDev.Umbraco.Plugins.CodeFirst excluded: [DEPRECATED] (see SPL-XXXX) -->
     <ProjectReference Include="../../SplatDev.Umbraco.Plugins.Core/SplatDev.Umbraco.Plugins.Core.csproj" PrivateAssets="none" />
     <ProjectReference Include="../../SplatDev.Umbraco.Plugins.Countries/SplatDev.Umbraco.Plugins.Countries.csproj" PrivateAssets="none" />
     <ProjectReference Include="../../SplatDev.Umbraco.Plugins.CustomLogin/SplatDev.Umbraco.Plugins.CustomLogin.csproj" PrivateAssets="none" />
