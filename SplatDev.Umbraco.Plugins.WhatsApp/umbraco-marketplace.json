@@ -1,6 +1,6 @@
 {
   "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
-  "Description": "WhatsApp Business Cloud API integration for Umbraco — backoffice inbox with the 24-hour customer-service window, approved-template and free-form sending, and an inbound webhook receiver. Umbraco 13 (net8.0) and 17 (net10.0); the Lit 3 dashboard requires Umbraco 17.",
+  "Description": "WhatsApp Business Cloud API integration for Umbraco \u2014 backoffice inbox with the 24-hour customer-service window, contact management, approved-template and free-form sending, and an inbound webhook receiver. Umbraco 13 (net8.0) and 17 (net10.0); the Lit 3 dashboard requires Umbraco 17.",
   "Category": "Campaign & Marketing",
   "PackageType": "Package",
   "LicenseTypes": [
@@ -10,7 +10,7 @@
   "IssueTrackerUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/issues",
   "AuthorDetails": {
     "Name": "SplatDev",
-    "Description": "SplatDev Ltda — building Umbraco plugins and tools for agencies and developers.",
+    "Description": "SplatDev Ltda \u2014 building Umbraco plugins and tools for agencies and developers.",
     "Url": "https://github.com/splatdevtech",
     "ImageUrl": "https://github.com/splatdevtech.png",
     "SyncContributorsFromRepository": true
@@ -18,11 +18,11 @@
   "Screenshots": [
     {
       "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/01-inbox.png",
-      "Caption": "Inbox — conversations with unread counts, the transcript, and how long the 24-hour reply window has left."
+      "Caption": "Inbox \u2014 conversations with initials avatars, readable numbers, delivery ticks, and how long the 24-hour reply window has left."
     },
     {
-      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/02-window-closed.png",
-      "Caption": "Once the window closes the reply box is disabled rather than letting you send something WhatsApp will reject."
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/02-contacts.png",
+      "Caption": "Contacts \u2014 names your team gives WhatsApp numbers, used across the inbox in place of the WhatsApp profile name."
     },
     {
       "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/03-send.png",
@@ -31,6 +31,10 @@
     {
       "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/04-templates.png",
       "Caption": "Every template on your WhatsApp Business Account, with approval status and variable count."
+    },
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/05-status.png",
+      "Caption": "Phone health, quality rating, and setup warnings for anything left unconfigured."
     }
   ]
 }
