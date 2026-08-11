@@ -37,4 +37,14 @@ public interface IWhatsAppStore
 
     /// <summary>Clears the unread badge for a thread.</summary>
     Task MarkReadAsync(int conversationId, CancellationToken ct = default);
+
+    Task<IReadOnlyList<ContactView>> GetContactsAsync(
+        string? search = null, int take = 200, CancellationToken ct = default);
+
+    Task<ContactView?> GetContactByWaIdAsync(string waId, CancellationToken ct = default);
+
+    Task<ContactView?> UpsertContactAsync(ContactUpsert input, CancellationToken ct = default);
+
+    Task<bool> DeleteContactAsync(int id, CancellationToken ct = default);
+
 }

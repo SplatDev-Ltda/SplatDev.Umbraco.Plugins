@@ -89,6 +89,25 @@
           "match": "SplatDev.WhatsApp.Section"
         }
       ]
+    },
+    {
+      "type": "sectionView",
+      "alias": "SplatDev.WhatsApp.SectionView.Contacts",
+      "name": "Contacts",
+      "element": "/App_Plugins/WhatsApp/dist/wa-contacts.element.js",
+      "elementName": "wa-contacts",
+      "weight": 85,
+      "meta": {
+        "label": "Contacts",
+        "pathname": "contacts",
+        "icon": "icon-user"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.SectionAlias",
+          "match": "SplatDev.WhatsApp.Section"
+        }
+      ]
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
   "Description": "WhatsApp Business Cloud API integration for Umbraco — backoffice inbox with the 24-hour customer-service window, approved-template and free-form sending, and an inbound webhook receiver. Umbraco 13 (net8.0) and 17 (net10.0); the Lit 3 dashboard requires Umbraco 17.",
-  "Category": "Communication",
+  "Category": "Campaign & Marketing",
   "PackageType": "Package",
   "LicenseTypes": [
     "Free"

@@ -36,6 +36,7 @@ public class WhatsAppDatabaseHandler : INotificationAsyncHandler<UmbracoApplicat
 
             EnsureDataDirectory(db.Database.GetConnectionString());
             await db.Database.EnsureCreatedAsync(cancellationToken).ConfigureAwait(false);
+            await EnsureContactTableAsync(db, cancellationToken).ConfigureAwait(false);
 
             _logger.LogInformation("WhatsApp conversation store ready.");
         }
@@ -45,6 +46,49 @@ public class WhatsAppDatabaseHandler : INotificationAsyncHandler<UmbracoApplicat
             // surfaces the failure when it cannot read conversations.
             _logger.LogError(ex, "Could not initialise the WhatsApp conversation store.");
         }
+    }
+
+
+    /// <summary>
+    /// Adds the contact table to databases created before contacts existed.
+    /// </summary>
+    /// <remarks>
+    /// EnsureCreatedAsync only builds the schema when the file is absent — it does not
+    /// diff an existing database. Every install from before this feature therefore has a
+    /// whatsapp.db with no contact table, and would 500 the moment the inbox asked for a
+    /// contact.
+    ///
+    /// A plain CREATE TABLE IF NOT EXISTS is deliberate. Introducing EF migrations here
+    /// would mean baselining every database already in the wild against an initial
+    /// migration they were never stamped with; for one additive, side-effect-free table on
+    /// a sidecar SQLite file, this is the smaller and safer change. Keep it in step with
+    /// WhatsAppContact and the mapping in WhatsAppDbContext.
+    /// </remarks>
+    private static async Task EnsureContactTableAsync(
+        WhatsAppDbContext db,
+        CancellationToken cancellationToken)
+    {
+        await db.Database.ExecuteSqlRawAsync(
+            """
+            CREATE TABLE IF NOT EXISTS "whatsAppContact" (
+                "Id"          INTEGER NOT NULL CONSTRAINT "PK_whatsAppContact" PRIMARY KEY AUTOINCREMENT,
+                "WaId"        TEXT NOT NULL,
+                "DisplayName" TEXT NULL,
+                "Company"     TEXT NULL,
+                "Email"       TEXT NULL,
+                "Notes"       TEXT NULL,
+                "CreatedUtc"  TEXT NOT NULL,
+                "UpdatedUtc"  TEXT NOT NULL
+            );
+            """,
+            cancellationToken).ConfigureAwait(false);
+
+        await db.Database.ExecuteSqlRawAsync(
+            """
+            CREATE UNIQUE INDEX IF NOT EXISTS "IX_whatsAppContact_WaId"
+                ON "whatsAppContact" ("WaId");
+            """,
+            cancellationToken).ConfigureAwait(false);
     }
 
     private static void EnsureDataDirectory(string? connectionString)

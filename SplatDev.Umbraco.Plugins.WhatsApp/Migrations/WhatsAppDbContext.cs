@@ -18,6 +18,8 @@ public class WhatsAppDbContext : DbContext
 
     public DbSet<WhatsAppMessage> Messages => Set<WhatsAppMessage>();
 
+    public DbSet<WhatsAppContact> Contacts => Set<WhatsAppContact>();
+
     protected override void OnModelCreating(ModelBuilder model)
     {
         model.Entity<WhatsAppConversation>(e =>
@@ -25,6 +27,15 @@ public class WhatsAppDbContext : DbContext
             e.ToTable("whatsAppConversation");
             e.HasIndex(c => c.WaId).IsUnique();
             e.HasIndex(c => c.LastMessageUtc);
+        });
+
+        model.Entity<WhatsAppContact>(e =>
+        {
+            e.ToTable("whatsAppContact");
+
+            // One contact per number. The inbox resolves names by wa_id, so a duplicate
+            // would make which name wins non-deterministic.
+            e.HasIndex(c => c.WaId).IsUnique();
         });
 
         model.Entity<WhatsAppMessage>(e =>

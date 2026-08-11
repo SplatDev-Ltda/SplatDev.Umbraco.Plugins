@@ -1,41 +1,41 @@
-var w = (r) => {
-  throw TypeError(r);
+var v = (a) => {
+  throw TypeError(a);
 };
-var g = (r, e, t) => e.has(r) || w("Cannot " + t);
-var u = (r, e, t) => (g(r, e, "read from private field"), t ? t.call(r) : e.get(r)), l = (r, e, t) => e.has(r) ? w("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(r) : e.set(r, t), c = (r, e, t, a) => (g(r, e, "write to private field"), a ? a.call(r, t) : e.set(r, t), t), o = (r, e, t) => (g(r, e, "access private method"), t);
+var f = (a, e, t) => e.has(a) || v("Cannot " + t);
+var l = (a, e, t) => (f(a, e, "read from private field"), t ? t.call(a) : e.get(a)), d = (a, e, t) => e.has(a) ? v("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(a) : e.set(a, t), h = (a, e, t, o) => (f(a, e, "write to private field"), o ? o.call(a, t) : e.set(a, t), t), i = (a, e, t) => (f(a, e, "access private method"), t);
 import { UMB_AUTH_CONTEXT as x } from "@umbraco-cms/backoffice/auth";
 import { css as b } from "@umbraco-cms/backoffice/external/lit";
 const y = "/umbraco/whatsapp/api/v1";
-var p, n, m, i, f, d, h;
-class A {
+var m, s, g, r, p, u, c;
+class C {
   constructor(e) {
-    l(this, i);
-    l(this, p);
-    l(this, n, null);
-    l(this, m);
-    c(this, p, e), c(this, m, new Promise((t) => {
-      u(this, p).consumeContext(x, async (a) => {
-        var s;
+    d(this, r);
+    d(this, m);
+    d(this, s, null);
+    d(this, g);
+    h(this, m, e), h(this, g, new Promise((t) => {
+      l(this, m).consumeContext(x, async (o) => {
+        var n;
         try {
-          c(this, n, await ((s = a == null ? void 0 : a.getLatestToken) == null ? void 0 : s.call(a)) ?? null);
+          h(this, s, await ((n = o == null ? void 0 : o.getLatestToken) == null ? void 0 : n.call(o)) ?? null);
         } catch {
-          c(this, n, null);
+          h(this, s, null);
         }
         t();
       }), setTimeout(t, 3e3);
     }));
   }
   getStatus() {
-    return o(this, i, d).call(this, "/status");
+    return i(this, r, u).call(this, "/status");
   }
   getConversations() {
-    return o(this, i, d).call(this, "/conversations");
+    return i(this, r, u).call(this, "/conversations");
   }
   getThread(e) {
-    return o(this, i, d).call(this, `/conversations/${e}/messages`);
+    return i(this, r, u).call(this, `/conversations/${e}/messages`);
   }
   markRead(e) {
-    return o(this, i, h).call(this, `/conversations/${e}/read`);
+    return i(this, r, c).call(this, `/conversations/${e}/read`);
   }
   /**
    * Tells the server someone is watching the inbox, which suppresses the
@@ -44,60 +44,81 @@ class A {
    */
   async heartbeat() {
     try {
-      await o(this, i, h).call(this, "/heartbeat");
+      await i(this, r, c).call(this, "/heartbeat");
     } catch {
     }
   }
   getTemplates() {
-    return o(this, i, d).call(this, "/templates");
+    return i(this, r, u).call(this, "/templates");
   }
   sendText(e, t) {
-    return o(this, i, h).call(this, "/send/text", { to: e, body: t });
+    return i(this, r, c).call(this, "/send/text", { to: e, body: t });
   }
-  sendTemplate(e, t, a, s) {
-    return o(this, i, h).call(this, "/send/template", {
+  sendTemplate(e, t, o, n) {
+    return i(this, r, c).call(this, "/send/template", {
       to: e,
       templateName: t,
-      language: a,
-      variables: s
+      language: o,
+      variables: n
     });
   }
+  async getContacts(e) {
+    const t = e != null && e.trim() ? `?search=${encodeURIComponent(e.trim())}` : "";
+    return i(this, r, u).call(this, `/contacts${t}`);
+  }
+  /**
+   * Returns null when the number has no contact yet. That is the normal state for every
+   * new conversation, so the API answers 204 and this maps it to null rather than throwing.
+   */
+  async getContactByWaId(e) {
+    const t = await i(this, r, p).call(this, `/contacts/by-wa-id/${encodeURIComponent(e)}`);
+    if (t.status === 204) return null;
+    if (!t.ok) throw new Error(await w(t));
+    return await t.json();
+  }
+  async saveContact(e) {
+    return i(this, r, c).call(this, "/contacts", e);
+  }
+  async deleteContact(e) {
+    const t = await i(this, r, p).call(this, `/contacts/${e}`, { method: "DELETE" });
+    if (!t.ok) throw new Error(await w(t));
+  }
 }
-p = new WeakMap(), n = new WeakMap(), m = new WeakMap(), i = new WeakSet(), f = async function(e, t = {}) {
-  await u(this, m);
-  const a = new Headers(t.headers);
-  return a.set("Accept", "application/json"), u(this, n) && a.set("Authorization", `Bearer ${u(this, n)}`), fetch(`${y}${e}`, {
+m = new WeakMap(), s = new WeakMap(), g = new WeakMap(), r = new WeakSet(), p = async function(e, t = {}) {
+  await l(this, g);
+  const o = new Headers(t.headers);
+  return o.set("Accept", "application/json"), l(this, s) && o.set("Authorization", `Bearer ${l(this, s)}`), fetch(`${y}${e}`, {
     ...t,
     credentials: "same-origin",
-    headers: a
+    headers: o
   });
-}, d = async function(e) {
-  const t = await o(this, i, f).call(this, e);
+}, u = async function(e) {
+  const t = await i(this, r, p).call(this, e);
   if (!t.ok)
-    throw new Error(await v(t));
+    throw new Error(await w(t));
   return await t.json();
-}, h = async function(e, t) {
-  const a = new Headers();
-  t !== void 0 && a.set("Content-Type", "application/json");
-  const s = await o(this, i, f).call(this, e, {
+}, c = async function(e, t) {
+  const o = new Headers();
+  t !== void 0 && o.set("Content-Type", "application/json");
+  const n = await i(this, r, p).call(this, e, {
     method: "POST",
-    headers: a,
+    headers: o,
     body: t === void 0 ? void 0 : JSON.stringify(t)
   });
-  if (!s.ok)
-    throw new Error(await v(s));
-  return s.status === 204 ? void 0 : await s.json();
+  if (!n.ok)
+    throw new Error(await w(n));
+  return n.status === 204 ? void 0 : await n.json();
 };
-async function v(r) {
+async function w(a) {
   try {
-    const e = await r.json();
+    const e = await a.json();
     if (e != null && e.error)
       return e.code ? `${e.error} (code ${e.code})` : String(e.error);
   } catch {
   }
-  return r.status === 401 || r.status === 403 ? "Not authorised. Sign in to the backoffice again." : `Request failed: HTTP ${r.status}`;
+  return a.status === 401 || a.status === 403 ? "Not authorised. Sign in to the backoffice again." : `Request failed: HTTP ${a.status}`;
 }
-const S = b`
+const $ = b`
   :host {
     display: block;
     /* Fluid gutter: tight on a narrow split-view, generous on a wide monitor. */
@@ -254,7 +275,7 @@ const S = b`
   }
 `;
 export {
-  A as W,
-  S as s
+  C as W,
+  $ as s
 };
-//# sourceMappingURL=shared-styles-QWL_Oc-v.js.map
+//# sourceMappingURL=shared-styles-DntHce3s.js.map

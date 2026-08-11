@@ -471,7 +471,7 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
           <span class="thread-text">
             <span class="top">
               <span class="name">
-                ${contactName(conversation.profileName, conversation.waId)}
+                ${contactName(conversation.profileName, conversation.waId, conversation.contactName)}
               </span>
               <span class="when">${formatTimeShort(conversation.lastMessageUtc)}</span>
             </span>
@@ -493,7 +493,7 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
         class=${large ? "avatar lg" : "avatar"}
         style="background: hsl(${hue} 45% 45%)"
         aria-hidden="true"
-      >${contactInitials(conversation.profileName, conversation.waId)}</span>
+      >${contactInitials(conversation.profileName, conversation.waId, conversation.contactName)}</span>
     `;
   }
 
@@ -624,7 +624,7 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
             ${this.#renderAvatar(conversation, true)}
             <div>
               <div class="head-name">
-                ${contactName(conversation.profileName, conversation.waId)}
+                ${contactName(conversation.profileName, conversation.waId, conversation.contactName)}
               </div>
               <div class="head-number">${formatPhone(conversation.waId)}</div>
             </div>

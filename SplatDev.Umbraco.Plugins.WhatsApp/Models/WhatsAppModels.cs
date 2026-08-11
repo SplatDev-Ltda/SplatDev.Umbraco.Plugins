@@ -71,6 +71,12 @@ public class ConversationSummary
 
     public string? ProfileName { get; set; }
 
+    /// <summary>
+    /// The operator-maintained name for this number, when one exists. The dashboard prefers
+    /// this over <see cref="ProfileName"/>, which WhatsApp owns and can change underneath us.
+    /// </summary>
+    public string? ContactName { get; set; }
+
     public string? LastMessagePreview { get; set; }
 
     public DateTime? LastMessageUtc { get; set; }
@@ -203,4 +209,42 @@ internal sealed class WebhookConfigurationDto
 {
     [JsonPropertyName("application")]
     public string? Application { get; set; }
+}
+
+
+/// <summary>A contact record as the dashboard sees it.</summary>
+public class ContactView
+{
+    public int Id { get; set; }
+
+    public string WaId { get; set; } = string.Empty;
+
+    public string? DisplayName { get; set; }
+
+    public string? Company { get; set; }
+
+    public string? Email { get; set; }
+
+    public string? Notes { get; set; }
+
+    public DateTime CreatedUtc { get; set; }
+
+    public DateTime UpdatedUtc { get; set; }
+
+    /// <summary>Whether this number has ever had a conversation, so the UI can link to it.</summary>
+    public int? ConversationId { get; set; }
+}
+
+/// <summary>Create or update payload. WaId identifies the contact; everything else is optional.</summary>
+public class ContactUpsert
+{
+    public string WaId { get; set; } = string.Empty;
+
+    public string? DisplayName { get; set; }
+
+    public string? Company { get; set; }
+
+    public string? Email { get; set; }
+
+    public string? Notes { get; set; }
 }

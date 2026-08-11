@@ -186,6 +186,46 @@ public class WhatsAppBackofficeController : ControllerBase
             ? Ok(new { messageId = result.MessageId })
             : BadRequest(new { error = result.Error, code = result.ErrorCode });
     }
+    // ---- contacts ---------------------------------------------------------------
+    // Operator-maintained names for numbers. Kept apart from conversations so a contact
+    // can exist before anyone has messaged in, and so clearing a thread never loses a name.
+
+    [HttpGet("contacts")]
+    public async Task<IActionResult> GetContacts([FromQuery] string? search, CancellationToken ct)
+        => Ok(await _store.GetContactsAsync(search, 200, ct).ConfigureAwait(false));
+
+    [HttpGet("contacts/by-wa-id/{waId}")]
+    public async Task<IActionResult> GetContactByWaId(string waId, CancellationToken ct)
+    {
+        var contact = await _store.GetContactByWaIdAsync(waId, ct).ConfigureAwait(false);
+
+        // 204 rather than 404: "this number has no contact yet" is the normal case for
+        // every new conversation, and the dashboard should not treat it as an error.
+        return contact is null ? NoContent() : Ok(contact);
+    }
+
+    /// <summary>Creates or updates the contact for a number.</summary>
+    [HttpPost("contacts")]
+    public async Task<IActionResult> UpsertContact(
+        [FromBody] ContactUpsert input, CancellationToken ct)
+    {
+        if (input is null || string.IsNullOrWhiteSpace(input.WaId))
+        {
+            return BadRequest(new { error = "A WhatsApp number is required." });
+        }
+
+        var saved = await _store.UpsertContactAsync(input, ct).ConfigureAwait(false);
+        return saved is null
+            ? BadRequest(new { error = "That WhatsApp number contains no digits." })
+            : Ok(saved);
+    }
+
+    [HttpDelete("contacts/{id:int}")]
+    public async Task<IActionResult> DeleteContact(int id, CancellationToken ct)
+        => await _store.DeleteContactAsync(id, ct).ConfigureAwait(false)
+            ? NoContent()
+            : NotFound();
+
 }
 
 public class SendTextRequest

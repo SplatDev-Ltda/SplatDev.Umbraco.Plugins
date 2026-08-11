@@ -1,192 +1,65 @@
-import { LitElement as j, nothing as g, html as a, css as q, state as f, customElement as B } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as Z } from "@umbraco-cms/backoffice/element-api";
-import { W as H, s as Y } from "./chunks/shared-styles-QWL_Oc-v.js";
-function z(e) {
-  if (e <= 0) return "closed";
-  const t = Math.floor(e / 60), r = e % 60;
-  return t > 0 ? `${t}h ${r}m left` : `${r}m left`;
-}
-function S(e) {
-  const t = (e ?? "").replace(/\D/g, "");
-  if (!t) return "";
-  for (const r of F) {
-    if (!t.startsWith(r)) continue;
-    const i = G(r, t.slice(r.length));
-    if (i) return `+${r} ${i}`;
-  }
-  return `+${t}`;
-}
-const C = {
-  // North America — NANP covers US, Canada, and the Caribbean (DR, PR, Jamaica...)
-  1: { 10: { groups: [3, 3, 4], parens: !0 } },
-  // Mexico. 10 digits national; CDMX/GDL/MTY use a 2-digit area code, the rest 3.
-  // An 11-digit value is the legacy "1" mobile prefix WhatsApp used to include.
-  52: {
-    10: { groups: [3, 3, 4] },
-    11: { groups: [3, 3, 4], mobilePrefix: "1" }
-  },
-  // Brazil — 2-digit area code, 9-digit mobile or 8-digit landline.
-  55: {
-    11: { groups: [2, 5, 4], parens: !0 },
-    10: { groups: [2, 4, 4], parens: !0 }
-  },
-  // Argentina — mobiles carry a leading 9 that is written separately.
-  54: {
-    11: { groups: [2, 4, 4], hyphenTail: !0, mobilePrefix: "9" },
-    10: { groups: [2, 4, 4], hyphenTail: !0 }
-  },
-  // Rest of South America
-  56: { 9: { groups: [1, 4, 4] } },
-  // Chile
-  57: { 10: { groups: [3, 3, 4] } },
-  // Colombia
-  58: { 10: { groups: [3, 3, 4] } },
-  // Venezuela
-  51: { 9: { groups: [3, 3, 3] } },
-  // Peru
-  593: { 9: { groups: [2, 3, 4] } },
-  // Ecuador
-  591: { 8: { groups: [4, 4] } },
-  // Bolivia
-  595: { 9: { groups: [3, 3, 3] } },
-  // Paraguay
-  598: { 8: { groups: [4, 4] } },
-  // Uruguay
-  592: { 7: { groups: [3, 4] } },
-  // Guyana
-  597: { 7: { groups: [3, 4] } },
-  // Suriname
-  // Central America
-  502: { 8: { groups: [4, 4] } },
-  // Guatemala
-  503: { 8: { groups: [4, 4] } },
-  // El Salvador
-  504: { 8: { groups: [4, 4] } },
-  // Honduras
-  505: { 8: { groups: [4, 4] } },
-  // Nicaragua
-  506: { 8: { groups: [4, 4] } },
-  // Costa Rica
-  507: { 8: { groups: [4, 4] } },
-  // Panama
-  509: { 8: { groups: [4, 4] } },
-  // Haiti
-  // Europe — where the studio already has contacts
-  44: { 10: { groups: [4, 3, 3] }, 9: { groups: [4, 5] } },
-  // UK
-  351: { 9: { groups: [3, 3, 3] } },
-  // Portugal
-  34: { 9: { groups: [3, 3, 3] } },
-  // Spain
-  33: { 9: { groups: [1, 2, 2, 2, 2] } },
-  // France
-  49: { 11: { groups: [4, 7] }, 10: { groups: [3, 7] } },
-  // Germany
-  39: { 10: { groups: [3, 3, 4] } }
-  // Italy
-}, F = Object.keys(C).sort((e, t) => t.length - e.length);
-function G(e, t) {
-  const r = C[e];
-  if (!r) return null;
-  let i = t, s = "";
-  const o = r[i.length];
-  if (!o) return null;
-  o.mobilePrefix && i.startsWith(o.mobilePrefix) && (s = `${o.mobilePrefix} `, i = i.slice(o.mobilePrefix.length));
-  const p = [];
-  let m = 0;
-  for (const v of o.groups) {
-    if (m >= i.length) break;
-    p.push(i.slice(m, m + v)), m += v;
-  }
-  if (m < i.length && p.push(i.slice(m)), p.length > 1 && (o.parens || o.hyphenTail)) {
-    const [v, ...O] = p, R = o.parens ? `(${v})` : v;
-    return `${s}${R} ${O.join("-")}`;
-  }
-  return s + p.join(" ");
-}
-function N(e, t) {
-  return (e ?? "").trim() || S(t);
-}
-function K(e, t) {
-  const r = (e ?? "").trim().split(/\s+/).filter(Boolean);
-  if (r.length >= 2) return (r[0][0] + r[r.length - 1][0]).toUpperCase();
-  if (r.length === 1) return r[0].slice(0, 2).toUpperCase();
-  const i = (t ?? "").replace(/\D/g, "");
-  return i ? i.slice(-2) : "?";
-}
-function J(e) {
-  const t = e ?? "";
-  let r = 0;
-  for (let i = 0; i < t.length; i++) r = r * 31 + t.charCodeAt(i) | 0;
-  return Math.abs(r) % 360;
-}
-function W(e) {
-  if (!e) return "";
-  const t = /[Zz]|[+-]\d{2}:?\d{2}$/.test(e) ? e : `${e}Z`, r = new Date(t);
-  if (Number.isNaN(r.getTime())) return "";
-  const i = r.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }), s = /* @__PURE__ */ new Date();
-  s.setHours(0, 0, 0, 0);
-  const o = Math.floor((s.getTime() - r.getTime()) / 864e5);
-  return o < 0 ? i : o < 1 ? `Yesterday ${i}` : o < 7 ? `${r.toLocaleDateString([], { weekday: "short" })} ${i}` : r.toLocaleDateString([], { day: "2-digit", month: "short" });
-}
-var Q = Object.defineProperty, V = Object.getOwnPropertyDescriptor, M = (e) => {
+import { LitElement as L, nothing as u, html as i, css as D, state as h, customElement as O } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as P } from "@umbraco-cms/backoffice/element-api";
+import { W as R, s as U } from "./chunks/shared-styles-DntHce3s.js";
+import { b as $, d as z, c as q, a as B, f as j, e as T } from "./chunks/types-BWOc9hyT.js";
+var Z = Object.defineProperty, F = Object.getOwnPropertyDescriptor, C = (e) => {
   throw TypeError(e);
-}, u = (e, t, r, i) => {
-  for (var s = i > 1 ? void 0 : i ? V(t, r) : t, o = e.length - 1, p; o >= 0; o--)
-    (p = e[o]) && (s = (i ? p(t, r, s) : p(s)) || s);
-  return i && s && Q(t, r, s), s;
-}, _ = (e, t, r) => t.has(e) || M("Cannot " + r), c = (e, t, r) => (_(e, t, "read from private field"), r ? r.call(e) : t.get(e)), y = (e, t, r) => t.has(e) ? M("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, r), T = (e, t, r, i) => (_(e, t, "write to private field"), t.set(e, r), r), l = (e, t, r) => (_(e, t, "access private method"), r), h, b, w, n, x, $, D, I, k, L, E, P, A, U;
-let d = class extends Z(j) {
+}, c = (e, t, a, l) => {
+  for (var o = l > 1 ? void 0 : l ? F(t, a) : t, f = e.length - 1, g; f >= 0; f--)
+    (g = e[f]) && (o = (l ? g(t, a, o) : g(o)) || o);
+  return l && o && Z(t, a, o), o;
+}, x = (e, t, a) => t.has(e) || C("Cannot " + a), d = (e, t, a) => (x(e, t, "read from private field"), a ? a.call(e) : t.get(e)), w = (e, t, a) => t.has(e) ? C("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), k = (e, t, a, l) => (x(e, t, "write to private field"), t.set(e, a), a), s = (e, t, a) => (x(e, t, "access private method"), a), p, v, b, r, m, y, S, N, _, W, I, M, E, A;
+let n = class extends P(L) {
   constructor() {
-    super(...arguments), y(this, n), y(this, h, new H(this)), this._conversations = [], this._messages = [], this._draft = "", this._error = "", this._loadingList = !0, this._loadingThread = !1, this._sending = !1, y(this, b), y(this, w);
+    super(...arguments), w(this, r), w(this, p, new R(this)), this._conversations = [], this._messages = [], this._draft = "", this._error = "", this._loadingList = !0, this._loadingThread = !1, this._sending = !1, w(this, v), w(this, b);
   }
   connectedCallback() {
-    super.connectedCallback(), l(this, n, x).call(this), c(this, h).heartbeat(), T(this, b, window.setInterval(() => void c(this, h).heartbeat(), 6e4)), T(this, w, window.setInterval(() => {
-      document.visibilityState === "visible" && l(this, n, x).call(this, { quiet: !0 });
+    super.connectedCallback(), s(this, r, m).call(this), d(this, p).heartbeat(), k(this, v, window.setInterval(() => void d(this, p).heartbeat(), 6e4)), k(this, b, window.setInterval(() => {
+      document.visibilityState === "visible" && s(this, r, m).call(this, { quiet: !0 });
     }, 2e4));
   }
   disconnectedCallback() {
-    super.disconnectedCallback(), c(this, b) && window.clearInterval(c(this, b)), c(this, w) && window.clearInterval(c(this, w));
+    super.disconnectedCallback(), d(this, v) && window.clearInterval(d(this, v)), d(this, b) && window.clearInterval(d(this, b));
   }
   render() {
-    return a`
+    return i`
       <div class="head">
         <h1>Inbox</h1>
         <p>Conversations with your WhatsApp Business number.</p>
       </div>
 
-      ${this._error ? a`<div class="error">${this._error}</div>` : g}
+      ${this._error ? i`<div class="error">${this._error}</div>` : u}
 
       <div class="row" style="margin-bottom:12px">
         <uui-button
           look="secondary"
           label="Refresh conversations"
           ?disabled=${this._loadingList}
-          @click=${() => void l(this, n, x).call(this)}
+          @click=${() => void s(this, r, m).call(this)}
         >Refresh</uui-button>
       </div>
 
       <div class="layout">
         <div class="list">
-          ${this._loadingList ? a`<uui-loader></uui-loader>` : this._conversations.length === 0 ? a`<div class="empty">
+          ${this._loadingList ? i`<uui-loader></uui-loader>` : this._conversations.length === 0 ? i`<div class="empty">
                   No conversations yet. They appear here once the webhook is registered
                   and someone messages your number.
-                </div>` : this._conversations.map((e) => l(this, n, I).call(this, e))}
+                </div>` : this._conversations.map((e) => s(this, r, N).call(this, e))}
         </div>
-        ${l(this, n, U).call(this)}
+        ${s(this, r, A).call(this)}
       </div>
     `;
   }
 };
-h = /* @__PURE__ */ new WeakMap();
+p = /* @__PURE__ */ new WeakMap();
+v = /* @__PURE__ */ new WeakMap();
 b = /* @__PURE__ */ new WeakMap();
-w = /* @__PURE__ */ new WeakMap();
-n = /* @__PURE__ */ new WeakSet();
-x = async function(e = {}) {
+r = /* @__PURE__ */ new WeakSet();
+m = async function(e = {}) {
   e.quiet || (this._loadingList = !0, this._error = "");
   try {
-    if (this._conversations = await c(this, h).getConversations(), this._selected) {
-      const t = this._conversations.find((r) => r.id === this._selected.id);
+    if (this._conversations = await d(this, p).getConversations(), this._selected) {
+      const t = this._conversations.find((a) => a.id === this._selected.id);
       t && (this._selected = t);
     }
   } catch (t) {
@@ -195,12 +68,12 @@ x = async function(e = {}) {
     e.quiet || (this._loadingList = !1);
   }
 };
-$ = async function(e) {
+y = async function(e) {
   this._selected = e, this._loadingThread = !0, this._error = "", this._messages = [];
   try {
-    const t = await c(this, h).getThread(e.id);
-    this._messages = t.messages, this._selected = t.conversation, e.unreadCount > 0 && (await c(this, h).markRead(e.id), this._conversations = this._conversations.map(
-      (r) => r.id === e.id ? { ...r, unreadCount: 0 } : r
+    const t = await d(this, p).getThread(e.id);
+    this._messages = t.messages, this._selected = t.conversation, e.unreadCount > 0 && (await d(this, p).markRead(e.id), this._conversations = this._conversations.map(
+      (a) => a.id === e.id ? { ...a, unreadCount: 0 } : a
     ));
   } catch (t) {
     this._error = t instanceof Error ? t.message : String(t);
@@ -208,99 +81,99 @@ $ = async function(e) {
     this._loadingThread = !1;
   }
 };
-D = async function() {
+S = async function() {
   const e = this._selected, t = this._draft.trim();
   if (!(!e || !t || this._sending)) {
     this._sending = !0, this._error = "";
     try {
-      await c(this, h).sendText(e.waId, t), this._draft = "", await l(this, n, $).call(this, e), await l(this, n, x).call(this);
-    } catch (r) {
-      this._error = r instanceof Error ? r.message : String(r);
+      await d(this, p).sendText(e.waId, t), this._draft = "", await s(this, r, y).call(this, e), await s(this, r, m).call(this);
+    } catch (a) {
+      this._error = a instanceof Error ? a.message : String(a);
     } finally {
       this._sending = !1;
     }
   }
 };
-I = function(e) {
-  var r;
-  const t = ((r = this._selected) == null ? void 0 : r.id) === e.id;
-  return a`
+N = function(e) {
+  var a;
+  const t = ((a = this._selected) == null ? void 0 : a.id) === e.id;
+  return i`
       <button
         class="thread"
         aria-current=${t ? "true" : "false"}
-        @click=${() => void l(this, n, $).call(this, e)}
+        @click=${() => void s(this, r, y).call(this, e)}
       >
         <span class="thread-row">
-          ${l(this, n, k).call(this, e)}
+          ${s(this, r, _).call(this, e)}
           <span class="thread-text">
             <span class="top">
               <span class="name">
-                ${N(e.profileName, e.waId)}
+                ${$(e.profileName, e.waId, e.contactName)}
               </span>
-              <span class="when">${W(e.lastMessageUtc)}</span>
+              <span class="when">${z(e.lastMessageUtc)}</span>
             </span>
             <span class="preview">${e.lastMessagePreview || "—"}</span>
           </span>
         </span>
-        ${e.unreadCount > 0 ? a`<span class="unread">${e.unreadCount}</span>` : g}
+        ${e.unreadCount > 0 ? i`<span class="unread">${e.unreadCount}</span>` : u}
       </button>
     `;
 };
-k = function(e, t = !1) {
-  const r = J(e.waId);
-  return a`
+_ = function(e, t = !1) {
+  const a = q(e.waId);
+  return i`
       <span
         class=${t ? "avatar lg" : "avatar"}
-        style="background: hsl(${r} 45% 45%)"
+        style="background: hsl(${a} 45% 45%)"
         aria-hidden="true"
-      >${K(e.profileName, e.waId)}</span>
+      >${B(e.profileName, e.waId, e.contactName)}</span>
     `;
 };
-L = function(e) {
+W = function(e) {
   const t = (e || "").toLowerCase();
-  if (t === "failed") return a` · failed`;
-  const r = t === "delivered" || t === "read", i = t === "read" ? "ticks read" : "ticks", s = a`
+  if (t === "failed") return i` · failed`;
+  const a = t === "delivered" || t === "read", l = t === "read" ? "ticks read" : "ticks", o = i`
       <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
         <path d="M2 8.5 5.5 12 14 3.5" stroke="currentColor" stroke-width="1.6"
               stroke-linecap="round" stroke-linejoin="round" />
       </svg>
     `;
-  return a` ·
-      <span class=${i} role="img" aria-label=${t || "sent"}>
-        ${s}${r ? s : g}
+  return i` ·
+      <span class=${l} role="img" aria-label=${t || "sent"}>
+        ${o}${a ? o : u}
       </span>
     `;
 };
-E = function(e) {
-  const t = e.status === "failed", r = `bubble ${e.inbound ? "in" : "out"}${t ? " failed" : ""}`;
-  return a`
-      <div class=${r}>
-        <span class="body">${e.body || a`<em>[${e.messageType}]</em>`}</span>
+I = function(e) {
+  const t = e.status === "failed", a = `bubble ${e.inbound ? "in" : "out"}${t ? " failed" : ""}`;
+  return i`
+      <div class=${a}>
+        <span class="body">${e.body || i`<em>[${e.messageType}]</em>`}</span>
         <span class="meta">
-          ${W(e.timestampUtc)}
-          ${e.inbound ? g : l(this, n, L).call(this, e.status)}
-          ${e.templateName ? a` · template: ${e.templateName}` : g}
-          ${e.errorMessage ? a` · ${e.errorMessage}` : g}
+          ${z(e.timestampUtc)}
+          ${e.inbound ? u : s(this, r, W).call(this, e.status)}
+          ${e.templateName ? i` · template: ${e.templateName}` : u}
+          ${e.errorMessage ? i` · ${e.errorMessage}` : u}
         </span>
       </div>
     `;
 };
-P = function(e) {
+M = function(e) {
   let t = "";
-  return e.map((r) => {
-    const i = new Date(
-      /[Zz]|[+-]\d{2}:?\d{2}$/.test(r.timestampUtc) ? r.timestampUtc : `${r.timestampUtc}Z`
-    ), s = Number.isNaN(i.getTime()) ? "" : i.toDateString(), o = s !== "" && s !== t;
-    return o && (t = s), a`
-        ${o ? a`<span class="day-sep">
-              ${i.toLocaleDateString([], { day: "numeric", month: "short", year: "numeric" })}
-            </span>` : g}
-        ${l(this, n, E).call(this, r)}
+  return e.map((a) => {
+    const l = new Date(
+      /[Zz]|[+-]\d{2}:?\d{2}$/.test(a.timestampUtc) ? a.timestampUtc : `${a.timestampUtc}Z`
+    ), o = Number.isNaN(l.getTime()) ? "" : l.toDateString(), f = o !== "" && o !== t;
+    return f && (t = o), i`
+        ${f ? i`<span class="day-sep">
+              ${l.toLocaleDateString([], { day: "numeric", month: "short", year: "numeric" })}
+            </span>` : u}
+        ${s(this, r, I).call(this, a)}
       `;
   });
 };
-A = function(e) {
-  return e.windowOpen ? a`
+E = function(e) {
+  return e.windowOpen ? i`
       <div class="reply">
         <div class="reply-row">
           <uui-textarea
@@ -317,12 +190,12 @@ A = function(e) {
             color="positive"
             label="Send reply"
             ?disabled=${this._sending || !this._draft.trim()}
-            @click=${() => void l(this, n, D).call(this)}
+            @click=${() => void s(this, r, S).call(this)}
           >${this._sending ? "Sending…" : "Send"}</uui-button>
         </div>
-        <p class="hint">${z(e.windowMinutesRemaining)} in this window.</p>
+        <p class="hint">${T(e.windowMinutesRemaining)} in this window.</p>
       </div>
-    ` : a`
+    ` : i`
         <div class="reply">
           <div class="warn">
             <span>
@@ -334,40 +207,40 @@ A = function(e) {
         </div>
       `;
 };
-U = function() {
+A = function() {
   const e = this._selected;
-  return e ? a`
+  return e ? i`
       <div class="pane">
         <div class="pane-head">
           <div class="head-id">
-            ${l(this, n, k).call(this, e, !0)}
+            ${s(this, r, _).call(this, e, !0)}
             <div>
               <div class="head-name">
-                ${N(e.profileName, e.waId)}
+                ${$(e.profileName, e.waId, e.contactName)}
               </div>
-              <div class="head-number">${S(e.waId)}</div>
+              <div class="head-number">${j(e.waId)}</div>
             </div>
           </div>
           <span class="window-pill ${e.windowOpen ? "open" : "closed"}">
-            ${e.windowOpen ? z(e.windowMinutesRemaining) : "window closed"}
+            ${e.windowOpen ? T(e.windowMinutesRemaining) : "window closed"}
           </span>
         </div>
 
         <div class="transcript">
-          ${this._loadingThread ? a`<uui-loader></uui-loader>` : this._messages.length === 0 ? a`<div class="empty">No messages in this conversation yet.</div>` : l(this, n, P).call(this, this._messages)}
+          ${this._loadingThread ? i`<uui-loader></uui-loader>` : this._messages.length === 0 ? i`<div class="empty">No messages in this conversation yet.</div>` : s(this, r, M).call(this, this._messages)}
         </div>
 
-        ${l(this, n, A).call(this, e)}
+        ${s(this, r, E).call(this, e)}
       </div>
-    ` : a`
+    ` : i`
         <div class="pane">
           <div class="empty">Select a conversation on the left to read it.</div>
         </div>
       `;
 };
-d.styles = [
-  Y,
-  q`
+n.styles = [
+  U,
+  D`
       .layout {
         display: grid;
         grid-template-columns: minmax(240px, 320px) 1fr;
@@ -679,36 +552,36 @@ d.styles = [
       }
     `
 ];
-u([
-  f()
-], d.prototype, "_conversations", 2);
-u([
-  f()
-], d.prototype, "_selected", 2);
-u([
-  f()
-], d.prototype, "_messages", 2);
-u([
-  f()
-], d.prototype, "_draft", 2);
-u([
-  f()
-], d.prototype, "_error", 2);
-u([
-  f()
-], d.prototype, "_loadingList", 2);
-u([
-  f()
-], d.prototype, "_loadingThread", 2);
-u([
-  f()
-], d.prototype, "_sending", 2);
-d = u([
-  B("wa-inbox")
-], d);
-const re = d;
+c([
+  h()
+], n.prototype, "_conversations", 2);
+c([
+  h()
+], n.prototype, "_selected", 2);
+c([
+  h()
+], n.prototype, "_messages", 2);
+c([
+  h()
+], n.prototype, "_draft", 2);
+c([
+  h()
+], n.prototype, "_error", 2);
+c([
+  h()
+], n.prototype, "_loadingList", 2);
+c([
+  h()
+], n.prototype, "_loadingThread", 2);
+c([
+  h()
+], n.prototype, "_sending", 2);
+n = c([
+  O("wa-inbox")
+], n);
+const J = n;
 export {
-  d as WaInboxElement,
-  re as default
+  n as WaInboxElement,
+  J as default
 };
 //# sourceMappingURL=wa-inbox.element.js.map

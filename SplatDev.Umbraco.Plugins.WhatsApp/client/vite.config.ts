@@ -8,6 +8,7 @@ export default defineConfig({
         "wa-send.element": "src/wa-send.element.ts",
         "wa-templates.element": "src/wa-templates.element.ts",
         "wa-status.element": "src/wa-status.element.ts",
+        "wa-contacts.element": "src/wa-contacts.element.ts",
       },
       formats: ["es"],
     },

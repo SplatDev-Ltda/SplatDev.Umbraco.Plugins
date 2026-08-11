@@ -51,9 +51,22 @@ public class WhatsAppStore : IWhatsAppStore
             .ToDictionaryAsync(x => x.ConversationId, x => x.Body, ct)
             .ConfigureAwait(false);
 
+        // Resolve operator-maintained names in the same pass. One query keyed by wa_id
+        // rather than a lookup per row.
+        var waIds = conversations.Select(c => c.WaId).ToList();
+        var names = await db.Contacts
+            .Where(x => waIds.Contains(x.WaId) && x.DisplayName != null && x.DisplayName != "")
+            .ToDictionaryAsync(x => x.WaId, x => x.DisplayName, ct)
+            .ConfigureAwait(false);
+
         var now = DateTime.UtcNow;
         return conversations
-            .Select(c => ToSummary(c, previews.GetValueOrDefault(c.Id), now))
+            .Select(c =>
+            {
+                var summary = ToSummary(c, previews.GetValueOrDefault(c.Id), now);
+                summary.ContactName = names.GetValueOrDefault(c.WaId);
+                return summary;
+            })
             .ToList();
     }
 
@@ -326,4 +339,158 @@ public class WhatsAppStore : IWhatsAppStore
         long.TryParse(unixSeconds, out var seconds)
             ? DateTimeOffset.FromUnixTimeSeconds(seconds).UtcDateTime
             : DateTime.UtcNow;
+
+    public async Task<IReadOnlyList<ContactView>> GetContactsAsync(
+        string? search = null, int take = 200, CancellationToken ct = default)
+    {
+        await using var db = await _factory.CreateDbContextAsync(ct).ConfigureAwait(false);
+
+        var query = db.Contacts.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var term = search.Trim();
+            query = query.Where(c =>
+                (c.DisplayName != null && EF.Functions.Like(c.DisplayName, $"%{term}%")) ||
+                (c.Company != null && EF.Functions.Like(c.Company, $"%{term}%")) ||
+                (c.Email != null && EF.Functions.Like(c.Email, $"%{term}%")) ||
+                EF.Functions.Like(c.WaId, $"%{term}%"));
+        }
+
+        var contacts = await query
+            .OrderBy(c => c.DisplayName ?? c.WaId)
+            .Take(Math.Clamp(take, 1, 500))
+            .ToListAsync(ct)
+            .ConfigureAwait(false);
+
+        // Link each contact to its conversation, when one exists, so the UI can jump to it.
+        var waIds = contacts.Select(c => c.WaId).ToList();
+        var conversationIds = await db.Conversations
+            .Where(c => waIds.Contains(c.WaId))
+            .ToDictionaryAsync(c => c.WaId, c => c.Id, ct)
+            .ConfigureAwait(false);
+
+        return contacts.Select(c => ToContactView(c, conversationIds.GetValueOrDefault(c.WaId))).ToList();
+    }
+
+    public async Task<ContactView?> GetContactByWaIdAsync(string waId, CancellationToken ct = default)
+    {
+        var normalized = NormaliseWaId(waId);
+        if (normalized.Length == 0)
+        {
+            return null;
+        }
+
+        await using var db = await _factory.CreateDbContextAsync(ct).ConfigureAwait(false);
+
+        var contact = await db.Contacts
+            .FirstOrDefaultAsync(c => c.WaId == normalized, ct)
+            .ConfigureAwait(false);
+
+        if (contact is null)
+        {
+            return null;
+        }
+
+        var conversationId = await db.Conversations
+            .Where(c => c.WaId == normalized)
+            .Select(c => (int?)c.Id)
+            .FirstOrDefaultAsync(ct)
+            .ConfigureAwait(false);
+
+        return ToContactView(contact, conversationId);
+    }
+
+    /// <summary>
+    /// Creates or updates the contact for a number. Upsert rather than separate create and
+    /// update, because the caller is usually naming a conversation and neither knows nor
+    /// cares whether a row already exists.
+    /// </summary>
+    public async Task<ContactView?> UpsertContactAsync(ContactUpsert input, CancellationToken ct = default)
+    {
+        var normalized = NormaliseWaId(input.WaId);
+        if (normalized.Length == 0)
+        {
+            return null;
+        }
+
+        await using var db = await _factory.CreateDbContextAsync(ct).ConfigureAwait(false);
+
+        var now = DateTime.UtcNow;
+        var contact = await db.Contacts
+            .FirstOrDefaultAsync(c => c.WaId == normalized, ct)
+            .ConfigureAwait(false);
+
+        if (contact is null)
+        {
+            contact = new WhatsAppContact { WaId = normalized, CreatedUtc = now };
+            db.Contacts.Add(contact);
+        }
+
+        contact.DisplayName = Trim(input.DisplayName, 256);
+        contact.Company = Trim(input.Company, 256);
+        contact.Email = Trim(input.Email, 320);
+        contact.Notes = Trim(input.Notes, 4000);
+        contact.UpdatedUtc = now;
+
+        await db.SaveChangesAsync(ct).ConfigureAwait(false);
+
+        var conversationId = await db.Conversations
+            .Where(c => c.WaId == normalized)
+            .Select(c => (int?)c.Id)
+            .FirstOrDefaultAsync(ct)
+            .ConfigureAwait(false);
+
+        return ToContactView(contact, conversationId);
+    }
+
+    public async Task<bool> DeleteContactAsync(int id, CancellationToken ct = default)
+    {
+        await using var db = await _factory.CreateDbContextAsync(ct).ConfigureAwait(false);
+
+        var contact = await db.Contacts.FirstOrDefaultAsync(c => c.Id == id, ct).ConfigureAwait(false);
+        if (contact is null)
+        {
+            return false;
+        }
+
+        // Deletes the name only. Conversations and messages are untouched, so removing a
+        // contact never destroys history.
+        db.Contacts.Remove(contact);
+        await db.SaveChangesAsync(ct).ConfigureAwait(false);
+        return true;
+    }
+
+    private static ContactView ToContactView(WhatsAppContact c, int? conversationId) => new()
+    {
+        Id = c.Id,
+        WaId = c.WaId,
+        DisplayName = c.DisplayName,
+        Company = c.Company,
+        Email = c.Email,
+        Notes = c.Notes,
+        CreatedUtc = c.CreatedUtc,
+        UpdatedUtc = c.UpdatedUtc,
+        ConversationId = conversationId,
+    };
+
+    /// <summary>
+    /// wa_id is E.164 digits with no leading '+'. Operators paste numbers with spaces,
+    /// brackets and a plus, so strip to digits before it becomes a lookup key — otherwise
+    /// "+55 15 9..." and "55159..." would be two different contacts.
+    /// </summary>
+    private static string NormaliseWaId(string? waId) =>
+        new string((waId ?? string.Empty).Where(char.IsDigit).ToArray());
+
+    private static string? Trim(string? value, int max)
+    {
+        var trimmed = value?.Trim();
+        if (string.IsNullOrEmpty(trimmed))
+        {
+            return null;
+        }
+
+        return trimmed.Length <= max ? trimmed : trimmed[..max];
+    }
+
 }

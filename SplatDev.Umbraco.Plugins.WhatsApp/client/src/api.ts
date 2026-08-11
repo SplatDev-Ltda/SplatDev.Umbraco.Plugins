@@ -2,6 +2,8 @@ import { UMB_AUTH_CONTEXT } from "@umbraco-cms/backoffice/auth";
 import type { UmbControllerHost } from "@umbraco-cms/backoffice/controller-api";
 
 import type {
+  Contact,
+  ContactUpsert,
   ConversationSummary,
   MessageTemplate,
   ThreadResponse,
@@ -140,6 +142,32 @@ export class WhatsAppApi {
       variables,
     });
   }
+
+  async getContacts(search?: string): Promise<Contact[]> {
+    const q = search?.trim() ? `?search=${encodeURIComponent(search.trim())}` : "";
+    return this.#get<Contact[]>(`/contacts${q}`);
+  }
+
+  /**
+   * Returns null when the number has no contact yet. That is the normal state for every
+   * new conversation, so the API answers 204 and this maps it to null rather than throwing.
+   */
+  async getContactByWaId(waId: string): Promise<Contact | null> {
+    const response = await this.#fetch(`/contacts/by-wa-id/${encodeURIComponent(waId)}`);
+    if (response.status === 204) return null;
+    if (!response.ok) throw new Error(await describeError(response));
+    return (await response.json()) as Contact;
+  }
+
+  async saveContact(input: ContactUpsert): Promise<Contact> {
+    return this.#post<Contact>("/contacts", input);
+  }
+
+  async deleteContact(id: number): Promise<void> {
+    const response = await this.#fetch(`/contacts/${id}`, { method: "DELETE" });
+    if (!response.ok) throw new Error(await describeError(response));
+  }
+
 }
 
 /** Unwraps the API's `{ error }` envelope so the UI shows Meta's reason, not "HTTP 400". */

@@ -2,6 +2,8 @@ export interface ConversationSummary {
   id: number;
   waId: string;
   profileName?: string | null;
+  /** Operator-maintained name. Preferred over profileName, which WhatsApp owns. */
+  contactName?: string | null;
   lastMessagePreview?: string | null;
   lastMessageUtc?: string | null;
   lastInboundUtc?: string | null;
@@ -217,18 +219,30 @@ function groupNational(cc: string, national: string): string | null {
   return lead + parts.join(" ");
 }
 
-/** The name to show for a contact, falling back to the formatted number. */
-export function contactName(profileName?: string | null, waId?: string | null): string {
-  const name = (profileName ?? "").trim();
-  return name || formatPhone(waId);
+/**
+ * The name to show, in order of trust: the name your team saved, then the WhatsApp
+ * profile name, then the formatted number. The saved name wins because WhatsApp's can
+ * change underneath you and is absent for anyone without a profile name set.
+ */
+export function contactName(
+  profileName?: string | null,
+  waId?: string | null,
+  savedName?: string | null,
+): string {
+  return (savedName ?? "").trim() || (profileName ?? "").trim() || formatPhone(waId);
 }
 
 /**
  * Initials for the avatar. Two letters from a real name, otherwise the last two digits
  * of the number so distinct contacts still look distinct.
  */
-export function contactInitials(profileName?: string | null, waId?: string | null): string {
-  const parts = (profileName ?? "").trim().split(/\s+/).filter(Boolean);
+export function contactInitials(
+  profileName?: string | null,
+  waId?: string | null,
+  savedName?: string | null,
+): string {
+  const source = (savedName ?? "").trim() || (profileName ?? "").trim();
+  const parts = source.split(/\s+/).filter(Boolean);
   if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
   if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
   const digits = (waId ?? "").replace(/\D/g, "");
@@ -262,4 +276,26 @@ export function formatTimeShort(iso?: string | null): string {
   if (days < 1) return `Yesterday ${time}`;
   if (days < 7) return `${d.toLocaleDateString([], { weekday: "short" })} ${time}`;
   return d.toLocaleDateString([], { day: "2-digit", month: "short" });
+}
+
+
+export interface Contact {
+  id: number;
+  waId: string;
+  displayName?: string | null;
+  company?: string | null;
+  email?: string | null;
+  notes?: string | null;
+  createdUtc: string;
+  updatedUtc: string;
+  /** Set when this number already has a conversation, so the UI can link to it. */
+  conversationId?: number | null;
+}
+
+export interface ContactUpsert {
+  waId: string;
+  displayName?: string | null;
+  company?: string | null;
+  email?: string | null;
+  notes?: string | null;
 }
