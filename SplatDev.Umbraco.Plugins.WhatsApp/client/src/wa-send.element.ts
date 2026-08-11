@@ -170,8 +170,10 @@ export class WaSendElement extends UmbElementMixin(LitElement) {
     if (this._templates.length === 0) {
       return html`
         <div class="warn">
-          No approved templates found. Create and get one approved in Meta Business Manager,
-          then refresh.
+          <span>
+            No approved templates found. Create and get one approved in Meta Business
+            Manager, then refresh.
+          </span>
         </div>
       `;
     }
@@ -226,8 +228,10 @@ export class WaSendElement extends UmbElementMixin(LitElement) {
   #renderTextMode() {
     return html`
       <div class="warn">
-        Free-form messages only reach people who messaged you in the last 24 hours.
-        Outside that window WhatsApp rejects the send — use a template instead.
+        <span>
+          Free-form messages only reach people who messaged you in the last 24 hours.
+          Outside that window WhatsApp rejects the send — use a template instead.
+        </span>
       </div>
       <div class="field">
         <label>Message</label>

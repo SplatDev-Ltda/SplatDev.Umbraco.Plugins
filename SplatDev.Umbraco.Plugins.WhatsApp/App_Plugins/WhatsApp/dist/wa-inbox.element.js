@@ -1,6 +1,6 @@
-import { LitElement as N, nothing as v, html as r, css as L, state as c, customElement as A } from "@umbraco-cms/backoffice/external/lit";
+import { LitElement as N, nothing as v, html as a, css as L, state as c, customElement as A } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin as I } from "@umbraco-cms/backoffice/element-api";
-import { W as O, s as R } from "./chunks/shared-styles-CFbg5_yF.js";
+import { W as O, s as R } from "./chunks/shared-styles-QWL_Oc-v.js";
 function k(e) {
   if (e <= 0) return "closed";
   const t = Math.floor(e / 60), i = e % 60;
@@ -16,61 +16,61 @@ function x(e) {
 }
 var P = Object.defineProperty, q = Object.getOwnPropertyDescriptor, W = (e) => {
   throw TypeError(e);
-}, d = (e, t, i, h) => {
-  for (var p = h > 1 ? void 0 : h ? q(t, i) : t, w = e.length - 1, g; w >= 0; w--)
-    (g = e[w]) && (p = (h ? g(t, i, p) : g(p)) || p);
-  return h && p && P(t, i, p), p;
-}, _ = (e, t, i) => t.has(e) || W("Cannot " + i), n = (e, t, i) => (_(e, t, "read from private field"), i ? i.call(e) : t.get(e)), m = (e, t, i) => t.has(e) ? W("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, i), $ = (e, t, i, h) => (_(e, t, "write to private field"), t.set(e, i), i), o = (e, t, i) => (_(e, t, "access private method"), i), l, u, f, a, b, y, C, S, T, M, E;
+}, l = (e, t, i, u) => {
+  for (var p = u > 1 ? void 0 : u ? q(t, i) : t, w = e.length - 1, g; w >= 0; w--)
+    (g = e[w]) && (p = (u ? g(t, i, p) : g(p)) || p);
+  return u && p && P(t, i, p), p;
+}, _ = (e, t, i) => t.has(e) || W("Cannot " + i), n = (e, t, i) => (_(e, t, "read from private field"), i ? i.call(e) : t.get(e)), m = (e, t, i) => t.has(e) ? W("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, i), $ = (e, t, i, u) => (_(e, t, "write to private field"), t.set(e, i), i), o = (e, t, i) => (_(e, t, "access private method"), i), d, h, f, r, b, y, C, S, T, M, E;
 let s = class extends I(N) {
   constructor() {
-    super(...arguments), m(this, a), m(this, l, new O(this)), this._conversations = [], this._messages = [], this._draft = "", this._error = "", this._loadingList = !0, this._loadingThread = !1, this._sending = !1, m(this, u), m(this, f);
+    super(...arguments), m(this, r), m(this, d, new O(this)), this._conversations = [], this._messages = [], this._draft = "", this._error = "", this._loadingList = !0, this._loadingThread = !1, this._sending = !1, m(this, h), m(this, f);
   }
   connectedCallback() {
-    super.connectedCallback(), o(this, a, b).call(this), n(this, l).heartbeat(), $(this, u, window.setInterval(() => void n(this, l).heartbeat(), 6e4)), $(this, f, window.setInterval(() => {
-      document.visibilityState === "visible" && o(this, a, b).call(this, { quiet: !0 });
+    super.connectedCallback(), o(this, r, b).call(this), n(this, d).heartbeat(), $(this, h, window.setInterval(() => void n(this, d).heartbeat(), 6e4)), $(this, f, window.setInterval(() => {
+      document.visibilityState === "visible" && o(this, r, b).call(this, { quiet: !0 });
     }, 2e4));
   }
   disconnectedCallback() {
-    super.disconnectedCallback(), n(this, u) && window.clearInterval(n(this, u)), n(this, f) && window.clearInterval(n(this, f));
+    super.disconnectedCallback(), n(this, h) && window.clearInterval(n(this, h)), n(this, f) && window.clearInterval(n(this, f));
   }
   render() {
-    return r`
+    return a`
       <div class="head">
         <h1>Inbox</h1>
         <p>Conversations with your WhatsApp Business number.</p>
       </div>
 
-      ${this._error ? r`<div class="error">${this._error}</div>` : v}
+      ${this._error ? a`<div class="error">${this._error}</div>` : v}
 
       <div class="row" style="margin-bottom:12px">
         <uui-button
           look="secondary"
           label="Refresh conversations"
           ?disabled=${this._loadingList}
-          @click=${() => void o(this, a, b).call(this)}
+          @click=${() => void o(this, r, b).call(this)}
         >Refresh</uui-button>
       </div>
 
       <div class="layout">
         <div class="list">
-          ${this._loadingList ? r`<uui-loader></uui-loader>` : this._conversations.length === 0 ? r`<div class="empty">
+          ${this._loadingList ? a`<uui-loader></uui-loader>` : this._conversations.length === 0 ? a`<div class="empty">
                   No conversations yet. They appear here once the webhook is registered
                   and someone messages your number.
-                </div>` : this._conversations.map((e) => o(this, a, S).call(this, e))}
+                </div>` : this._conversations.map((e) => o(this, r, S).call(this, e))}
         </div>
-        ${o(this, a, E).call(this)}
+        ${o(this, r, E).call(this)}
       </div>
     `;
   }
 };
-l = /* @__PURE__ */ new WeakMap();
-u = /* @__PURE__ */ new WeakMap();
+d = /* @__PURE__ */ new WeakMap();
+h = /* @__PURE__ */ new WeakMap();
 f = /* @__PURE__ */ new WeakMap();
-a = /* @__PURE__ */ new WeakSet();
+r = /* @__PURE__ */ new WeakSet();
 b = async function(e = {}) {
   e.quiet || (this._loadingList = !0, this._error = "");
   try {
-    if (this._conversations = await n(this, l).getConversations(), this._selected) {
+    if (this._conversations = await n(this, d).getConversations(), this._selected) {
       const t = this._conversations.find((i) => i.id === this._selected.id);
       t && (this._selected = t);
     }
@@ -83,8 +83,8 @@ b = async function(e = {}) {
 y = async function(e) {
   this._selected = e, this._loadingThread = !0, this._error = "", this._messages = [];
   try {
-    const t = await n(this, l).getThread(e.id);
-    this._messages = t.messages, this._selected = t.conversation, e.unreadCount > 0 && (await n(this, l).markRead(e.id), this._conversations = this._conversations.map(
+    const t = await n(this, d).getThread(e.id);
+    this._messages = t.messages, this._selected = t.conversation, e.unreadCount > 0 && (await n(this, d).markRead(e.id), this._conversations = this._conversations.map(
       (i) => i.id === e.id ? { ...i, unreadCount: 0 } : i
     ));
   } catch (t) {
@@ -98,7 +98,7 @@ C = async function() {
   if (!(!e || !t || this._sending)) {
     this._sending = !0, this._error = "";
     try {
-      await n(this, l).sendText(e.waId, t), this._draft = "", await o(this, a, y).call(this, e), await o(this, a, b).call(this);
+      await n(this, d).sendText(e.waId, t), this._draft = "", await o(this, r, y).call(this, e), await o(this, r, b).call(this);
     } catch (i) {
       this._error = i instanceof Error ? i.message : String(i);
     } finally {
@@ -109,11 +109,11 @@ C = async function() {
 S = function(e) {
   var i;
   const t = ((i = this._selected) == null ? void 0 : i.id) === e.id;
-  return r`
+  return a`
       <button
         class="thread"
         aria-current=${t ? "true" : "false"}
-        @click=${() => void o(this, a, y).call(this, e)}
+        @click=${() => void o(this, r, y).call(this, e)}
       >
         <span class="top">
           <span class="name">
@@ -122,26 +122,26 @@ S = function(e) {
           <span class="when">${z(e.lastMessageUtc)}</span>
         </span>
         <span class="preview">${e.lastMessagePreview || "—"}</span>
-        ${e.unreadCount > 0 ? r`<span class="unread">${e.unreadCount}</span>` : v}
+        ${e.unreadCount > 0 ? a`<span class="unread">${e.unreadCount}</span>` : v}
       </button>
     `;
 };
 T = function(e) {
   const t = e.status === "failed", i = `bubble ${e.inbound ? "in" : "out"}${t ? " failed" : ""}`;
-  return r`
+  return a`
       <div class=${i}>
-        ${e.body || r`<em>[${e.messageType}]</em>`}
+        <span class="body">${e.body || a`<em>[${e.messageType}]</em>`}</span>
         <span class="meta">
           ${z(e.timestampUtc)}
-          ${e.inbound ? v : r` · ${e.status}`}
-          ${e.templateName ? r` · template: ${e.templateName}` : v}
-          ${e.errorMessage ? r` · ${e.errorMessage}` : v}
+          ${e.inbound ? v : a` · ${e.status}`}
+          ${e.templateName ? a` · template: ${e.templateName}` : v}
+          ${e.errorMessage ? a` · ${e.errorMessage}` : v}
         </span>
       </div>
     `;
 };
 M = function(e) {
-  return e.windowOpen ? r`
+  return e.windowOpen ? a`
       <div class="reply">
         <div class="reply-row">
           <uui-textarea
@@ -158,24 +158,26 @@ M = function(e) {
             color="positive"
             label="Send reply"
             ?disabled=${this._sending || !this._draft.trim()}
-            @click=${() => void o(this, a, C).call(this)}
+            @click=${() => void o(this, r, C).call(this)}
           >${this._sending ? "Sending…" : "Send"}</uui-button>
         </div>
         <p class="hint">${k(e.windowMinutesRemaining)} in this window.</p>
       </div>
-    ` : r`
+    ` : a`
         <div class="reply">
           <div class="warn">
-            The 24-hour customer-service window has closed, so WhatsApp will not deliver a
-            free-form reply. Use the <strong>Send</strong> view to send an approved template
-            instead — that reopens the window once they reply.
+            <span>
+              The 24-hour customer-service window has closed, so WhatsApp will not deliver a
+              free-form reply. Use the <strong>Send</strong> view to send an approved template
+              instead — that reopens the window once they reply.
+            </span>
           </div>
         </div>
       `;
 };
 E = function() {
   const e = this._selected;
-  return e ? r`
+  return e ? a`
       <div class="pane">
         <div class="pane-head">
           <div>
@@ -188,12 +190,12 @@ E = function() {
         </div>
 
         <div class="transcript">
-          ${this._loadingThread ? r`<uui-loader></uui-loader>` : this._messages.length === 0 ? r`<div class="empty">No messages yet.</div>` : this._messages.map((t) => o(this, a, T).call(this, t))}
+          ${this._loadingThread ? a`<uui-loader></uui-loader>` : this._messages.length === 0 ? a`<div class="empty">No messages yet.</div>` : this._messages.map((t) => o(this, r, T).call(this, t))}
         </div>
 
-        ${o(this, a, M).call(this, e)}
+        ${o(this, r, M).call(this, e)}
       </div>
-    ` : r`
+    ` : a`
         <div class="pane">
           <div class="empty">Select a conversation to read it.</div>
         </div>
@@ -343,7 +345,6 @@ s.styles = [
         font-size: 0.875rem;
         line-height: 1.5;
         overflow-wrap: anywhere;
-        white-space: pre-wrap;
         box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.04);
         animation: bubble-in 200ms var(--wa-ease) both;
       }
@@ -377,6 +378,11 @@ s.styles = [
         background: var(--uui-color-danger);
         color: var(--uui-color-selected-contrast, #fff);
         border-color: var(--uui-color-danger-emphasis);
+      }
+
+      .bubble .body {
+        display: block;
+        white-space: pre-wrap;
       }
 
       .meta {
@@ -421,31 +427,31 @@ s.styles = [
       }
     `
 ];
-d([
+l([
   c()
 ], s.prototype, "_conversations", 2);
-d([
+l([
   c()
 ], s.prototype, "_selected", 2);
-d([
+l([
   c()
 ], s.prototype, "_messages", 2);
-d([
+l([
   c()
 ], s.prototype, "_draft", 2);
-d([
+l([
   c()
 ], s.prototype, "_error", 2);
-d([
+l([
   c()
 ], s.prototype, "_loadingList", 2);
-d([
+l([
   c()
 ], s.prototype, "_loadingThread", 2);
-d([
+l([
   c()
 ], s.prototype, "_sending", 2);
-s = d([
+s = l([
   A("wa-inbox")
 ], s);
 const Z = s;
