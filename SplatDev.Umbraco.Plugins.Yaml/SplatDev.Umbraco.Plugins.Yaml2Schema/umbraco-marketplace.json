@@ -4,8 +4,8 @@
   "Category": "Developer Tools",
   "PackageType": "Package",
   "LicenseTypes": ["Free"],
-  "DocumentationUrl": "https://github.com/SplatDev-Ltda/umbraco-yaml/blob/main/SplatDev.Umbraco.Plugins.Yaml2Schema/README.md",
-  "IssueTrackerUrl": "https://github.com/SplatDev-Ltda/umbraco-yaml/issues",
+  "DocumentationUrl": "https://github.com/splatdevtech/umbraco-yaml/blob/main/SplatDev.Umbraco.Plugins.Yaml2Schema/README.md",
+  "IssueTrackerUrl": "https://github.com/splatdevtech/umbraco-yaml/issues",
   "AuthorDetails": {
     "Name": "Carlos Casalicchio",
     "Description": "Developer at SplatDev. Building tools to make Umbraco development faster and more reproducible.",

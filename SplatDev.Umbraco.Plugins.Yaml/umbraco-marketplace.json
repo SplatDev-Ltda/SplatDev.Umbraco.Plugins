@@ -4,8 +4,8 @@
   "Category": "Developer Tools",
   "PackageType": "Package",
   "LicenseTypes": ["Free"],
-  "DocumentationUrl": "https://github.com/SplatDev-Ltda/umbraco-yaml/blob/main/docs/yaml-authoring-guide.md",
-  "IssueTrackerUrl": "https://github.com/SplatDev-Ltda/umbraco-yaml/issues",
+  "DocumentationUrl": "https://github.com/splatdevtech/umbraco-yaml/blob/main/docs/yaml-authoring-guide.md",
+  "IssueTrackerUrl": "https://github.com/splatdevtech/umbraco-yaml/issues",
   "AuthorDetails": {
     "Name": "Carlos Casalicchio",
     "Description": "Developer at SplatDev. Building tools to make Umbraco development faster and more reproducible.",
@@ -22,11 +22,11 @@
   ],
   "Screenshots": [
     {
-      "ImageUrl": "https://raw.githubusercontent.com/SplatDev-Ltda/umbraco-yaml/main/docs/images/hero-banner.png",
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/umbraco-yaml/main/docs/images/hero-banner.png",
       "Caption": "YAML configuration — Umbraco structures, created automatically at startup"
     },
     {
-      "ImageUrl": "https://raw.githubusercontent.com/SplatDev-Ltda/umbraco-yaml/main/docs/images/demo-how-it-works.png",
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/umbraco-yaml/main/docs/images/demo-how-it-works.png",
       "Caption": "How it works: 4-step process from YAML file to live Umbraco site"
     }
   ]

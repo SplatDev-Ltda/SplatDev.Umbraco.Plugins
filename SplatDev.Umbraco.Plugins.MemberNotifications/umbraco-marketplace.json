@@ -6,13 +6,13 @@
   "LicenseTypes": [
     "Free"
   ],
-  "DocumentationUrl": "https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins/blob/master/SplatDev.Umbraco.Plugins.MemberNotifications/README.md",
-  "IssueTrackerUrl": "https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins/issues",
+  "DocumentationUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/blob/master/SplatDev.Umbraco.Plugins.MemberNotifications/README.md",
+  "IssueTrackerUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/issues",
   "AuthorDetails": {
     "Name": "SplatDev",
     "Description": "SplatDev Ltda \u2014 building Umbraco plugins and tools for agencies and developers.",
-    "Url": "https://github.com/SplatDev-Ltda",
-    "ImageUrl": "https://github.com/SplatDev-Ltda.png",
+    "Url": "https://github.com/splatdevtech",
+    "ImageUrl": "https://github.com/splatdevtech.png",
     "SyncContributorsFromRepository": true
   },
   "Screenshots": []

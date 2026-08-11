@@ -1,0 +1,25 @@
+{
+  "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
+  "Description": "Define your entire Umbraco structure — DataTypes, DocumentTypes, Media Types, Templates, Content, Media, Languages, Dictionary Items, Members, Member Types, Member Groups, and Users — in a single YAML file. The plugin reads the file on startup and creates or updates all declared entities automatically. Supports create, update ([UPDATE]) and delete ([REMOVE]) operations. After a successful import the file is renamed to *.done so it is not re-processed. Supports Umbraco 13 and 17.",
+  "Category": "Developer Tools",
+  "PackageType": "Package",
+  "LicenseTypes": [
+    "Free"
+  ],
+  "DocumentationUrl": "https://github.com/splatdevtech/umbraco-yaml/blob/main/SplatDev.Umbraco.Plugins.Yaml2Schema/README.md",
+  "IssueTrackerUrl": "https://github.com/splatdevtech/umbraco-yaml/issues",
+  "AuthorDetails": {
+    "Name": "Carlos Casalicchio",
+    "Description": "Developer at SplatDev. Building tools to make Umbraco development faster and more reproducible.",
+    "Url": "https://github.com/ccasalicchio",
+    "ImageUrl": "https://github.com/ccasalicchio.png",
+    "SyncContributorsFromRepository": true
+  },
+  "RelatedPackages": [
+    {
+      "PackageId": "SplatDev.Umbraco.Plugins.Schema2Yaml",
+      "Description": "Companion package — exports your existing Umbraco site structure to YAML. v2.x supports Umbraco 14-17, v1.x supports Umbraco 13.",
+      "GroupTitle": "Umbraco YAML Toolkit"
+    }
+  ]
+}
