@@ -1,232 +1,306 @@
-import { LitElement as E, nothing as f, html as r, css as U, state as p, customElement as O } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as P } from "@umbraco-cms/backoffice/element-api";
-import { W as R, s as q } from "./chunks/shared-styles-QWL_Oc-v.js";
-function k(e) {
-  if (e <= 0) return "closed";
-  const i = Math.floor(e / 60), a = e % 60;
-  return i > 0 ? `${i}h ${a}m left` : `${a}m left`;
-}
+import { LitElement as j, nothing as g, html as a, css as q, state as f, customElement as B } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as Z } from "@umbraco-cms/backoffice/element-api";
+import { W as H, s as Y } from "./chunks/shared-styles-QWL_Oc-v.js";
 function z(e) {
-  const i = (e ?? "").replace(/\D/g, "");
-  if (!i) return "";
-  const a = [
-    // Brazil: 2-digit area code, then 9-digit mobile (99999-9999) or 8-digit landline.
-    ["55", (t) => t.length === 11 ? `(${t.slice(0, 2)}) ${t.slice(2, 7)}-${t.slice(7)}` : t.length === 10 ? `(${t.slice(0, 2)}) ${t.slice(2, 6)}-${t.slice(6)}` : null],
-    // NANP: (NPA) NXX-XXXX
-    ["1", (t) => t.length === 10 ? `(${t.slice(0, 3)}) ${t.slice(3, 6)}-${t.slice(6)}` : null],
-    // UK: 4-3-4 / 4-6 are the common readable groupings.
-    ["44", (t) => t.length === 10 ? `${t.slice(0, 4)} ${t.slice(4, 7)} ${t.slice(7)}` : t.length === 9 ? `${t.slice(0, 4)} ${t.slice(4)}` : null],
-    // Portugal / Spain / France / Germany / Italy: 3-3-3 style groups read well.
-    ["351", (t) => t.length === 9 ? `${t.slice(0, 3)} ${t.slice(3, 6)} ${t.slice(6)}` : null],
-    ["34", (t) => t.length === 9 ? `${t.slice(0, 3)} ${t.slice(3, 6)} ${t.slice(6)}` : null],
-    ["33", (t) => t.length === 9 ? `${t.slice(0, 1)} ${t.slice(1, 3)} ${t.slice(3, 5)} ${t.slice(5, 7)} ${t.slice(7)}` : null],
-    ["49", (t) => t.length >= 10 ? `${t.slice(0, 3)} ${t.slice(3)}` : null],
-    ["39", (t) => t.length >= 9 ? `${t.slice(0, 3)} ${t.slice(3)}` : null]
-  ];
-  for (const [t, s] of a) {
-    if (!i.startsWith(t)) continue;
-    const l = i.slice(t.length), g = s(l);
-    if (g) return `+${t} ${g}`;
+  if (e <= 0) return "closed";
+  const t = Math.floor(e / 60), r = e % 60;
+  return t > 0 ? `${t}h ${r}m left` : `${r}m left`;
+}
+function S(e) {
+  const t = (e ?? "").replace(/\D/g, "");
+  if (!t) return "";
+  for (const r of F) {
+    if (!t.startsWith(r)) continue;
+    const i = G(r, t.slice(r.length));
+    if (i) return `+${r} ${i}`;
   }
-  return `+${i}`;
+  return `+${t}`;
 }
-function T(e, i) {
-  return (e ?? "").trim() || z(i);
+const C = {
+  // North America — NANP covers US, Canada, and the Caribbean (DR, PR, Jamaica...)
+  1: { 10: { groups: [3, 3, 4], parens: !0 } },
+  // Mexico. 10 digits national; CDMX/GDL/MTY use a 2-digit area code, the rest 3.
+  // An 11-digit value is the legacy "1" mobile prefix WhatsApp used to include.
+  52: {
+    10: { groups: [3, 3, 4] },
+    11: { groups: [3, 3, 4], mobilePrefix: "1" }
+  },
+  // Brazil — 2-digit area code, 9-digit mobile or 8-digit landline.
+  55: {
+    11: { groups: [2, 5, 4], parens: !0 },
+    10: { groups: [2, 4, 4], parens: !0 }
+  },
+  // Argentina — mobiles carry a leading 9 that is written separately.
+  54: {
+    11: { groups: [2, 4, 4], hyphenTail: !0, mobilePrefix: "9" },
+    10: { groups: [2, 4, 4], hyphenTail: !0 }
+  },
+  // Rest of South America
+  56: { 9: { groups: [1, 4, 4] } },
+  // Chile
+  57: { 10: { groups: [3, 3, 4] } },
+  // Colombia
+  58: { 10: { groups: [3, 3, 4] } },
+  // Venezuela
+  51: { 9: { groups: [3, 3, 3] } },
+  // Peru
+  593: { 9: { groups: [2, 3, 4] } },
+  // Ecuador
+  591: { 8: { groups: [4, 4] } },
+  // Bolivia
+  595: { 9: { groups: [3, 3, 3] } },
+  // Paraguay
+  598: { 8: { groups: [4, 4] } },
+  // Uruguay
+  592: { 7: { groups: [3, 4] } },
+  // Guyana
+  597: { 7: { groups: [3, 4] } },
+  // Suriname
+  // Central America
+  502: { 8: { groups: [4, 4] } },
+  // Guatemala
+  503: { 8: { groups: [4, 4] } },
+  // El Salvador
+  504: { 8: { groups: [4, 4] } },
+  // Honduras
+  505: { 8: { groups: [4, 4] } },
+  // Nicaragua
+  506: { 8: { groups: [4, 4] } },
+  // Costa Rica
+  507: { 8: { groups: [4, 4] } },
+  // Panama
+  509: { 8: { groups: [4, 4] } },
+  // Haiti
+  // Europe — where the studio already has contacts
+  44: { 10: { groups: [4, 3, 3] }, 9: { groups: [4, 5] } },
+  // UK
+  351: { 9: { groups: [3, 3, 3] } },
+  // Portugal
+  34: { 9: { groups: [3, 3, 3] } },
+  // Spain
+  33: { 9: { groups: [1, 2, 2, 2, 2] } },
+  // France
+  49: { 11: { groups: [4, 7] }, 10: { groups: [3, 7] } },
+  // Germany
+  39: { 10: { groups: [3, 3, 4] } }
+  // Italy
+}, F = Object.keys(C).sort((e, t) => t.length - e.length);
+function G(e, t) {
+  const r = C[e];
+  if (!r) return null;
+  let i = t, s = "";
+  const o = r[i.length];
+  if (!o) return null;
+  o.mobilePrefix && i.startsWith(o.mobilePrefix) && (s = `${o.mobilePrefix} `, i = i.slice(o.mobilePrefix.length));
+  const p = [];
+  let m = 0;
+  for (const v of o.groups) {
+    if (m >= i.length) break;
+    p.push(i.slice(m, m + v)), m += v;
+  }
+  if (m < i.length && p.push(i.slice(m)), p.length > 1 && (o.parens || o.hyphenTail)) {
+    const [v, ...O] = p, R = o.parens ? `(${v})` : v;
+    return `${s}${R} ${O.join("-")}`;
+  }
+  return s + p.join(" ");
 }
-function B(e, i) {
-  const a = (e ?? "").trim().split(/\s+/).filter(Boolean);
-  if (a.length >= 2) return (a[0][0] + a[a.length - 1][0]).toUpperCase();
-  if (a.length === 1) return a[0].slice(0, 2).toUpperCase();
-  const t = (i ?? "").replace(/\D/g, "");
-  return t ? t.slice(-2) : "?";
+function N(e, t) {
+  return (e ?? "").trim() || S(t);
 }
-function Z(e) {
-  const i = e ?? "";
-  let a = 0;
-  for (let t = 0; t < i.length; t++) a = a * 31 + i.charCodeAt(t) | 0;
-  return Math.abs(a) % 360;
+function K(e, t) {
+  const r = (e ?? "").trim().split(/\s+/).filter(Boolean);
+  if (r.length >= 2) return (r[0][0] + r[r.length - 1][0]).toUpperCase();
+  if (r.length === 1) return r[0].slice(0, 2).toUpperCase();
+  const i = (t ?? "").replace(/\D/g, "");
+  return i ? i.slice(-2) : "?";
 }
-function C(e) {
+function J(e) {
+  const t = e ?? "";
+  let r = 0;
+  for (let i = 0; i < t.length; i++) r = r * 31 + t.charCodeAt(i) | 0;
+  return Math.abs(r) % 360;
+}
+function W(e) {
   if (!e) return "";
-  const i = /[Zz]|[+-]\d{2}:?\d{2}$/.test(e) ? e : `${e}Z`, a = new Date(i);
-  if (Number.isNaN(a.getTime())) return "";
-  const t = a.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }), s = /* @__PURE__ */ new Date();
+  const t = /[Zz]|[+-]\d{2}:?\d{2}$/.test(e) ? e : `${e}Z`, r = new Date(t);
+  if (Number.isNaN(r.getTime())) return "";
+  const i = r.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }), s = /* @__PURE__ */ new Date();
   s.setHours(0, 0, 0, 0);
-  const l = Math.floor((s.getTime() - a.getTime()) / 864e5);
-  return l < 0 ? t : l < 1 ? `Yesterday ${t}` : l < 7 ? `${a.toLocaleDateString([], { weekday: "short" })} ${t}` : a.toLocaleDateString([], { day: "2-digit", month: "short" });
+  const o = Math.floor((s.getTime() - r.getTime()) / 864e5);
+  return o < 0 ? i : o < 1 ? `Yesterday ${i}` : o < 7 ? `${r.toLocaleDateString([], { weekday: "short" })} ${i}` : r.toLocaleDateString([], { day: "2-digit", month: "short" });
 }
-var j = Object.defineProperty, H = Object.getOwnPropertyDescriptor, S = (e) => {
+var Q = Object.defineProperty, V = Object.getOwnPropertyDescriptor, M = (e) => {
   throw TypeError(e);
-}, h = (e, i, a, t) => {
-  for (var s = t > 1 ? void 0 : t ? H(i, a) : i, l = e.length - 1, g; l >= 0; l--)
-    (g = e[l]) && (s = (t ? g(i, a, s) : g(s)) || s);
-  return t && s && j(i, a, s), s;
-}, x = (e, i, a) => i.has(e) || S("Cannot " + a), c = (e, i, a) => (x(e, i, "read from private field"), a ? a.call(e) : i.get(e)), w = (e, i, a) => i.has(e) ? S("Cannot add the same private member more than once") : i instanceof WeakSet ? i.add(e) : i.set(e, a), $ = (e, i, a, t) => (x(e, i, "write to private field"), i.set(e, a), a), n = (e, i, a) => (x(e, i, "access private method"), a), u, v, m, o, b, y, W, M, _, N, I, D, L, A;
-let d = class extends P(E) {
+}, u = (e, t, r, i) => {
+  for (var s = i > 1 ? void 0 : i ? V(t, r) : t, o = e.length - 1, p; o >= 0; o--)
+    (p = e[o]) && (s = (i ? p(t, r, s) : p(s)) || s);
+  return i && s && Q(t, r, s), s;
+}, _ = (e, t, r) => t.has(e) || M("Cannot " + r), c = (e, t, r) => (_(e, t, "read from private field"), r ? r.call(e) : t.get(e)), y = (e, t, r) => t.has(e) ? M("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, r), T = (e, t, r, i) => (_(e, t, "write to private field"), t.set(e, r), r), l = (e, t, r) => (_(e, t, "access private method"), r), h, b, w, n, x, $, D, I, k, L, E, P, A, U;
+let d = class extends Z(j) {
   constructor() {
-    super(...arguments), w(this, o), w(this, u, new R(this)), this._conversations = [], this._messages = [], this._draft = "", this._error = "", this._loadingList = !0, this._loadingThread = !1, this._sending = !1, w(this, v), w(this, m);
+    super(...arguments), y(this, n), y(this, h, new H(this)), this._conversations = [], this._messages = [], this._draft = "", this._error = "", this._loadingList = !0, this._loadingThread = !1, this._sending = !1, y(this, b), y(this, w);
   }
   connectedCallback() {
-    super.connectedCallback(), n(this, o, b).call(this), c(this, u).heartbeat(), $(this, v, window.setInterval(() => void c(this, u).heartbeat(), 6e4)), $(this, m, window.setInterval(() => {
-      document.visibilityState === "visible" && n(this, o, b).call(this, { quiet: !0 });
+    super.connectedCallback(), l(this, n, x).call(this), c(this, h).heartbeat(), T(this, b, window.setInterval(() => void c(this, h).heartbeat(), 6e4)), T(this, w, window.setInterval(() => {
+      document.visibilityState === "visible" && l(this, n, x).call(this, { quiet: !0 });
     }, 2e4));
   }
   disconnectedCallback() {
-    super.disconnectedCallback(), c(this, v) && window.clearInterval(c(this, v)), c(this, m) && window.clearInterval(c(this, m));
+    super.disconnectedCallback(), c(this, b) && window.clearInterval(c(this, b)), c(this, w) && window.clearInterval(c(this, w));
   }
   render() {
-    return r`
+    return a`
       <div class="head">
         <h1>Inbox</h1>
         <p>Conversations with your WhatsApp Business number.</p>
       </div>
 
-      ${this._error ? r`<div class="error">${this._error}</div>` : f}
+      ${this._error ? a`<div class="error">${this._error}</div>` : g}
 
       <div class="row" style="margin-bottom:12px">
         <uui-button
           look="secondary"
           label="Refresh conversations"
           ?disabled=${this._loadingList}
-          @click=${() => void n(this, o, b).call(this)}
+          @click=${() => void l(this, n, x).call(this)}
         >Refresh</uui-button>
       </div>
 
       <div class="layout">
         <div class="list">
-          ${this._loadingList ? r`<uui-loader></uui-loader>` : this._conversations.length === 0 ? r`<div class="empty">
+          ${this._loadingList ? a`<uui-loader></uui-loader>` : this._conversations.length === 0 ? a`<div class="empty">
                   No conversations yet. They appear here once the webhook is registered
                   and someone messages your number.
-                </div>` : this._conversations.map((e) => n(this, o, M).call(this, e))}
+                </div>` : this._conversations.map((e) => l(this, n, I).call(this, e))}
         </div>
-        ${n(this, o, A).call(this)}
+        ${l(this, n, U).call(this)}
       </div>
     `;
   }
 };
-u = /* @__PURE__ */ new WeakMap();
-v = /* @__PURE__ */ new WeakMap();
-m = /* @__PURE__ */ new WeakMap();
-o = /* @__PURE__ */ new WeakSet();
-b = async function(e = {}) {
+h = /* @__PURE__ */ new WeakMap();
+b = /* @__PURE__ */ new WeakMap();
+w = /* @__PURE__ */ new WeakMap();
+n = /* @__PURE__ */ new WeakSet();
+x = async function(e = {}) {
   e.quiet || (this._loadingList = !0, this._error = "");
   try {
-    if (this._conversations = await c(this, u).getConversations(), this._selected) {
-      const i = this._conversations.find((a) => a.id === this._selected.id);
-      i && (this._selected = i);
+    if (this._conversations = await c(this, h).getConversations(), this._selected) {
+      const t = this._conversations.find((r) => r.id === this._selected.id);
+      t && (this._selected = t);
     }
-  } catch (i) {
-    e.quiet || (this._error = i instanceof Error ? i.message : String(i));
+  } catch (t) {
+    e.quiet || (this._error = t instanceof Error ? t.message : String(t));
   } finally {
     e.quiet || (this._loadingList = !1);
   }
 };
-y = async function(e) {
+$ = async function(e) {
   this._selected = e, this._loadingThread = !0, this._error = "", this._messages = [];
   try {
-    const i = await c(this, u).getThread(e.id);
-    this._messages = i.messages, this._selected = i.conversation, e.unreadCount > 0 && (await c(this, u).markRead(e.id), this._conversations = this._conversations.map(
-      (a) => a.id === e.id ? { ...a, unreadCount: 0 } : a
+    const t = await c(this, h).getThread(e.id);
+    this._messages = t.messages, this._selected = t.conversation, e.unreadCount > 0 && (await c(this, h).markRead(e.id), this._conversations = this._conversations.map(
+      (r) => r.id === e.id ? { ...r, unreadCount: 0 } : r
     ));
-  } catch (i) {
-    this._error = i instanceof Error ? i.message : String(i);
+  } catch (t) {
+    this._error = t instanceof Error ? t.message : String(t);
   } finally {
     this._loadingThread = !1;
   }
 };
-W = async function() {
-  const e = this._selected, i = this._draft.trim();
-  if (!(!e || !i || this._sending)) {
+D = async function() {
+  const e = this._selected, t = this._draft.trim();
+  if (!(!e || !t || this._sending)) {
     this._sending = !0, this._error = "";
     try {
-      await c(this, u).sendText(e.waId, i), this._draft = "", await n(this, o, y).call(this, e), await n(this, o, b).call(this);
-    } catch (a) {
-      this._error = a instanceof Error ? a.message : String(a);
+      await c(this, h).sendText(e.waId, t), this._draft = "", await l(this, n, $).call(this, e), await l(this, n, x).call(this);
+    } catch (r) {
+      this._error = r instanceof Error ? r.message : String(r);
     } finally {
       this._sending = !1;
     }
   }
 };
-M = function(e) {
-  var a;
-  const i = ((a = this._selected) == null ? void 0 : a.id) === e.id;
-  return r`
+I = function(e) {
+  var r;
+  const t = ((r = this._selected) == null ? void 0 : r.id) === e.id;
+  return a`
       <button
         class="thread"
-        aria-current=${i ? "true" : "false"}
-        @click=${() => void n(this, o, y).call(this, e)}
+        aria-current=${t ? "true" : "false"}
+        @click=${() => void l(this, n, $).call(this, e)}
       >
         <span class="thread-row">
-          ${n(this, o, _).call(this, e)}
+          ${l(this, n, k).call(this, e)}
           <span class="thread-text">
             <span class="top">
               <span class="name">
-                ${T(e.profileName, e.waId)}
+                ${N(e.profileName, e.waId)}
               </span>
-              <span class="when">${C(e.lastMessageUtc)}</span>
+              <span class="when">${W(e.lastMessageUtc)}</span>
             </span>
             <span class="preview">${e.lastMessagePreview || "—"}</span>
           </span>
         </span>
-        ${e.unreadCount > 0 ? r`<span class="unread">${e.unreadCount}</span>` : f}
+        ${e.unreadCount > 0 ? a`<span class="unread">${e.unreadCount}</span>` : g}
       </button>
     `;
 };
-_ = function(e, i = !1) {
-  const a = Z(e.waId);
-  return r`
+k = function(e, t = !1) {
+  const r = J(e.waId);
+  return a`
       <span
-        class=${i ? "avatar lg" : "avatar"}
-        style="background: hsl(${a} 45% 45%)"
+        class=${t ? "avatar lg" : "avatar"}
+        style="background: hsl(${r} 45% 45%)"
         aria-hidden="true"
-      >${B(e.profileName, e.waId)}</span>
+      >${K(e.profileName, e.waId)}</span>
     `;
 };
-N = function(e) {
-  const i = (e || "").toLowerCase();
-  if (i === "failed") return r` · failed`;
-  const a = i === "delivered" || i === "read", t = i === "read" ? "ticks read" : "ticks", s = r`
+L = function(e) {
+  const t = (e || "").toLowerCase();
+  if (t === "failed") return a` · failed`;
+  const r = t === "delivered" || t === "read", i = t === "read" ? "ticks read" : "ticks", s = a`
       <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
         <path d="M2 8.5 5.5 12 14 3.5" stroke="currentColor" stroke-width="1.6"
               stroke-linecap="round" stroke-linejoin="round" />
       </svg>
     `;
-  return r` ·
-      <span class=${t} role="img" aria-label=${i || "sent"}>
-        ${s}${a ? s : f}
+  return a` ·
+      <span class=${i} role="img" aria-label=${t || "sent"}>
+        ${s}${r ? s : g}
       </span>
     `;
 };
-I = function(e) {
-  const i = e.status === "failed", a = `bubble ${e.inbound ? "in" : "out"}${i ? " failed" : ""}`;
-  return r`
-      <div class=${a}>
-        <span class="body">${e.body || r`<em>[${e.messageType}]</em>`}</span>
+E = function(e) {
+  const t = e.status === "failed", r = `bubble ${e.inbound ? "in" : "out"}${t ? " failed" : ""}`;
+  return a`
+      <div class=${r}>
+        <span class="body">${e.body || a`<em>[${e.messageType}]</em>`}</span>
         <span class="meta">
-          ${C(e.timestampUtc)}
-          ${e.inbound ? f : n(this, o, N).call(this, e.status)}
-          ${e.templateName ? r` · template: ${e.templateName}` : f}
-          ${e.errorMessage ? r` · ${e.errorMessage}` : f}
+          ${W(e.timestampUtc)}
+          ${e.inbound ? g : l(this, n, L).call(this, e.status)}
+          ${e.templateName ? a` · template: ${e.templateName}` : g}
+          ${e.errorMessage ? a` · ${e.errorMessage}` : g}
         </span>
       </div>
     `;
 };
-D = function(e) {
-  let i = "";
-  return e.map((a) => {
-    const t = new Date(
-      /[Zz]|[+-]\d{2}:?\d{2}$/.test(a.timestampUtc) ? a.timestampUtc : `${a.timestampUtc}Z`
-    ), s = Number.isNaN(t.getTime()) ? "" : t.toDateString(), l = s !== "" && s !== i;
-    return l && (i = s), r`
-        ${l ? r`<span class="day-sep">
-              ${t.toLocaleDateString([], { day: "numeric", month: "short", year: "numeric" })}
-            </span>` : f}
-        ${n(this, o, I).call(this, a)}
+P = function(e) {
+  let t = "";
+  return e.map((r) => {
+    const i = new Date(
+      /[Zz]|[+-]\d{2}:?\d{2}$/.test(r.timestampUtc) ? r.timestampUtc : `${r.timestampUtc}Z`
+    ), s = Number.isNaN(i.getTime()) ? "" : i.toDateString(), o = s !== "" && s !== t;
+    return o && (t = s), a`
+        ${o ? a`<span class="day-sep">
+              ${i.toLocaleDateString([], { day: "numeric", month: "short", year: "numeric" })}
+            </span>` : g}
+        ${l(this, n, E).call(this, r)}
       `;
   });
 };
-L = function(e) {
-  return e.windowOpen ? r`
+A = function(e) {
+  return e.windowOpen ? a`
       <div class="reply">
         <div class="reply-row">
           <uui-textarea
@@ -234,8 +308,8 @@ L = function(e) {
             placeholder="Write a reply…"
             .value=${this._draft}
             ?disabled=${this._sending}
-            @input=${(i) => {
-    this._draft = i.target.value;
+            @input=${(t) => {
+    this._draft = t.target.value;
   }}
           ></uui-textarea>
           <uui-button
@@ -243,12 +317,12 @@ L = function(e) {
             color="positive"
             label="Send reply"
             ?disabled=${this._sending || !this._draft.trim()}
-            @click=${() => void n(this, o, W).call(this)}
+            @click=${() => void l(this, n, D).call(this)}
           >${this._sending ? "Sending…" : "Send"}</uui-button>
         </div>
-        <p class="hint">${k(e.windowMinutesRemaining)} in this window.</p>
+        <p class="hint">${z(e.windowMinutesRemaining)} in this window.</p>
       </div>
-    ` : r`
+    ` : a`
         <div class="reply">
           <div class="warn">
             <span>
@@ -260,40 +334,40 @@ L = function(e) {
         </div>
       `;
 };
-A = function() {
+U = function() {
   const e = this._selected;
-  return e ? r`
+  return e ? a`
       <div class="pane">
         <div class="pane-head">
           <div class="head-id">
-            ${n(this, o, _).call(this, e, !0)}
+            ${l(this, n, k).call(this, e, !0)}
             <div>
               <div class="head-name">
-                ${T(e.profileName, e.waId)}
+                ${N(e.profileName, e.waId)}
               </div>
-              <div class="head-number">${z(e.waId)}</div>
+              <div class="head-number">${S(e.waId)}</div>
             </div>
           </div>
           <span class="window-pill ${e.windowOpen ? "open" : "closed"}">
-            ${e.windowOpen ? k(e.windowMinutesRemaining) : "window closed"}
+            ${e.windowOpen ? z(e.windowMinutesRemaining) : "window closed"}
           </span>
         </div>
 
         <div class="transcript">
-          ${this._loadingThread ? r`<uui-loader></uui-loader>` : this._messages.length === 0 ? r`<div class="empty">No messages in this conversation yet.</div>` : n(this, o, D).call(this, this._messages)}
+          ${this._loadingThread ? a`<uui-loader></uui-loader>` : this._messages.length === 0 ? a`<div class="empty">No messages in this conversation yet.</div>` : l(this, n, P).call(this, this._messages)}
         </div>
 
-        ${n(this, o, L).call(this, e)}
+        ${l(this, n, A).call(this, e)}
       </div>
-    ` : r`
+    ` : a`
         <div class="pane">
           <div class="empty">Select a conversation on the left to read it.</div>
         </div>
       `;
 };
 d.styles = [
-  q,
-  U`
+  Y,
+  q`
       .layout {
         display: grid;
         grid-template-columns: minmax(240px, 320px) 1fr;
@@ -605,36 +679,36 @@ d.styles = [
       }
     `
 ];
-h([
-  p()
+u([
+  f()
 ], d.prototype, "_conversations", 2);
-h([
-  p()
+u([
+  f()
 ], d.prototype, "_selected", 2);
-h([
-  p()
+u([
+  f()
 ], d.prototype, "_messages", 2);
-h([
-  p()
+u([
+  f()
 ], d.prototype, "_draft", 2);
-h([
-  p()
+u([
+  f()
 ], d.prototype, "_error", 2);
-h([
-  p()
+u([
+  f()
 ], d.prototype, "_loadingList", 2);
-h([
-  p()
+u([
+  f()
 ], d.prototype, "_loadingThread", 2);
-h([
-  p()
+u([
+  f()
 ], d.prototype, "_sending", 2);
-d = h([
-  O("wa-inbox")
+d = u([
+  B("wa-inbox")
 ], d);
-const K = d;
+const re = d;
 export {
   d as WaInboxElement,
-  K as default
+  re as default
 };
 //# sourceMappingURL=wa-inbox.element.js.map
