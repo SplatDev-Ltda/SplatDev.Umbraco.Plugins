@@ -7,6 +7,7 @@
     <PackageId>SplatDev.Umbraco.Plugins.MemberGroups</PackageId>
     <Version>2.1.1</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
     <Authors>SplatDev</Authors>
     <Description>Member group management for Umbraco: assign/remove groups, bulk operations, group-based content access. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).</Description>
     <PackageTags>umbraco umbraco-marketplace member groups</PackageTags>
@@ -38,6 +39,7 @@
 
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="icon.png" Pack="true" PackagePath="\" />
     <None Include="umbraco-marketplace.json" Pack="true" PackagePath="\" Condition="Exists('umbraco-marketplace.json')" />
   </ItemGroup>
 </Project>

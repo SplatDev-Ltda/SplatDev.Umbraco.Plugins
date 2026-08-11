@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+    <PackageIcon>icon.png</PackageIcon>
 		<TargetFrameworks>net8.0;net10.0</TargetFrameworks>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -62,6 +63,7 @@
 	<ItemGroup>
 		<None Include="umbraco-marketplace.json" Pack="true" PackagePath="\" />
 		<None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="icon.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
 </Project>

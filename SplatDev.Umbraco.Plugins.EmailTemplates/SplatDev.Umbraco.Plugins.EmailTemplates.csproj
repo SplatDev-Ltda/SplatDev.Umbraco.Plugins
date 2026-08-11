@@ -7,6 +7,7 @@
     <PackageId>SplatDev.Umbraco.Plugins.EmailTemplates</PackageId>
     <Version>1.1.1</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
     <Description>Email template engine with variable substitution, preview, and singleton style settings for Umbraco 17 (net10.0). Includes Bellissima backoffice UI.</Description>
     <PackageTags>umbraco umbraco-marketplace email templates bellissima</PackageTags>
     <Company>SplatDev Ltda</Company>
@@ -37,6 +38,7 @@
 
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="icon.png" Pack="true" PackagePath="\" />
     <None Include="umbraco-marketplace.json" Pack="true" PackagePath="\" Condition="Exists('umbraco-marketplace.json')" />
   </ItemGroup>
 </Project>

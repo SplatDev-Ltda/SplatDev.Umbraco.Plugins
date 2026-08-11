@@ -15,6 +15,7 @@
     <RepositoryUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -49,6 +50,7 @@
 
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="icon.png" Pack="true" PackagePath="\" />
     <None Include="umbraco-marketplace.json" Pack="true" PackagePath="\" />
   </ItemGroup>
 </Project>
