@@ -1,10 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>SplatDev.Umbraco.Plugins.LiveVideo</PackageId>
-    <Version>2.0.1</Version>
+    <Version>2.1.0</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Authors>SplatDev</Authors>
     <Description>Live video embed for Umbraco — YouTube Live, Twitch, and Vimeo live stream integration. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).</Description>
@@ -21,11 +22,13 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.11" />
     <PackageReference Include="Umbraco.Cms.Core" Version="13.12.0" />
     <PackageReference Include="Umbraco.Cms.Web.Common" Version="13.12.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.6" />
     <PackageReference Include="Umbraco.Cms.Core" Version="17.3.4" />
     <PackageReference Include="Umbraco.Cms.Web.Common" Version="17.3.4" />
   </ItemGroup>

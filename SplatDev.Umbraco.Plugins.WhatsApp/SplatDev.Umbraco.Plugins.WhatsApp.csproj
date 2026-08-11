@@ -4,10 +4,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <ContentTargetFolders>.</ContentTargetFolders>
+    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     <PackageId>SplatDev.Umbraco.Plugins.WhatsApp</PackageId>
     <Product>SplatDev.Umbraco.Plugins.WhatsApp</Product>
     <Title>SplatDev.Umbraco.Plugins.WhatsApp</Title>
-    <Version>3.1.0</Version>
+    <Version>3.2.0</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Authors>SplatDev</Authors>
     <Description>WhatsApp Business Cloud API integration for Umbraco — backoffice inbox, template and free-form sending, and an inbound webhook receiver. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0); the Lit 3 dashboard requires Umbraco 17.</Description>
@@ -21,6 +22,7 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+
   </ItemGroup>
 
   <ItemGroup>
@@ -35,6 +37,8 @@
     <PackageReference Include="Umbraco.Cms.Web.Common" Version="13.12.0" />
     <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="13.12.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.20" />
+    <!-- ManifestEmbeddedFileProvider + the GenerateEmbeddedFilesManifest target -->
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.11" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
@@ -43,14 +47,16 @@
     <PackageReference Include="Umbraco.Cms.Api.Management" Version="17.3.4" />
     <PackageReference Include="Umbraco.Cms.Web.Common" Version="17.3.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.10" />
+    <!-- ManifestEmbeddedFileProvider + the GenerateEmbeddedFilesManifest target -->
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.6" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="App_Plugins\**" ExcludeFromSingleFile="true" CopyToPublishDirectory="Always" />
-    <!-- Ships the MSBuild target that copies App_Plugins into the consuming site.
-         Without it the package installs the assembly only and the dashboard never
-         appears — see the comment in the .targets file. -->
-    <None Include="buildTransitive\**" Pack="true" PackagePath="buildTransitive" />
+    <!-- App_Plugins is embedded in the assembly and served at runtime by a
+         ManifestEmbeddedFileProvider (see WhatsAppComposer). Nothing is copied into
+         the consuming site, so there are no loose files to drift or clean up, and the
+         package cannot install "half working" the way a content-copy can. -->
+    <EmbeddedResource Include="App_Plugins\**\*" />
   </ItemGroup>
 
   <ItemGroup>
