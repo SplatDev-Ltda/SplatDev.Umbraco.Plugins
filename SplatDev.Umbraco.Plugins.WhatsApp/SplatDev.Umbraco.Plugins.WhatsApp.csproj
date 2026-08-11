@@ -10,6 +10,7 @@
     <Title>SplatDev.Umbraco.Plugins.WhatsApp</Title>
     <Version>3.4.0</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
     <Authors>SplatDev</Authors>
     <Description>WhatsApp Business Cloud API integration for Umbraco — backoffice inbox, template and free-form sending, and an inbound webhook receiver. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0); the Lit 3 dashboard requires Umbraco 17.</Description>
     <PackageTags>umbraco umbraco-marketplace whatsapp messaging cloud-api business</PackageTags>
@@ -61,6 +62,8 @@
 
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
+    <!-- NuGet and the Umbraco Marketplace both show this; without it the listing gets a grey placeholder. -->
+    <None Include="docs\brand\icon.png" Pack="true" PackagePath="\" />
     <None Include="umbraco-marketplace.json" Pack="true" PackagePath="\" Condition="Exists('umbraco-marketplace.json')" />
   </ItemGroup>
 </Project>
