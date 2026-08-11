@@ -1,7 +1,7 @@
 {
   "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
   "Description": "SVG file viewer plugin for Umbraco — renders inline SVG files from the Umbraco media library safely.",
-  "Category": "Media",
+  "Category": "PIM & DAM",
   "PackageType": "Package",
   "LicenseTypes": [
     "Free"

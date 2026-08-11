@@ -1,7 +1,7 @@
 {
   "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
   "Description": "Create, schedule, and restore Umbraco backups directly from the backoffice. Supports 10+ cloud storage providers: Azure Blob, Amazon S3, Dropbox, Google Drive, OneDrive, Box, Mega, Seafile, SFTP, and local file system. Backup retention policies, email notifications, and CRON-based scheduling built in. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).",
-  "Category": "Content Management",
+  "Category": "Editor Tools",
   "PackageType": "Package",
   "LicenseTypes": [
     "Free"

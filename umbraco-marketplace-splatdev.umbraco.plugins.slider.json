@@ -1,7 +1,7 @@
 {
   "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
   "Description": "Image slider plugin for Umbraco — stores slide data with EF Core, renders via configurable view component.",
-  "Category": "Media",
+  "Category": "PIM & DAM",
   "PackageType": "Package",
   "LicenseTypes": [
     "Free"

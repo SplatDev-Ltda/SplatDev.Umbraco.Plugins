@@ -1,7 +1,7 @@
 {
   "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
   "Description": "Copy property values between Umbraco content nodes — bulk copy, property mapping between different document types, and reusable mapping templates. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).",
-  "Category": "Utilities",
+  "Category": "Developer Tools",
   "PackageType": "Package",
   "LicenseTypes": [
     "Free"

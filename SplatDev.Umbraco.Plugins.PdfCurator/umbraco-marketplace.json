@@ -1,15 +1,25 @@
 {
   "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
   "Description": "Book Library backoffice section for Umbraco 17. Dashboard, library browser, review queue, and reports for managing PDF digital books and documents. Pluggable Lit web component architecture ready for the full PdfCurator component suite. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).",
-  "Category": "Content Management",
+  "Category": "Editor Tools",
   "PackageType": "Package",
-  "LicenseTypes": ["Free"],
-  "Tags": ["pdf", "documents", "library", "media", "dashboard", "books", "backoffice"],
+  "LicenseTypes": [
+    "Free"
+  ],
+  "Tags": [
+    "pdf",
+    "documents",
+    "library",
+    "media",
+    "dashboard",
+    "books",
+    "backoffice"
+  ],
   "DocumentationUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/blob/master/SplatDev.Umbraco.Plugins.PdfCurator/README.md",
   "IssueTrackerUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/issues",
   "AuthorDetails": {
     "Name": "SplatDev",
-    "Description": "SplatDev Ltda \u2014 building Umbraco plugins and tools for agencies and developers.",
+    "Description": "SplatDev Ltda — building Umbraco plugins and tools for agencies and developers.",
     "Url": "https://github.com/splatdevtech",
     "ImageUrl": "https://github.com/splatdevtech.png",
     "SyncContributorsFromRepository": true

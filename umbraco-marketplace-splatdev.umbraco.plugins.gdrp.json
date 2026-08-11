@@ -1,7 +1,7 @@
 {
   "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
   "Description": "GDPR compliance plugin for Umbraco — cookie consent banner, data export, and right to erasure requests. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).",
-  "Category": "Utilities",
+  "Category": "Developer Tools",
   "PackageType": "Package",
   "LicenseTypes": [
     "Free"

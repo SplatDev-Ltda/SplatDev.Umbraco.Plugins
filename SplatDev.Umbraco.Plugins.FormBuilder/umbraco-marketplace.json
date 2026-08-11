@@ -1,15 +1,23 @@
 {
   "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
   "Description": "Build and manage custom forms through a dedicated backoffice section. Create form schemas, manage submissions, and configure email workflows — alternative form builder for Umbraco with native backoffice integration. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).",
-  "Category": "Content Management",
+  "Category": "Editor Tools",
   "PackageType": "Package",
-  "LicenseTypes": ["Free"],
-  "Tags": ["forms", "form builder", "submissions", "workflow", "section"],
+  "LicenseTypes": [
+    "Free"
+  ],
+  "Tags": [
+    "forms",
+    "form builder",
+    "submissions",
+    "workflow",
+    "section"
+  ],
   "DocumentationUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/blob/master/SplatDev.Umbraco.Plugins.FormBuilder/README.md",
   "IssueTrackerUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/issues",
   "AuthorDetails": {
     "Name": "SplatDev",
-    "Description": "SplatDev Ltda \u2014 building Umbraco plugins and tools for agencies and developers.",
+    "Description": "SplatDev Ltda — building Umbraco plugins and tools for agencies and developers.",
     "Url": "https://github.com/splatdevtech",
     "ImageUrl": "https://github.com/splatdevtech.png",
     "SyncContributorsFromRepository": true

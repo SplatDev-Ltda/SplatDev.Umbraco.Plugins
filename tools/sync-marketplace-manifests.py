@@ -26,6 +26,7 @@ exact URLs it tried.
 from __future__ import annotations
 
 import json
+import os
 import pathlib
 import re
 import sys
@@ -36,13 +37,54 @@ PREFIX = "umbraco-marketplace-"
 # Directories that hold restored packages or scratch sites rather than our source.
 SKIP_DIRS = {"packages", "node_modules", "test-environments", "bin", "obj", ".git"}
 
+# Mirrors the enums in https://marketplace.umbraco.com/umbraco-marketplace-schema.json.
+# These are checked here because a wrong value fails validation silently as far as the
+# listing is concerned - the Marketplace just keeps showing the bare NuGet metadata. 65 of
+# our manifests carried invented categories ("Utilities", "Communication", ...) that are
+# not in the taxonomy, so nothing they declared was ever applied.
+VALID_CATEGORIES = {
+    "Analytics & Insights", "Artificial Intelligence", "Campaign & Marketing", "Commerce",
+    "Developer Tools", "Editor Tools", "Headless", "PIM & DAM", "Search",
+    "Themes & Starter Kits", "Translations",
+}
+VALID_PACKAGE_TYPES = {"Package", "Integration"}
+VALID_LICENSE_TYPES = {"Free", "Purchase", "Subscription"}
+
+
+def validate(data, label):
+    """Return a list of human-readable problems with one manifest."""
+    problems = []
+
+    for field, allowed in (("Category", VALID_CATEGORIES),
+                           ("AlternateCategory", VALID_CATEGORIES),
+                           ("PackageType", VALID_PACKAGE_TYPES)):
+        value = data.get(field)
+        if value is not None and value not in allowed:
+            problems.append(f"{label}: {field} {value!r} is not one of {sorted(allowed)}")
+
+    for licence in data.get("LicenseTypes") or []:
+        if licence not in VALID_LICENSE_TYPES:
+            problems.append(f"{label}: LicenseTypes {licence!r} is not one of {sorted(VALID_LICENSE_TYPES)}")
+
+    return problems
+
+
+def find_csprojs():
+    """Walk the repo for .csproj files, pruning SKIP_DIRS as we go.
+
+    Pruning rather than rglob-then-filter: packages/ alone holds tens of thousands of
+    restored files, and walking it makes this take minutes on a mounted filesystem.
+    """
+    for dirpath, dirnames, filenames in os.walk(ROOT):
+        dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS]
+        for filename in filenames:
+            if filename.endswith(".csproj"):
+                yield pathlib.Path(dirpath) / filename
+
 
 def iter_projects():
     """Yield (csproj_path, package_id) for each packable project tagged for the Marketplace."""
-    for csproj in ROOT.rglob("*.csproj"):
-        if SKIP_DIRS & set(csproj.relative_to(ROOT).parts):
-            continue
-
+    for csproj in sorted(find_csprojs()):
         text = csproj.read_text(encoding="utf-8", errors="replace")
 
         if re.search(r"<IsPackable>\s*false\s*</IsPackable>", text, re.I):
@@ -66,7 +108,7 @@ def iter_projects():
 def main() -> int:
     check_only = "--check" in sys.argv
 
-    written, stale, skipped = [], [], []
+    written, stale, skipped, problems = [], [], [], []
 
     for csproj, package_id in iter_projects():
         source = csproj.parent / "umbraco-marketplace.json"
@@ -82,6 +124,8 @@ def main() -> int:
             print(f"  INVALID JSON  {source.relative_to(ROOT)}: {exc}")
             return 1
 
+        problems.extend(validate(data, str(source.relative_to(ROOT))))
+
         target = ROOT / f"{PREFIX}{package_id.lower()}.json"
         rendered = json.dumps(data, indent=2, ensure_ascii=False) + "\n"
 
@@ -93,6 +137,12 @@ def main() -> int:
         else:
             target.write_text(rendered, encoding="utf-8")
             written.append(target.name)
+
+    if problems:
+        print(f"{len(problems)} schema problem(s) - the Marketplace will ignore these listings:")
+        for problem in problems:
+            print(f"   {problem}")
+        return 1
 
     if check_only:
         if stale:
