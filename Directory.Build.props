@@ -9,8 +9,18 @@
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="MailKit" Version="4.17.0" />
-    <PackageReference Include="MimeKit" Version="4.17.0" />
-  </ItemGroup>
+  <!--
+    MailKit/MimeKit were previously declared here, which made every one of the ~155
+    projects inherit them. Only SplatDev.Umbraco.Plugins.Mailer actually uses them, and it
+    already declares its own reference.
+
+    Two concrete problems that caused:
+      1. Every published package listed MailKit + MimeKit as dependencies (once per target
+         framework), so installing any SplatDev plugin dragged in an email stack it never
+         used. It also broke restore in environments with a restricted package source.
+      2. The 4.17.0 pinned here silently overrode Mailer's own 4.15.1, so the version the
+         project asked for was not the version it got.
+
+    Add a PackageReference to the project that needs it, not to every project in the repo.
+  -->
 </Project>
