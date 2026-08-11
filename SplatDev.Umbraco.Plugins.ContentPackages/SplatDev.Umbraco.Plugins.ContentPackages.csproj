@@ -4,14 +4,19 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <ContentTargetFolders>.</ContentTargetFolders>
-    <PackageId>SplatDev.Umbraco.Plugins.WhatsApp</PackageId>
-    <Product>SplatDev.Umbraco.Plugins.WhatsApp</Product>
-    <Title>SplatDev.Umbraco.Plugins.WhatsApp</Title>
-    <Version>3.1.0</Version>
+    <PackageId>SplatDev.Umbraco.Plugins.ContentPackages</PackageId>
+    <Product>SplatDev.Umbraco.Plugins.ContentPackages</Product>
+    <Title>SplatDev.Umbraco.Plugins.ContentPackages</Title>
+    <Version>0.1.0</Version>
+    <!-- Skeleton only. CI packs and pushes every SplatDev.Umbraco.Plugins.* on a v* tag,
+         so this stays unpackable until the phases in PLAN.md are done. It still builds in
+         CI, which is the point — regressions get caught without publishing a half-finished
+         package to NuGet. Flip to true at Phase 8. -->
+    <IsPackable>false</IsPackable>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Authors>SplatDev</Authors>
-    <Description>WhatsApp Business Cloud API integration for Umbraco — backoffice inbox, template and free-form sending, and an inbound webhook receiver. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0); the Lit 3 dashboard requires Umbraco 17.</Description>
-    <PackageTags>umbraco umbraco-marketplace whatsapp messaging cloud-api business</PackageTags>
+    <Description>Gated content packages for Umbraco — a newsletter signup unlocks HTML, PDF, PPTX and LLM-ready Markdown behind signed, expiring links. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).</Description>
+    <PackageTags>umbraco umbraco-marketplace newsletter lead-magnet gated-content downloads</PackageTags>
     <Company>SplatDev Ltda</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</PackageProjectUrl>
@@ -24,9 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Pure helpers (window arithmetic, recipient normalisation, template variable
-         counting) are internal by design but are exactly the logic worth unit testing. -->
-    <InternalsVisibleTo Include="SplatDev.Umbraco.Plugins.WhatsApp.Tests" />
+    <InternalsVisibleTo Include="SplatDev.Umbraco.Plugins.ContentPackages.Tests" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
@@ -47,14 +50,9 @@
 
   <ItemGroup>
     <Content Include="App_Plugins\**" ExcludeFromSingleFile="true" CopyToPublishDirectory="Always" />
-    <!-- Ships the MSBuild target that copies App_Plugins into the consuming site.
-         Without it the package installs the assembly only and the dashboard never
-         appears — see the comment in the .targets file. -->
-    <None Include="buildTransitive\**" Pack="true" PackagePath="buildTransitive" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
-    <None Include="umbraco-marketplace.json" Pack="true" PackagePath="\" Condition="Exists('umbraco-marketplace.json')" />
   </ItemGroup>
 </Project>

@@ -106,3 +106,12 @@ Credentials.md
 
 .bin/
 **/.bin/
+
+# WhatsApp plugin: local client build artefacts
+SplatDev.Umbraco.Plugins.WhatsApp/client/node_modules/
+
+# Playwright MCP session artifacts (screenshots, snapshots, console logs)
+.playwright-mcp/
+
+# Playwright screenshots captured into the repo root
+wa-*.png
