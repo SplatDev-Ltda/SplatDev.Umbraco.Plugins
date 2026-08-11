@@ -1,7 +1,7 @@
 {
   "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
   "Description": "Umbraco OAuth social login plugin supporting Umbraco 13 (net8.0) and Umbraco 17 (net10.0)",
-  "Category": "Authentication & Authorization",
+  "Category": "Developer Tools",
   "PackageType": "Package",
   "LicenseTypes": [
     "Free"

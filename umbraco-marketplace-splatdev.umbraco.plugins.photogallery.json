@@ -1,7 +1,7 @@
 {
   "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
   "Description": "Photo gallery plugin for Umbraco — stores gallery albums and photos with EF Core, renders via view component.",
-  "Category": "Media",
+  "Category": "PIM & DAM",
   "PackageType": "Package",
   "LicenseTypes": [
     "Free"

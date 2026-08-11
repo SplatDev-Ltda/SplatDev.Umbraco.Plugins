@@ -1,7 +1,7 @@
 {
   "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
   "Description": "Email template engine with variable substitution, preview, and singleton style settings for Umbraco 17 (net10.0).",
-  "Category": "Communication",
+  "Category": "Campaign & Marketing",
   "PackageType": "Package",
   "LicenseTypes": [
     "Free"

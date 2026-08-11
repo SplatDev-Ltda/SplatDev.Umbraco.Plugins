@@ -1,7 +1,7 @@
 {
   "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
   "Description": "Umbraco Hidden Content plugin: hide nodes from navigation and sitemaps while keeping them accessible by URL via the umbracoNaviHide property. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).",
-  "Category": "Utilities",
+  "Category": "Developer Tools",
   "PackageType": "Package",
   "LicenseTypes": [
     "Free"

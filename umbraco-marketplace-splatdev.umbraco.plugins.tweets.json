@@ -1,7 +1,7 @@
 {
   "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
   "Description": "Twitter/X feed display plugin for Umbraco 13 (net8.0) and Umbraco 17 (net10.0). Caches tweets locally and refreshes on a configurable schedule.",
-  "Category": "Content Management",
+  "Category": "Editor Tools",
   "PackageType": "Package",
   "LicenseTypes": [
     "Free"

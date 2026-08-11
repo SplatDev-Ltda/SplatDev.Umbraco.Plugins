@@ -1,7 +1,7 @@
 {
   "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
   "Description": "Live video embed for Umbraco — YouTube Live, Twitch, and Vimeo live stream integration. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).",
-  "Category": "Media",
+  "Category": "PIM & DAM",
   "PackageType": "Package",
   "LicenseTypes": [
     "Free"

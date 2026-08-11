@@ -1,7 +1,7 @@
 {
   "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
   "Description": "Member-facing in-app notification system for Umbraco 17 (net10.0). Stores notifications per member key with read/unread state via IScopeProvider and NPoco.",
-  "Category": "Authentication & Authorization",
+  "Category": "Developer Tools",
   "PackageType": "Package",
   "LicenseTypes": [
     "Free"

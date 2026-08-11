@@ -1,7 +1,7 @@
 {
   "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
-  "Description": "Character limit property editor for Umbraco \u2014 enforces max length on text properties with live counter display.",
-  "Category": "Utilities",
+  "Description": "Character limit property editor for Umbraco — enforces max length on text properties with live counter display.",
+  "Category": "Developer Tools",
   "PackageType": "Package",
   "LicenseTypes": [
     "Free"
@@ -10,7 +10,7 @@
   "IssueTrackerUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/issues",
   "AuthorDetails": {
     "Name": "SplatDev",
-    "Description": "SplatDev Ltda \u2014 building Umbraco plugins and tools for agencies and developers.",
+    "Description": "SplatDev Ltda — building Umbraco plugins and tools for agencies and developers.",
     "Url": "https://github.com/splatdevtech",
     "ImageUrl": "https://github.com/splatdevtech.png",
     "SyncContributorsFromRepository": true

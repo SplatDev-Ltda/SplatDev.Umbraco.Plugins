@@ -1,7 +1,7 @@
 {
   "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
   "Description": "Umbraco content star-ratings plugin: 1-5 star ratings, average display, per-user voting. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).",
-  "Category": "Content Management",
+  "Category": "Editor Tools",
   "PackageType": "Package",
   "LicenseTypes": [
     "Free"

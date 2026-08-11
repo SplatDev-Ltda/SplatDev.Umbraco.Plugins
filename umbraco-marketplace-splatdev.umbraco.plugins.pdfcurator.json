@@ -1,7 +1,7 @@
 {
   "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
   "Description": "Book Library backoffice section for Umbraco 17. Dashboard, library browser, review queue, and reports for managing PDF digital books and documents. Pluggable Lit web component architecture ready for the full PdfCurator component suite. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).",
-  "Category": "Content Management",
+  "Category": "Editor Tools",
   "PackageType": "Package",
   "LicenseTypes": [
     "Free"
