@@ -371,6 +371,12 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
 
       .reply-row uui-textarea {
         flex: 1;
+        /* uui-textarea renders an inline-block <textarea> in its shadow root, so the
+           host's line box adds ~7px of descender space underneath it. With the row
+           bottom-aligned that gap sat between the two, dropping Send below the field's
+           visible edge. Making the host a flex container removes the line box, so the
+           host's bottom edge is the field's bottom edge. */
+        display: flex;
       }
 
       .window-pill {
@@ -425,9 +431,16 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
 
     // Poll for inbound messages. Cheap, and it means an operator watching the inbox
     // sees a reply arrive without reaching for Refresh.
+    //
+    // Polling rather than a push channel on purpose: the webhook lands server-side, so
+    // pushing to the browser would need a socket or SSE endpoint held open per operator.
+    // At this cadence a reply shows up in a few seconds, which is what a chat UI needs,
+    // for two cheap requests a minute per open tab.
     this.#refreshTimer = window.setInterval(() => {
-      if (document.visibilityState === "visible") void this.#loadConversations({ quiet: true });
-    }, 20_000);
+      if (document.visibilityState !== "visible") return;
+      void this.#loadConversations({ quiet: true });
+      void this.#refreshOpenThread();
+    }, 10_000);
   }
 
   override disconnectedCallback() {
@@ -463,6 +476,73 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
     }
   }
 
+  /**
+   * True when the transcript is scrolled to (or near) the newest message.
+   *
+   * Used to decide whether an arriving message should scroll the view. Someone who has
+   * scrolled up to read history should not be yanked to the bottom mid-sentence.
+   */
+  #transcriptAtEnd() {
+    const el = this.renderRoot.querySelector<HTMLElement>(".transcript");
+    if (!el) return true;
+    return el.scrollHeight - el.scrollTop - el.clientHeight < 80;
+  }
+
+  #scrollTranscriptToEnd() {
+    const el = this.renderRoot.querySelector<HTMLElement>(".transcript");
+    if (el) el.scrollTop = el.scrollHeight;
+  }
+
+  /**
+   * Background refresh of the open thread, so a reply appears without touching Refresh.
+   *
+   * Deliberately quiet: it never sets the loading state (which would blank the transcript
+   * every poll), never surfaces an error (the messages on screen are still valid), and
+   * only assigns when something actually changed, so Lit is not re-rendering the
+   * transcript every ten seconds for nothing.
+   */
+  async #refreshOpenThread() {
+    const open = this._selected;
+    if (!open || this._loadingThread || this._sending) return;
+
+    try {
+      const thread = await this.#api.getThread(open.id);
+
+      // The user may have switched threads while this was in flight.
+      if (this._selected?.id !== open.id) return;
+
+      const latest = thread.messages;
+      const changed =
+        latest.length !== this._messages.length ||
+        latest[latest.length - 1]?.id !== this._messages[this._messages.length - 1]?.id ||
+        latest.some((m, i) => m.status !== this._messages[i]?.status);
+      if (!changed) {
+        // Still refresh the header: the window countdown ticks down regardless.
+        this._selected = thread.conversation;
+        return;
+      }
+
+      const follow = this.#transcriptAtEnd();
+      this._messages = latest;
+      this._selected = thread.conversation;
+
+      if (follow) {
+        await this.updateComplete;
+        this.#scrollTranscriptToEnd();
+      }
+
+      // The thread is on screen, so anything that just arrived has been seen.
+      if (thread.conversation.unreadCount > 0) {
+        await this.#api.markRead(open.id);
+        this._conversations = this._conversations.map((c) =>
+          c.id === open.id ? { ...c, unreadCount: 0 } : c,
+        );
+      }
+    } catch {
+      // A failed background poll stays silent - the transcript on screen is still valid.
+    }
+  }
+
   async #open(conversation: ConversationSummary) {
     this._selected = conversation;
     this._loadingThread = true;
@@ -476,6 +556,9 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
       const thread = await this.#api.getThread(conversation.id);
       this._messages = thread.messages;
       this._selected = thread.conversation;
+
+      // Open on the newest message, the way every chat client does.
+      void this.updateComplete.then(() => this.#scrollTranscriptToEnd());
 
       // Fetch alongside the thread. A missing contact is the normal case, not an error,
       // so a failure here must not stop the transcript rendering.
@@ -512,6 +595,8 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
       // Refetch so the new message carries its real id and status from the server.
       await this.#open(conversation);
       await this.#loadConversations();
+      await this.updateComplete;
+      this.#scrollTranscriptToEnd();
     } catch (error) {
       this._error = error instanceof Error ? error.message : String(error);
     } finally {
