@@ -9,11 +9,21 @@ namespace SplatDev.Umbraco.Plugins.Schema2Yaml.Services;
 /// </summary>
 public class LanguageExporter
 {
+    // Umbraco 14 split ILocalizationService into ILanguageService and
+    // IDictionaryItemService. On 13 the one service still does both.
+#if NET8_0
+    private readonly ILocalizationService _languageService;
+#else
     private readonly ILanguageService _languageService;
+#endif
     private readonly ILogger<LanguageExporter> _logger;
 
     public LanguageExporter(
+#if NET8_0
+        ILocalizationService languageService,
+#else
         ILanguageService languageService,
+#endif
         ILogger<LanguageExporter> logger)
     {
         _languageService = languageService ?? throw new ArgumentNullException(nameof(languageService));
@@ -27,7 +37,12 @@ public class LanguageExporter
     {
         _logger.LogInformation("Starting Language export");
 
+#if NET8_0
+        var languages = _languageService.GetAllLanguages();
+        await Task.CompletedTask;
+#else
         var languages = await _languageService.GetAllAsync();
+#endif
         var exported = new List<ExportLanguage>();
 
         foreach (var language in languages)

@@ -33,7 +33,12 @@ public class DataTypeExporter
     {
         _logger.LogInformation("Starting DataType export");
 
+#if NET8_0
+        var dataTypes = _dataTypeService.GetAll();
+        await Task.CompletedTask;
+#else
         var dataTypes = await _dataTypeService.GetAllAsync();
+#endif
         var exported = new List<ExportDataType>();
 
         foreach (var dataType in dataTypes)
@@ -79,6 +84,10 @@ public class DataTypeExporter
     /// </summary>
     private string GetEditorAlias(IDataType dataType)
     {
+#if NET8_0
+        // Umbraco 13 has no EditorUiAlias; EditorAlias is the only alias available.
+        return dataType.EditorAlias;
+#else
         if (_versionDetector.SupportsEditorUiAlias())
         {
             return dataType.EditorUiAlias ?? dataType.EditorAlias;
@@ -87,6 +96,7 @@ public class DataTypeExporter
         {
             return dataType.EditorAlias;
         }
+#endif
     }
 
     /// <summary>
@@ -96,7 +106,11 @@ public class DataTypeExporter
     {
         var config = new Dictionary<string, object>();
 
+#if NET8_0
+        var configObj = dataType.Configuration;
+#else
         var configObj = dataType.ConfigurationObject;
+#endif
 
         if (configObj == null)
         {

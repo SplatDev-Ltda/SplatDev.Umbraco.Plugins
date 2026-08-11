@@ -20,9 +20,17 @@ public class ExportItemsController : ControllerBase
     private readonly IDataTypeService      _dataTypes;
     private readonly IContentTypeService   _contentTypes;
     private readonly IMediaTypeService     _mediaTypes;
+    // Umbraco 14 split ILocalizationService into ILanguageService and
+    // IDictionaryItemService, and moved templates onto ITemplateService.
+#if NET8_0
+    private readonly IFileService          _templates;
+    private readonly ILocalizationService  _languages;
+    private readonly ILocalizationService  _dictionaryItems;
+#else
     private readonly ITemplateService      _templates;
     private readonly ILanguageService      _languages;
     private readonly IDictionaryItemService _dictionaryItems;
+#endif
     private readonly IContentService       _content;
     private readonly IMediaService         _media;
     private readonly IMemberService        _members;
@@ -31,8 +39,13 @@ public class ExportItemsController : ControllerBase
 
     public ExportItemsController(
         IDataTypeService dataTypes, IContentTypeService contentTypes,
+#if NET8_0
+        IMediaTypeService mediaTypes, IFileService templates,
+        ILocalizationService languages, ILocalizationService dictionaryItems,
+#else
         IMediaTypeService mediaTypes, ITemplateService templates,
         ILanguageService languages, IDictionaryItemService dictionaryItems,
+#endif
         IContentService content, IMediaService media,
         IMemberService members, IUserService users,
         ILogger<ExportItemsController> logger)
@@ -58,7 +71,11 @@ public class ExportItemsController : ControllerBase
         {
             return Ok(new AvailableItemsResponse
             {
+#if NET8_0
+                DataTypes = _dataTypes.GetAll()
+#else
                 DataTypes = (await _dataTypes.GetAllAsync())
+#endif
                     .Select(dt => new AvailableItem { Alias = DataTypeExporter.GenerateAlias(dt.Name ?? string.Empty), Name = dt.Name ?? string.Empty })
                     .OrderBy(x => x.Name).ToList(),
 
@@ -70,11 +87,19 @@ public class ExportItemsController : ControllerBase
                     .Select(mt => new AvailableItem { Alias = mt.Alias, Name = mt.Name ?? mt.Alias })
                     .OrderBy(x => x.Name).ToList(),
 
+#if NET8_0
+                Templates = _templates.GetTemplates()
+#else
                 Templates = (await _templates.GetAllAsync(Array.Empty<string>()))
+#endif
                     .Select(t => new AvailableItem { Alias = t.Alias, Name = t.Name ?? t.Alias })
                     .OrderBy(x => x.Name).ToList(),
 
+#if NET8_0
+                Languages = _languages.GetAllLanguages()
+#else
                 Languages = (await _languages.GetAllAsync())
+#endif
                     .Select(l => new AvailableItem { Alias = l.IsoCode, Name = l.CultureName ?? l.IsoCode })
                     .OrderBy(x => x.Name).ToList(),
 
@@ -133,7 +158,12 @@ public class ExportItemsController : ControllerBase
     private async Task<IEnumerable<IDictionaryItem>> GetAllDictionaryItemsAsync()
     {
         var result = new List<IDictionaryItem>();
+#if NET8_0
+        var rootItems = _dictionaryItems.GetRootDictionaryItems();
+        await Task.CompletedTask;
+#else
         var rootItems = await _dictionaryItems.GetAtRootAsync();
+#endif
         await CollectDictionaryItemsAsync(rootItems, result);
         return result;
     }
@@ -143,7 +173,11 @@ public class ExportItemsController : ControllerBase
         foreach (var item in items)
         {
             result.Add(item);
+#if NET8_0
+            var children = _dictionaryItems.GetDictionaryItemChildren(item.Key);
+#else
             var children = await _dictionaryItems.GetChildrenAsync(item.Key);
+#endif
             await CollectDictionaryItemsAsync(children, result);
         }
     }

@@ -61,9 +61,13 @@
   </ItemGroup>
 
   <!-- Umbraco 14  (net8.0) -->
+  <!-- net8.0 means Umbraco 13 across this repo, not 14. Umbraco 14 also runs on .NET 8,
+       so pinning it here compiled happily while making the package impossible to install
+       on an Umbraco 13 site: NuGet reported a hard version conflict against
+       Umbraco.Cms.Web.Common 13.x. Its sibling Yaml2Schema pins 13.12.0 correctly. -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-    <PackageReference Include="Umbraco.Cms.Core" Version="[14.0.0, 15.0.0)" />
-    <PackageReference Include="Umbraco.Cms.Web.Common" Version="[14.0.0, 15.0.0)" />
+    <PackageReference Include="Umbraco.Cms.Core" Version="[13.0.0, 14.0.0)" />
+    <PackageReference Include="Umbraco.Cms.Web.Common" Version="[13.0.0, 14.0.0)" />
   </ItemGroup>
 
   <!-- Umbraco 15 / 16  (net9.0) -->

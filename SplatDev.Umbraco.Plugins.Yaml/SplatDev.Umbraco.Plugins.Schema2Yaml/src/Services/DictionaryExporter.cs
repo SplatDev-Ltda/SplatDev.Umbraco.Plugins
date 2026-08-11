@@ -10,11 +10,20 @@ namespace SplatDev.Umbraco.Plugins.Schema2Yaml.Services;
 /// </summary>
 public class DictionaryExporter
 {
+    // Umbraco 14 split dictionary items out of ILocalizationService into their own service.
+#if NET8_0
+    private readonly ILocalizationService _dictionaryItemService;
+#else
     private readonly IDictionaryItemService _dictionaryItemService;
+#endif
     private readonly ILogger<DictionaryExporter> _logger;
 
     public DictionaryExporter(
+#if NET8_0
+        ILocalizationService dictionaryItemService,
+#else
         IDictionaryItemService dictionaryItemService,
+#endif
         ILogger<DictionaryExporter> logger)
     {
         _dictionaryItemService = dictionaryItemService ?? throw new ArgumentNullException(nameof(dictionaryItemService));
@@ -28,7 +37,12 @@ public class DictionaryExporter
     {
         _logger.LogInformation("Starting Dictionary Item export");
 
+#if NET8_0
+        var rootItems = _dictionaryItemService.GetRootDictionaryItems();
+        await Task.CompletedTask;
+#else
         var rootItems = await _dictionaryItemService.GetAtRootAsync();
+#endif
         var exported = new List<ExportDictionaryItem>();
 
         foreach (var item in rootItems)
@@ -78,7 +92,11 @@ public class DictionaryExporter
             exported.Add(export);
             _logger.LogDebug("Exported Dictionary Item: {Key}", export.Key);
 
+#if NET8_0
+            var children = _dictionaryItemService.GetDictionaryItemChildren(item.Key);
+#else
             var children = await _dictionaryItemService.GetChildrenAsync(item.Key);
+#endif
             foreach (var child in children)
             {
                 await ExportDictionaryItemAsync(child, exported);
