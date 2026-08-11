@@ -11,8 +11,12 @@ import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 import { WhatsAppApi } from "./api";
 import { sharedStyles } from "./shared-styles";
 import {
+  contactHue,
+  contactInitials,
+  contactName,
+  formatPhone,
   formatTime,
-  formatWaId,
+  formatTimeShort,
   formatWindow,
   type ConversationSummary,
   type MessageView,
@@ -160,6 +164,94 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
         display: flex;
         flex-direction: column;
         gap: var(--uui-size-space-3, 8px);
+        /* Anchor the conversation to the bottom like every chat client, so a short
+           thread sits above the reply box instead of floating at the top of a tall pane.
+           justify-content does this without the bubbles themselves having to grow --
+           previously a single message stretched to fill the pane. */
+        justify-content: flex-end;
+      }
+
+      /* Never let a bubble absorb the transcript's spare height. */
+      .bubble {
+        flex: 0 0 auto;
+      }
+
+      .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        color: #fff;
+        flex: 0 0 auto;
+        user-select: none;
+      }
+
+      .avatar.lg {
+        width: 40px;
+        height: 40px;
+        font-size: 0.85rem;
+      }
+
+      .thread-row {
+        display: flex;
+        gap: var(--uui-size-space-3, 8px);
+        align-items: center;
+      }
+
+      .thread-text {
+        min-width: 0;
+        flex: 1;
+      }
+
+      .head-id {
+        display: flex;
+        align-items: center;
+        gap: var(--uui-size-space-3, 8px);
+        min-width: 0;
+      }
+
+      .head-name {
+        font-weight: 700;
+        line-height: 1.25;
+      }
+
+      .head-number {
+        font-size: 0.78rem;
+        opacity: 0.7;
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* Delivery state. Ticks carry the WhatsApp idiom (one sent, two delivered,
+         blue read); the label beside them keeps it accessible rather than colour-only. */
+      .ticks {
+        display: inline-flex;
+        align-items: center;
+        gap: 2px;
+        vertical-align: -1px;
+      }
+
+      .ticks svg {
+        width: 14px;
+        height: 14px;
+      }
+
+      .ticks.read {
+        color: #53bdeb;
+      }
+
+      .day-sep {
+        align-self: center;
+        margin: 4px 0;
+        padding: 2px 10px;
+        border-radius: 9999px;
+        background: var(--uui-color-surface-alt);
+        border: 1px solid var(--wa-hairline);
+        font-size: 0.68rem;
+        opacity: 0.85;
       }
 
       .bubble {
@@ -374,17 +466,58 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
         aria-current=${selected ? "true" : "false"}
         @click=${() => void this.#open(conversation)}
       >
-        <span class="top">
-          <span class="name">
-            ${conversation.profileName || formatWaId(conversation.waId)}
+        <span class="thread-row">
+          ${this.#renderAvatar(conversation)}
+          <span class="thread-text">
+            <span class="top">
+              <span class="name">
+                ${contactName(conversation.profileName, conversation.waId)}
+              </span>
+              <span class="when">${formatTimeShort(conversation.lastMessageUtc)}</span>
+            </span>
+            <span class="preview">${conversation.lastMessagePreview || "—"}</span>
           </span>
-          <span class="when">${formatTime(conversation.lastMessageUtc)}</span>
         </span>
-        <span class="preview">${conversation.lastMessagePreview || "—"}</span>
         ${conversation.unreadCount > 0
           ? html`<span class="unread">${conversation.unreadCount}</span>`
           : nothing}
       </button>
+    `;
+  }
+
+  /** Coloured initials avatar. Hue is derived from the wa_id so it stays stable. */
+  #renderAvatar(conversation: ConversationSummary, large = false) {
+    const hue = contactHue(conversation.waId);
+    return html`
+      <span
+        class=${large ? "avatar lg" : "avatar"}
+        style="background: hsl(${hue} 45% 45%)"
+        aria-hidden="true"
+      >${contactInitials(conversation.profileName, conversation.waId)}</span>
+    `;
+  }
+
+  /**
+   * WhatsApp's tick idiom: one tick sent, two delivered, two blue read.
+   * The status word stays in the accessible name so the state is never colour-only.
+   */
+  #renderTicks(status: string) {
+    const s = (status || "").toLowerCase();
+    if (s === "failed") return html` · failed`;
+
+    const double = s === "delivered" || s === "read";
+    const cls = s === "read" ? "ticks read" : "ticks";
+    const tick = html`
+      <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M2 8.5 5.5 12 14 3.5" stroke="currentColor" stroke-width="1.6"
+              stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    `;
+
+    return html` ·
+      <span class=${cls} role="img" aria-label=${s || "sent"}>
+        ${tick}${double ? tick : nothing}
+      </span>
     `;
   }
 
@@ -399,13 +532,38 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
       <div class=${classes}>
         <span class="body">${message.body || html`<em>[${message.messageType}]</em>`}</span>
         <span class="meta">
-          ${formatTime(message.timestampUtc)}
-          ${message.inbound ? nothing : html` · ${message.status}`}
+          ${formatTimeShort(message.timestampUtc)}
+          ${message.inbound ? nothing : this.#renderTicks(message.status)}
           ${message.templateName ? html` · template: ${message.templateName}` : nothing}
           ${message.errorMessage ? html` · ${message.errorMessage}` : nothing}
         </span>
       </div>
     `;
+  }
+
+  /**
+   * Renders the transcript with a date separator whenever the day changes, which is how
+   * every chat client keeps a long thread scannable.
+   */
+  #renderTranscript(messages: MessageView[]) {
+    let lastDay = "";
+    return messages.map((m) => {
+      const d = new Date(
+        /[Zz]|[+-]\d{2}:?\d{2}$/.test(m.timestampUtc) ? m.timestampUtc : `${m.timestampUtc}Z`,
+      );
+      const day = Number.isNaN(d.getTime()) ? "" : d.toDateString();
+      const isNewDay = day !== "" && day !== lastDay;
+      if (isNewDay) lastDay = day;
+
+      return html`
+        ${isNewDay
+          ? html`<span class="day-sep">
+              ${d.toLocaleDateString([], { day: "numeric", month: "short", year: "numeric" })}
+            </span>`
+          : nothing}
+        ${this.#renderMessage(m)}
+      `;
+    });
   }
 
   #renderReply(conversation: ConversationSummary) {
@@ -454,7 +612,7 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
     if (!conversation) {
       return html`
         <div class="pane">
-          <div class="empty">Select a conversation to read it.</div>
+          <div class="empty">Select a conversation on the left to read it.</div>
         </div>
       `;
     }
@@ -462,9 +620,14 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
     return html`
       <div class="pane">
         <div class="pane-head">
-          <div>
-            <strong>${conversation.profileName || formatWaId(conversation.waId)}</strong>
-            <div class="hint">${formatWaId(conversation.waId)}</div>
+          <div class="head-id">
+            ${this.#renderAvatar(conversation, true)}
+            <div>
+              <div class="head-name">
+                ${contactName(conversation.profileName, conversation.waId)}
+              </div>
+              <div class="head-number">${formatPhone(conversation.waId)}</div>
+            </div>
           </div>
           <span class="window-pill ${conversation.windowOpen ? "open" : "closed"}">
             ${conversation.windowOpen
@@ -477,8 +640,8 @@ export class WaInboxElement extends UmbElementMixin(LitElement) {
           ${this._loadingThread
             ? html`<uui-loader></uui-loader>`
             : this._messages.length === 0
-              ? html`<div class="empty">No messages yet.</div>`
-              : this._messages.map((m) => this.#renderMessage(m))}
+              ? html`<div class="empty">No messages in this conversation yet.</div>`
+              : this.#renderTranscript(this._messages)}
         </div>
 
         ${this.#renderReply(conversation)}
