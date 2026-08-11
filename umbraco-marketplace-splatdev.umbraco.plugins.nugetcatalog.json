@@ -15,5 +15,14 @@
     "ImageUrl": "https://github.com/splatdevtech.png",
     "SyncContributorsFromRepository": true
   },
-  "Screenshots": []
+  "Screenshots": [
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.NuGetCatalog/docs/screenshots/01-packages.png",
+      "Caption": "Every package you publish, sorted by downloads, with the latest version and a one-line summary. Deprecated and vulnerable packages are flagged."
+    },
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.NuGetCatalog/docs/screenshots/02-manage.png",
+      "Caption": "Manage — the owner accounts to source from, packages added by URL, and anything you have hidden."
+    }
+  ]
 }

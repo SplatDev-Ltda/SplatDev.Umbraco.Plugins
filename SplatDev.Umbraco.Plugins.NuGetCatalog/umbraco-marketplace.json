@@ -3,7 +3,9 @@
   "Description": "Backoffice dashboard listing the packages you publish to nuget.org — download counts, latest version and a short summary per package. Add specific packages by URL, hide the ones you don't care about. Umbraco 17 (net10.0).",
   "Category": "Developer Tools",
   "PackageType": "Package",
-  "LicenseTypes": ["Free"],
+  "LicenseTypes": [
+    "Free"
+  ],
   "DocumentationUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/blob/master/SplatDev.Umbraco.Plugins.NuGetCatalog/README.md",
   "IssueTrackerUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/issues",
   "AuthorDetails": {
@@ -13,5 +15,14 @@
     "ImageUrl": "https://github.com/splatdevtech.png",
     "SyncContributorsFromRepository": true
   },
-  "Screenshots": []
+  "Screenshots": [
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.NuGetCatalog/docs/screenshots/01-packages.png",
+      "Caption": "Every package you publish, sorted by downloads, with the latest version and a one-line summary. Deprecated and vulnerable packages are flagged."
+    },
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.NuGetCatalog/docs/screenshots/02-manage.png",
+      "Caption": "Manage — the owner accounts to source from, packages added by URL, and anything you have hidden."
+    }
+  ]
 }
