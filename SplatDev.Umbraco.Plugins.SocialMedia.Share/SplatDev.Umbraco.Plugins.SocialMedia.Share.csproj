@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<PackageId>SplatDev.Umbraco.Plugins.SocialMedia.Share</PackageId>
-		<Version>2.1.0</Version>
+		<Version>2.1.1</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
 		<Authors>SplatDev</Authors>
 		<Description>Umbraco social sharing buttons plugin — configurable platforms and share links. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0)</Description>

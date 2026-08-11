@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>SplatDev.Umbraco.Plugins.Payments.BancoInter</PackageId>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Authors>SplatDev</Authors>
     <Description>Banco Inter payment integration for Umbraco. Supports Pix (immediate and due charges), Boleto com Pix, Banking (outbound Pix, boleto payments, balance/statement), and webhook handling. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).</Description>

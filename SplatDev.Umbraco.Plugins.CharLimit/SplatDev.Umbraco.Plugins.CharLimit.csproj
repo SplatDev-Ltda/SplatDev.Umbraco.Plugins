@@ -8,7 +8,7 @@
     <AssemblyName>SplatDev.Umbraco.Plugins.CharLimit</AssemblyName>
     <RootNamespace>SplatDev.Umbraco.Plugins.CharLimit</RootNamespace>
     <PackageId>SplatDev.Umbraco.Plugins.CharLimit</PackageId>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Authors>SplatDev</Authors>
     <Company>SplatDev Ltda</Company>
