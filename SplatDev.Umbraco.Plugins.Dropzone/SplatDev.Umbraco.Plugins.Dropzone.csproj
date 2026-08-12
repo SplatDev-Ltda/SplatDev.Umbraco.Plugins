@@ -8,7 +8,7 @@
     <AssemblyName>SplatDev.Umbraco.Plugins.Dropzone</AssemblyName>
     <RootNamespace>SplatDev.Umbraco.Plugins.Dropzone</RootNamespace>
     <PackageId>SplatDev.Umbraco.Plugins.Dropzone</PackageId>
-    <Version>1.1.3</Version>
+    <Version>1.1.4</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <Authors>SplatDev</Authors>

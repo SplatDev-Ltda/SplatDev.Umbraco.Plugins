@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<PackageId>SplatDev.Umbraco.Plugins.OAuth</PackageId>
-		<Version>2.1.4</Version>
+		<Version>2.1.5</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
 		<Authors>SplatDev</Authors>
