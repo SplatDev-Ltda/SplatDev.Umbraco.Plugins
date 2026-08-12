@@ -27,7 +27,7 @@
       "alias": "SplatDev.CacheManager.Localization.En",
       "name": "Cache Manager — English",
       "meta": {
-        "culture": "en",
+        "culture": "en-us",
         "localizations": {
           "section": {
             "cacheManager_heading": "Cache Manager",

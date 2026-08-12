@@ -26,7 +26,7 @@
       "alias": "UmbracoCms.Analytics.Localization.En",
       "name": "Analytics — English",
       "meta": {
-        "culture": "en",
+        "culture": "en-us",
         "localizations": {
           "section": {
             "analytics_heading": "Analytics",

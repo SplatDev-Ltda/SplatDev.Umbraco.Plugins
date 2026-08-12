@@ -9,7 +9,16 @@
       "name": "GDPR Dashboard",
       "element": "/App_Plugins/Gdrp/dist/dashboard.js",
       "weight": -99,
-      "conditions": [{ "alias": "Umb.Condition.SectionAlias", "match": "Umb.Section.Content" }]
+      "conditions": [
+        {
+          "alias": "Umb.Condition.SectionAlias",
+          "match": "Umb.Section.Content"
+        }
+      ],
+      "meta": {
+        "pathname": "gdrp",
+        "label": "Gdrp"
+      }
     }
   ]
 }

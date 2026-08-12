@@ -91,7 +91,7 @@
       "alias": "PdfCurator.Localization.En",
       "name": "Book Library — English",
       "meta": {
-        "culture": "en",
+        "culture": "en-us",
         "localizations": {
           "pdfCurator": {
             "sectionLabel": "Book Library",
@@ -103,6 +103,13 @@
             "description": "Manage your digital book and PDF library",
             "upload": "Upload PDF",
             "comingSoon": "Coming soon — Phase B will integrate the full PDF Curator component suite."
+          },
+          "section": {
+            "pdfCurator_dashboardLabel": "PDF Curator",
+            "pdfCurator_sectionLabel": "PDF Curator",
+            "pdfCurator_libraryLabel": "Library",
+            "pdfCurator_reviewLabel": "Review",
+            "pdfCurator_reportsLabel": "Reports"
           }
         }
       }

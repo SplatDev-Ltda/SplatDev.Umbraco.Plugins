@@ -27,7 +27,7 @@
       "alias": "SplatDev.PagSeguro.Localization.En",
       "name": "PagSeguro — English",
       "meta": {
-        "culture": "en",
+        "culture": "en-us",
         "localizations": {
           "section": {
             "pagseguro_heading": "PagSeguro Payments",

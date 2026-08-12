@@ -26,13 +26,14 @@
       "alias": "SplatDev.OAuth.Localization.En",
       "name": "OAuth — English",
       "meta": {
-        "culture": "en",
+        "culture": "en-us",
         "localizations": {
           "section": {
             "oauth_heading": "OAuth Configuration",
             "oauth_description": "Configure external login providers (Google, Facebook, X)",
             "oauth_clientId": "Client ID",
-            "oauth_clientSecret": "Client Secret"
+            "oauth_clientSecret": "Client Secret",
+            "oauth_dashboardLabel": "OAuth"
           }
         }
       }

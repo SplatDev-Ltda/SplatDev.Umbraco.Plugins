@@ -27,7 +27,7 @@
       "alias": "SplatDev.EmailNotifications.Localization.En",
       "name": "Email Notifications — English",
       "meta": {
-        "culture": "en",
+        "culture": "en-us",
         "localizations": {
           "section": {
             "emailNotifications_dashboardLabel": "Email Notifications",

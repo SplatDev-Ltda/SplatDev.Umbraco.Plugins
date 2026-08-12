@@ -26,13 +26,14 @@
       "alias": "SplatDev.ShortUrls.Localization.En",
       "name": "ShortUrls — English",
       "meta": {
-        "culture": "en",
+        "culture": "en-us",
         "localizations": {
           "section": {
             "shortUrls_heading": "Short URLs",
             "shortUrls_description": "Manage short URL redirects",
             "shortUrls_create": "Create Short URL",
-            "shortUrls_shortCode": "Short Code"
+            "shortUrls_shortCode": "Short Code",
+            "shortUrls_dashboardLabel": "Short URLs"
           }
         }
       }

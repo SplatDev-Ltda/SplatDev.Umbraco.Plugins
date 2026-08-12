@@ -45,7 +45,9 @@
       "meta": {
         "label": "Subscribers",
         "icon": "icon-users",
-        "menus": ["Umb.Menu.Default"]
+        "menus": [
+          "Umb.Menu.Default"
+        ]
       }
     },
     {
@@ -61,7 +63,9 @@
       "meta": {
         "label": "Campaigns",
         "icon": "icon-mail",
-        "menus": ["Umb.Menu.Default"]
+        "menus": [
+          "Umb.Menu.Default"
+        ]
       }
     },
     {
@@ -77,7 +81,9 @@
       "meta": {
         "label": "Analytics",
         "icon": "icon-chart",
-        "menus": ["Umb.Menu.Default"]
+        "menus": [
+          "Umb.Menu.Default"
+        ]
       }
     },
     {
@@ -85,7 +91,7 @@
       "alias": "SplatDev.Newsletter.Localization.En",
       "name": "Newsletter — English",
       "meta": {
-        "culture": "en",
+        "culture": "en-us",
         "localizations": {
           "section": {
             "newsletter_heading": "Newsletter",

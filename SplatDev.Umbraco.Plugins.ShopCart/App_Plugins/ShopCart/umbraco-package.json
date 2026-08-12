@@ -9,7 +9,16 @@
       "name": "ShopCart Dashboard",
       "element": "/App_Plugins/ShopCart/dist/dashboard.js",
       "weight": -99,
-      "conditions": [{ "alias": "Umb.Condition.SectionAlias", "match": "Umb.Section.Content" }]
+      "conditions": [
+        {
+          "alias": "Umb.Condition.SectionAlias",
+          "match": "Umb.Section.Content"
+        }
+      ],
+      "meta": {
+        "pathname": "shop-cart",
+        "label": "Shop Cart"
+      }
     }
   ]
 }

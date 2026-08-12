@@ -26,13 +26,14 @@
       "alias": "SplatDev.Mailer.Localization.En",
       "name": "Mailer — English",
       "meta": {
-        "culture": "en",
+        "culture": "en-us",
         "localizations": {
           "section": {
             "mailer_heading": "Mailer",
             "mailer_description": "Microsoft Graph email service",
             "mailer_sendTest": "Send Test Email",
-            "mailer_email": "Email Address"
+            "mailer_email": "Email Address",
+            "mailer_dashboardLabel": "Mailer"
           }
         }
       }

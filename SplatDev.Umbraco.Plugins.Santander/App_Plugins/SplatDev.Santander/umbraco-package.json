@@ -27,7 +27,7 @@
       "alias": "SplatDev.Santander.Localization.En",
       "name": "Santander Banking — English",
       "meta": {
-        "culture": "en",
+        "culture": "en-us",
         "localizations": {
           "section": {
             "santander_dashboardLabel": "Santander Banking",

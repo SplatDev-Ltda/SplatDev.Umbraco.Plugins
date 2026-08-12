@@ -26,13 +26,14 @@
       "alias": "SplatDev.ExceptionManager.Localization.En",
       "name": "ExceptionManager — English",
       "meta": {
-        "culture": "en",
+        "culture": "en-us",
         "localizations": {
           "section": {
             "exceptionManager_heading": "Exception Manager",
             "exceptionManager_description": "Monitor and review application exceptions",
             "exceptionManager_refresh": "Refresh",
-            "exceptionManager_filter": "Filter"
+            "exceptionManager_filter": "Filter",
+            "exceptionManager_dashboardLabel": "Exception Manager"
           }
         }
       }

@@ -26,14 +26,15 @@
       "alias": "SplatDev.SEO.Localization.En",
       "name": "SEO — English",
       "meta": {
-        "culture": "en",
+        "culture": "en-us",
         "localizations": {
           "section": {
             "seo_heading": "SEO Dashboard",
             "seo_description": "SEO analysis and meta tag management",
             "seo_analysis": "Analysis",
             "seo_metaTags": "Meta Tags",
-            "seo_openGraph": "Open Graph"
+            "seo_openGraph": "Open Graph",
+            "seo_dashboardLabel": "SEO"
           }
         }
       }

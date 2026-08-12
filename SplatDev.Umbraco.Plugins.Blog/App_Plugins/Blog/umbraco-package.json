@@ -26,7 +26,7 @@
       "alias": "UmbracoCms.Blog.Localization.En",
       "name": "Blog — English",
       "meta": {
-        "culture": "en",
+        "culture": "en-us",
         "localizations": {
           "section": {
             "blog_heading": "Blog",

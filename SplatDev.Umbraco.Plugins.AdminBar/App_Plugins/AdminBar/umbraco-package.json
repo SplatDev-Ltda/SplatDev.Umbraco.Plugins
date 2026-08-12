@@ -26,7 +26,7 @@
       "alias": "UmbracoCms.AdminBar.Localization.En",
       "name": "AdminBar — English",
       "meta": {
-        "culture": "en",
+        "culture": "en-us",
         "localizations": {
           "section": {
             "adminbar_heading": "Admin Bar",
