@@ -26,7 +26,7 @@
       "alias": "UmbracoCms.Forums.Localization.En",
       "name": "Forums — English",
       "meta": {
-        "culture": "en-us",
+        "culture": "en",
         "localizations": {
           "section": {
             "forums_heading": "Forums",

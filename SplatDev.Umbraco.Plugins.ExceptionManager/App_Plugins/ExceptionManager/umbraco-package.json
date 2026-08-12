@@ -11,7 +11,7 @@
       "elementName": "exception-manager-dashboard",
       "weight": 100,
       "meta": {
-        "label": "#exceptionManager_dashboardLabel",
+        "label": "Exception Manager",
         "pathname": "exception-manager"
       },
       "conditions": [
@@ -26,7 +26,7 @@
       "alias": "SplatDev.ExceptionManager.Localization.En",
       "name": "ExceptionManager — English",
       "meta": {
-        "culture": "en-us",
+        "culture": "en",
         "localizations": {
           "section": {
             "exceptionManager_heading": "Exception Manager",

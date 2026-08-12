@@ -12,7 +12,7 @@
       "elementName": "santander-banking-dashboard",
       "weight": -80,
       "meta": {
-        "label": "#santander_dashboardLabel",
+        "label": "Santander Banking",
         "pathname": "santander-banking"
       },
       "conditions": [
@@ -27,7 +27,7 @@
       "alias": "SplatDev.Santander.Localization.En",
       "name": "Santander Banking — English",
       "meta": {
-        "culture": "en-us",
+        "culture": "en",
         "localizations": {
           "section": {
             "santander_dashboardLabel": "Santander Banking",

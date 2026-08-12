@@ -91,7 +91,7 @@
       "alias": "PdfCurator.Localization.En",
       "name": "Book Library — English",
       "meta": {
-        "culture": "en-us",
+        "culture": "en",
         "localizations": {
           "pdfCurator": {
             "sectionLabel": "Book Library",

@@ -27,7 +27,7 @@
       "alias": "SplatDev.RedirectManager.Localization.En",
       "name": "Redirect Manager — English",
       "meta": {
-        "culture": "en-us",
+        "culture": "en",
         "localizations": {
           "section": {
             "redirectManager_heading": "Redirect Manager",

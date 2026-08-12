@@ -91,7 +91,7 @@
       "alias": "SplatDev.Newsletter.Localization.En",
       "name": "Newsletter — English",
       "meta": {
-        "culture": "en-us",
+        "culture": "en",
         "localizations": {
           "section": {
             "newsletter_heading": "Newsletter",

@@ -27,7 +27,7 @@
       "alias": "SplatDev.MercadoPago.Localization.En",
       "name": "MercadoPago — English",
       "meta": {
-        "culture": "en-us",
+        "culture": "en",
         "localizations": {
           "section": {
             "mercadopago_heading": "MercadoPago Payments",

@@ -12,7 +12,7 @@
       "elementName": "email-notifications-dashboard",
       "weight": -80,
       "meta": {
-        "label": "#emailNotifications_dashboardLabel",
+        "label": "Email Notifications",
         "pathname": "email-notifications"
       },
       "conditions": [
@@ -27,7 +27,7 @@
       "alias": "SplatDev.EmailNotifications.Localization.En",
       "name": "Email Notifications — English",
       "meta": {
-        "culture": "en-us",
+        "culture": "en",
         "localizations": {
           "section": {
             "emailNotifications_dashboardLabel": "Email Notifications",
