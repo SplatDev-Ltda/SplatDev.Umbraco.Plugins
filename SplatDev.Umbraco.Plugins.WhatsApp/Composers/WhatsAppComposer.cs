@@ -59,5 +59,10 @@ public class WhatsAppComposer : IComposer
         builder.Services.AddScoped<INewMessageNotifier, NewMessageNotifier>();
 
         builder.AddNotificationAsyncHandler<UmbracoApplicationStartingNotification, WhatsAppDatabaseHandler>();
+#if NET10_0_OR_GREATER
+        builder.AddNotificationAsyncHandler<UmbracoApplicationStartingNotification, WhatsAppSectionPermissionHandler>();
+#else
+        builder.AddNotificationHandler<UmbracoApplicationStartingNotification, WhatsAppSectionPermissionHandler>();
+#endif
     }
 }

@@ -5,11 +5,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Web.Common.ApplicationBuilder;
+using SplatDev.Umbraco.Plugins.VisitorCounter.Components;
 using SplatDev.Umbraco.Plugins.VisitorCounter.Middleware;
 using SplatDev.Umbraco.Plugins.VisitorCounter.Models;
 using SplatDev.Umbraco.Plugins.VisitorCounter.Services;
 
 namespace SplatDev.Umbraco.Plugins.VisitorCounter.Composers;
+
+public class VisitorCounterSchemaComposer : ComponentComposer<VisitorCounterSchemaComponent>
+{
+}
 
 public class VisitorCounterComposer : IComposer
 {

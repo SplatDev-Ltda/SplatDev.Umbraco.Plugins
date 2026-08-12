@@ -25,7 +25,15 @@ Umbraco 17-only.
 dotnet add package SplatDev.Umbraco.Plugins.WhatsApp
 ```
 
-The composer registers itself — no `Program.cs` change is required.
+The composer registers itself — no `Program.cs` change is required. On startup, the plugin
+adds `SplatDev.WhatsApp.Section` to the built-in **Administrators** group if it is missing.
+Existing permissions on Administrators and all other groups are preserved. The plugin never
+removes a section permission during uninstall; custom groups must be granted access manually
+by an administrator.
+
+> On Umbraco 13 the backend API and webhook are available, but the Lit dashboard is not
+> supported. The permission backfill still runs on both Umbraco 13 and 17.
+
 
 ## Configuration
 
