@@ -12,7 +12,7 @@
       "elementName": "santander-banking-dashboard",
       "weight": -80,
       "meta": {
-        "label": "#santander_dashboardLabel",
+        "label": "Santander Banking",
         "pathname": "santander-banking"
       },
       "conditions": [

@@ -12,7 +12,7 @@
       "elementName": "email-notifications-dashboard",
       "weight": -80,
       "meta": {
-        "label": "#emailNotifications_dashboardLabel",
+        "label": "Email Notifications",
         "pathname": "email-notifications"
       },
       "conditions": [

@@ -10,8 +10,15 @@
       "element": "/App_Plugins/Settings/dist/dashboard.js",
       "weight": -99,
       "conditions": [
-        { "alias": "Umb.Condition.SectionAlias", "match": "Umb.Section.Content" }
-      ]
+        {
+          "alias": "Umb.Condition.SectionAlias",
+          "match": "Umb.Section.Content"
+        }
+      ],
+      "meta": {
+        "pathname": "site-settings",
+        "label": "Settings"
+      }
     }
   ]
 }

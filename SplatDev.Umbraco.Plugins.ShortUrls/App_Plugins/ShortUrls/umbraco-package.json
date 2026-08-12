@@ -11,7 +11,7 @@
       "elementName": "short-urls-dashboard",
       "weight": 100,
       "meta": {
-        "label": "#shortUrls_dashboardLabel",
+        "label": "Short URLs",
         "pathname": "short-urls"
       },
       "conditions": [
@@ -32,7 +32,8 @@
             "shortUrls_heading": "Short URLs",
             "shortUrls_description": "Manage short URL redirects",
             "shortUrls_create": "Create Short URL",
-            "shortUrls_shortCode": "Short Code"
+            "shortUrls_shortCode": "Short Code",
+            "shortUrls_dashboardLabel": "Short URLs"
           }
         }
       }

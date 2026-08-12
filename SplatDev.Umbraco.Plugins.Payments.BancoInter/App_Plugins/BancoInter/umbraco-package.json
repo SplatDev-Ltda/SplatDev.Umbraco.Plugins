@@ -9,7 +9,16 @@
       "name": "Banco Inter Dashboard",
       "element": "/App_Plugins/BancoInter/dist/dashboard.js",
       "weight": -98,
-      "conditions": [{ "alias": "Umb.Condition.SectionAlias", "match": "Umb.Section.Content" }]
+      "conditions": [
+        {
+          "alias": "Umb.Condition.SectionAlias",
+          "match": "Umb.Section.Content"
+        }
+      ],
+      "meta": {
+        "pathname": "banco-inter",
+        "label": "Banco Inter"
+      }
     }
   ]
 }

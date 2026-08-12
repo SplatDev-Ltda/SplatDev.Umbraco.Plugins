@@ -10,8 +10,15 @@
       "element": "/App_Plugins/ToastNotifications/dist/dashboard.js",
       "weight": -99,
       "conditions": [
-        { "alias": "Umb.Condition.SectionAlias", "match": "Umb.Section.Content" }
-      ]
+        {
+          "alias": "Umb.Condition.SectionAlias",
+          "match": "Umb.Section.Content"
+        }
+      ],
+      "meta": {
+        "pathname": "toast-notifications",
+        "label": "Toast Notifications"
+      }
     }
   ]
 }

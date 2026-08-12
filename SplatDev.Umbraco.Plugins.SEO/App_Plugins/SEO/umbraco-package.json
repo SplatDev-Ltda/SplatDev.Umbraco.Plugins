@@ -11,7 +11,7 @@
       "elementName": "seo-dashboard",
       "weight": 100,
       "meta": {
-        "label": "#seo_dashboardLabel",
+        "label": "SEO",
         "pathname": "seo"
       },
       "conditions": [
@@ -33,7 +33,8 @@
             "seo_description": "SEO analysis and meta tag management",
             "seo_analysis": "Analysis",
             "seo_metaTags": "Meta Tags",
-            "seo_openGraph": "Open Graph"
+            "seo_openGraph": "Open Graph",
+            "seo_dashboardLabel": "SEO"
           }
         }
       }

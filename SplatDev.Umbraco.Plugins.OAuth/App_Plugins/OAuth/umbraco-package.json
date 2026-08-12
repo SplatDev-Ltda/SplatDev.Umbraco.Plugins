@@ -11,7 +11,7 @@
       "elementName": "oauth-dashboard",
       "weight": 100,
       "meta": {
-        "label": "#oauth_dashboardLabel",
+        "label": "OAuth",
         "pathname": "oauth"
       },
       "conditions": [
@@ -32,7 +32,8 @@
             "oauth_heading": "OAuth Configuration",
             "oauth_description": "Configure external login providers (Google, Facebook, X)",
             "oauth_clientId": "Client ID",
-            "oauth_clientSecret": "Client Secret"
+            "oauth_clientSecret": "Client Secret",
+            "oauth_dashboardLabel": "OAuth"
           }
         }
       }

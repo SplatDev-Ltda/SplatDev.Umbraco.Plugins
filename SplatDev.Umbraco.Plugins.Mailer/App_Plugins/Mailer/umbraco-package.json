@@ -11,7 +11,7 @@
       "elementName": "mailer-dashboard",
       "weight": 100,
       "meta": {
-        "label": "#mailer_dashboardLabel",
+        "label": "Mailer",
         "pathname": "mailer"
       },
       "conditions": [
@@ -32,7 +32,8 @@
             "mailer_heading": "Mailer",
             "mailer_description": "Microsoft Graph email service",
             "mailer_sendTest": "Send Test Email",
-            "mailer_email": "Email Address"
+            "mailer_email": "Email Address",
+            "mailer_dashboardLabel": "Mailer"
           }
         }
       }
