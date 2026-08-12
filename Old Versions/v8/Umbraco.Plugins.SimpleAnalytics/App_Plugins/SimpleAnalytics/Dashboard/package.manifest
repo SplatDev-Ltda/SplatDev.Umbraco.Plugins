@@ -1,0 +1,11 @@
+{
+  "javascript": [
+    "~/App_Plugins/SimpleAnalytics/Dashboard/js/angular-merge.js",
+    "~/App_Plugins/SimpleAnalytics/Dashboard/js/chart.js",
+    "~/App_Plugins/SimpleAnalytics/Dashboard/js/angular-chart.js",
+    "~/App_Plugins/SimpleAnalytics/Dashboard/js/controller.js"
+  ],
+  "css": [
+    "~/App_Plugins/SimpleAnalytics/Dashboard/css/style.css"
+  ]
+}

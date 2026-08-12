@@ -1,0 +1,7 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage
+@{
+    <input type="hidden" data-node="@Model.Id" />
+    <!--This can be changed to display the actual visit count-->
+    <input type="hidden" value="" id="visit-count" />
+    <script type="text/javascript" src="~/scripts/analytics.js"></script>
+}

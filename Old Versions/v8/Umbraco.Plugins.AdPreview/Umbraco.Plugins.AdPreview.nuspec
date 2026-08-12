@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>SplatDev.Umbraco.Plugins.AdPreview</id>
+    <version>8.18.7.2</version>
+    <title>Ad Preview</title>
+    <authors>SplatDev Ltda</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <projectUrl>https://our.umbraco.com/packages/backoffice-extensions/ad-preview/</projectUrl>
+    <description>Ad Preview plugin for Umbraco 8.18.7. A simple image ad preview and display for the front office. For running custom ads (not from google ads or alternatives). Allows inserting custom text that is overlayed the image, with tooltip and click options.</description>
+    <releaseNotes>Upgrade to work with v8.18.7</releaseNotes>
+    <copyright>Copyright ©2023 SplatDev</copyright>
+    <tags>umbraco ad preview</tags>
+    <icon>\App_Plugins\AdPreview\icon.png</icon>
+    <readme>\App_Plugins\AdPreview\README.md</readme>
+    <dependencies>
+      <group targetFramework=".NETFramework4.7.2">
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src=".\icon.png" target="\App_Plugins\AdPreview\" />
+    <file src=".\README.md" target="\App_Plugins\AdPreview\" />
+    <file src=".\readme.txt" target="\App_Plugins\AdPreview\" />
+    <file src=".\App_Plugins\AdPreview\package.manifest" target="\App_Plugins\AdPreview\" />
+  </files>
+</package>

@@ -1,0 +1,679 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{08C93CFE-3963-4E7F-9485-F1B9EAFEDD15}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Umbraco.Plugins.SimpleAnalytics</RootNamespace>
+    <AssemblyName>Umbraco.Plugins.SimpleAnalytics</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.4.4.1\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Facilities.Logging, Version=5.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.LoggingFacility.5.1.2\lib\net45\Castle.Facilities.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor, Version=5.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Windsor.5.1.2\lib\net45\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="ClientDependency.Core, Version=1.9.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ClientDependency.1.9.10\lib\net45\ClientDependency.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="ClientDependency.Core.Mvc, Version=1.9.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ClientDependency-Mvc5.1.9.3\lib\net45\ClientDependency.Core.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="CSharpTest.Net.Collections, Version=14.906.1403.1082, Culture=neutral, PublicKeyToken=06aee00cce822474, processorArchitecture=MSIL">
+      <HintPath>..\packages\CSharpTest.Net.Collections.14.906.1403.1082\lib\net40\CSharpTest.Net.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Examine, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Examine.1.2.2\lib\net452\Examine.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.8.14.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.8.14\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="ImageProcessor, Version=2.9.1.225, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ImageProcessor.2.9.1\lib\net452\ImageProcessor.dll</HintPath>
+    </Reference>
+    <Reference Include="IP2Location, Version=8.10.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IP2Location.IPGeolocation.8.10.1\lib\net472\IP2Location.dll</HintPath>
+    </Reference>
+    <Reference Include="K4os.Compression.LZ4, Version=1.1.11.0, Culture=neutral, PublicKeyToken=2186fa9121ef231d, processorArchitecture=MSIL">
+      <HintPath>..\packages\K4os.Compression.LZ4.1.1.11\lib\net46\K4os.Compression.LZ4.dll</HintPath>
+    </Reference>
+    <Reference Include="LightInject, Version=5.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LightInject.5.4.0\lib\net46\LightInject.dll</HintPath>
+    </Reference>
+    <Reference Include="LightInject.Annotation, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LightInject.Annotation.1.1.0\lib\net46\LightInject.Annotation.dll</HintPath>
+    </Reference>
+    <Reference Include="LightInject.Mvc, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LightInject.Mvc.2.0.0\lib\net46\LightInject.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="LightInject.Web, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LightInject.Web.2.0.0\lib\net46\LightInject.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="LightInject.WebApi, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LightInject.WebApi.2.0.0\lib\net46\LightInject.WebApi.dll</HintPath>
+    </Reference>
+    <Reference Include="Lucene.Net, Version=3.0.3.0, Culture=neutral, PublicKeyToken=85089178b9ac3181, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lucene.Net.3.0.3\lib\NET40\Lucene.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="Markdown, Version=2.0.0.0, Culture=neutral, PublicKeyToken=1b320cc08ad5aa89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Markdown.2.2.1\lib\net451\Markdown.dll</HintPath>
+    </Reference>
+    <Reference Include="MessagePack, Version=2.2.0.0, Culture=neutral, PublicKeyToken=b4a0369545f0a1be, processorArchitecture=MSIL">
+      <HintPath>..\packages\MessagePack.2.2.85\lib\netstandard2.0\MessagePack.dll</HintPath>
+    </Reference>
+    <Reference Include="MessagePack.Annotations, Version=2.2.0.0, Culture=neutral, PublicKeyToken=b4a0369545f0a1be, processorArchitecture=MSIL">
+      <HintPath>..\packages\MessagePack.Annotations.2.2.85\lib\netstandard2.0\MessagePack.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.2\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Owin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.2\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.4.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.4.0\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.7.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Caching.Abstractions, Version=7.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Caching.Abstractions.7.0.0\lib\net462\Microsoft.Extensions.Caching.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Caching.Memory, Version=7.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Caching.Memory.7.0.0\lib\net462\Microsoft.Extensions.Caching.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=7.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.7.0.0\lib\net462\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=7.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.7.0.0\lib\net462\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Options, Version=7.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Options.7.0.0\lib\net462\Microsoft.Extensions.Options.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Primitives, Version=7.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Primitives.7.0.0\lib\net462\Microsoft.Extensions.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.4.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.4.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.4.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Cookies, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.4.0.1\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OAuth, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.4.0.1\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="MiniProfiler, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b44f9351044011a3, processorArchitecture=MSIL">
+      <HintPath>..\packages\MiniProfiler.4.0.138\lib\net461\MiniProfiler.dll</HintPath>
+    </Reference>
+    <Reference Include="MiniProfiler.Shared, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b44f9351044011a3, processorArchitecture=MSIL">
+      <HintPath>..\packages\MiniProfiler.Shared.4.0.138\lib\net461\MiniProfiler.Shared.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NPoco, Version=3.9.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPoco.3.9.4\lib\net45\NPoco.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Semver, Version=2.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Semver.2.0.4\lib\net452\Semver.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.2.10.0\lib\net46\Serilog.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Enrichers.Process, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Enrichers.Process.2.0.2\lib\net45\Serilog.Enrichers.Process.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Enrichers.Thread, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Enrichers.Thread.3.1.0\lib\net45\Serilog.Enrichers.Thread.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Filters.Expressions, Version=2.1.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Filters.Expressions.2.1.0\lib\net45\Serilog.Filters.Expressions.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Formatting.Compact, Version=1.1.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Formatting.Compact.1.1.0\lib\net452\Serilog.Formatting.Compact.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Formatting.Compact.Reader, Version=1.0.5.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Formatting.Compact.Reader.1.0.5\lib\net45\Serilog.Formatting.Compact.Reader.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Settings.AppSettings, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Settings.AppSettings.2.2.2\lib\net45\Serilog.Settings.AppSettings.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.Async, Version=1.5.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Sinks.Async.1.5.0\lib\net461\Serilog.Sinks.Async.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.File, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Sinks.File.4.1.0\lib\net45\Serilog.Sinks.File.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.Map, Version=1.0.2.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Sinks.Map.1.0.2\lib\netstandard2.0\Serilog.Sinks.Map.dll</HintPath>
+    </Reference>
+    <Reference Include="Superpower, Version=1.0.0.0, Culture=neutral, PublicKeyToken=aec39280ded1b3a7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Superpower.2.3.0\lib\net45\Superpower.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.2.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.7.1\lib\net461\System.Collections.Immutable.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Data.SqlServerCe, Version=4.0.0.1, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Umbraco.SqlServerCE.4.0.0.1\lib\net472\System.Data.SqlServerCe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SqlServerCe.Entity, Version=4.0.0.1, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Umbraco.SqlServerCE.4.0.0.1\lib\net472\System.Data.SqlServerCe.Entity.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.2.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.4.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO" />
+    <Reference Include="System.Linq.Expressions" />
+    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Text.Encoding.CodePages, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encoding.CodePages.4.7.1\lib\net461\System.Text.Encoding.CodePages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks" />
+    <Reference Include="System.Threading.Tasks.Dataflow, Version=4.6.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Dataflow.4.9.0\lib\netstandard2.0\System.Threading.Tasks.Dataflow.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.7\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.7\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.7\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.7\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Umbraco.Core, Version=8.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UmbracoCms.Core.8.18.8\lib\net472\Umbraco.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Umbraco.Examine, Version=8.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UmbracoCms.Web.8.18.8\lib\net472\Umbraco.Examine.dll</HintPath>
+    </Reference>
+    <Reference Include="Umbraco.ModelsBuilder.Embedded, Version=8.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UmbracoCms.Web.8.18.8\lib\net472\Umbraco.ModelsBuilder.Embedded.dll</HintPath>
+    </Reference>
+    <Reference Include="Umbraco.Web, Version=8.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UmbracoCms.Web.8.18.8\lib\net472\Umbraco.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="Umbraco.Web.UI, Version=8.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UmbracoCms.Web.8.18.8\lib\net472\Umbraco.Web.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="UserAgentService, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ng.UserAgentService.1.1.2\lib\netstandard2.0\UserAgentService.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Components\SimpleAnalyticsComponents.cs" />
+    <Compile Include="Constants\Constants.cs" />
+    <Compile Include="Controllers\AnalyticsApiController.cs" />
+    <Compile Include="Dashboards\SimpleAnalyticsDashboard.cs" />
+    <Compile Include="Extensions\BrowserExtensions.cs" />
+    <Compile Include="Extensions\Ip2LocationExtensions.cs" />
+    <Compile Include="Repositories\AnalyticsRepository.cs" />
+    <Compile Include="Repositories\IAnalyticsRepository.cs" />
+    <Compile Include="Migrations\SimpleAnalyticsMigration.cs" />
+    <Compile Include="Models\AnalyticsVisit.cs" />
+    <Compile Include="Models\AnalyticsVisitModel.cs" />
+    <Compile Include="Models\BrandVersion.cs" />
+    <Compile Include="Models\BrowserInfo.cs" />
+    <Compile Include="Models\IPMapping.cs" />
+    <Compile Include="Models\PagedResults.cs" />
+    <Compile Include="Models\VisitFilter.cs" />
+    <Compile Include="Models\VisitStats.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <Content Include="scripts\analytics.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\Web.config" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\Web.config" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\os\Web.config" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\css\style.scss" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\IP2LOCATION-LITE-DB11.BIN">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\js\angular-chart.min.js.map" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\package.manifest">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\Web.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="App_Plugins\SimpleAnalytics\PageCounter\package.manifest">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="LICENSE" />
+    <None Include="packages.config" />
+    <None Include="README.md" />
+    <None Include="Umbraco.Plugins.SimpleAnalytics.nuspec" />
+    <Content Include="Views\Example-Analytics.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\Partials\_analytics.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="Views\Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\avant.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\blisk.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\brave.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\camino.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\chrome.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\chromium.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\classilla.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\comododragon.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\edge.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\falkon.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\firefox.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\flock.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\galeon.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\gnome.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\icecat.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\Icedragon.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\iceweasel.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\internetexplorer.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\kget.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\kmcircle.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\konqueror.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\maxthon.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\microblogo.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\minimo.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\netscape.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\opera.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\operamini.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\palemoon.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\pogo.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\safari.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\seamonkey.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\slimbrowser.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\swiftfox.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\swiftweasel.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\tor.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\vivaldi.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\browsers\waterforx.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ad.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ae.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\af.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ag.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ai.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\al.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\am.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ao.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\aq.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ar.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\as.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\at.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\au.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\aw.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ax.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\az.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ba.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\bb.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\bd.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\be.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\bf.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\bg.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\bh.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\bi.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\bj.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\bl.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\bm.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\bn.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\bo.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\bq.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\br.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\bs.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\bt.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\bv.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\bw.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\by.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\bz.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ca.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\cc.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\cd.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\cf.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\cg.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ch.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ci.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ck.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\cl.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\cm.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\cn.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\co.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\cr.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\cu.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\cv.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\cw.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\cx.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\cy.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\cz.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\de.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\dj.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\dk.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\dm.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\do.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\dz.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ec.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ee.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\eg.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\eh.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\er.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\es.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\et.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\fi.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\fj.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\fk.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\fm.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\fo.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\fr.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ga.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\gb-eng.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\gb-nir.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\gb-sct.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\gb-wls.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\gb.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\gd.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ge.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\gf.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\gg.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\gh.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\gi.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\gl.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\gm.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\gn.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\gp.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\gq.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\gr.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\gs.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\gt.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\gu.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\gw.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\gy.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\hk.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\hm.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\hn.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\hr.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ht.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\hu.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\id.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ie.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\il.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\im.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\in.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\io.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\iq.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ir.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\is.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\it.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\je.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\jm.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\jo.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\jp.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ke.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\kg.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\kh.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ki.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\km.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\kn.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\kp.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\kr.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\kw.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ky.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\kz.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\la.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\lb.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\lc.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\li.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\lk.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\lr.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ls.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\lt.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\lu.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\lv.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ly.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ma.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\mc.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\md.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\me.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\mf.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\mg.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\mh.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\mk.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ml.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\mm.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\mn.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\mo.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\mp.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\mq.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\mr.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ms.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\mt.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\mu.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\mv.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\mw.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\mx.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\my.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\mz.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\na.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\nc.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ne.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\nf.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ng.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ni.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\nl.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\no.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\np.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\nr.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\nu.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\nz.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\om.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\pa.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\pe.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\pf.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\pg.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ph.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\pk.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\pl.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\pm.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\pn.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\pr.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ps.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\pt.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\pw.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\py.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\qa.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\re.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ro.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\rs.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ru.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\rw.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\sa.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\sb.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\sc.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\sd.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\se.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\sg.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\sh.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\si.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\sj.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\sk.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\sl.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\sm.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\sn.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\so.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\sr.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ss.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\st.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\sv.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\sx.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\sy.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\sz.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\tc.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\td.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\tf.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\tg.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\th.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\tj.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\tk.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\tl.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\tm.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\tn.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\to.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\tr.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\tt.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\tv.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\tw.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\tz.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ua.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ug.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\um.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\us.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\uy.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\uz.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\va.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\vc.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ve.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\vg.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\vi.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\vn.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\vu.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\wf.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ws.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\xk.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\ye.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\yt.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\za.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\zm.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\flags\zw.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\globe.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\os\android.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\os\chromeos.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\os\ios.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\os\linux.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\os\mac.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\os\windows.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\assets\pin.png" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\css\style.css" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\css\style.min.css" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\js\angular-chart.js" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\js\angular-chart.min.js" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\js\angular-merge.js" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\js\chart.js" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\js\Chart.min.js" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\js\controller.js" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\lang\en-US.xml" />
+    <Content Include="App_Plugins\SimpleAnalytics\Dashboard\views\view.html" />
+    <Content Include="App_Plugins\SimpleAnalytics\PageCounter\css\style.css" />
+    <Content Include="App_Plugins\SimpleAnalytics\PageCounter\js\controller.js" />
+    <Content Include="App_Plugins\SimpleAnalytics\PageCounter\views\view.html" />
+    <Content Include="icon.png" />
+    <Content Include="readme.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\Umbraco.SqlServerCE.4.0.0.1\build\Umbraco.SqlServerCE.targets" Condition="Exists('..\packages\Umbraco.SqlServerCE.4.0.0.1\build\Umbraco.SqlServerCE.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Umbraco.SqlServerCE.4.0.0.1\build\Umbraco.SqlServerCE.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Umbraco.SqlServerCE.4.0.0.1\build\Umbraco.SqlServerCE.targets'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
+  </Target>
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
+</Project>

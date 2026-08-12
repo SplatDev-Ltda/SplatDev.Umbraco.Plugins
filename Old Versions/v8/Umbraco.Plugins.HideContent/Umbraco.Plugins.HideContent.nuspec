@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>SplatDev.Umbraco.Plugins.HideContent</id>
+    <version>8.18.8.1</version>
+    <title>Hide Content</title>
+    <authors>SplatDev Ltda</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <projectUrl>https://our.umbraco.com/packages/backoffice-extensions/hide-content/</projectUrl>
+    <description>Implements a visual representation (hidden/visible) for the umbracoNaviHide property</description>
+    <releaseNotes>migrated to v8</releaseNotes>
+    <copyright>Copyright ©2023 SplatDev</copyright>
+    <tags>umbraco hide content</tags>
+    <icon>\App_Plugins\HideContent\icon.png</icon>
+    <readme>\App_Plugins\HideContent\README.md</readme>
+    <dependencies>
+      <group targetFramework=".NETFramework4.7.2">
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src=".\icon.png"   target=".\App_Plugins\HideContent\" />
+    <file src=".\README.md"  target=".\App_Plugins\HideContent\" />
+    <file src=".\readme.txt" target=".\App_Plugins\HideContent\" />
+    <file src=".\App_Plugins\HideContent\package.manifest" target="\App_Plugins\HideContent\" />
+  </files>
+</package>

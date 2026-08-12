@@ -1,0 +1,23 @@
+{
+  "propertyEditors": [
+    {
+      "alias": "splatDev.SimpleAnalyticsCounter",
+      "name": "Simple Analytics Page Counter",
+      "isReadOnly": true,
+      "hideLabel": false,
+      "icon": "icon-speed-gauge",
+      "editor": {
+        "view": "~/App_Plugins/SimpleAnalytics/PageCounter/views/view.html",
+        "valueType": "INT"
+      }
+    }
+  ],
+
+  "javascript": [
+    "~/App_Plugins/SimpleAnalytics/PageCounter/js/controller.js"
+  ],
+
+  "css": [
+    "~/App_Plugins/SimpleAnalytics/PageCounter/css/style.css"
+  ]
+}
