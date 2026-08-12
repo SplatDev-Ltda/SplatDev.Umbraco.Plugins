@@ -8,7 +8,7 @@
       "type": "dashboard",
       "alias": "dropzone.dashboard",
       "name": "Dropzone File Upload Dashboard",
-      "element": "/App_Plugins/Dropzone/dropzone-dashboard.js",
+      "element": "/App_Plugins/Dropzone/dist/dropzone-dashboard.js",
       "weight": -10,
       "meta": {
         "label": "Dropzone",
@@ -19,7 +19,8 @@
           "alias": "Umb.Condition.SectionAlias",
           "match": "Umb.Section.Settings"
         }
-      ]
+      ],
+      "elementName": "dropzone-dashboard"
     }
   ]
 }
