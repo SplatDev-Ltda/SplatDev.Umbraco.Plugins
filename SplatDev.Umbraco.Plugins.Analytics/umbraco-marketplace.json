@@ -15,5 +15,10 @@
     "ImageUrl": "https://github.com/splatdevtech.png",
     "SyncContributorsFromRepository": true
   },
-  "Screenshots": []
+  "Screenshots": [
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Analytics/docs/screenshots/01-dashboard.png",
+      "Caption": "The Analytics dashboard in the Umbraco backoffice."
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
-  "Description": "Feature toggle system for Umbraco \u2014 enable/disable site features via backoffice dashboard with scheduled activation support. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).",
+  "Description": "Feature toggle system for Umbraco — enable/disable site features via backoffice dashboard with scheduled activation support. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).",
   "Category": "Developer Tools",
   "PackageType": "Package",
   "LicenseTypes": [
@@ -10,10 +10,15 @@
   "IssueTrackerUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/issues",
   "AuthorDetails": {
     "Name": "SplatDev",
-    "Description": "SplatDev Ltda \u2014 building Umbraco plugins and tools for agencies and developers.",
+    "Description": "SplatDev Ltda — building Umbraco plugins and tools for agencies and developers.",
     "Url": "https://github.com/splatdevtech",
     "ImageUrl": "https://github.com/splatdevtech.png",
     "SyncContributorsFromRepository": true
   },
-  "Screenshots": []
+  "Screenshots": [
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.OnOff/docs/screenshots/01-dashboard.png",
+      "Caption": "The OnOff dashboard in the Umbraco backoffice."
+    }
+  ]
 }

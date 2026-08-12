@@ -1,6 +1,6 @@
 {
   "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
-  "Description": "JSON-RPC 2.0 API endpoint for Umbraco \u2014 expose content as JSON-RPC with API key management and request logging. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).",
+  "Description": "JSON-RPC 2.0 API endpoint for Umbraco — expose content as JSON-RPC with API key management and request logging. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).",
   "Category": "Developer Tools",
   "PackageType": "Package",
   "LicenseTypes": [
@@ -10,10 +10,15 @@
   "IssueTrackerUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/issues",
   "AuthorDetails": {
     "Name": "SplatDev",
-    "Description": "SplatDev Ltda \u2014 building Umbraco plugins and tools for agencies and developers.",
+    "Description": "SplatDev Ltda — building Umbraco plugins and tools for agencies and developers.",
     "Url": "https://github.com/splatdevtech",
     "ImageUrl": "https://github.com/splatdevtech.png",
     "SyncContributorsFromRepository": true
   },
-  "Screenshots": []
+  "Screenshots": [
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.JsonRpc/docs/screenshots/01-dashboard.png",
+      "Caption": "The JsonRpc dashboard in the Umbraco backoffice."
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
-  "Description": "Examine search extensions for Umbraco \u2014 additional query helpers, result transformers, and index utilities.",
+  "Description": "Examine search extensions for Umbraco — additional query helpers, result transformers, and index utilities.",
   "Category": "Developer Tools",
   "PackageType": "Package",
   "LicenseTypes": [
@@ -10,10 +10,15 @@
   "IssueTrackerUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/issues",
   "AuthorDetails": {
     "Name": "SplatDev",
-    "Description": "SplatDev Ltda \u2014 building Umbraco plugins and tools for agencies and developers.",
+    "Description": "SplatDev Ltda — building Umbraco plugins and tools for agencies and developers.",
     "Url": "https://github.com/splatdevtech",
     "ImageUrl": "https://github.com/splatdevtech.png",
     "SyncContributorsFromRepository": true
   },
-  "Screenshots": []
+  "Screenshots": [
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.ExamineExtensions/docs/screenshots/01-dashboard.png",
+      "Caption": "The ExamineExtensions dashboard in the Umbraco backoffice."
+    }
+  ]
 }
