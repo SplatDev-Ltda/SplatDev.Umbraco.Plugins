@@ -1,0 +1,12 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Copy packaged backoffice assets into the consuming Umbraco application's App_Plugins folder. -->
+  <PropertyGroup>
+    <SplatDevUmbracoPluginsSocialMediaShareContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\**\*.*</SplatDevUmbracoPluginsSocialMediaShareContentFilesPath>
+  </PropertyGroup>
+  <Target Name="CopySplatDevUmbracoPluginsSocialMediaShareAssets" BeforeTargets="BeforeBuild">
+    <ItemGroup>
+      <SplatDevUmbracoPluginsSocialMediaShareContentFiles Include="$(SplatDevUmbracoPluginsSocialMediaShareContentFilesPath)" />
+    </ItemGroup>
+    <Copy SourceFiles="@(SplatDevUmbracoPluginsSocialMediaShareContentFiles)" DestinationFiles="@(SplatDevUmbracoPluginsSocialMediaShareContentFiles-&gt;'$(MSBuildProjectDirectory)\App_Plugins\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+  </Target>
+</Project>

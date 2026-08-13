@@ -1,0 +1,12 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Copy packaged backoffice assets into the consuming Umbraco application's App_Plugins folder. -->
+  <PropertyGroup>
+    <SplatDevUmbracoPluginsSantanderContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\**\*.*</SplatDevUmbracoPluginsSantanderContentFilesPath>
+  </PropertyGroup>
+  <Target Name="CopySplatDevUmbracoPluginsSantanderAssets" BeforeTargets="BeforeBuild">
+    <ItemGroup>
+      <SplatDevUmbracoPluginsSantanderContentFiles Include="$(SplatDevUmbracoPluginsSantanderContentFilesPath)" />
+    </ItemGroup>
+    <Copy SourceFiles="@(SplatDevUmbracoPluginsSantanderContentFiles)" DestinationFiles="@(SplatDevUmbracoPluginsSantanderContentFiles-&gt;'$(MSBuildProjectDirectory)\App_Plugins\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+  </Target>
+</Project>
