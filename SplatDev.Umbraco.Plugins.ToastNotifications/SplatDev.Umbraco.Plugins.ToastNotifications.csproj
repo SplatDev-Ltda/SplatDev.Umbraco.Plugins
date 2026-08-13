@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <ContentTargetFolders>.</ContentTargetFolders>
     <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -44,5 +45,11 @@
     <None Include="README.md" Pack="true" PackagePath="\" />
     <None Include="icon.png" Pack="true" PackagePath="\" />
     <None Include="umbraco-marketplace.json" Pack="true" PackagePath="\" Condition="Exists('umbraco-marketplace.json')" />
+  </ItemGroup>
+
+  <!-- Pack backoffice assets at their App_Plugins paths; embedded resources alone are not deployed by PackageReference. -->
+  <ItemGroup>
+    <Content Include="App_Plugins\**\*" Pack="true" PackagePath="App_Plugins" />
+    <None Include="buildTransitive\**" Pack="true" PackagePath="buildTransitive" />
   </ItemGroup>
 </Project>
