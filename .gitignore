@@ -37,6 +37,11 @@ project.fragment.lock.json
 
 # Misc
 *.cache
+# git has core.ignorecase=true here, so the rule above also matches the
+# SplatDev.Cache project directory and silently ignores anything new added to it
+# (its icon.png needed -f). Keep the project tracked.
+!/SplatDev.Cache/
+!/SplatDev.Cache/**
 *.log
 *.tmp
 *.tmp_proj
