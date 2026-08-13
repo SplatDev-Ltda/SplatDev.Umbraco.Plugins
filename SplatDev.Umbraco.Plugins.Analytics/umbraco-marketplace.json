@@ -1,6 +1,6 @@
 {
   "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
-  "Description": "Google Analytics integration for Umbraco — store tracking/measurement ID in settings, inject GA4 script via view component. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).",
+  "Description": "Privacy-conscious, self-hosted first-party visit analytics for Umbraco 17. Records visits in the Umbraco database and provides browser, country, path and daily breakdowns without sending data to Google or another third party.",
   "Category": "Campaign & Marketing",
   "PackageType": "Package",
   "LicenseTypes": [

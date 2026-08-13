@@ -1,7 +1,7 @@
 {
   "$schema": "../../umbraco-package-schema.json",
   "name": "Analytics",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "extensions": [
     {
       "type": "dashboard",
@@ -30,10 +30,10 @@
         "localizations": {
           "section": {
             "analytics_heading": "Analytics",
-            "analytics_description": "Configure Google Analytics GA4 integration",
-            "analytics_measurementId": "Measurement ID",
-            "analytics_enabled": "Enabled",
-            "analytics_pageViews": "Page Views"
+            "analytics_description": "Privacy-conscious, self-hosted visit analytics",
+            "analytics_measurementId": "Not applicable — Analytics 3.x is self-hosted",
+            "analytics_enabled": "Tracking enabled",
+            "analytics_pageViews": "Visits"
           }
         }
       }

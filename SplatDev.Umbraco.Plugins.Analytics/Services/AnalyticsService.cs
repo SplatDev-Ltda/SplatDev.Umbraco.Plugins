@@ -1,48 +1,44 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using SplatDev.Umbraco.Plugins.Analytics.Models;
 
 namespace SplatDev.Umbraco.Plugins.Analytics.Services;
 
-public class AnalyticsService : IAnalyticsService
+public sealed class AnalyticsService(AnalyticsDbContext db, IConfiguration configuration) : IAnalyticsService
 {
-    private const string SectionKey = "UmbracoCms:Analytics:MeasurementId";
-    private const string EnabledKey = "UmbracoCms:Analytics:Enabled";
+    private const string SectionKey = "Analytics";
 
-    private readonly IConfiguration _configuration;
-
-    public AnalyticsService(IConfiguration configuration)
+    public Task<AnalyticsSettings> GetSettingsAsync(CancellationToken cancellationToken = default)
     {
-        _configuration = configuration;
+        var section = configuration.GetSection(SectionKey);
+        return Task.FromResult(new AnalyticsSettings
+        {
+            MeasurementId = string.Empty,
+            Enabled = section.GetValue("Enabled", true)
+        });
     }
 
-    public Task<AnalyticsSettings> GetSettingsAsync()
+    public Task SaveSettingsAsync(AnalyticsSettings settings, CancellationToken cancellationToken = default)
     {
-        var settings = new AnalyticsSettings
-        {
-            MeasurementId = _configuration[SectionKey] ?? string.Empty,
-            Enabled = bool.TryParse(_configuration[EnabledKey], out var enabled) ? enabled : true
-        };
-
-        return Task.FromResult(settings);
-    }
-
-    public Task SaveSettingsAsync(AnalyticsSettings settings)
-    {
-        // In-process write via IConfigurationRoot (works for appsettings.json backed stores).
-        if (_configuration is IConfigurationRoot root)
-        {
-            root[SectionKey] = settings.MeasurementId;
-            root[EnabledKey] = settings.Enabled.ToString().ToLowerInvariant();
-        }
-
+        // Configuration is intentionally read-only at runtime. Persist settings in the host's
+        // normal configuration provider (or replace this service with an approved settings store).
         return Task.CompletedTask;
     }
 
-    public Task<IEnumerable<object>> GetPageViewsAsync(string measurementId)
+    public async Task RecordVisitAsync(AnalyticsVisit visit, CancellationToken cancellationToken = default)
     {
-        // Placeholder: a real implementation would call the GA Data API.
-        // Returns an empty collection so that the endpoint compiles and responds gracefully.
-        IEnumerable<object> result = Array.Empty<object>();
-        return Task.FromResult(result);
+        db.Visits.Add(visit);
+        await db.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<AnalyticsSummary> GetSummaryAsync(int days = 30, CancellationToken cancellationToken = default)
+    {
+        days = Math.Clamp(days, 1, 365);
+        var cutoff = DateTime.UtcNow.Date.AddDays(-days + 1);
+        var visits = db.Visits.AsNoTracking().Where(x => x.VisitedAtUtc >= cutoff);
+        var rows = await visits.ToListAsync(cancellationToken);
+        static IReadOnlyList<AnalyticsBucket> Buckets(IEnumerable<string?> values) => values.Where(x => !string.IsNullOrWhiteSpace(x)).GroupBy(x => x!).OrderByDescending(x => x.Count()).Take(10).Select(x => new AnalyticsBucket(x.Key, x.LongCount())).ToArray();
+        var daily = rows.GroupBy(x => x.VisitedAtUtc.Date).OrderBy(x => x.Key).Select(x => new AnalyticsDay(x.Key, x.LongCount())).ToArray();
+        return new AnalyticsSummary(rows.Count, rows.Select(x => x.VisitorId).Distinct(StringComparer.Ordinal).LongCount(), Buckets(rows.Select(x => x.Browser)), Buckets(rows.Select(x => x.Country)), Buckets(rows.Select(x => x.Path)), daily);
     }
 }
