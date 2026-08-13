@@ -29,7 +29,9 @@ public class TwoFactorDbContext : DbContext
         {
             e.ToTable("BackupCodes");
             e.HasKey(x => x.Id);
-            e.Property(x => x.Code).IsRequired().HasMaxLength(16);
+            // 64 hex characters of SHA-256.
+            e.Property(x => x.CodeHash).IsRequired().HasMaxLength(64);
+            e.HasIndex(x => new { x.MemberId, x.CodeHash });
         });
     }
 }

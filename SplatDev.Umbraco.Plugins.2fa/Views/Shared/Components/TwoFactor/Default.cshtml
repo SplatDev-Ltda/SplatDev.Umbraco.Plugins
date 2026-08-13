@@ -1,61 +1,90 @@
+@*
+    The member's own 2FA panel. No member id appears anywhere in this view or its script —
+    every call goes to the authenticated session's own account. The previous version
+    embedded the id in the markup and passed it back on each request, which meant the
+    browser chose whose 2FA it was editing.
+*@
 @{
-    var memberId = (int)ViewBag.MemberId;
-    var isEnabled = (bool)ViewBag.IsEnabled;
+    var isAuthenticated = (bool)ViewBag.IsAuthenticated;
+    var isEnabled = isAuthenticated && (bool)ViewBag.IsEnabled;
 }
 
-<div class="twofactor-component" data-member-id="@memberId">
+<div class="twofactor-component">
     <h3>Two-Factor Authentication</h3>
-    @if (isEnabled)
+
+    @if (!isAuthenticated)
     {
-        <p class="twofactor-status enabled">2FA is <strong>enabled</strong> for your account.</p>
-        <button class="btn-twofactor btn-danger" onclick="disable2FA(@memberId)">Disable 2FA</button>
+        <p class="twofactor-status">Sign in to manage two-factor authentication.</p>
     }
     else
     {
-        <p class="twofactor-status disabled">2FA is <strong>not enabled</strong>.</p>
-        <button class="btn-twofactor btn-primary" onclick="setup2FA(@memberId)">Enable 2FA</button>
+        @if (isEnabled)
+        {
+            <p class="twofactor-status enabled">2FA is <strong>enabled</strong> for your account.</p>
+            <button class="btn-twofactor btn-danger" onclick="splatDisable2FA()">Disable 2FA</button>
+        }
+        else
+        {
+            <p class="twofactor-status disabled">2FA is <strong>not enabled</strong>.</p>
+            <button class="btn-twofactor btn-primary" onclick="splatSetup2FA()">Enable 2FA</button>
+        }
+
+        <div id="totp-setup" class="totp-setup" style="display:none;">
+            <p>Enter the 6-digit code from your authenticator app to confirm setup:</p>
+            <input type="text" id="totp-code" maxlength="6" placeholder="000000" inputmode="numeric"
+                   autocomplete="one-time-code"
+                   style="font-size:1.5rem;letter-spacing:0.3em;width:160px;text-align:center;" />
+            <button class="btn-twofactor btn-primary" style="margin-left:8px;"
+                    onclick="splatVerifyTotp()">Verify</button>
+        </div>
+
+        <div id="twofactor-msg" class="twofactor-msg" style="display:none;"></div>
     }
-
-    <div id="totp-setup-@memberId" class="totp-setup" style="display:none;">
-        <p>Enter the 6-digit code from your authenticator app to confirm setup:</p>
-        <input type="text" id="totp-code-@memberId" maxlength="6" placeholder="000000"
-               style="font-size:1.5rem;letter-spacing:0.3em;width:160px;text-align:center;" />
-        <button class="btn-twofactor btn-primary" style="margin-left:8px;"
-                onclick="verifyTotp(@memberId)">Verify</button>
-    </div>
-
-    <div id="twofactor-msg-@memberId" class="twofactor-msg" style="display:none;"></div>
 </div>
 
-<script>
-    function setup2FA(memberId) {
-        fetch('/umbraco/api/twofactor/SetupTotp?memberId=' + memberId, { method: 'POST' })
-            .then(r => r.json())
-            .then(data => {
-                document.getElementById('twofactor-msg-' + memberId).style.display = 'block';
-                document.getElementById('twofactor-msg-' + memberId).textContent =
-                    'TOTP secret generated. Key: ' + data.secretKey;
-                document.getElementById('totp-setup-' + memberId).style.display = 'block';
-            });
-    }
+@if (isAuthenticated)
+{
+    <script>
+        (function () {
+            var api = '/umbraco/api/twofactor';
 
-    function verifyTotp(memberId) {
-        var code = document.getElementById('totp-code-' + memberId).value;
-        fetch('/umbraco/api/twofactor/VerifyTotp?memberId=' + memberId + '&code=' + code, { method: 'POST' })
-            .then(r => r.json())
-            .then(data => {
-                var msg = document.getElementById('twofactor-msg-' + memberId);
-                msg.textContent = data.valid ? '2FA enabled!' : 'Invalid code. Please try again.';
-                if (data.valid) location.reload();
-            });
-    }
+            function show(text) {
+                var el = document.getElementById('twofactor-msg');
+                el.style.display = 'block';
+                el.textContent = text;
+            }
 
-    function disable2FA(memberId) {
-        if (!confirm('Disable 2FA for your account?')) return;
-        fetch('/umbraco/api/twofactor/Disable?memberId=' + memberId, { method: 'POST' })
-            .then(() => location.reload());
-    }
-</script>
+            window.splatSetup2FA = function () {
+                fetch(api + '/SetupTotp', { method: 'POST', credentials: 'same-origin' })
+                    .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+                    .then(function (data) {
+                        show('Add this key to your authenticator app: ' + data.secretKey);
+                        document.getElementById('totp-setup').style.display = 'block';
+                    })
+                    .catch(function () { show('Could not start setup. Please sign in again.'); });
+            };
+
+            window.splatVerifyTotp = function () {
+                var code = document.getElementById('totp-code').value;
+                fetch(api + '/VerifyTotp?code=' + encodeURIComponent(code),
+                      { method: 'POST', credentials: 'same-origin' })
+                    .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+                    .then(function (data) {
+                        if (data.valid) { location.reload(); }
+                        else { show('Invalid code. Please try again.'); }
+                    })
+                    .catch(function () { show('Could not verify the code.'); });
+            };
+
+            window.splatDisable2FA = function () {
+                if (!confirm('Disable 2FA for your account?')) return;
+                fetch(api + '/Disable', { method: 'POST', credentials: 'same-origin' })
+                    .then(function () { location.reload(); })
+                    .catch(function () { show('Could not disable 2FA.'); });
+            };
+        })();
+    </script>
+}
 
 <style>
     .twofactor-component { padding: 1.5rem; background: #f9fafb; border-radius: 8px; max-width: 520px; }
