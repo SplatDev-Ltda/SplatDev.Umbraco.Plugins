@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>SplatDev.Payments.Santander</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>SplatDev-Ltda</Authors>
     <Company>SplatDev Ltda</Company>
     <Description>Santander Open Banking (developer-portal) SDK: OAuth2 client_credentials + mTLS (ICP-Brasil e-CNPJ) API client and typed services for Balance/Statement, Boletos (cobrança), Payments, Pix QR Code, Pix Automático, OpenFX, Export Charge and Vouchers.</Description>
@@ -15,6 +15,7 @@
     <RepositoryUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,5 +26,6 @@
 
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" Condition="Exists('README.md')" />
+    <None Include="icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 </Project>

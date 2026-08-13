@@ -1,29 +1,29 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="SplatDev WhatsApp Business for Umbraco">
   <title>SplatDev WhatsApp Business for Umbraco</title>
   <defs>
-    <linearGradient id="wa" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#25D366"/>
-      <stop offset="100%" stop-color="#128C7E"/>
+    <!-- Same ground, angle and stops as every generated icon, so this sits in the family
+         on a search grid instead of reading as a stray green tile. -->
+    <linearGradient id="bg" gradientTransform="rotate(135 0.5 0.5)">
+      <stop offset="0%" stop-color="#8056D1"/>
+      <stop offset="100%" stop-color="#41277F"/>
     </linearGradient>
     <clipPath id="tile">
       <rect width="128" height="128" rx="28"/>
     </clipPath>
   </defs>
 
-  <!-- WhatsApp's own green carries the recognition, so it is the whole ground. -->
-  <rect width="128" height="128" rx="28" fill="url(#wa)"/>
+  <rect width="128" height="128" rx="28" fill="url(#bg)"/>
 
-  <!-- SplatDev's mark sits behind as a watermark: two blobs, clipped to the tile and
-       held at low opacity so it reads as texture, never competing with the glyph. -->
+  <!-- SplatDev's mark as the watermark, exactly as the rest of the set. -->
   <g clip-path="url(#tile)" fill="#FFFFFF" opacity="0.13">
     <circle cx="104" cy="26" r="34"/>
     <circle cx="132" cy="66" r="18"/>
   </g>
 
-  <!-- The speech bubble with a handset is the WhatsApp idiom; white on green is how it
-       is recognised at 32px in a package list. -->
-  <g transform="translate(64 62)">
-    <path fill="#FFFFFF" d="M0-34a34 34 0 0 0-29.2 51.5L-34 34l17.4-4.5A34 34 0 1 0 0-34z"/>
-    <path fill="#25D366" d="M-13.4-13.9c-.7-1.6-1.5-1.6-2.1-1.7h-1.8c-.6 0-1.7.2-2.6 1.2-.9 1-3.4 3.3-3.4 8.1s3.5 9.4 4 10c.5.6 6.8 10.9 16.8 14.8 8.3 3.3 10 2.6 11.8 2.4 1.8-.2 5.8-2.4 6.6-4.6.8-2.3.8-4.2.6-4.6-.2-.4-.9-.6-1.8-1.1-.9-.5-5.8-2.9-6.7-3.2-.9-.3-1.5-.5-2.2.5-.6 1-2.5 3.2-3 3.8-.6.6-1.1.7-2.1.2-.9-.5-4.1-1.5-7.8-4.8-2.9-2.6-4.8-5.8-5.4-6.7-.6-1-.1-1.5.4-2 .4-.4 1-1.1 1.4-1.7.5-.6.7-1 1-1.7.3-.7.2-1.2 0-1.7-.3-.5-2.1-5.4-2.9-7.4z"/>
+  <!-- WhatsApp's own bubble-and-handset carries the recognition, in its brand green on
+       the white disc, so the service reads at a glance while the tile stays SplatDev's. -->
+  <g transform="translate(64 63)">
+    <path fill="#FFFFFF" d="M0-33a33 33 0 0 0-28.3 50L-33 33l16.9-4.4A33 33 0 1 0 0-33z"/>
+    <path fill="#25D366" d="M-13-13.5c-.7-1.5-1.4-1.6-2-1.6h-1.8c-.6 0-1.6.2-2.5 1.2-.9 1-3.3 3.2-3.3 7.8s3.4 9.1 3.9 9.7c.5.6 6.6 10.6 16.3 14.4 8 3.2 9.7 2.5 11.5 2.3 1.7-.2 5.6-2.3 6.4-4.5.8-2.2.8-4.1.6-4.5-.2-.4-.9-.6-1.8-1s-5.6-2.8-6.5-3.1c-.9-.3-1.5-.5-2.1.5-.6 1-2.4 3.1-3 3.7-.5.6-1.1.7-2 .2-.9-.4-4-1.5-7.6-4.6-2.8-2.5-4.7-5.6-5.2-6.6-.6-.9-.1-1.5.4-1.9.4-.4 1-1.1 1.4-1.6.5-.6.6-1 1-1.7.3-.6.2-1.2 0-1.6-.3-.5-2-5.3-2.8-7.2z"/>
   </g>
 </svg>
