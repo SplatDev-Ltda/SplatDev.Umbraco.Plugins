@@ -5,6 +5,6 @@
   "allowPackageTelemetry": false,
   "extensions": [
     { "type": "propertyEditorSchema", "alias": "SocialMediaChannels", "name": "Social Media Channels", "meta": { "defaultPropertyEditorUiAlias": "SplatDev.SocialMediaChannels.PropertyEditorUi" } },
-    { "type": "propertyEditorUi", "alias": "SplatDev.SocialMediaChannels.PropertyEditorUi", "name": "Social Media Channels Property Editor", "element": "/App_Plugins/SocialMediaChannels/dist/property-editor.js", "elementName": "splatdev-social-media-channels-property-editor", "meta": { "label": "Social Media Channels", "propertyEditorSchemaAlias": "SplatDev.SocialMediaChannels.PropertyEditor", "icon": "icon-share", "group": "Rich Content", "supportsReadOnly": true } }
+    { "type": "propertyEditorUi", "alias": "SplatDev.SocialMediaChannels.PropertyEditorUi", "name": "Social Media Channels Property Editor", "element": "/App_Plugins/SocialMediaChannels/dist/property-editor.js", "elementName": "splatdev-social-media-channels-property-editor", "meta": { "label": "Social Media Channels", "propertyEditorSchemaAlias": "SocialMediaChannels", "icon": "icon-share", "group": "Rich Content", "supportsReadOnly": true } }
   ]
 }
