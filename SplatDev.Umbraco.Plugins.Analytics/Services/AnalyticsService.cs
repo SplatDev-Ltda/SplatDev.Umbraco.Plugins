@@ -11,18 +11,7 @@ public sealed class AnalyticsService(AnalyticsDbContext db, IConfiguration confi
     public Task<AnalyticsSettings> GetSettingsAsync(CancellationToken cancellationToken = default)
     {
         var section = configuration.GetSection(SectionKey);
-        return Task.FromResult(new AnalyticsSettings
-        {
-            MeasurementId = string.Empty,
-            Enabled = section.GetValue("Enabled", true)
-        });
-    }
-
-    public Task SaveSettingsAsync(AnalyticsSettings settings, CancellationToken cancellationToken = default)
-    {
-        // Configuration is intentionally read-only at runtime. Persist settings in the host's
-        // normal configuration provider (or replace this service with an approved settings store).
-        return Task.CompletedTask;
+        return Task.FromResult(new AnalyticsSettings { Enabled = section.GetValue("Enabled", true) });
     }
 
     public async Task RecordVisitAsync(AnalyticsVisit visit, CancellationToken cancellationToken = default)
@@ -35,10 +24,28 @@ public sealed class AnalyticsService(AnalyticsDbContext db, IConfiguration confi
     {
         days = Math.Clamp(days, 1, 365);
         var cutoff = DateTime.UtcNow.Date.AddDays(-days + 1);
-        var visits = db.Visits.AsNoTracking().Where(x => x.VisitedAtUtc >= cutoff);
-        var rows = await visits.ToListAsync(cancellationToken);
-        static IReadOnlyList<AnalyticsBucket> Buckets(IEnumerable<string?> values) => values.Where(x => !string.IsNullOrWhiteSpace(x)).GroupBy(x => x!).OrderByDescending(x => x.Count()).Take(10).Select(x => new AnalyticsBucket(x.Key, x.LongCount())).ToArray();
-        var daily = rows.GroupBy(x => x.VisitedAtUtc.Date).OrderBy(x => x.Key).Select(x => new AnalyticsDay(x.Key, x.LongCount())).ToArray();
-        return new AnalyticsSummary(rows.Count, rows.Select(x => x.VisitorId).Distinct(StringComparer.Ordinal).LongCount(), Buckets(rows.Select(x => x.Browser)), Buckets(rows.Select(x => x.Country)), Buckets(rows.Select(x => x.Path)), daily);
+        var query = db.Visits.AsNoTracking().Where(x => x.VisitedAtUtc >= cutoff);
+
+        var totalVisits = await query.LongCountAsync(cancellationToken);
+        var uniqueVisitors = await query.Select(x => x.VisitorId).Distinct().LongCountAsync(cancellationToken);
+        var browsers = await GroupAsync(query, x => x.Browser, cancellationToken);
+        var countries = await GroupAsync(query, x => x.Country, cancellationToken);
+        var paths = await GroupAsync(query, x => x.Path, cancellationToken);
+        var daily = await query.GroupBy(x => x.VisitedAtUtc.Date)
+            .OrderBy(x => x.Key)
+            .Select(x => new AnalyticsDay(x.Key, x.LongCount()))
+            .ToListAsync(cancellationToken);
+
+        return new AnalyticsSummary(totalVisits, uniqueVisitors, browsers, countries, paths, daily);
     }
+
+    private static Task<List<AnalyticsBucket>> GroupAsync(
+        IQueryable<AnalyticsVisit> query,
+        System.Linq.Expressions.Expression<Func<AnalyticsVisit, string?>> selector,
+        CancellationToken cancellationToken) => query.GroupBy(selector)
+        .Where(x => x.Key != null && x.Key != "")
+        .OrderByDescending(x => x.LongCount())
+        .Take(10)
+        .Select(x => new AnalyticsBucket(x.Key!, x.LongCount()))
+        .ToListAsync(cancellationToken);
 }

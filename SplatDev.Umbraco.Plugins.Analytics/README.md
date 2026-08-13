@@ -12,6 +12,12 @@ dotnet add package SplatDev.Umbraco.Plugins.Analytics --version 3.0.0
 
 The package registers its database context and website middleware automatically. It records successful HTML GET responses while excluding `/umbraco` and `/media` paths. Visitor identifiers are random, cookie-based values; raw IP addresses are not persisted.
 
+### Database setup
+
+Analytics uses the host SQL Server connection `ConnectionStrings:umbracoDbDSN`. Apply the `Analytics_Visit` schema before enabling tracking (the table must have an identity `Id` key and the columns represented by `AnalyticsVisit`). The application fails fast with a descriptive error if this connection is missing.
+
+The dashboard API is backoffice-authorized; it is not a public reporting endpoint.
+
 ## Storage and geolocation
 
 Visits use the host's configured `umbracoDbDSN` SQL Server database. This release intentionally does not bundle the legacy IP2Location database: its currency and redistribution licence were not verified, so country/city enrichment is an optional future provider boundary rather than an unsafe binary redistribution.

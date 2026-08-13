@@ -8,7 +8,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Authors>SplatDev</Authors>
     <Description>Privacy-conscious, self-hosted first-party visit analytics for Umbraco 17 with browser and geographic breakdowns. Analytics 3.x is a new product and is not Google Analytics or SimpleAnalytics 2.x.</Description>
-    <PackageTags>umbraco umbraco-marketplace analytics google-analytics ga4</PackageTags>
+    <PackageTags>umbraco umbraco-marketplace analytics self-hosted privacy first-party</PackageTags>
     <Company>SplatDev Ltda</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</PackageProjectUrl>

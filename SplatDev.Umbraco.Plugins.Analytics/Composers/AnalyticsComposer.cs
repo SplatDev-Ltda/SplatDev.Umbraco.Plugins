@@ -14,7 +14,11 @@ public sealed class AnalyticsComposer : IComposer
 {
     public void Compose(IUmbracoBuilder builder)
     {
-        builder.Services.AddDbContext<AnalyticsDbContext>(options => options.UseSqlServer(builder.Config.GetSection("ConnectionStrings:umbracoDbDSN").Value ?? string.Empty));
+        var connectionString = builder.Config.GetSection("ConnectionStrings:umbracoDbDSN").Value;
+        if (string.IsNullOrWhiteSpace(connectionString))
+            throw new InvalidOperationException("Database connection string 'umbracoDbDSN' is missing or empty; Analytics requires the Umbraco SQL Server database.");
+
+        builder.Services.AddDbContext<AnalyticsDbContext>(options => options.UseSqlServer(connectionString));
         builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
         builder.Services.AddTransient<AnalyticsMiddleware>();
         builder.Services.Configure<UmbracoPipelineOptions>(options => options.AddFilter(new UmbracoPipelineFilter("Analytics") { PostPipeline = app => app.UseMiddleware<AnalyticsMiddleware>() }));

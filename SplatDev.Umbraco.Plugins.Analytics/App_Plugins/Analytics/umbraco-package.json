@@ -30,7 +30,7 @@
         "localizations": {
           "section": {
             "analytics_heading": "Analytics",
-            "analytics_description": "Configure Google Analytics GA4 integration",
+            "analytics_description": "View privacy-conscious, self-hosted visit analytics",
             "analytics_measurementId": "Measurement ID",
             "analytics_enabled": "Enabled",
             "analytics_pageViews": "Page Views"

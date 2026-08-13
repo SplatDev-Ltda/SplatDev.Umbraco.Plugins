@@ -1,19 +1,7 @@
 {
-  "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
-  "Description": "Google Analytics integration for Umbraco \u2014 store tracking/measurement ID in settings, inject GA4 script via view component. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).",
-  "Category": "Marketing & SEO",
-  "PackageType": "Package",
-  "LicenseTypes": [
-    "Free"
-  ],
-  "DocumentationUrl": "https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins/blob/master/SplatDev.Umbraco.Plugins.Analytics/README.md",
-  "IssueTrackerUrl": "https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins/issues",
-  "AuthorDetails": {
-    "Name": "SplatDev",
-    "Description": "SplatDev Ltda \u2014 building Umbraco plugins and tools for agencies and developers.",
-    "Url": "https://github.com/SplatDev-Ltda",
-    "ImageUrl": "https://github.com/SplatDev-Ltda.png",
-    "SyncContributorsFromRepository": true
-  },
-  "Screenshots": []
+  "Name": "Analytics",
+  "Description": "Privacy-conscious, self-hosted first-party visit analytics for Umbraco 17 with browser, path and geographic breakdowns.",
+  "DocumentationUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/tree/master/SplatDev.Umbraco.Plugins.Analytics",
+  "License": "MIT",
+  "Tags": ["analytics", "privacy", "self-hosted", "umbraco17"]
 }
