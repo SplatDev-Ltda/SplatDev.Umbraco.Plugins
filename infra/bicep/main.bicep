@@ -59,6 +59,8 @@ resource webApp 'Microsoft.Web/sites@2021-02-01' = {
   location: location
   properties: {
     serverFarmId: appServicePlan.id
+    // Enforce HTTPS for all HTTP requests to the App Service.
+    httpsOnly: true
   }
   siteConfig: {
     alwaysOn: true
