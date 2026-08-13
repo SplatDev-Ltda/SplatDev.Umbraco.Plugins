@@ -2,21 +2,21 @@ using Microsoft.AspNetCore.Authorization;
 using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Web.Common.Controllers;
-using SplatDev.Umbraco.Plugins.Analytics.Models;
-using SplatDev.Umbraco.Plugins.Analytics.Services;
+using SplatDev.Umbraco.Plugins.GoogleAnalytics.Models;
+using SplatDev.Umbraco.Plugins.GoogleAnalytics.Services;
 
-namespace SplatDev.Umbraco.Plugins.Analytics.Controllers;
+namespace SplatDev.Umbraco.Plugins.GoogleAnalytics.Controllers;
 
 /// <remarks>
 /// Previously anonymous. SaveSettings rewrote the analytics configuration and GetPageViews disclosed traffic data.
 /// </remarks>
 [Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/analytics/[action]")]
-public class AnalyticsApiController : ControllerBase
+public class GoogleAnalyticsApiController : ControllerBase
 {
-    private readonly IAnalyticsService _service;
+    private readonly IGoogleAnalyticsService _service;
 
-    public AnalyticsApiController(IAnalyticsService service)
+    public GoogleAnalyticsApiController(IGoogleAnalyticsService service)
     {
         _service = service;
     }
@@ -29,7 +29,7 @@ public class AnalyticsApiController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> SaveSettings([FromBody] AnalyticsSettings settings)
+    public async Task<IActionResult> SaveSettings([FromBody] GoogleAnalyticsSettings settings)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);

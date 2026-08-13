@@ -1,6 +1,6 @@
-namespace SplatDev.Umbraco.Plugins.Analytics.Models;
+namespace SplatDev.Umbraco.Plugins.GoogleAnalytics.Models;
 
-public class AnalyticsSettings
+public class GoogleAnalyticsSettings
 {
     public string MeasurementId { get; set; } = string.Empty;
     public bool Enabled { get; set; } = true;

@@ -277,6 +277,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SplatDev.Umbraco.Plugins.EN
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SplatDev.Api.Common.ApiVersioning", "SplatDev.Api.Common.ApiVersioning\SplatDev.Api.Common.ApiVersioning.csproj", "{78E1E8D2-7693-4F36-8D2B-D6F9838B82B0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SplatDev.Umbraco.Plugins.GoogleAnalytics", "SplatDev.Umbraco.Plugins.GoogleAnalytics\SplatDev.Umbraco.Plugins.GoogleAnalytics.csproj", "{A5B4E0D3-7C9B-4E09-BD70-6DF9A3E8D7A1}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SplatDev.Umbraco.Plugins.Backups.Tests", "SplatDev.Umbraco.Plugins.Backups.Tests\SplatDev.Umbraco.Plugins.Backups.Tests.csproj", "{E34E9E6B-799A-4546-A36F-6CA755BE0AC2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SplatDev.Cache", "SplatDev.Cache\SplatDev.Cache.csproj", "{9EBF4E3D-1D91-44B5-93CA-18FC9BE41DA5}"
@@ -2007,6 +2009,10 @@ Global
 		{5C66C9F9-6FA0-48F0-B3E7-64E6DC02AA4A}.Release|x64.Build.0 = Release|Any CPU
 		{5C66C9F9-6FA0-48F0-B3E7-64E6DC02AA4A}.Release|x86.ActiveCfg = Release|Any CPU
 		{5C66C9F9-6FA0-48F0-B3E7-64E6DC02AA4A}.Release|x86.Build.0 = Release|Any CPU
+		{A5B4E0D3-7C9B-4E09-BD70-6DF9A3E8D7A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5B4E0D3-7C9B-4E09-BD70-6DF9A3E8D7A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5B4E0D3-7C9B-4E09-BD70-6DF9A3E8D7A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5B4E0D3-7C9B-4E09-BD70-6DF9A3E8D7A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
