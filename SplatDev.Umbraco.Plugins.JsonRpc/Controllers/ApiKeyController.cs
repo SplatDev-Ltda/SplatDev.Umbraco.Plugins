@@ -1,9 +1,21 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Umbraco.Cms.Web.Common.Authorization;
 using Umbraco.Cms.Web.Common.Controllers;
 using SplatDev.Umbraco.Plugins.JsonRpc.Services;
 
 namespace SplatDev.Umbraco.Plugins.JsonRpc.Controllers;
 
+/// <summary>
+/// Issues and revokes the API keys that authorize the JSON-RPC endpoint.
+/// </summary>
+/// <remarks>
+/// This carried no authorization, which made the JSON-RPC endpoint's own API-key check
+/// decorative: anyone could POST here to mint a key — Permissions defaults to "*" — and
+/// then call /umbraco/api/jsonrpc/post as a fully authorized client. Guarding the door
+/// is pointless while the key cutter stands beside it.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/jsonrpc/apikey/[action]")]
 public class ApiKeyController : ControllerBase
 {
