@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Umbraco.Cms.Web.Common.Authorization;
 using Umbraco.Cms.Web.Common.Controllers;
 using SplatDev.Umbraco.Plugins.Backups.Configuration;
 using SplatDev.Umbraco.Plugins.Backups.Models;
@@ -6,6 +8,16 @@ using SplatDev.Umbraco.Plugins.Backups.Services;
 
 namespace SplatDev.Umbraco.Plugins.Backups.Controllers;
 
+/// <summary>
+/// Backup and restore, for the backoffice dashboard.
+/// </summary>
+/// <remarks>
+/// This route carried no authorization at all until 3.3.0. Every action below —
+/// including Restore, which replaces site content, and Delete — was reachable by any
+/// anonymous caller. "umbraco/api/" is a routing convention, not an authorization
+/// boundary; nothing gates it unless the controller says so.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/backups/[action]")]
 public class BackupsApiController : ControllerBase
 {
