@@ -5,7 +5,7 @@
   "gridEditors": [],
   "dashboards": [
     {
-      "alias": "GoogleGoogleAnalytics.Dashboard",
+      "alias": "GoogleAnalytics.Dashboard",
       "view": "/App_Plugins/GoogleAnalytics/angular/analytics.html",
       "sections": ["settings"],
       "tab": "Analytics",

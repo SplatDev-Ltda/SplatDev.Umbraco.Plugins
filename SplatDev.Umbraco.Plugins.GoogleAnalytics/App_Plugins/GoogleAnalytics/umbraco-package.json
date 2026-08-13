@@ -5,7 +5,7 @@
   "extensions": [
     {
       "type": "dashboard",
-      "alias": "UmbracoCms.GoogleAnalytics.Dashboard",
+      "alias": "GoogleAnalytics.Dashboard",
       "name": "Analytics Dashboard",
       "element": "/App_Plugins/GoogleAnalytics/dist/analytics-dashboard.element.js",
       "elementName": "analytics-dashboard",

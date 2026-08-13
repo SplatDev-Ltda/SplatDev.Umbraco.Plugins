@@ -1,6 +1,6 @@
 # Google Analytics
 
-Google Analytics integration for Umbraco — store tracking/measurement ID in settings, inject GA4 script via view component. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
+Google Analytics GA4 integration for Umbraco. The package registers the GA4 integration and its backoffice assets; it does not claim to provide a Google Analytics Data API implementation or automatically inject a front-end script.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.GoogleAnalytics.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.GoogleAnalytics)
 
@@ -8,8 +8,8 @@ Google Analytics integration for Umbraco — store tracking/measurement ID in se
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.1.5           |
-| 17.x    | 10.0 | 2.1.5           |
+| 13.x | 8.0 | 2.1.5 |
+| 17.x | 10.0 | 2.1.5 |
 
 ## Installation
 
@@ -17,29 +17,28 @@ Google Analytics integration for Umbraco — store tracking/measurement ID in se
 dotnet add package SplatDev.Umbraco.Plugins.GoogleAnalytics
 ```
 
-## Quick Start
-
-Register in `Program.cs`:
-
-```csharp
-builder.CreateUmbracoBuilder()
-    .AddBackOffice()
-    .AddWebsite()
-    .AddGoogleAnalytics()   // <-- add this
-    .Build();
-```
+The package is discovered by Umbraco through its composer; there is no `.AddGoogleAnalytics()` builder method to call.
 
 ## Configuration
 
-Add to `appsettings.json`:
+The service reads the following keys:
 
 ```json
 {
-  "GoogleAnalytics": {
-    "MeasurementId": "G-XXXXXXXXXX"
+  "UmbracoCms": {
+    "GoogleAnalytics": {
+      "MeasurementId": "G-XXXXXXXXXX",
+      "Enabled": true
+    }
   }
 }
 ```
+
+## API endpoints
+
+- `GET /umbraco/api/analytics/GetSettings`
+- `POST /umbraco/api/analytics/SaveSettings`
+- `GET /umbraco/api/analytics/GetPageViews?measurementId=...` (currently returns an empty collection; no GA Data API credentials are used)
 
 ## License
 
