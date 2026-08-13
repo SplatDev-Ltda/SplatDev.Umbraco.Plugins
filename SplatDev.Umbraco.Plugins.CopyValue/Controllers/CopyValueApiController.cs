@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Web.Common.Controllers;
 using SplatDev.Umbraco.Plugins.CopyValue.Models;
@@ -5,6 +7,10 @@ using SplatDev.Umbraco.Plugins.CopyValue.Services;
 
 namespace SplatDev.Umbraco.Plugins.CopyValue.Controllers;
 
+/// <remarks>
+/// Previously anonymous. SaveMapping and DeleteMapping rewrote property-copy rules; BulkCopy executed them across content.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/copyvalue/[action]")]
 public class CopyValueApiController : ControllerBase
 {

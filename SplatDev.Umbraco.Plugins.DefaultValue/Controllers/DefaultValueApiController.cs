@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Web.Common.Controllers;
 using SplatDev.Umbraco.Plugins.DefaultValue.Models;
@@ -5,6 +7,10 @@ using SplatDev.Umbraco.Plugins.DefaultValue.Services;
 
 namespace SplatDev.Umbraco.Plugins.DefaultValue.Controllers;
 
+/// <remarks>
+/// Previously anonymous. SaveRule and DeleteRule rewrote default-value rules; ApplyDefaults executed them across content.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/defaultvalue/[action]")]
 public class DefaultValueApiController : ControllerBase
 {

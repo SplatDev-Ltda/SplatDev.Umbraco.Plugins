@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using Umbraco.Cms.Web.Common.Controllers;
@@ -7,6 +9,10 @@ using SplatDev.Umbraco.Plugins.Settings.Services;
 
 namespace SplatDev.Umbraco.Plugins.Settings.Controllers
 {
+    /// <remarks>
+    /// Previously anonymous. Get, Set and Delete on arbitrary site settings keys, anonymously.
+    /// </remarks>
+    [Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
     [Route("umbraco/api/SettingsApi/[action]")]
     public class SettingsApiController(ISettingsService settingsService) : ControllerBase
     {

@@ -8,7 +8,7 @@
     <AssemblyName>SplatDev.Umbraco.Plugins.LazyLoad</AssemblyName>
     <RootNamespace>SplatDev.Umbraco.Plugins.LazyLoad</RootNamespace>
     <PackageId>SplatDev.Umbraco.Plugins.LazyLoad</PackageId>
-    <Version>1.1.3</Version>
+    <Version>1.2.0</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <Authors>SplatDev</Authors>

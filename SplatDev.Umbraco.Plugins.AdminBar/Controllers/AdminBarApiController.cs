@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Web;
@@ -14,6 +16,15 @@ using Umbraco.Extensions;
 
 namespace SplatDev.Umbraco.Plugins.AdminBar.Controllers;
 
+/// <summary>
+/// The editor admin bar's server side.
+/// </summary>
+/// <remarks>
+/// Previously anonymous, which meant UnpublishPage took any node id from any caller —
+/// an unauthenticated visitor could take pages off the live site one id at a time —
+/// and PublishPage could push unreviewed content live.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/adminbar/[action]")]
 public class AdminBarApiController : ControllerBase
 {
