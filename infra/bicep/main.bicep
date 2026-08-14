@@ -75,14 +75,16 @@ resource webApp 'Microsoft.Web/sites@2022-03-01' = {
   }
   properties: {
     serverFarmId: appServicePlan.id
+    // Restrict inbound access to private networking; public endpoint is disabled.
+    publicNetworkAccess: 'Disabled'
+    // Enforce HTTPS for all HTTP requests to the App Service.
     httpsOnly: true
     siteConfig: {
       alwaysOn: true
       minTlsVersion: '1.2'
       ftpsState: 'Disabled'
     }
-  }
-}
+  }}
 
 output storageAccountName string = storage.name
 output keyVaultName string = keyVault.name
