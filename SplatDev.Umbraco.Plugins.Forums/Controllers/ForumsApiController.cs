@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Web.Common.Controllers;
 using SplatDev.Umbraco.Plugins.Forums.Models;
@@ -5,6 +7,10 @@ using SplatDev.Umbraco.Plugins.Forums.Services;
 
 namespace SplatDev.Umbraco.Plugins.Forums.Controllers;
 
+/// <remarks>
+/// Previously anonymous. LockThread, PinThread, DeleteThread, ApproveReply and DeleteReply let anyone moderate the forums. Reading, posting threads and replying stay open.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/forums/[action]")]
 public class ForumsApiController : ControllerBase
 {
@@ -15,6 +21,7 @@ public class ForumsApiController : ControllerBase
         _service = service;
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetCategories()
     {
@@ -22,6 +29,7 @@ public class ForumsApiController : ControllerBase
         return Ok(categories);
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetCategory([FromQuery] string slug)
     {
@@ -33,6 +41,7 @@ public class ForumsApiController : ControllerBase
         return Ok(category);
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetThreads(
         [FromQuery] int categoryId,
@@ -44,6 +53,7 @@ public class ForumsApiController : ControllerBase
         return Ok(new { threads, total, page, pageSize });
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetThread([FromQuery] string slug)
     {
@@ -57,6 +67,7 @@ public class ForumsApiController : ControllerBase
         return Ok(thread);
     }
 
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> CreateThread([FromBody] ForumThread thread)
     {
@@ -67,6 +78,7 @@ public class ForumsApiController : ControllerBase
         return Ok(created);
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetReplies([FromQuery] int threadId)
     {
@@ -74,6 +86,7 @@ public class ForumsApiController : ControllerBase
         return Ok(replies);
     }
 
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> AddReply([FromBody] ForumReply reply)
     {

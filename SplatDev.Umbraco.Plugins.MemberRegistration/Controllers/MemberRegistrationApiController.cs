@@ -1,9 +1,15 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Web.Common.Controllers;
 using SplatDev.Umbraco.Plugins.MemberRegistration.Services;
 
 namespace SplatDev.Umbraco.Plugins.MemberRegistration.Controllers;
 
+/// <remarks>
+/// Previously anonymous. Approve activated any pending member account and GetPending listed them. Registering and verifying an email stay open.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/memberregistration/[action]")]
 public class MemberRegistrationApiController : ControllerBase
 {
@@ -14,6 +20,7 @@ public class MemberRegistrationApiController : ControllerBase
         _service = service;
     }
 
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
@@ -30,6 +37,7 @@ public class MemberRegistrationApiController : ControllerBase
         return Ok(new { memberId = result.MemberId, message = "Registration successful. Please check your email to verify your account." });
     }
 
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailRequest request)
     {

@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Web.Common.Controllers;
 using SplatDev.Umbraco.Plugins.Blog.Models;
@@ -5,6 +7,10 @@ using SplatDev.Umbraco.Plugins.Blog.Services;
 
 namespace SplatDev.Umbraco.Plugins.Blog.Controllers;
 
+/// <remarks>
+/// Previously anonymous. ApproveComment and DeleteComment let anyone moderate the blog. Reads and visitor comments stay open.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/blog/[action]")]
 public class BlogApiController : ControllerBase
 {
@@ -15,6 +21,7 @@ public class BlogApiController : ControllerBase
         _service = service;
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetPosts(
         [FromQuery] int page = 1,
@@ -26,6 +33,7 @@ public class BlogApiController : ControllerBase
         return Ok(new { posts, total, page, pageSize });
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetPost([FromQuery] string slug)
     {
@@ -40,6 +48,7 @@ public class BlogApiController : ControllerBase
         return Ok(post);
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetCategories()
     {
@@ -47,6 +56,7 @@ public class BlogApiController : ControllerBase
         return Ok(categories);
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetTags()
     {
@@ -54,6 +64,7 @@ public class BlogApiController : ControllerBase
         return Ok(tags);
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetPostsByCategory(
         [FromQuery] string categorySlug,
@@ -67,6 +78,7 @@ public class BlogApiController : ControllerBase
         return Ok(posts);
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetPostsByTag(
         [FromQuery] string tagSlug,
@@ -80,6 +92,7 @@ public class BlogApiController : ControllerBase
         return Ok(posts);
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetArchive(
         [FromQuery] int year,
@@ -91,6 +104,7 @@ public class BlogApiController : ControllerBase
         return Ok(posts);
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetComments([FromQuery] int postId)
     {
@@ -98,6 +112,7 @@ public class BlogApiController : ControllerBase
         return Ok(comments);
     }
 
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> AddComment([FromBody] BlogComment comment)
     {

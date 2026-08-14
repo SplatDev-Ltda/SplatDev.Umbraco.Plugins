@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Http;
+using Umbraco.Cms.Web.Common.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Web.Common.Controllers;
 using SplatDev.Umbraco.Plugins.QuickPoll.Models;
@@ -6,6 +8,10 @@ using SplatDev.Umbraco.Plugins.QuickPoll.Services;
 
 namespace SplatDev.Umbraco.Plugins.QuickPoll.Controllers;
 
+/// <remarks>
+/// Previously anonymous. Create and Delete let anyone add or remove polls. Voting, reading the active poll and seeing results stay open.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/quickpoll/[action]")]
 public class QuickPollApiController : ControllerBase
 {
@@ -18,6 +24,7 @@ public class QuickPollApiController : ControllerBase
         _httpContextAccessor = httpContextAccessor;
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetActive(CancellationToken cancellationToken = default)
     {
@@ -29,6 +36,7 @@ public class QuickPollApiController : ControllerBase
     public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default)
         => Ok(await _service.GetAllPollsAsync(cancellationToken));
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> Get(int id, CancellationToken cancellationToken = default)
     {
@@ -51,6 +59,7 @@ public class QuickPollApiController : ControllerBase
         return deleted ? NoContent() : NotFound();
     }
 
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> Vote([FromBody] VoteRequest request, CancellationToken cancellationToken = default)
     {
@@ -61,6 +70,7 @@ public class QuickPollApiController : ControllerBase
         return Ok(new { message });
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> Results(int pollId, CancellationToken cancellationToken = default)
     {
