@@ -1,10 +1,16 @@
 using Microsoft.AspNetCore.Http;
+using Umbraco.Cms.Web.Common.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Web.Common.Controllers;
 using SplatDev.Umbraco.Plugins.Gdrp.Services;
 
 namespace SplatDev.Umbraco.Plugins.Gdrp.Controllers;
 
+/// <remarks>
+/// Previously anonymous. GetRequests returned the outstanding data-subject requests, which are personal data by definition, and CompleteRequest closed them. Recording consent and submitting a request stay open.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/gdrp/[action]")]
 public class GdrpApiController : ControllerBase
 {
@@ -15,6 +21,7 @@ public class GdrpApiController : ControllerBase
         _service = service;
     }
 
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> RecordConsent([FromBody] RecordConsentRequest request)
     {
@@ -45,6 +52,7 @@ public class GdrpApiController : ControllerBase
         return Ok(consent);
     }
 
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> SubmitRequest([FromBody] SubmitRequestBody body)
     {

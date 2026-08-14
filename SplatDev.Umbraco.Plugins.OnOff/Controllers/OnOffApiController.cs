@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Web.Common.Controllers;
 using SplatDev.Umbraco.Plugins.OnOff.Models;
@@ -5,6 +7,10 @@ using SplatDev.Umbraco.Plugins.OnOff.Services;
 
 namespace SplatDev.Umbraco.Plugins.OnOff.Controllers;
 
+/// <remarks>
+/// Previously anonymous. Feature flags. Anyone could read every flag and flip it — Enable, Disable, Delete — which is a remote switch for whatever the flags gate.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/onoff/[action]")]
 public class OnOffApiController : ControllerBase
 {

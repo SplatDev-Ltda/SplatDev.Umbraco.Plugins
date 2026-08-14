@@ -194,11 +194,15 @@ public class BackupsServiceTests : IDisposable
 
         var svc = CreateService();
 
-        var result = await svc.RestoreBackupAsync("/some/path.zip", new RestoreOptions());
+        // Was "/some/path.zip" — an absolute path outside the backup directory, asserted to
+        // reach the engine unchanged. That pass-through was the vulnerability, so the test
+        // now names a backup and expects it resolved within the backup directory.
+        var result = await svc.RestoreBackupAsync("path.zip", new RestoreOptions());
 
         Assert.Same(expected, result);
         _backupEngine.Verify(e =>
-            e.RestoreAsync("/some/path.zip", It.IsAny<RestoreOptions>(), It.IsAny<CancellationToken>()), Times.Once);
+            e.RestoreAsync(Path.Combine(Path.GetFullPath(_backupDir), "path.zip"),
+                It.IsAny<RestoreOptions>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     // ── DeleteBackupAsync ─────────────────────────────────────────────────────

@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Web.Common.Controllers;
@@ -6,6 +8,10 @@ using SplatDev.Umbraco.Plugins.EmailNotifications.Services;
 
 namespace SplatDev.Umbraco.Plugins.EmailNotifications.Controllers;
 
+/// <remarks>
+/// Previously anonymous. GetSubscribers returned the subscriber list and SendCampaign mailed all of them. Subscribing and unsubscribing stay open.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/newsletter")]
 public class NewsletterController(
     INewsletterService newsletterService,
@@ -22,6 +28,7 @@ public class NewsletterController(
     public async Task<IActionResult> GetSubscribers([FromQuery] string? listId, CancellationToken ct) =>
         Ok(await newsletterService.GetSubscribersAsync(listId, ct));
 
+    [AllowAnonymous]
     [HttpPost("subscribe")]
     public async Task<IActionResult> Subscribe([FromBody] SubscribeRequest request, CancellationToken ct)
     {
@@ -35,6 +42,7 @@ public class NewsletterController(
         return sub is null ? BadRequest("Invalid email address.") : Ok(sub);
     }
 
+    [AllowAnonymous]
     [HttpPost("unsubscribe")]
     public async Task<IActionResult> Unsubscribe([FromBody] UnsubscribeRequest request, CancellationToken ct)
     {

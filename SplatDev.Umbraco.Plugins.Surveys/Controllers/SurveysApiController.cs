@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Web.Common.Controllers;
 using SplatDev.Umbraco.Plugins.Surveys.Models;
@@ -5,6 +7,10 @@ using SplatDev.Umbraco.Plugins.Surveys.Services;
 
 namespace SplatDev.Umbraco.Plugins.Surveys.Controllers;
 
+/// <remarks>
+/// Previously anonymous. Create, Update and Delete let anyone rewrite surveys, and Results exposed the collected responses. Taking a survey stays open.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/surveys/[action]")]
 public class SurveysApiController : ControllerBase
 {
@@ -19,6 +25,7 @@ public class SurveysApiController : ControllerBase
     public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default)
         => Ok(await _service.GetSurveysAsync(cancellationToken));
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> Get(int id, CancellationToken cancellationToken = default)
     {
@@ -50,6 +57,7 @@ public class SurveysApiController : ControllerBase
         return deleted ? NoContent() : NotFound();
     }
 
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> Submit(int surveyId, [FromBody] SubmitRequest request, CancellationToken cancellationToken = default)
     {

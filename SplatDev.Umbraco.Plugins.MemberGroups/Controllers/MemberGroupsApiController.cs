@@ -1,10 +1,21 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Umbraco.Cms.Web.Common.Authorization;
 using Umbraco.Cms.Web.Common.Controllers;
 using SplatDev.Umbraco.Plugins.MemberGroups.Models;
 using SplatDev.Umbraco.Plugins.MemberGroups.Services;
 
 namespace SplatDev.Umbraco.Plugins.MemberGroups.Controllers
 {
+    /// <summary>
+    /// Member group administration.
+    /// </summary>
+    /// <remarks>
+    /// Previously anonymous. GetMemberByEmail let anyone test whether an address was
+    /// registered — member enumeration, and personal data disclosure under the LGPD —
+    /// while DisableUser let anyone lock any member out of their account.
+    /// </remarks>
+    [Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
     [Route("umbraco/api/membergroups/[action]")]
     public class MemberGroupsApiController : ControllerBase
     {

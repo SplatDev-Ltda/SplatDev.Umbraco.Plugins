@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -17,6 +19,10 @@ namespace SplatDev.Umbraco.Plugins.D4Sign.Controllers;
 ///   <item>Status check      — POST /umbraco/api/d4sign/check-status</item>
 /// </list>
 /// </summary>
+/// <remarks>
+/// Previously anonymous. Documents listed the documents in the signature account and CheckStatus read their state. The provider webhook stays open, since the provider cannot authenticate.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route(D4SignDefaults.ApiRoutePrefix + "/[action]")]
 public class D4SignApiController(
     ID4SignService d4SignService,
@@ -32,6 +38,7 @@ public class D4SignApiController(
     /// Receives lifecycle events from D4Sign (document_signed, document_canceled, …).
     /// Secure the URL by keeping it secret — store it only in D4Sign:WebhookUrl config.
     /// </summary>
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> Webhook(
         [FromBody] D4SignWebhookPayload? payload,

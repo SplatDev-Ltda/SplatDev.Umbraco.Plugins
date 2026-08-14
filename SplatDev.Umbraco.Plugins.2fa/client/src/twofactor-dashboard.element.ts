@@ -2,6 +2,15 @@ import { LitElement, html, css } from "@umbraco-cms/backoffice/external/lit";
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+/**
+ * Administrative view of member 2FA.
+ *
+ * Enrolment and backup-code generation are intentionally absent. They used to live here,
+ * calling unauthenticated endpoints with a member id typed into the box, which meant this
+ * dashboard could read any member's TOTP secret. Those operations now belong to the member,
+ * on member-authenticated routes. What remains is what an administrator actually needs:
+ * see whether someone is enrolled, and revoke it when they lose their device.
+ */
 @customElement("twofactor-dashboard")
 export class TwoFactorDashboardElement extends UmbElementMixin(LitElement) {
   static override styles = css`
@@ -15,86 +24,50 @@ export class TwoFactorDashboardElement extends UmbElementMixin(LitElement) {
     .msg { padding: 10px 14px; border-radius: 4px; margin-bottom: 16px; }
     .msg.success { background: #d1fae5; color: #065f46; }
     .msg.error { background: #fee2e2; color: #991b1b; }
-    .secret-box { background: #eff6ff; padding: 1rem; border-radius: 6px; margin-top: 12px; }
-    .secret-box code { font-size: 0.875rem; word-break: break-all; }
-    .totp-input { font-size: 1.2rem; letter-spacing: 0.3em; text-align: center; width: 130px; padding: 8px; border: 1px solid var(--uui-color-border, #d1d5db); border-radius: 4px; }
-    .backup-list { list-style: none; padding: 0; margin: 8px 0 0; font-family: monospace; }
-    .backup-list li { padding: 2px 0; }
     .action-row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+    .hint { color: var(--uui-color-text-alt, #6b7280); margin-top: 12px; font-size: 0.9rem; }
   `;
 
   @state() private _memberId = "";
   @state() private _status: boolean | null = null;
   @state() private _loading = false;
-  @state() private _secret: string | null = null;
-  @state() private _totpCode = "";
-  @state() private _backupCodes: string[] = [];
   @state() private _message: { type: "success" | "error"; text: string } | null = null;
 
-  private readonly _api = "/umbraco/api/twofactor";
+  private readonly _api = "/umbraco/api/twofactor/admin";
 
   private async _checkStatus(): Promise<void> {
     if (!this._memberId) return;
     this._loading = true;
-    try {
-      const r = await fetch(`${this._api}/IsEnabled?memberId=${this._memberId}`);
-      const d = await r.json();
-      this._status = d.enabled;
-    } finally {
-      this._loading = false;
-    }
-  }
-
-  private async _setup(): Promise<void> {
-    this._loading = true;
     this._message = null;
     try {
-      const r = await fetch(`${this._api}/SetupTotp?memberId=${this._memberId}`, { method: "POST" });
+      const r = await fetch(
+        `${this._api}/IsEnabled?memberId=${encodeURIComponent(this._memberId)}`,
+        { credentials: "same-origin" },
+      );
+      if (!r.ok) throw new Error(String(r.status));
       const d = await r.json();
-      this._secret = d.secretKey;
-    } finally {
-      this._loading = false;
-    }
-  }
-
-  private async _verify(): Promise<void> {
-    this._loading = true;
-    try {
-      const r = await fetch(`${this._api}/VerifyTotp?memberId=${this._memberId}&code=${this._totpCode}`, { method: "POST" });
-      const d = await r.json();
-      if (d.valid) {
-        this._status = true;
-        this._secret = null;
-        this._message = { type: "success", text: "2FA enabled successfully!" };
-      } else {
-        this._message = { type: "error", text: "Invalid code. Please try again." };
-      }
-    } finally {
-      this._loading = false;
-    }
-  }
-
-  private async _generateBackupCodes(): Promise<void> {
-    this._loading = true;
-    try {
-      const r = await fetch(`${this._api}/GenerateBackupCodes?memberId=${this._memberId}&count=8`, { method: "POST" });
-      const d = await r.json();
-      this._backupCodes = d.codes ?? [];
-      this._message = { type: "success", text: "Backup codes generated. Save them securely!" };
+      this._status = d.enabled;
+    } catch {
+      this._status = null;
+      this._message = { type: "error", text: "Could not read 2FA status for that member." };
     } finally {
       this._loading = false;
     }
   }
 
   private async _disable(): Promise<void> {
-    if (!confirm("Disable 2FA for this member?")) return;
+    if (!confirm("Revoke 2FA for this member? They will need to enrol again.")) return;
     this._loading = true;
     try {
-      await fetch(`${this._api}/Disable?memberId=${this._memberId}`, { method: "POST" });
+      const r = await fetch(
+        `${this._api}/Disable?memberId=${encodeURIComponent(this._memberId)}`,
+        { method: "POST", credentials: "same-origin" },
+      );
+      if (!r.ok) throw new Error(String(r.status));
       this._status = false;
-      this._secret = null;
-      this._backupCodes = [];
-      this._message = { type: "success", text: "2FA disabled." };
+      this._message = { type: "success", text: "2FA revoked for member." };
+    } catch {
+      this._message = { type: "error", text: "Could not revoke 2FA." };
     } finally {
       this._loading = false;
     }
@@ -103,7 +76,9 @@ export class TwoFactorDashboardElement extends UmbElementMixin(LitElement) {
   override render() {
     return html`
       <h1>Two-Factor Authentication</h1>
-      <p class="description">Manage TOTP 2FA and backup codes for Umbraco members.</p>
+      <p class="description">
+        Check whether a member has TOTP enrolled, and revoke it if they have lost their device.
+      </p>
 
       <uui-box headline="Member Lookup">
         <div class="input-row">
@@ -115,54 +90,34 @@ export class TwoFactorDashboardElement extends UmbElementMixin(LitElement) {
         </div>
       </uui-box>
 
-      ${this._message ? html`<div class="msg ${this._message.type}" style="margin-top:12px;">${this._message.text}</div>` : ""}
+      ${this._message
+        ? html`<div class="msg ${this._message.type}" style="margin-top:12px;">${this._message.text}</div>`
+        : ""}
 
-      ${this._status !== null ? html`
-        <uui-box headline="2FA Status" style="margin-top:16px;">
-          <span class="status-badge ${this._status ? "enabled" : "disabled"}">
-            ${this._status ? "Enabled" : "Disabled"}
-          </span>
+      ${this._status !== null
+        ? html`
+            <uui-box headline="2FA Status" style="margin-top:16px;">
+              <span class="status-badge ${this._status ? "enabled" : "disabled"}">
+                ${this._status ? "Enabled" : "Not enrolled"}
+              </span>
 
-          ${this._status ? html`
-            <div class="action-row">
-              <uui-button look="secondary" @click=${this._generateBackupCodes} ?disabled=${this._loading}>
-                Generate Backup Codes
-              </uui-button>
-              <uui-button look="danger" @click=${this._disable} ?disabled=${this._loading}>
-                Disable 2FA
-              </uui-button>
-            </div>
-            ${this._backupCodes.length > 0 ? html`
-              <div style="margin-top:16px;background:#f9fafb;padding:1rem;border-radius:6px;">
-                <strong>Backup Codes (save these now):</strong>
-                <ul class="backup-list">
-                  ${this._backupCodes.map((c) => html`<li>${c}</li>`)}
-                </ul>
-              </div>
-            ` : ""}
-          ` : html`
-            <div class="action-row">
-              <uui-button look="primary" @click=${this._setup} ?disabled=${this._loading}>
-                Set Up TOTP
-              </uui-button>
-            </div>
-            ${this._secret ? html`
-              <div class="secret-box">
-                <p><strong>Secret Key:</strong> <code>${this._secret}</code></p>
-                <p style="margin-top:8px;">Enter this key in your authenticator app, then verify:</p>
-                <div class="input-row" style="margin-top:8px;">
-                  <input class="totp-input" type="text" maxlength="6" placeholder="000000"
-                    .value=${this._totpCode}
-                    @input=${(e: InputEvent) => (this._totpCode = (e.target as HTMLInputElement).value)} />
-                  <uui-button look="positive" @click=${this._verify} ?disabled=${this._loading}>
-                    Verify &amp; Enable
-                  </uui-button>
-                </div>
-              </div>
-            ` : ""}
-          `}
-        </uui-box>
-      ` : ""}
+              ${this._status
+                ? html`
+                    <div class="action-row">
+                      <uui-button look="danger" @click=${this._disable} ?disabled=${this._loading}>
+                        Revoke 2FA
+                      </uui-button>
+                    </div>
+                  `
+                : html`
+                    <p class="hint">
+                      This member has not enrolled. Enrolment happens on the member's own
+                      account page, not from the backoffice.
+                    </p>
+                  `}
+            </uui-box>
+          `
+        : ""}
     `;
   }
 }

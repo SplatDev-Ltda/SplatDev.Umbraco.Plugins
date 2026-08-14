@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Web.Common.Controllers;
 using SplatDev.Umbraco.Plugins.Slider.Models;
@@ -5,6 +7,10 @@ using SplatDev.Umbraco.Plugins.Slider.Services;
 
 namespace SplatDev.Umbraco.Plugins.Slider.Controllers;
 
+/// <remarks>
+/// Previously anonymous. The Create/Update/Delete actions on both sliders and slides let anyone rewrite what the homepage shows. Reads stay open.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/slider/[action]")]
 public class SliderApiController : ControllerBase
 {
@@ -15,10 +21,12 @@ public class SliderApiController : ControllerBase
         _service = service;
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetSliders()
         => Ok(await _service.GetSlidersAsync());
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetSlider(int id)
     {
@@ -41,6 +49,7 @@ public class SliderApiController : ControllerBase
         return Ok();
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetSlides(int sliderId)
         => Ok(await _service.GetSlidesAsync(sliderId));

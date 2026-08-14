@@ -1,9 +1,15 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Web.Common.Controllers;
 using SplatDev.Umbraco.Plugins.PropertiesReport.Services;
 
 namespace SplatDev.Umbraco.Plugins.PropertiesReport.Controllers;
 
+/// <remarks>
+/// Previously anonymous. Reported on content type property usage across the site.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/propertiesreport/[action]")]
 public class PropertiesReportApiController : ControllerBase
 {

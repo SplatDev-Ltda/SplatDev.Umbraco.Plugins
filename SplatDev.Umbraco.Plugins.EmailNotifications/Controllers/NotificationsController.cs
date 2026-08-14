@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Web.Common.Controllers;
 using SplatDev.Umbraco.Plugins.EmailNotifications.Services;
@@ -5,6 +7,10 @@ using SplatDev.Umbraco.Plugins.EmailNotifications.Services;
 namespace SplatDev.Umbraco.Plugins.EmailNotifications.Controllers;
 
 /// <summary>Member-facing notification endpoints. Callers must supply memberId.</summary>
+/// <remarks>
+/// Previously anonymous. Editor notifications, including MarkAllRead across them.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/notifications")]
 public class NotificationsController(INotificationService notificationService) : ControllerBase
 {

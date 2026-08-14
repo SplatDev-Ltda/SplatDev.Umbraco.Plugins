@@ -8,7 +8,7 @@
     <AssemblyName>SplatDev.Umbraco.Plugins.Exif</AssemblyName>
     <RootNamespace>SplatDev.Umbraco.Plugins.Exif</RootNamespace>
     <PackageId>SplatDev.Umbraco.Plugins.Exif</PackageId>
-    <Version>1.1.3</Version>
+    <Version>1.2.0</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <Authors>SplatDev</Authors>

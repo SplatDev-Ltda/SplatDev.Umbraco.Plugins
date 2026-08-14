@@ -1,9 +1,21 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Web.Common.Controllers;
 using SplatDev.Umbraco.Plugins.HiddenContent.Services;
 
 namespace SplatDev.Umbraco.Plugins.HiddenContent.Controllers;
 
+/// <summary>
+/// Controls which nodes are hidden.
+/// </summary>
+/// <remarks>
+/// Previously anonymous — so the mechanism that hides content could be read and reversed
+/// by anyone. GetHiddenNodes enumerated exactly what was meant to be concealed, and
+/// ShowNode / BulkShow revealed it. An access-control feature that anyone can switch off
+/// is not one.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/hiddencontent/[action]")]
 public class HiddenContentApiController : ControllerBase
 {

@@ -97,7 +97,44 @@ public class BackupsService : IBackupsService
 
     public Task<RestoreResult> RestoreBackupAsync(string backupPath, RestoreOptions options, CancellationToken ct = default)
     {
-        return _backupEngine.RestoreAsync(backupPath, options, ct);
+        // Defence in depth behind the controller's authorization: confine the path to the
+        // backup directory. The caller supplies this string, and the engine would otherwise
+        // read whatever absolute path it names and restore its contents into the CMS.
+        return _backupEngine.RestoreAsync(ResolveWithinBackupDirectory(backupPath), options, ct);
+    }
+
+    /// <summary>
+    /// Resolves a caller-supplied backup path against the backup directory and rejects
+    /// anything that escapes it.
+    /// </summary>
+    private string ResolveWithinBackupDirectory(string backupPath)
+    {
+        if (string.IsNullOrWhiteSpace(backupPath))
+            throw new ArgumentException("Backup path is required.", nameof(backupPath));
+
+        EnsureDirectory();
+
+        var root = Path.GetFullPath(BackupDirectory);
+
+        // Normalise Windows separators even on Linux. Without this, "..\..\etc\passwd" is
+        // one long filename to a Linux host — harmless there, but the same package runs on
+        // Windows App Service where it does escape. Rejecting it everywhere keeps the guard
+        // (and its tests) independent of where the site happens to be hosted.
+        var normalised = backupPath.Replace('\\', '/');
+
+        // Treat the input as relative to the backup directory. Path.Combine returns the
+        // second argument unchanged when it is rooted, so an absolute path is still caught
+        // by the containment check below rather than silently honoured.
+        var candidate = Path.GetFullPath(Path.Combine(root, normalised));
+
+        var rootWithSeparator = root.EndsWith(Path.DirectorySeparatorChar)
+            ? root
+            : root + Path.DirectorySeparatorChar;
+
+        if (!candidate.StartsWith(rootWithSeparator, StringComparison.OrdinalIgnoreCase))
+            throw new UnauthorizedAccessException("Backup path is outside the backup directory.");
+
+        return candidate;
     }
 
     public Task DeleteBackupAsync(string name)

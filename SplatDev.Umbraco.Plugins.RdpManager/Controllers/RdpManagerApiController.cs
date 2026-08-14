@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using Umbraco.Cms.Web.Common.Controllers;
@@ -7,6 +9,16 @@ using SplatDev.Umbraco.Plugins.RdpManager.Services;
 
 namespace SplatDev.Umbraco.Plugins.RdpManager.Controllers
 {
+    /// <summary>
+    /// Stored RDP connection definitions.
+    /// </summary>
+    /// <remarks>
+    /// Previously anonymous. GetAll and DownloadRdpFile handed out internal hostnames,
+    /// ports, usernames and AD domains — no passwords, but precisely the reconnaissance
+    /// needed to start credential-stuffing an RDP endpoint. Create and Delete let a caller
+    /// edit the list as well as read it.
+    /// </remarks>
+    [Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
     [Route("umbraco/api/RdpManagerApi/[action]")]
     public class RdpManagerApiController(IRdpManagerService rdpManagerService) : ControllerBase
     {

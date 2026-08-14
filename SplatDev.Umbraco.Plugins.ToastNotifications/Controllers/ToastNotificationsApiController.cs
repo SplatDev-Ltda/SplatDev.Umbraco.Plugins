@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Web.Common.Controllers;
 using SplatDev.Umbraco.Plugins.ToastNotifications.Models;
@@ -5,6 +7,10 @@ using SplatDev.Umbraco.Plugins.ToastNotifications.Services;
 
 namespace SplatDev.Umbraco.Plugins.ToastNotifications.Controllers;
 
+/// <remarks>
+/// Previously anonymous. Create, Update and Delete on the notifications shown to editors.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/toastnotifications/[action]")]
 public class ToastNotificationsApiController : ControllerBase
 {

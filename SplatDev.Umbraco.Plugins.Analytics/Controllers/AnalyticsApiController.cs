@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Web.Common.Controllers;
 using SplatDev.Umbraco.Plugins.Analytics.Models;
@@ -5,6 +7,10 @@ using SplatDev.Umbraco.Plugins.Analytics.Services;
 
 namespace SplatDev.Umbraco.Plugins.Analytics.Controllers;
 
+/// <remarks>
+/// Previously anonymous. SaveSettings rewrote the analytics configuration and GetPageViews disclosed traffic data.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/analytics/[action]")]
 public class AnalyticsApiController : ControllerBase
 {

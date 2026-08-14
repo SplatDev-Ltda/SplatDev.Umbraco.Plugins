@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using Umbraco.Cms.Web.Common.Controllers;
@@ -7,6 +9,10 @@ using SplatDev.Umbraco.Plugins.SocialMedia.Channels.Services;
 
 namespace SplatDev.Umbraco.Plugins.SocialMedia.Channels.Controllers
 {
+    /// <remarks>
+    /// Previously anonymous. AddChannel and RemoveChannel rewrote the connected accounts, and SchedulePost and DeletePost published or withdrew posts to them.
+    /// </remarks>
+    [Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
     [Route("umbraco/api/SocialChannelsApi/[action]")]
     public class SocialChannelsApiController(ISocialChannelsService socialChannelsService) : ControllerBase
     {

@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Web.Common.Controllers;
 using SplatDev.Umbraco.Plugins.CustomLogin.Models;
@@ -5,6 +7,10 @@ using SplatDev.Umbraco.Plugins.CustomLogin.Services;
 
 namespace SplatDev.Umbraco.Plugins.CustomLogin.Controllers;
 
+/// <remarks>
+/// Previously anonymous. SaveSettings rewrote the login configuration, and ValidateMember answered whether a username existed - username enumeration, and not something a login form needs.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/customlogin/[action]")]
 public class CustomLoginApiController : ControllerBase
 {
@@ -32,6 +38,8 @@ public class CustomLoginApiController : ControllerBase
         return Ok(new { message = "Settings saved." });
     }
 
+    // Anonymous by necessity: this is the sign-in endpoint.
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {

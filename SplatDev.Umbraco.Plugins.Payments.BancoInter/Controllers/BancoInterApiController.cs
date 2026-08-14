@@ -1,4 +1,6 @@
 using System.Text.Json;
+using Umbraco.Cms.Web.Common.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SplatDev.Payments.BancoInter.Models;
@@ -8,6 +10,10 @@ using Umbraco.Cms.Web.Common.Controllers;
 
 namespace SplatDev.Umbraco.Plugins.Payments.BancoInter.Controllers;
 
+/// <remarks>
+/// Previously anonymous. CreatePixCharge and IssueBoleto created live payment instruments, and GetBalance read the account balance, for any caller who knew the URL.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/bancointersandbox/[action]")]
 public class BancoInterApiController(
     IBancoInterPixService pixService,
