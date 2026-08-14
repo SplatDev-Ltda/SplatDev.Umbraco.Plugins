@@ -1,9 +1,10 @@
 {
+  "javascript": [ "/App_Plugins/Smtp/angular/smtp.controller.js" ],
   "dashboards": [
     {
       "alias": "smtp",
       "view": "/App_Plugins/Smtp/dashboard.html",
-      "sections": ["content"],
+      "sections": [ "settings" ],
       "weight": -99
     }
   ]

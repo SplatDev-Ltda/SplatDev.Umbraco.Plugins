@@ -1,71 +1,149 @@
-import { LitElement as d, html as u, css as p, state as c, customElement as f } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as g } from "@umbraco-cms/backoffice/element-api";
-var m = Object.defineProperty, b = Object.getOwnPropertyDescriptor, l = (n, i, s, a) => {
-  for (var e = a > 1 ? void 0 : a ? b(i, s) : i, o = n.length - 1, r; o >= 0; o--)
-    (r = n[o]) && (e = (a ? r(i, s, e) : r(e)) || e);
-  return a && e && m(i, s, e), e;
-};
-let t = class extends g(d) {
+import { LitElement as x, html as r, css as y, state as c, customElement as w } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as $ } from "@umbraco-cms/backoffice/element-api";
+var E = Object.defineProperty, S = Object.getOwnPropertyDescriptor, _ = (t) => {
+  throw TypeError(t);
+}, d = (t, e, s, o) => {
+  for (var i = o > 1 ? void 0 : o ? S(e, s) : e, l = t.length - 1, h; l >= 0; l--)
+    (h = t[l]) && (i = (o ? h(e, s, i) : h(i)) || i);
+  return o && i && E(e, s, i), i;
+}, C = (t, e, s) => e.has(t) || _("Cannot " + s), k = (t, e, s) => e.has(t) ? _("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, s), p = (t, e, s) => (C(t, e, "access private method"), s), n, f, v, u;
+let a = class extends $(x) {
   constructor() {
-    super(...arguments), this._saved = !1;
+    super(...arguments), k(this, n), this._settings = null, this._loading = !0, this._sending = !1, this._loadError = null, this._recipient = "", this._result = null, this._api = "/umbraco/api/smtp";
   }
-  _handleSave() {
-    this._saved = !0, setTimeout(() => {
-      this._saved = !1;
-    }, 3e3);
+  connectedCallback() {
+    super.connectedCallback(), p(this, n, f).call(this);
   }
   render() {
-    return u`
-      <h1>SMTP Settings</h1>
-      <p class="description">Configure SMTP mail server settings for outbound email. Test your email configuration.</p>
-      <div class="status-card">
-        <div class="status-icon">⚙️</div>
-        <div class="status-text">
-          <h2>SMTP Settings <span class="badge">Active</span></h2>
-          <p>Plugin is installed and running on your Umbraco site.</p>
-        </div>
-      </div>
-      <div class="config-section">
-        <h3>Configuration</h3>
-        <div class="form-field">
-          <label>Status</label>
-          <uui-toggle label="Enable SMTP Settings" checked></uui-toggle>
-        </div>
-        <div class="actions">
-          <uui-button
-            look="primary"
-            label="Save Settings"
-            @click=${this._handleSave}
-          >${this._saved ? "Saved!" : "Save Settings"}</uui-button>
-          <uui-button look="secondary" label="View Documentation">Documentation</uui-button>
-        </div>
-      </div>
+    var t, e, s, o, i, l, h, m, g;
+    return r`
+      <h1>SMTP</h1>
+      <p class="description">
+        The mail configuration this site is running with, and a test that sends through it.
+      </p>
+
+      ${this._loading ? r`<uui-loader></uui-loader>` : this._loadError ? r`<div class="msg error">${this._loadError}</div>` : r`
+              <uui-box headline="Current configuration">
+                <dl>
+                  <dt>Host</dt><dd>${p(this, n, u).call(this, (t = this._settings) == null ? void 0 : t.host)}</dd>
+                  <dt>Port</dt><dd>${((e = this._settings) == null ? void 0 : e.port) ?? "—"}</dd>
+                  <dt>SSL</dt><dd>${(s = this._settings) != null && s.enableSsl ? "enabled" : "disabled"}</dd>
+                  <dt>Username</dt><dd>${p(this, n, u).call(this, (o = this._settings) == null ? void 0 : o.username)}</dd>
+                  <dt>Password</dt>
+                  <dd>${(i = this._settings) != null && i.password ? r`•••••••• <span class="hint">(never sent to the browser)</span>` : r`<span class="unset">not set</span>`}</dd>
+                  <dt>From</dt><dd>${p(this, n, u).call(this, (l = this._settings) == null ? void 0 : l.fromEmail)}</dd>
+                  <dt>From name</dt><dd>${p(this, n, u).call(this, (h = this._settings) == null ? void 0 : h.fromName)}</dd>
+                </dl>
+                <p class="hint">
+                  Read from the <code>SmtpSettings</code> configuration section. Change it in
+                  appsettings.json, user secrets, or environment variables — not from here.
+                </p>
+              </uui-box>
+
+              <uui-box headline="Send a test message" style="margin-top:16px;">
+                <div class="row">
+                  <input
+                    type="email"
+                    placeholder=${((m = this._settings) == null ? void 0 : m.fromEmail) || "recipient@example.com"}
+                    .value=${this._recipient}
+                    @input=${(b) => this._recipient = b.target.value} />
+                  <uui-button
+                    look="primary"
+                    ?disabled=${this._sending || !((g = this._settings) != null && g.host)}
+                    @click=${p(this, n, v)}>
+                    ${this._sending ? "Sending…" : "Send test"}
+                  </uui-button>
+                </div>
+                <p class="hint">
+                  Leave blank to send to the configured from-address. The message is sent with
+                  the credentials above, which stay on the server.
+                </p>
+
+                ${this._result ? r`
+                      <div class="msg ${this._result.success ? "success" : "error"}">
+                        ${this._result.message}
+                        ${this._result.error ? r`<code>${this._result.error}</code>` : ""}
+                      </div>
+                    ` : ""}
+              </uui-box>
+            `}
     `;
   }
 };
-t.styles = p`
+n = /* @__PURE__ */ new WeakSet();
+f = async function() {
+  this._loading = !0, this._loadError = null;
+  try {
+    const t = await fetch(`${this._api}/GetSettings`, { credentials: "same-origin" });
+    if (!t.ok) throw new Error(`${t.status}`);
+    this._settings = await t.json();
+  } catch (t) {
+    this._loadError = `Could not read the SMTP configuration (${t.message}).`;
+  } finally {
+    this._loading = !1;
+  }
+};
+v = async function() {
+  this._sending = !0, this._result = null;
+  try {
+    const t = this._recipient ? `?to=${encodeURIComponent(this._recipient)}` : "", e = await fetch(`${this._api}/SendTest${t}`, {
+      method: "POST",
+      credentials: "same-origin"
+    });
+    if (!e.ok) throw new Error(`${e.status}`);
+    this._result = await e.json();
+  } catch (t) {
+    this._result = {
+      success: !1,
+      message: "The request failed.",
+      error: t.message
+    };
+  } finally {
+    this._sending = !1;
+  }
+};
+u = function(t) {
+  return t ? r`${t}` : r`<span class="unset">not set</span>`;
+};
+a.styles = y`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
-    .description { color: var(--uui-color-text-alt, #6b7280); margin: 0 0 24px; max-width: 600px; line-height: 1.6; }
-    .status-card { display: flex; align-items: center; gap: 12px; background: var(--uui-color-surface, #fff); border: 1px solid var(--uui-color-border, #e5e7eb); border-radius: 6px; padding: 16px; margin-bottom: 16px; }
-    .status-icon { width: 48px; height: 48px; border-radius: 10px; background: #3b82f6; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
-    .status-text h2 { margin: 0 0 4px; font-size: 1rem; font-weight: 600; }
-    .status-text p { margin: 0; font-size: 0.875rem; color: var(--uui-color-text-alt, #6b7280); }
-    .badge { display: inline-block; padding: 2px 8px; border-radius: 9999px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; background: #d1fae5; color: #065f46; }
-    .actions { display: flex; gap: 8px; margin-top: 16px; }
-    .config-section { background: var(--uui-color-surface, #fff); border: 1px solid var(--uui-color-border, #e5e7eb); border-radius: 6px; padding: 20px; }
-    .config-section h3 { margin: 0 0 16px; font-size: 1rem; font-weight: 600; }
-    .form-field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 16px; }
-    .form-field label { font-size: 0.8rem; font-weight: 600; }
+    p.description { color: var(--uui-color-text-alt, #6b7280); margin: 0 0 24px; }
+    dl { display: grid; grid-template-columns: max-content 1fr; gap: 8px 20px; margin: 0; }
+    dt { font-weight: 600; color: var(--uui-color-text-alt, #6b7280); }
+    dd { margin: 0; font-family: var(--uui-font-monospace, monospace); overflow-wrap: anywhere; }
+    .unset { color: #b45309; font-family: inherit; font-style: italic; }
+    .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 4px; }
+    input { padding: 8px; border: 1px solid var(--uui-color-border, #d1d5db); border-radius: 4px; min-width: 260px; }
+    .msg { padding: 10px 14px; border-radius: 4px; margin-top: 14px; }
+    .msg.success { background: #d1fae5; color: #065f46; }
+    .msg.error { background: #fee2e2; color: #991b1b; }
+    .msg code { display: block; margin-top: 6px; font-size: 0.8125rem; opacity: 0.85; }
+    .hint { color: var(--uui-color-text-alt, #6b7280); font-size: 0.875rem; margin-top: 12px; }
   `;
-l([
+d([
   c()
-], t.prototype, "_saved", 2);
-t = l([
-  f("splatdev-smtp-dashboard")
-], t);
-const h = t;
+], a.prototype, "_settings", 2);
+d([
+  c()
+], a.prototype, "_loading", 2);
+d([
+  c()
+], a.prototype, "_sending", 2);
+d([
+  c()
+], a.prototype, "_loadError", 2);
+d([
+  c()
+], a.prototype, "_recipient", 2);
+d([
+  c()
+], a.prototype, "_result", 2);
+a = d([
+  w("smtp-dashboard")
+], a);
+const D = a;
 export {
-  t as SplatdevSMTPSettingsDashboardElement,
-  h as default
+  a as SmtpDashboardElement,
+  D as default
 };
