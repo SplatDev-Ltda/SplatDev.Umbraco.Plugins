@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Web.Common.Controllers;
@@ -6,6 +8,10 @@ using SplatDev.Umbraco.Plugins.EmailNotifications.Services;
 
 namespace SplatDev.Umbraco.Plugins.EmailNotifications.Controllers;
 
+/// <remarks>
+/// Previously anonymous. Create, Update and Delete rewrote the site's email templates, and Preview rendered them, for any caller.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/email-templates")]
 public class EmailTemplatesController(
     IEmailTemplateService templateService,
