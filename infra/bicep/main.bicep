@@ -57,6 +57,10 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2021-02-01' = {
 resource webApp 'Microsoft.Web/sites@2021-02-01' = {
   name: 'web-splatdev-${environment}'
   location: location
+  // Enable a system-assigned identity for passwordless Azure resource access.
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
     serverFarmId: appServicePlan.id
   }
