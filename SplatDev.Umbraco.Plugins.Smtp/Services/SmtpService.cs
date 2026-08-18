@@ -29,7 +29,7 @@ public class SmtpService : ISmtpService
         };
     }
 
-    public Task<SmtpTestResult> SendTestAsync(string? recipient = null)
+    public Task<SmtpTestResult> SendTestAsync(SmtpConfig smtpConfig, string? recipient = null)(string? recipient = null)
     {
         var settings = GetSettings();
 

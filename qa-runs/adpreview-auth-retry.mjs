@@ -1,0 +1,10 @@
+import playwright from '../docker/test/e2e/node_modules/playwright-core/index.js';
+const {chromium}=playwright;
+const base='https://staging-umbraco.splatdev.tech';
+const b=await chromium.launch({executablePath:'/usr/bin/chromium-browser',headless:true,args:['--no-sandbox']});
+const c=await b.newContext({viewport:{width:1440,height:1000},ignoreHTTPSErrors:true}); const p=await c.newPage();
+p.on('response',r=>{if(r.url().includes('/security/')||r.status()>=400) console.log(r.status(),r.request().method(),r.url())});
+await p.goto(base+'/umbraco/login',{waitUntil:'networkidle',timeout:60000});
+console.log('login',p.url()); await p.locator('#username-input').fill(process.env.U17_STAGING_ADMIN_EMAIL); await p.locator('#password-input').fill(process.env.U17_STAGING_ADMIN_PASSWORD); await p.locator('#umb-login-button').click();
+await p.waitForTimeout(15000); console.log('after',p.url(), 'body', (await p.locator('body').innerText()).slice(0,1000)); console.log('cookies', (await c.cookies()).map(x=>x.name)); await p.screenshot({path:'qa-runs/adpreview-evidence/02-auth-retry.png',fullPage:true});
+await p.goto(base+'/umbraco',{waitUntil:'networkidle',timeout:60000}); await p.waitForTimeout(5000); console.log('home',p.url(),(await p.locator('body').innerText()).slice(0,2000)); await p.screenshot({path:'qa-runs/adpreview-evidence/03-home.png',fullPage:true}); await b.close();

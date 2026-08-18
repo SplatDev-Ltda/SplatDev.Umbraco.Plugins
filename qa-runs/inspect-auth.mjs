@@ -1,0 +1,4 @@
+import {chromium} from 'playwright';
+const b=await chromium.launch({headless:true,executablePath:'/usr/bin/chromium-browser',args:['--no-sandbox']});const p=await b.newPage();
+p.on('response',async r=>{if(r.url().includes('/management/api')) {let t='';try{t=(await r.text()).slice(0,500)}catch{}; console.log(r.status(),r.request().method(),r.url(),t)}});
+await p.goto('https://staging-umbraco.splatdev.tech/umbraco',{waitUntil:'networkidle',timeout:60000}); await p.locator('#username-input').fill(process.env.U17_STAGING_ADMIN_EMAIL); await p.locator('#password-input').fill(process.env.U17_STAGING_ADMIN_PASSWORD); await p.getByRole('button').filter({hasText:/login/i}).click(); await p.waitForTimeout(6000); console.log('URL',p.url()); await p.evaluate(()=>localStorage); await p.waitForTimeout(2000); await b.close();

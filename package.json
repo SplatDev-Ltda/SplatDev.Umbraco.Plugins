@@ -1,0 +1,11 @@
+{
+  "name": "umbraco-testing-server",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "npx http-server -c-1 -p 5173"
+  },
+  "dependencies": {
+    "http-server": "^14.0.0"
+  }
+}

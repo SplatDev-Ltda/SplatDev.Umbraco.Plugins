@@ -120,7 +120,7 @@ public class RestrictedContentService : IRestrictedContentService
 
     // ── reads ────────────────────────────────────────────────────────────────
 
-    public Task<IReadOnlyList<RestrictedNode>> GetRestrictedNodesAsync()
+    public Task<IReadOnlyList<RestrictedNode>> GetRestrictedNodesAsync(IEnumerable<MemberGroup> memberGroups = null)
     {
         var list = new List<RestrictedNode>();
 

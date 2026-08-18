@@ -1,0 +1,6 @@
+import { chromium } from 'playwright';
+const base='https://staging-umbraco.splatdev.tech'; const b=await chromium.launch({headless:true,executablePath:'/usr/bin/chromium-browser',args:['--no-sandbox']}); const c=await b.newContext(); const p=await c.newPage();
+p.on('request',r=>{if(r.url().includes('/management/api/')) console.log('REQ',r.method(),r.url(),r.postData()?.slice(0,200)||'')});
+await p.goto(base+'/umbraco',{waitUntil:'domcontentloaded',timeout:60000}); await p.waitForTimeout(1000); await p.locator('#username-input').fill(process.env.U17_STAGING_ADMIN_EMAIL); await p.locator('#password-input').fill(process.env.U17_STAGING_ADMIN_PASSWORD); await p.locator('button').filter({hasText:/log in|login|sign in/i}).first().click(); await p.waitForTimeout(10000);
+console.log('url',p.url()); for(const path of ['/umbraco/management/api/v1/server/information','/umbraco/management/api/v1/tree','/umbraco/management/api/v1/tree/document-root','/umbraco/management/api/v1/document','/umbraco/management/api/v1/member','/umbraco/management/api/v1/health']) { const r=await p.request.get(base+path); console.log('API',path,r.status(),(await r.text()).slice(0,500)); }
+await b.close();

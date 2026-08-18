@@ -90,7 +90,7 @@ export class RestrictedDashboardElement extends UmbElementMixin(LitElement) {
 
   /** The pickers hand back a comma-separated string of GUID keys. */
   #selection(e: Event): string[] {
-    const value = (e.target as { selection?: string[]; value?: string }).selection
+    const value = (e.target as { selection?: string[]; value?: string; value?: string; value?: string }).selection
       ?? String((e.target as { value?: string }).value ?? "").split(",");
     return value.filter(Boolean);
   }

@@ -1,0 +1,26 @@
+import playwright from '../docker/test/e2e/node_modules/playwright-core/index.js';
+const { chromium } = playwright;
+import { mkdirSync } from 'node:fs';
+
+const base = 'https://stg1.splatdev.com';
+const user = process.env.Umbraco_default_username;
+const pass = process.env.Umbraco_default_password;
+if (!user || !pass) throw new Error('Umbraco credentials are not configured');
+mkdirSync('qa-runs/adpreview-evidence', { recursive: true });
+const browser = await chromium.launch({ executablePath: '/usr/bin/chromium-browser', headless: true, args: ['--no-sandbox','--disable-dev-shm-usage'] });
+const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, ignoreHTTPSErrors: true });
+const page = await context.newPage();
+page.on('console', m => { if (m.type() === 'error') console.log('console:', m.text()); });
+page.on('response', r => { if (r.status() >= 400) console.log('http', r.status(), r.request().method(), r.url()); });
+await page.goto(`${base}/umbraco/login`, {waitUntil:'domcontentloaded', timeout:60000});
+console.log('login html', (await page.content()).slice(0,3000));
+await page.locator('#username-input').waitFor({timeout:30000});
+await page.locator('#username-input').fill(user);
+await page.locator('#password-input').fill(pass);
+await page.locator('#umb-login-button').click();
+await page.waitForTimeout(8000);
+console.log('after login', page.url());
+console.log('title', await page.title());
+console.log('body', (await page.locator('body').innerText()).slice(0,4000));
+await page.screenshot({path:'qa-runs/adpreview-evidence/01-after-login.png', fullPage:true});
+await browser.close();

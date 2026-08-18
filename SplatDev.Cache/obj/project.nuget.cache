@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "H3T+FsHNTyI=",
+  "success": true,
+  "projectFilePath": "/paperclip/instances/default/projects/801b4864-f9fa-47ba-8379-908dbdf45c8e/09c14008-3898-40e7-ba31-3bc1ca5a21bf/SplatDev.Umbraco.Plugins/SplatDev.Cache/SplatDev.Cache.csproj",
+  "expectedPackageFiles": [
+    "/home/node/.nuget/packages/microsoft.extensions.configuration.abstractions/9.0.7/microsoft.extensions.configuration.abstractions.9.0.7.nupkg.sha512",
+    "/home/node/.nuget/packages/microsoft.extensions.configuration.binder/9.0.7/microsoft.extensions.configuration.binder.9.0.7.nupkg.sha512",
+    "/home/node/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/9.0.7/microsoft.extensions.dependencyinjection.abstractions.9.0.7.nupkg.sha512",
+    "/home/node/.nuget/packages/microsoft.extensions.primitives/9.0.7/microsoft.extensions.primitives.9.0.7.nupkg.sha512"
+  ],
+  "logs": []
+}

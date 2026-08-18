@@ -1,0 +1,6 @@
+import { chromium } from 'playwright';
+const base='https://staging-umbraco.splatdev.tech'; const b=await chromium.launch({headless:true,executablePath:'/usr/bin/chromium-browser',args:['--no-sandbox']}); const c=await b.newContext(); const p=await c.newPage();
+await p.goto(base+'/umbraco',{waitUntil:'domcontentloaded',timeout:60000}); await p.waitForTimeout(1000); await p.locator('#username-input').fill(process.env.U17_STAGING_ADMIN_EMAIL); await p.locator('#password-input').fill(process.env.U17_STAGING_ADMIN_PASSWORD); await p.locator('button').filter({hasText:/log in|login|sign in/i}).first().click(); await p.waitForTimeout(9000);
+const paths=['/umbraco/management/api/v1/server/information','/umbraco/management/api/v1/tree/document/root?skip=0&take=50','/umbraco/management/api/v1/tree/member/root?skip=0&take=50','/umbraco/management/api/v1/temporary-file/configuration'];
+for(const path of paths){const x=await p.evaluate(async ({base,path})=>{const r=await fetch(base+path); return {status:r.status,body:(await r.text()).slice(0,2000)}},{base,path}); console.log(path,JSON.stringify(x));}
+await p.screenshot({path:'qa-runs/spl-3286-u17-authenticated-backoffice.png',fullPage:true}); await b.close();

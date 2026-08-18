@@ -1,0 +1,13 @@
+/paperclip/instances/default/projects/801b4864-f9fa-47ba-8379-908dbdf45c8e/09c14008-3898-40e7-ba31-3bc1ca5a21bf/SplatDev.Umbraco.Plugins/SplatDev.Cache/bin/Release/net10.0/SplatDev.Cache.deps.json
+/paperclip/instances/default/projects/801b4864-f9fa-47ba-8379-908dbdf45c8e/09c14008-3898-40e7-ba31-3bc1ca5a21bf/SplatDev.Umbraco.Plugins/SplatDev.Cache/bin/Release/net10.0/SplatDev.Cache.dll
+/paperclip/instances/default/projects/801b4864-f9fa-47ba-8379-908dbdf45c8e/09c14008-3898-40e7-ba31-3bc1ca5a21bf/SplatDev.Umbraco.Plugins/SplatDev.Cache/bin/Release/net10.0/SplatDev.Cache.pdb
+/paperclip/instances/default/projects/801b4864-f9fa-47ba-8379-908dbdf45c8e/09c14008-3898-40e7-ba31-3bc1ca5a21bf/SplatDev.Umbraco.Plugins/SplatDev.Cache/obj/Release/net10.0/SplatDev.Cache.csproj.AssemblyReference.cache
+/paperclip/instances/default/projects/801b4864-f9fa-47ba-8379-908dbdf45c8e/09c14008-3898-40e7-ba31-3bc1ca5a21bf/SplatDev.Umbraco.Plugins/SplatDev.Cache/obj/Release/net10.0/SplatDev.Cache.GeneratedMSBuildEditorConfig.editorconfig
+/paperclip/instances/default/projects/801b4864-f9fa-47ba-8379-908dbdf45c8e/09c14008-3898-40e7-ba31-3bc1ca5a21bf/SplatDev.Umbraco.Plugins/SplatDev.Cache/obj/Release/net10.0/SplatDev.Cache.AssemblyInfoInputs.cache
+/paperclip/instances/default/projects/801b4864-f9fa-47ba-8379-908dbdf45c8e/09c14008-3898-40e7-ba31-3bc1ca5a21bf/SplatDev.Umbraco.Plugins/SplatDev.Cache/obj/Release/net10.0/SplatDev.Cache.AssemblyInfo.cs
+/paperclip/instances/default/projects/801b4864-f9fa-47ba-8379-908dbdf45c8e/09c14008-3898-40e7-ba31-3bc1ca5a21bf/SplatDev.Umbraco.Plugins/SplatDev.Cache/obj/Release/net10.0/SplatDev.Cache.csproj.CoreCompileInputs.cache
+/paperclip/instances/default/projects/801b4864-f9fa-47ba-8379-908dbdf45c8e/09c14008-3898-40e7-ba31-3bc1ca5a21bf/SplatDev.Umbraco.Plugins/SplatDev.Cache/obj/Release/net10.0/SplatDev.Cache.sourcelink.json
+/paperclip/instances/default/projects/801b4864-f9fa-47ba-8379-908dbdf45c8e/09c14008-3898-40e7-ba31-3bc1ca5a21bf/SplatDev.Umbraco.Plugins/SplatDev.Cache/obj/Release/net10.0/SplatDev.Cache.dll
+/paperclip/instances/default/projects/801b4864-f9fa-47ba-8379-908dbdf45c8e/09c14008-3898-40e7-ba31-3bc1ca5a21bf/SplatDev.Umbraco.Plugins/SplatDev.Cache/obj/Release/net10.0/refint/SplatDev.Cache.dll
+/paperclip/instances/default/projects/801b4864-f9fa-47ba-8379-908dbdf45c8e/09c14008-3898-40e7-ba31-3bc1ca5a21bf/SplatDev.Umbraco.Plugins/SplatDev.Cache/obj/Release/net10.0/SplatDev.Cache.pdb
+/paperclip/instances/default/projects/801b4864-f9fa-47ba-8379-908dbdf45c8e/09c14008-3898-40e7-ba31-3bc1ca5a21bf/SplatDev.Umbraco.Plugins/SplatDev.Cache/obj/Release/net10.0/ref/SplatDev.Cache.dll

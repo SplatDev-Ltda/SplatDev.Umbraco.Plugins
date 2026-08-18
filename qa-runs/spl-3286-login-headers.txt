@@ -1,0 +1,14 @@
+HTTP/2 200 
+server: nginx
+date: Tue, 18 Aug 2026 19:22:55 GMT
+content-type: text/html; charset=utf-8
+vary: Accept-Encoding
+cache-control: public, no-cache, max-age=300
+vary: Accept-Encoding
+x-frame-options: SameOrigin
+x-content-type-options: nosniff
+permissions-policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+strict-transport-security: max-age=2592000
+x-xss-protection: 1; mode=block
+referrer-policy: strict-origin-when-cross-origin
+

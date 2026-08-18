@@ -104,7 +104,7 @@ x = function() {
           <umb-input-document
             id="node"
             max="1"
-            .selection=${this._node}
+            @change=${(e) => this._node = e.target.value.split(',')}
             @change=${(e) => this._node = o(this, i, h).call(this, e)}>
           </umb-input-document>
         </div>
@@ -114,7 +114,7 @@ x = function() {
           <p class="help">A member in any one of these groups can see the page.</p>
           <umb-input-member-group
             id="groups"
-            .selection=${this._groups}
+            @change=${(e) => this._groups = e.target.value.split(',')}
             @change=${(e) => this._groups = o(this, i, h).call(this, e)}>
           </umb-input-member-group>
         </div>
@@ -125,7 +125,7 @@ x = function() {
           <umb-input-document
             id="login"
             max="1"
-            .selection=${this._loginPage}
+            @change=${(e) => this._loginPage = e.target.value.split(',')}
             @change=${(e) => this._loginPage = o(this, i, h).call(this, e)}>
           </umb-input-document>
         </div>
@@ -136,7 +136,7 @@ x = function() {
           <umb-input-document
             id="error"
             max="1"
-            .selection=${this._errorPage}
+            @change=${(e) => this._errorPage = e.target.value.split(',')}
             @change=${(e) => this._errorPage = o(this, i, h).call(this, e)}>
           </umb-input-document>
         </div>

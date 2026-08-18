@@ -1,0 +1,5 @@
+import { chromium } from 'playwright';
+const base='https://staging-umbraco.splatdev.tech'; const b=await chromium.launch({headless:true,executablePath:'/usr/bin/chromium-browser',args:['--no-sandbox']}); const c=await b.newContext(); const p=await c.newPage();
+await p.goto(base+'/umbraco',{waitUntil:'networkidle',timeout:90000}); await p.waitForTimeout(12000); console.log('url',p.url(),'cookies',await c.cookies()); console.log('storage',await p.evaluate(()=>Object.keys(localStorage).map(k=>[k,localStorage.getItem(k)?.slice(0,80)])));
+for(const path of ['/umbraco/management/api/v1/server/information','/umbraco/management/api/v1/document','/umbraco/management/api/v1/tree/document-root','/umbraco/management/api/v1/member']) { const r=await p.request.get(base+path); console.log(path,r.status(),(await r.text()).slice(0,300)); }
+await b.close();

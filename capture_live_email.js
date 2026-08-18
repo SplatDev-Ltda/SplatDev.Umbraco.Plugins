@@ -1,0 +1,7 @@
+const {chromium}=require('playwright');
+(async()=>{const b=await chromium.connectOverCDP(process.env.PAPERCLIP_BROWSER_CDP_ENDPOINT);const p=b.contexts()[0].pages()[0]||await b.contexts()[0].newPage();
+await p.goto('https://staging-umbraco.splatdev.tech/umbraco'); await p.waitForTimeout(1500);
+if(await p.locator('#username-input').count()){await p.locator('#username-input').fill(process.env.Umbraco_default_username);await p.locator('#password-input').fill(process.env.Umbraco_default_password);await p.locator('button[type=submit]').click();await p.waitForTimeout(7000);}
+console.log('after login',p.url());console.log((await p.locator('body').innerText()).slice(0,3000));
+async function cap(label,url){await p.goto(url);await p.waitForTimeout(3500);console.log(label,p.url(),(await p.locator('body').innerText()).slice(0,1000));await p.screenshot({path:'qa-runs/'+label+'.png',fullPage:true});}
+await cap('01-templates-live','https://staging-umbraco.splatdev.tech/umbraco/section/email-templates');await cap('02-style-live','https://staging-umbraco.splatdev.tech/umbraco/section/email-templates/menu/email-style');await cap('03-template-create-live','https://staging-umbraco.splatdev.tech/umbraco/section/email-templates/workspace/email-template/create');await cap('04-preview-live','https://staging-umbraco.splatdev.tech/umbraco/section/email-templates/workspace/email-template/preview');await b.close();})().catch(e=>{console.error(e);process.exit(1)});
