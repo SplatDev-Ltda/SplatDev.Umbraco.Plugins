@@ -25,7 +25,7 @@ public class RestrictedApiController : ControllerBase
 
     [HttpGet]
     public async Task<IActionResult> GetRestrictedNodes() =>
-        Ok(await _service.GetRestrictedNodesAsync(cachedMemberGroups));
+        Ok(await _service.GetRestrictedNodesAsync());
 
     /// <summary>Populates the group picker, and lets the dashboard show names for keys.</summary>
     [HttpGet]

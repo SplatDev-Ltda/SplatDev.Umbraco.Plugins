@@ -89,7 +89,7 @@ export class TwoFactorDashboardElement extends UmbElementMixin(LitElement) {
         <div class="input-row">
           <umb-input-member
             max="1"
-            .selection=${this._member}
+            .value=${this._member}
             @change=${(e: Event) => {
               const t = e.target as { selection?: string[]; value?: string };
               this._member = (t.selection ?? String(t.value ?? "").split(",")).filter(Boolean);

@@ -1,3 +1,4 @@
+using Umbraco.Cms.Core.Models.Membership;
 using Microsoft.Extensions.Logging;
 using SplatDev.Umbraco.Plugins.Restricted.Models;
 using Umbraco.Cms.Core;
@@ -96,9 +97,9 @@ public class RestrictedContentService : IRestrictedContentService
     /// <summary>
     /// Maps picker keys or plain names onto real groups, dropping anything unknown.
     /// </summary>
-    private List<MemberGroupRef> ResolveGroups(IEnumerable<string> refs, out List<string> unknown)
+    private List<MemberGroupRef> ResolveGroups(IEnumerable<string> refs, out List<string> unknown, IEnumerable<IMemberGroup>? memberGroups = null)
     {
-        var all = _memberGroupService.GetAll()
+        var all = (memberGroups ?? _memberGroupService.GetAll())
             .Select(g => new MemberGroupRef { Key = g.Key, Name = g.Name ?? string.Empty })
             .ToList();
 
@@ -120,9 +121,10 @@ public class RestrictedContentService : IRestrictedContentService
 
     // ── reads ────────────────────────────────────────────────────────────────
 
-    public Task<IReadOnlyList<RestrictedNode>> GetRestrictedNodesAsync(IEnumerable<MemberGroup> memberGroups = null)
+    public Task<IReadOnlyList<RestrictedNode>> GetRestrictedNodesAsync(IEnumerable<IMemberGroup>? memberGroups = null)
     {
         var list = new List<RestrictedNode>();
+        var catalog = memberGroups ?? _memberGroupService.GetAll().ToList();
 
         foreach (var entry in _publicAccessService.GetAll())
         {
@@ -136,7 +138,7 @@ public class RestrictedContentService : IRestrictedContentService
                 continue;
             }
 
-            list.Add(Describe(content, entry));
+            list.Add(Describe(content, entry, catalog));
         }
 
         return Task.FromResult<IReadOnlyList<RestrictedNode>>(
@@ -154,7 +156,7 @@ public class RestrictedContentService : IRestrictedContentService
         return Task.FromResult(entry is null ? null : Describe(content, entry));
     }
 
-    private RestrictedNode Describe(IContent content, PublicAccessEntry entry)
+    private RestrictedNode Describe(IContent content, PublicAccessEntry entry, IEnumerable<IMemberGroup>? memberGroups = null)
     {
         var names = entry.Rules
             .Where(r => r.RuleType == Constants.Conventions.PublicAccess.MemberRoleRuleType)
@@ -162,7 +164,7 @@ public class RestrictedContentService : IRestrictedContentService
             .Where(v => !string.IsNullOrWhiteSpace(v))
             .ToList();
 
-        var groups = ResolveGroups(names!, out var unknown);
+        var groups = ResolveGroups(names!, out var unknown, memberGroups);
 
         // A rule naming a group that no longer exists still gates the branch, so show it
         // rather than quietly dropping it — otherwise the UI implies access nobody has.

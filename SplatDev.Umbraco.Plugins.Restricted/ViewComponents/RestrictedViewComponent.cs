@@ -26,9 +26,9 @@ public class RestrictedViewComponent : ViewComponent
         _umbracoContextAccessor = umbracoContextAccessor;
     }
 
-    public async Task<IViewComponentResult> InvokeAsync(string? node = null)
+    public async Task<IViewComponentResult> InvokeAsync(string? nodeId = null)
     {
-        var reference = node;
+        var reference = nodeId;
 
         if (string.IsNullOrWhiteSpace(reference)
             && _umbracoContextAccessor.TryGetUmbracoContext(out var context)

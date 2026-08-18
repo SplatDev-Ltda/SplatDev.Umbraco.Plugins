@@ -8,13 +8,13 @@ var E = Object.defineProperty, R = Object.getOwnPropertyDescriptor, b = (e) => {
   for (var c = n > 1 ? void 0 : n ? R(t, a) : t, p = e.length - 1, g; p >= 0; p--)
     (g = e[p]) && (c = (n ? g(t, a, c) : g(c)) || c);
   return n && c && E(t, a, c), c;
-}, C = (e, t, a) => t.has(e) || b("Cannot " + a), T = (e, t, a) => t.has(e) ? b("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), o = (e, t, a) => (C(e, t, "access private method"), a), i, d, h, _, f, v, x, y;
-let l = class extends k($) {
+}, C = (e, t, a) => t.has(e) || b("Cannot " + a), T = (e, t, a) => t.has(e) ? b("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), l = (e, t, a) => (C(e, t, "access private method"), a), i, d, h, _, f, v, x, y;
+let o = class extends k($) {
   constructor() {
     super(...arguments), T(this, i), this._restricted = [], this._loading = !0, this._saving = !1, this._node = [], this._loginPage = [], this._errorPage = [], this._groups = [], this._result = null, this._api = "/umbraco/api/restricted";
   }
   connectedCallback() {
-    super.connectedCallback(), o(this, i, d).call(this);
+    super.connectedCallback(), l(this, i, d).call(this);
   }
   render() {
     return s`
@@ -25,7 +25,7 @@ let l = class extends k($) {
         content tree.
       </p>
 
-      ${o(this, i, x).call(this)}
+      ${l(this, i, x).call(this)}
 
       <uui-box headline="Protected pages" style="margin-top:16px;">
         ${this._loading ? s`<uui-loader></uui-loader>` : this._restricted.length === 0 ? s`<p class="empty">Nothing is protected yet.</p>` : s`
@@ -37,7 +37,7 @@ let l = class extends k($) {
                     <uui-table-head-cell>Access denied</uui-table-head-cell>
                     <uui-table-head-cell></uui-table-head-cell>
                   </uui-table-head>
-                  ${this._restricted.map((e) => o(this, i, y).call(this, e))}
+                  ${this._restricted.map((e) => l(this, i, y).call(this, e))}
                 </uui-table>
               `}
       </uui-box>
@@ -71,7 +71,7 @@ _ = async function() {
         memberGroups: this._groups
       })
     });
-    this._result = await e.json(), e.ok && (this._node = [], this._groups = [], await o(this, i, d).call(this));
+    this._result = await e.json(), e.ok && (this._node = [], this._groups = [], await l(this, i, d).call(this));
   } catch (e) {
     this._result = { success: !1, message: `The request failed: ${e.message}` };
   } finally {
@@ -86,7 +86,7 @@ f = async function(e) {
         method: "DELETE",
         credentials: "same-origin"
       });
-      this._result = await t.json(), await o(this, i, d).call(this);
+      this._result = await t.json(), await l(this, i, d).call(this);
     } catch (t) {
       this._result = { success: !1, message: `The request failed: ${t.message}` };
     }
@@ -104,8 +104,8 @@ x = function() {
           <umb-input-document
             id="node"
             max="1"
-            @change=${(e) => this._node = e.target.value.split(',')}
-            @change=${(e) => this._node = o(this, i, h).call(this, e)}>
+            .value=${this._node}
+            @change=${(e) => this._node = l(this, i, h).call(this, e)}>
           </umb-input-document>
         </div>
 
@@ -114,8 +114,8 @@ x = function() {
           <p class="help">A member in any one of these groups can see the page.</p>
           <umb-input-member-group
             id="groups"
-            @change=${(e) => this._groups = e.target.value.split(',')}
-            @change=${(e) => this._groups = o(this, i, h).call(this, e)}>
+            .value=${this._groups}
+            @change=${(e) => this._groups = l(this, i, h).call(this, e)}>
           </umb-input-member-group>
         </div>
 
@@ -125,8 +125,8 @@ x = function() {
           <umb-input-document
             id="login"
             max="1"
-            @change=${(e) => this._loginPage = e.target.value.split(',')}
-            @change=${(e) => this._loginPage = o(this, i, h).call(this, e)}>
+            .value=${this._loginPage}
+            @change=${(e) => this._loginPage = l(this, i, h).call(this, e)}>
           </umb-input-document>
         </div>
 
@@ -136,8 +136,8 @@ x = function() {
           <umb-input-document
             id="error"
             max="1"
-            @change=${(e) => this._errorPage = e.target.value.split(',')}
-            @change=${(e) => this._errorPage = o(this, i, h).call(this, e)}>
+            .value=${this._errorPage}
+            @change=${(e) => this._errorPage = l(this, i, h).call(this, e)}>
           </umb-input-document>
         </div>
 
@@ -145,7 +145,7 @@ x = function() {
           <uui-button
             look="primary"
             ?disabled=${this._saving || this._node.length === 0}
-            @click=${o(this, i, _)}>
+            @click=${l(this, i, _)}>
             ${this._saving ? "Saving…" : "Protect page"}
           </uui-button>
         </div>
@@ -178,18 +178,18 @@ y = function(e) {
           ${((a = e.errorPage) == null ? void 0 : a.name) ?? s`<span class="missing">missing</span>`}
         </uui-table-cell>
         <uui-table-cell style="text-align:right;white-space:nowrap;">
-          <uui-button look="secondary" compact label="Edit" @click=${() => o(this, i, v).call(this, e)}>
+          <uui-button look="secondary" compact label="Edit" @click=${() => l(this, i, v).call(this, e)}>
             Edit
           </uui-button>
           <uui-button look="secondary" color="danger" compact label="Remove"
-            @click=${() => o(this, i, f).call(this, e)}>
+            @click=${() => l(this, i, f).call(this, e)}>
             Remove
           </uui-button>
         </uui-table-cell>
       </uui-table-row>
     `;
 };
-l.styles = w`
+o.styles = w`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
     p.description { color: var(--uui-color-text-alt, #6b7280); margin: 0 0 24px; max-width: 60ch; }
@@ -208,33 +208,33 @@ l.styles = w`
   `;
 r([
   u()
-], l.prototype, "_restricted", 2);
+], o.prototype, "_restricted", 2);
 r([
   u()
-], l.prototype, "_loading", 2);
+], o.prototype, "_loading", 2);
 r([
   u()
-], l.prototype, "_saving", 2);
+], o.prototype, "_saving", 2);
 r([
   u()
-], l.prototype, "_node", 2);
+], o.prototype, "_node", 2);
 r([
   u()
-], l.prototype, "_loginPage", 2);
+], o.prototype, "_loginPage", 2);
 r([
   u()
-], l.prototype, "_errorPage", 2);
+], o.prototype, "_errorPage", 2);
 r([
   u()
-], l.prototype, "_groups", 2);
+], o.prototype, "_groups", 2);
 r([
   u()
-], l.prototype, "_result", 2);
-l = r([
+], o.prototype, "_result", 2);
+o = r([
   P("restricted-dashboard")
-], l);
-const A = l;
+], o);
+const A = o;
 export {
-  l as RestrictedDashboardElement,
+  o as RestrictedDashboardElement,
   A as default
 };

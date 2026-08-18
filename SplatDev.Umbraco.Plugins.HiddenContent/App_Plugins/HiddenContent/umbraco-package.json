@@ -1,7 +1,7 @@
 {
   "$schema": "../../umbraco-package-schema.json",
   "name": "UmbracoCms.Plugins.HiddenContent",
-  "version": "2.0.0",
+  "version": "2.3.0",
   "extensions": [
     {
       "type": "dashboard",

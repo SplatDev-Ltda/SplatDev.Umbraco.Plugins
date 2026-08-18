@@ -29,7 +29,7 @@ public class SmtpService : ISmtpService
         };
     }
 
-    public Task<SmtpTestResult> SendTestAsync(SmtpConfig smtpConfig, string? recipient = null)(string? recipient = null)
+    public Task<SmtpTestResult> SendTestAsync(string? recipient = null)
     {
         var settings = GetSettings();
 
@@ -40,6 +40,26 @@ public class SmtpService : ISmtpService
                 Success = false,
                 Message = "No SMTP host is configured.",
                 Error = "Set SmtpSettings:Host in configuration."
+            });
+        }
+
+        if (string.IsNullOrWhiteSpace(settings.Host))
+        {
+            return Task.FromResult(new SmtpTestResult
+            {
+                Success = false,
+                Message = "No SMTP host is configured.",
+                Error = "Set SmtpSettings:Host in configuration."
+            });
+        }
+
+        if (!MailAddress.TryCreate(settings.FromEmail, out _))
+        {
+            return Task.FromResult(new SmtpTestResult
+            {
+                Success = false,
+                Message = "No valid SMTP from address is configured.",
+                Error = "Set SmtpSettings:FromEmail to a valid email address."
             });
         }
 
@@ -61,7 +81,10 @@ public class SmtpService : ISmtpService
                 Timeout = 10000
             };
 
-            var from = new MailAddress(settings.FromEmail, settings.FromName);
+            if (!MailAddress.TryCreate(settings.FromEmail, out var from))
+            {
+                return new SmtpTestResult { Success = false, Message = "Failed to send test email.", Error = "SmtpSettings:FromEmail is not a valid email address." };
+            }
             var to = string.IsNullOrWhiteSpace(recipient) ? from : new MailAddress(recipient);
 
             var message = new MailMessage(from, to)

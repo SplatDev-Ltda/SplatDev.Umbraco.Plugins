@@ -1,6 +1,6 @@
 {
   "name": "@splatdev/umbracocms-plugins-hiddencontent",
-  "version": "2.0.0",
+  "version": "2.3.0",
   "type": "module",
   "scripts": {
     "build": "vite build",

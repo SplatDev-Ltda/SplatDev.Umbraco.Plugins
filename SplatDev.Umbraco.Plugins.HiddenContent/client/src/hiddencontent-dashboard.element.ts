@@ -108,7 +108,7 @@ export class HiddenContentDashboardElement extends UmbElementMixin(LitElement) {
           <p class="help">Pick one or several. Restoring works on the same selection.</p>
           <umb-input-document
             id="pages"
-            .selection=${this._selection}
+            .value=${this._selection}
             @change=${(e: Event) => (this._selection = this.#selectionFrom(e))}>
           </umb-input-document>
         </div>

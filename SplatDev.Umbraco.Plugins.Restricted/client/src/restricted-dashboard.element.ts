@@ -90,7 +90,7 @@ export class RestrictedDashboardElement extends UmbElementMixin(LitElement) {
 
   /** The pickers hand back a comma-separated string of GUID keys. */
   #selection(e: Event): string[] {
-    const value = (e.target as { selection?: string[]; value?: string; value?: string; value?: string }).selection
+    const value = (e.target as { value?: string | string[] }).selection
       ?? String((e.target as { value?: string }).value ?? "").split(",");
     return value.filter(Boolean);
   }
@@ -160,7 +160,7 @@ export class RestrictedDashboardElement extends UmbElementMixin(LitElement) {
           <umb-input-document
             id="node"
             max="1"
-            .selection=${this._node}
+            .value=${this._node}
             @change=${(e: Event) => (this._node = this.#selection(e))}>
           </umb-input-document>
         </div>
@@ -170,7 +170,7 @@ export class RestrictedDashboardElement extends UmbElementMixin(LitElement) {
           <p class="help">A member in any one of these groups can see the page.</p>
           <umb-input-member-group
             id="groups"
-            .selection=${this._groups}
+            .value=${this._groups}
             @change=${(e: Event) => (this._groups = this.#selection(e))}>
           </umb-input-member-group>
         </div>
@@ -181,7 +181,7 @@ export class RestrictedDashboardElement extends UmbElementMixin(LitElement) {
           <umb-input-document
             id="login"
             max="1"
-            .selection=${this._loginPage}
+            .value=${this._loginPage}
             @change=${(e: Event) => (this._loginPage = this.#selection(e))}>
           </umb-input-document>
         </div>
@@ -192,7 +192,7 @@ export class RestrictedDashboardElement extends UmbElementMixin(LitElement) {
           <umb-input-document
             id="error"
             max="1"
-            .selection=${this._errorPage}
+            .value=${this._errorPage}
             @change=${(e: Event) => (this._errorPage = this.#selection(e))}>
           </umb-input-document>
         </div>

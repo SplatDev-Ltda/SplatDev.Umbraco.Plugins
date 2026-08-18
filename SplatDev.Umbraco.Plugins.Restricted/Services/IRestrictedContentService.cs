@@ -1,4 +1,6 @@
+using Umbraco.Cms.Core.Models.Membership;
 using SplatDev.Umbraco.Plugins.Restricted.Models;
+using Umbraco.Cms.Core.Models;
 
 namespace SplatDev.Umbraco.Plugins.Restricted.Services;
 
@@ -12,7 +14,7 @@ public interface IRestrictedContentService
     /// no way to tell what that was. Resolving here rather than in the UI keeps the two
     /// backoffices from each having to reimplement it.
     /// </remarks>
-    Task<IReadOnlyList<RestrictedNode>> GetRestrictedNodesAsync();
+    Task<IReadOnlyList<RestrictedNode>> GetRestrictedNodesAsync(IEnumerable<IMemberGroup>? memberGroups = null);
 
     /// <summary>The protection on one node, or null when it is not protected.</summary>
     Task<RestrictedNode?> GetRestrictedNodeAsync(string nodeRef);

@@ -58,7 +58,7 @@ let s = class extends p(d) {
         <div class="input-row">
           <umb-input-member
             max="1"
-            .selection=${this._member}
+            .value=${this._member}
             @change=${(e) => {
       const t = e.target;
       this._member = (t.selection ?? String(t.value ?? "").split(",")).filter(Boolean), this._status = null;

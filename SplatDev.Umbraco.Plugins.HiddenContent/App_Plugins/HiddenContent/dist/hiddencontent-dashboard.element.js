@@ -30,7 +30,7 @@ let s = class extends x(f) {
           <p class="help">Pick one or several. Restoring works on the same selection.</p>
           <umb-input-document
             id="pages"
-            .selection=${this._selection}
+            .value=${this._selection}
             @change=${(e) => this._selection = n(this, a, _).call(this, e)}>
           </umb-input-document>
         </div>
