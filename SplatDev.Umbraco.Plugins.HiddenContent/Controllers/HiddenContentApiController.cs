@@ -1,19 +1,18 @@
 using Microsoft.AspNetCore.Authorization;
-using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Umbraco.Cms.Web.Common.Controllers;
+using SplatDev.Umbraco.Plugins.HiddenContent.Models;
 using SplatDev.Umbraco.Plugins.HiddenContent.Services;
+using Umbraco.Cms.Web.Common.Authorization;
 
 namespace SplatDev.Umbraco.Plugins.HiddenContent.Controllers;
 
 /// <summary>
-/// Controls which nodes are hidden.
+/// Controls which nodes are hidden from navigation.
 /// </summary>
 /// <remarks>
 /// Previously anonymous — so the mechanism that hides content could be read and reversed
 /// by anyone. GetHiddenNodes enumerated exactly what was meant to be concealed, and
-/// ShowNode / BulkShow revealed it. An access-control feature that anyone can switch off
-/// is not one.
+/// ShowNode / BulkShow revealed it.
 /// </remarks>
 [Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/hiddencontent/[action]")]
@@ -21,70 +20,38 @@ public class HiddenContentApiController : ControllerBase
 {
     private readonly IHiddenContentService _service;
 
-    public HiddenContentApiController(IHiddenContentService service)
-    {
-        _service = service;
-    }
+    public HiddenContentApiController(IHiddenContentService service) => _service = service;
 
     [HttpGet]
-    public async Task<IActionResult> GetHiddenNodes()
-    {
-        var nodes = await _service.GetHiddenNodesAsync();
-        return Ok(nodes);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> HideNode([FromQuery] int nodeId)
-    {
-        if (nodeId <= 0)
-            return BadRequest("NodeId is required.");
-
-        await _service.HideNodeAsync(nodeId);
-        return Ok(new { message = $"Node {nodeId} hidden from navigation." });
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> ShowNode([FromQuery] int nodeId)
-    {
-        if (nodeId <= 0)
-            return BadRequest("NodeId is required.");
-
-        await _service.ShowNodeAsync(nodeId);
-        return Ok(new { message = $"Node {nodeId} shown in navigation." });
-    }
+    public async Task<IActionResult> GetHiddenNodes() =>
+        Ok(await _service.GetHiddenNodesAsync());
 
     [HttpGet]
-    public async Task<IActionResult> IsHidden([FromQuery] int nodeId)
+    public async Task<IActionResult> IsHidden([FromQuery] string node)
     {
-        if (nodeId <= 0)
-            return BadRequest("NodeId is required.");
+        var hidden = await _service.IsHiddenAsync(node);
+        return hidden is null ? NotFound() : Ok(new { hidden = hidden.Value });
+    }
 
-        var hidden = await _service.IsHiddenAsync(nodeId);
-        return Ok(new { nodeId, hidden });
+    /// <summary>
+    /// Hides one or more nodes.
+    /// </summary>
+    /// <remarks>
+    /// Single and bulk were separate endpoints doing the same work, which meant the
+    /// dashboard had two code paths and two comma-separated-id text boxes. One endpoint
+    /// takes a list; a list of one is the single case.
+    /// </remarks>
+    [HttpPost]
+    public async Task<IActionResult> Hide([FromBody] NodeRefsRequest request)
+    {
+        var result = await _service.HideAsync(request.Nodes);
+        return result.Success ? Ok(result) : BadRequest(result);
     }
 
     [HttpPost]
-    public async Task<IActionResult> BulkHide([FromBody] BulkNodeRequest request)
+    public async Task<IActionResult> Show([FromBody] NodeRefsRequest request)
     {
-        if (request.NodeIds is null || !request.NodeIds.Any())
-            return BadRequest("NodeIds are required.");
-
-        await _service.BulkHideAsync(request.NodeIds);
-        return Ok(new { message = $"{request.NodeIds.Count()} nodes hidden." });
+        var result = await _service.ShowAsync(request.Nodes);
+        return result.Success ? Ok(result) : BadRequest(result);
     }
-
-    [HttpPost]
-    public async Task<IActionResult> BulkShow([FromBody] BulkNodeRequest request)
-    {
-        if (request.NodeIds is null || !request.NodeIds.Any())
-            return BadRequest("NodeIds are required.");
-
-        await _service.BulkShowAsync(request.NodeIds);
-        return Ok(new { message = $"{request.NodeIds.Count()} nodes shown." });
-    }
-}
-
-public class BulkNodeRequest
-{
-    public IEnumerable<int>? NodeIds { get; set; }
 }

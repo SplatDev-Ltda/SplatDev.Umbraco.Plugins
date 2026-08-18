@@ -1,4 +1,7 @@
 using Microsoft.Extensions.Logging;
+using SplatDev.Umbraco.Plugins.HiddenContent.Models;
+using Umbraco.Cms.Core;
+using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
 
 namespace SplatDev.Umbraco.Plugins.HiddenContent.Services;
@@ -6,6 +9,9 @@ namespace SplatDev.Umbraco.Plugins.HiddenContent.Services;
 public class HiddenContentService : IHiddenContentService
 {
     private const string NaviHideAlias = "umbracoNaviHide";
+
+    /// <summary>Page size for the descendant sweep. Large enough to be few round trips, small enough not to load a whole site into memory at once.</summary>
+    private const int PageSize = 500;
 
     private readonly IContentService _contentService;
     private readonly ILogger<HiddenContentService> _logger;
@@ -16,85 +22,171 @@ public class HiddenContentService : IHiddenContentService
         _logger = logger;
     }
 
-    public Task<IEnumerable<int>> GetHiddenNodesAsync()
+    // ── reference resolution ─────────────────────────────────────────────────
+
+    /// <summary>Resolves an int id, a GUID key or a UDI to content.</summary>
+    internal IContent? Resolve(string? reference)
     {
-        // Walk root content and collect hidden nodes (shallow check on root children)
-        var rootNodes = _contentService.GetRootContent();
-        var hiddenIds = new List<int>();
-        CollectHidden(rootNodes, hiddenIds);
-        return Task.FromResult<IEnumerable<int>>(hiddenIds);
+        if (string.IsNullOrWhiteSpace(reference)) return null;
+        var value = reference.Trim();
+
+        if (int.TryParse(value, out var id))
+            return id > 0 ? _contentService.GetById(id) : null;
+
+        if (Guid.TryParse(value, out var key))
+            return _contentService.GetById(key);
+
+        if (UdiParser.TryParse(value, out var udi) && udi is GuidUdi guidUdi)
+            return _contentService.GetById(guidUdi.Guid);
+
+        return null;
     }
 
-    private void CollectHidden(IEnumerable<global::Umbraco.Cms.Core.Models.IContent> nodes, List<int> hiddenIds)
+    /// <summary>
+    /// Reads umbracoNaviHide tolerantly.
+    /// </summary>
+    /// <remarks>
+    /// It was compared against the literal string "1". umbracoNaviHide is a true/false
+    /// property, and depending on how it was set — by an editor, by a package, by an older
+    /// version of this plugin — the stored value can be "1", "true", or a boxed boolean.
+    /// A node hidden through the content tree therefore did not register as hidden here.
+    /// </remarks>
+    internal static bool IsHidden(IContent content)
     {
-        foreach (var node in nodes)
-        {
-            var val = node.GetValue<string>(NaviHideAlias);
-            if (val == "1")
-                hiddenIds.Add(node.Id);
+        var raw = content.GetValue(NaviHideAlias);
 
-            var children = _contentService.GetPagedChildren(node.Id, 0, int.MaxValue, out _);
-            CollectHidden(children, hiddenIds);
-        }
+        return raw switch
+        {
+            null => false,
+            bool b => b,
+            int i => i == 1,
+            string s => s.Equals("1", StringComparison.Ordinal)
+                     || s.Equals("true", StringComparison.OrdinalIgnoreCase),
+            _ => false,
+        };
     }
 
-    public async Task HideNodeAsync(int nodeId)
+    private ContentRef ToRef(IContent content) => new()
     {
-        var content = _contentService.GetById(nodeId);
-        if (content is null)
+        Id = content.Id,
+        Key = content.Key,
+        Name = content.Name ?? $"Content {content.Id}",
+        Path = BuildPath(content),
+        IsHidden = IsHidden(content),
+    };
+
+    private string BuildPath(IContent content)
+    {
+        var names = new List<string>();
+        foreach (var segment in content.Path.Split(',', StringSplitOptions.RemoveEmptyEntries))
         {
-            _logger.LogWarning("HideNodeAsync: Content node {NodeId} not found.", nodeId);
-            return;
+            if (!int.TryParse(segment, out var id) || id <= 0) continue;
+            if (id == content.Id) break;
+
+            var ancestor = _contentService.GetById(id);
+            if (ancestor?.Name is not null) names.Add(ancestor.Name);
         }
 
-        content.SetValue(NaviHideAlias, "1");
+        return names.Count == 0 ? string.Empty : string.Join(" / ", names);
+    }
+
+    // ── reads ────────────────────────────────────────────────────────────────
+
+    public Task<IReadOnlyList<ContentRef>> GetHiddenNodesAsync()
+    {
+        // Previously this recursed the tree, calling GetPagedChildren(id, 0, int.MaxValue)
+        // once per node — an N+1 over every node on the site, each asking for unbounded
+        // rows. GetPagedDescendants sweeps the whole tree from the root in flat pages
+        // instead, so the cost is the size of the site rather than its shape.
+        var hidden = new List<ContentRef>();
+        long page = 0;
+
+        while (true)
+        {
+            var batch = _contentService
+                .GetPagedDescendants(Constants.System.Root, page, PageSize, out var total)
+                .ToList();
+
+            hidden.AddRange(batch.Where(IsHidden).Select(ToRef));
+
+            page++;
+            if (batch.Count == 0 || page * PageSize >= total) break;
+        }
+
+        return Task.FromResult<IReadOnlyList<ContentRef>>(
+            hidden.OrderBy(n => n.Path, StringComparer.OrdinalIgnoreCase)
+                  .ThenBy(n => n.Name, StringComparer.OrdinalIgnoreCase)
+                  .ToList());
+    }
+
+    public Task<bool?> IsHiddenAsync(string nodeRef)
+    {
+        var content = Resolve(nodeRef);
+        return Task.FromResult(content is null ? (bool?)null : IsHidden(content));
+    }
+
+    // ── writes ───────────────────────────────────────────────────────────────
+
+    public Task<HiddenResult> HideAsync(IEnumerable<string> nodeRefs) =>
+        SetHiddenAsync(nodeRefs, hidden: true);
+
+    public Task<HiddenResult> ShowAsync(IEnumerable<string> nodeRefs) =>
+        SetHiddenAsync(nodeRefs, hidden: false);
+
+    private Task<HiddenResult> SetHiddenAsync(IEnumerable<string> nodeRefs, bool hidden)
+    {
+        var refs = nodeRefs?.Where(r => !string.IsNullOrWhiteSpace(r)).ToList() ?? [];
+        if (refs.Count == 0)
+            return Task.FromResult(HiddenResult.Fail("Choose at least one page."));
+
+        var changed = new List<ContentRef>();
+        var missing = new List<string>();
+        var skippedUnpublished = new List<string>();
+
+        foreach (var reference in refs)
+        {
+            var content = Resolve(reference);
+            if (content is null) { missing.Add(reference); continue; }
+
+            content.SetValue(NaviHideAlias, hidden);
+
+            // Saving alone leaves the change invisible on the site until the next publish,
+            // which looks like the button did nothing. Publish only what was already
+            // published — publishing a draft here would push unrelated unreviewed edits live.
+            if (content.Published)
+            {
 #if NET10_0_OR_GREATER
-        _contentService.Save(content);
+                _contentService.Publish(content, content.AvailableCultures.ToArray());
 #else
-        _contentService.SaveAndPublish(content);
+                _contentService.SaveAndPublish(content);
 #endif
-        _logger.LogInformation("Node {NodeId} hidden from navigation.", nodeId);
-        await Task.CompletedTask;
-    }
+            }
+            else
+            {
+                _contentService.Save(content);
+                skippedUnpublished.Add(content.Name ?? reference);
+            }
 
-    public async Task ShowNodeAsync(int nodeId)
-    {
-        var content = _contentService.GetById(nodeId);
-        if (content is null)
-        {
-            _logger.LogWarning("ShowNodeAsync: Content node {NodeId} not found.", nodeId);
-            return;
+            changed.Add(ToRef(content));
         }
 
-        content.SetValue(NaviHideAlias, "0");
-#if NET10_0_OR_GREATER
-        _contentService.Save(content);
-#else
-        _contentService.SaveAndPublish(content);
-#endif
-        _logger.LogInformation("Node {NodeId} shown in navigation.", nodeId);
-        await Task.CompletedTask;
-    }
+        if (changed.Count == 0)
+            return Task.FromResult(HiddenResult.Fail(
+                $"None of those pages could be found: {string.Join(", ", missing)}."));
 
-    public Task<bool> IsHiddenAsync(int nodeId)
-    {
-        var content = _contentService.GetById(nodeId);
-        if (content is null)
-            return Task.FromResult(false);
+        var verb = hidden ? "hidden from" : "restored to";
+        var message = changed.Count == 1
+            ? $"\"{changed[0].Name}\" {verb} navigation."
+            : $"{changed.Count} pages {verb} navigation.";
 
-        var val = content.GetValue<string>(NaviHideAlias);
-        return Task.FromResult(val == "1");
-    }
+        if (missing.Count > 0)
+            message += $" {missing.Count} could not be found.";
 
-    public async Task BulkHideAsync(IEnumerable<int> nodeIds)
-    {
-        foreach (var nodeId in nodeIds)
-            await HideNodeAsync(nodeId);
-    }
+        if (skippedUnpublished.Count > 0)
+            message += $" Saved but not published (still drafts): {string.Join(", ", skippedUnpublished)}.";
 
-    public async Task BulkShowAsync(IEnumerable<int> nodeIds)
-    {
-        foreach (var nodeId in nodeIds)
-            await ShowNodeAsync(nodeId);
+        _logger.LogInformation("{Count} node(s) {Verb} navigation.", changed.Count, verb);
+
+        return Task.FromResult(HiddenResult.Ok(message, changed));
     }
 }
