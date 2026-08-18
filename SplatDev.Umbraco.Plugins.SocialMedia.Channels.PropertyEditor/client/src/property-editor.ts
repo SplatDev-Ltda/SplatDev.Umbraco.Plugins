@@ -1,5 +1,4 @@
 import { LitElement, css, html } from "@umbraco-cms/backoffice/external/lit";
-import { customElement, property } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
 /** The JSON contract used by the v7/v8 editor. Keep property names stable for upgrades. */
@@ -21,10 +20,9 @@ const packages: PackageValue[] = [
   { Name: "Flat", Folder: "flat", Bg: "#fff", Thumbnail: "/App_Plugins/SocialMediaChannels/themes/flat.jpg", Theme: { Id: "Flat", Description: "A simple flat social icon set", CreateDate: "2012-01-02", CreatedBy: "SplatDev", Reference: "", ShowLabels: true, Channels: channels.map((id) => ({ Id: id, Name: id[0].toUpperCase() + id.slice(1), Image: `${id}.png`, Url: "" })) } },
 ];
 
-@customElement("splatdev-social-media-channels-property-editor")
 export class SocialMediaChannelsPropertyEditor extends UmbElementMixin(LitElement) {
-  @property({ attribute: false }) public value: PackageValue | null = null;
-  @property({ type: Boolean }) public readonly = false;
+  value: PackageValue | null = null;
+  readonly = false;
 
   static styles = css`
     :host { display: block; }
@@ -81,4 +79,5 @@ export class SocialMediaChannelsPropertyEditor extends UmbElementMixin(LitElemen
   }
 }
 
+customElements.define("splatdev-social-media-channels-property-editor", SocialMediaChannelsPropertyEditor);
 declare global { interface HTMLElementTagNameMap { "splatdev-social-media-channels-property-editor": SocialMediaChannelsPropertyEditor; } }
