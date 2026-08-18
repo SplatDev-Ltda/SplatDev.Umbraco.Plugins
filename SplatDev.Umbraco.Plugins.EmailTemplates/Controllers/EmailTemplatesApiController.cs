@@ -1,7 +1,11 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+#if NET10_0_OR_GREATER
 using Umbraco.Cms.Api.Management.Controllers;
+#else
+using Umbraco.Cms.Web.BackOffice.Controllers;
+#endif
 using SplatDev.Umbraco.Plugins.EmailTemplates.Models;
 using SplatDev.Umbraco.Plugins.EmailTemplates.Services;
 
@@ -11,7 +15,12 @@ namespace SplatDev.Umbraco.Plugins.EmailTemplates.Controllers;
 public class EmailTemplatesApiController(
     IEmailTemplateService templateService,
     IEmailStyleService styleService,
-    ILogger<EmailTemplatesApiController> logger) : ManagementApiControllerBase
+    ILogger<EmailTemplatesApiController> logger)
+#if NET10_0_OR_GREATER
+    : ManagementApiControllerBase
+#else
+    : UmbracoAuthorizedApiController
+#endif
 {
     [HttpGet("")]
     [ProducesResponseType(StatusCodes.Status200OK)]
