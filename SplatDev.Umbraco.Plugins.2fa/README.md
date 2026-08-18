@@ -70,8 +70,8 @@ Backoffice — requires `BackOfficeAccess`:
 
 | Method | Route |
 |--------|-------|
-| GET | `/umbraco/api/twofactor/admin/IsEnabled?memberId=N` |
-| POST | `/umbraco/api/twofactor/admin/Disable?memberId=N` |
+| GET | `/umbraco/api/twofactor/admin/IsEnabled?member={key}` |
+| POST | `/umbraco/api/twofactor/admin/Disable?member={key}` |
 
 An administrator can see enrolment status and revoke it for a lost device, but cannot read
 a member's secret or mint their backup codes — that would let an administrator sign in as
