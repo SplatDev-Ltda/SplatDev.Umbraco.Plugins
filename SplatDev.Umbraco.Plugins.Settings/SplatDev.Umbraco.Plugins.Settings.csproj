@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<PackageId>SplatDev.Umbraco.Plugins.Settings</PackageId>
-		<Version>2.2.0</Version>
+		<Version>2.3.0</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
 		<Authors>SplatDev</Authors>
@@ -56,4 +56,10 @@
     <None Include="icon.png" Pack="true" PackagePath="\" />
     <None Include="umbraco-marketplace.json" Pack="true" PackagePath="\" Condition="Exists('umbraco-marketplace.json')" />
   </ItemGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>SplatDev.Umbraco.Plugins.Settings.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
 </Project>
