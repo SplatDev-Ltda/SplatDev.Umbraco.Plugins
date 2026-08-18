@@ -1,68 +1,132 @@
-<div ng-controller="RestrictedDashboardController" class="rc-dashboard">
-    <div class="umb-box">
-        <div class="umb-box-header">
-            <h1>Restricted Content</h1>
-            <p>Manage member-only content gates, role-based access and paywall restrictions.</p>
-        </div>
-        <div class="umb-box-content">
-            <p class="rc-success" ng-if="statusMessage">{{ statusMessage }}</p>
-            <p class="rc-error" ng-if="errorMessage">{{ errorMessage }}</p>
+<div ng-controller="RestrictedDashboardController" class="restricted-dashboard">
+    <div class="umb-panel-header">
+        <h1>Restricted content</h1>
+        <p class="umb-panel-description" style="max-width:60ch;">
+            Require membership of a group to view a page. Protection applies to the page and
+            everything beneath it, and is the same public-access rule Umbraco applies from the
+            content tree.
+        </p>
+    </div>
 
-            <h3>Restrict a Node</h3>
-            <div class="rc-form">
-                <div class="rc-field">
-                    <label>Content Node ID</label>
-                    <input type="number" ng-model="nodeId" placeholder="e.g. 1234" class="rc-input" />
+    <div class="umb-box">
+        <div class="umb-box-header"><h3>Protect a page</h3></div>
+        <div class="umb-box-content" style="padding:16px;">
+
+            <div class="control-group" style="margin-bottom:18px;">
+                <label class="control-label">Page to protect</label>
+                <p class="umb-panel-description" style="margin:0 0 6px;">
+                    The page and everything beneath it will require membership.
+                </p>
+                <div style="display:flex;gap:8px;align-items:center;">
+                    <span ng-if="node" class="umb-node-preview__name">{{node.name}}</span>
+                    <button type="button" class="btn btn-default" ng-click="pickNode()">
+                        {{node ? "Change" : "Choose page"}}
+                    </button>
+                    <button type="button" class="btn btn-link" ng-if="node" ng-click="clear('node')">Clear</button>
                 </div>
-                <div class="rc-field">
-                    <label>Login Page Node ID (Udi or int)</label>
-                    <input type="text" ng-model="loginPageNodeId" placeholder="e.g. 1050" class="rc-input" />
-                </div>
-                <div class="rc-field">
-                    <label>Error Page Node ID (Udi or int)</label>
-                    <input type="text" ng-model="errorPageNodeId" placeholder="e.g. 1051" class="rc-input" />
-                </div>
-                <div class="rc-field">
-                    <label>Member Groups (comma-separated)</label>
-                    <input type="text" ng-model="memberGroups" placeholder="e.g. Members, Premium" class="rc-input" />
-                </div>
-                <button ng-click="restrictNode()" class="btn btn-primary">Apply Restriction</button>
             </div>
 
-            <hr />
+            <div class="control-group" style="margin-bottom:18px;">
+                <label class="control-label">Member groups allowed</label>
+                <p class="umb-panel-description" style="margin:0 0 6px;">
+                    A member in any one of these groups can see the page.
+                </p>
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                    <span ng-repeat="g in groups" class="umb-badge">{{g.name}}</span>
+                    <button type="button" class="btn btn-default" ng-click="pickGroups()">
+                        {{groups.length ? "Change groups" : "Choose groups"}}
+                    </button>
+                </div>
+            </div>
 
-            <h3>Currently Restricted Nodes</h3>
-            <div ng-if="loading"><p>Loading...</p></div>
-            <div ng-if="!loading">
-                <p ng-if="restrictedNodes.length === 0" class="rc-empty">No restricted nodes found.</p>
-                <table ng-if="restrictedNodes.length > 0" class="rc-table">
-                    <thead>
-                        <tr><th>Node ID</th><th>Actions</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr ng-repeat="nodeId in restrictedNodes">
-                            <td>{{ nodeId }}</td>
-                            <td>
-                                <button ng-click="unrestrictNode(nodeId)" class="btn btn-warning btn-xs">Remove Restriction</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="control-group" style="margin-bottom:18px;">
+                <label class="control-label">Login page</label>
+                <p class="umb-panel-description" style="margin:0 0 6px;">
+                    Where visitors who are not signed in are sent.
+                </p>
+                <div style="display:flex;gap:8px;align-items:center;">
+                    <span ng-if="loginPage" class="umb-node-preview__name">{{loginPage.name}}</span>
+                    <button type="button" class="btn btn-default" ng-click="pickLoginPage()">
+                        {{loginPage ? "Change" : "Choose page"}}
+                    </button>
+                </div>
+            </div>
+
+            <div class="control-group" style="margin-bottom:18px;">
+                <label class="control-label">Access denied page</label>
+                <p class="umb-panel-description" style="margin:0 0 6px;">
+                    Where signed-in members who are not in an allowed group are sent.
+                </p>
+                <div style="display:flex;gap:8px;align-items:center;">
+                    <span ng-if="errorPage" class="umb-node-preview__name">{{errorPage.name}}</span>
+                    <button type="button" class="btn btn-default" ng-click="pickErrorPage()">
+                        {{errorPage ? "Change" : "Choose page"}}
+                    </button>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" ng-click="save()" ng-disabled="!canSave()">
+                {{saving ? "Saving..." : "Protect page"}}
+            </button>
+
+            <div ng-if="result" class="alert"
+                 ng-class="result.success ? 'alert-success' : 'alert-danger'"
+                 style="margin-top:16px;">
+                {{result.message}}
             </div>
         </div>
     </div>
-</div>
 
-<style>
-    .rc-dashboard { padding: 20px; font-family: sans-serif; }
-    .rc-form { max-width: 480px; margin-bottom: 20px; }
-    .rc-field { margin-bottom: 12px; }
-    .rc-field label { display: block; font-weight: 600; margin-bottom: 4px; font-size: 0.875rem; }
-    .rc-input { width: 100%; padding: 6px 10px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 0.9rem; }
-    .rc-table { width: 100%; border-collapse: collapse; }
-    .rc-table th, .rc-table td { text-align: left; padding: 8px 12px; border-bottom: 1px solid #e5e7eb; }
-    .rc-table th { font-weight: 600; background: #f9fafb; }
-    .rc-empty { color: #6b7280; }
-    .rc-success { color: #065f46; }
-    .rc-error { color: #b91c1c; }
-</style>
+    <div class="umb-box" style="margin-top:16px;">
+        <div class="umb-box-header"><h3>Protected pages</h3></div>
+        <div class="umb-box-content" style="padding:16px;">
+            <div ng-if="loading" class="umb-loading">Loading...</div>
+
+            <p ng-if="!loading && restricted.length === 0" style="color:#6b7280;">
+                Nothing is protected yet.
+            </p>
+
+            <table class="table" ng-if="!loading && restricted.length > 0">
+                <thead>
+                    <tr>
+                        <th>Page</th>
+                        <th>Allowed groups</th>
+                        <th>Login</th>
+                        <th>Access denied</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="entry in restricted">
+                        <td>
+                            <strong>{{entry.node.name}}</strong>
+                            <div ng-if="entry.node.path" style="color:#6b7280;font-size:0.8125rem;">
+                                {{entry.node.path}}
+                            </div>
+                        </td>
+                        <td>
+                            <span ng-repeat="g in entry.memberGroups"
+                                  class="umb-badge"
+                                  ng-style="isMissingGroup(g) && {'background':'#fef3c7','color':'#92400e'}"
+                                  title="{{isMissingGroup(g) ? 'This group no longer exists' : ''}}">
+                                {{g.name}}
+                            </span>
+                        </td>
+                        <td>
+                            <span ng-if="entry.loginPage">{{entry.loginPage.name}}</span>
+                            <em ng-if="!entry.loginPage" style="color:#b45309;">missing</em>
+                        </td>
+                        <td>
+                            <span ng-if="entry.errorPage">{{entry.errorPage.name}}</span>
+                            <em ng-if="!entry.errorPage" style="color:#b45309;">missing</em>
+                        </td>
+                        <td style="text-align:right;white-space:nowrap;">
+                            <button class="btn btn-default btn-sm" ng-click="edit(entry)">Edit</button>
+                            <button class="btn btn-danger btn-sm" ng-click="remove(entry)">Remove</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,4 +1,4 @@
-@model IEnumerable<string>
+@model IEnumerable<SplatDev.Umbraco.Plugins.Restricted.Models.MemberGroupRef>
 
 <div class="restricted-component">
     @if (ViewBag.IsRestricted == true)
@@ -10,7 +10,7 @@
             <ul class="restricted-groups">
                 @foreach (var group in Model)
                 {
-                    <li>@group</li>
+                    <li>@group.Name</li>
                 }
             </ul>
         </div>

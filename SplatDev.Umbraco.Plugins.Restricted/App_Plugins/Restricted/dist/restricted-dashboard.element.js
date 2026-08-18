@@ -1,154 +1,240 @@
-import { LitElement as c, nothing as p, html as l, css as h, state as r, customElement as g } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as _ } from "@umbraco-cms/backoffice/element-api";
-var m = Object.defineProperty, b = Object.getOwnPropertyDescriptor, s = (e, o, d, i) => {
-  for (var a = i > 1 ? void 0 : i ? b(o, d) : o, u = e.length - 1, n; u >= 0; u--)
-    (n = e[u]) && (a = (i ? n(o, d, a) : n(a)) || a);
-  return i && a && m(o, d, a), a;
-};
-let t = class extends _(c) {
+import { LitElement as $, html as s, css as w, state as u, customElement as P, nothing as m } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as k } from "@umbraco-cms/backoffice/element-api";
+import "@umbraco-cms/backoffice/document";
+import "@umbraco-cms/backoffice/member-group";
+var E = Object.defineProperty, R = Object.getOwnPropertyDescriptor, b = (e) => {
+  throw TypeError(e);
+}, r = (e, t, a, n) => {
+  for (var c = n > 1 ? void 0 : n ? R(t, a) : t, p = e.length - 1, g; p >= 0; p--)
+    (g = e[p]) && (c = (n ? g(t, a, c) : g(c)) || c);
+  return n && c && E(t, a, c), c;
+}, C = (e, t, a) => t.has(e) || b("Cannot " + a), T = (e, t, a) => t.has(e) ? b("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), o = (e, t, a) => (C(e, t, "access private method"), a), i, d, h, _, f, v, x, y;
+let l = class extends k($) {
   constructor() {
-    super(...arguments), this._restrictedNodes = [], this._loading = !1, this._nodeId = "", this._loginPageNodeId = "", this._errorPageNodeId = "", this._memberGroups = "", this._statusMsg = "", this._errorMsg = "", this._apiBase = "/umbraco/api/restricted";
+    super(...arguments), T(this, i), this._restricted = [], this._loading = !0, this._saving = !1, this._node = [], this._loginPage = [], this._errorPage = [], this._groups = [], this._result = null, this._api = "/umbraco/api/restricted";
   }
   connectedCallback() {
-    super.connectedCallback(), this._loadRestrictedNodes();
-  }
-  async _loadRestrictedNodes() {
-    this._loading = !0;
-    try {
-      const e = await fetch(`${this._apiBase}/GetRestrictedNodes`);
-      e.ok && (this._restrictedNodes = await e.json());
-    } finally {
-      this._loading = !1;
-    }
-  }
-  async _restrictNode() {
-    if (!this._nodeId) return;
-    this._statusMsg = "", this._errorMsg = "";
-    const e = this._memberGroups.split(",").map((i) => i.trim()).filter(Boolean), o = {
-      nodeId: parseInt(this._nodeId, 10),
-      loginPageNodeId: this._loginPageNodeId,
-      errorPageNodeId: this._errorPageNodeId,
-      memberGroups: e
-    }, d = await fetch(`${this._apiBase}/RestrictNode`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(o)
-    });
-    if (d.ok) {
-      const i = await d.json();
-      this._statusMsg = i.message, this._loadRestrictedNodes();
-    } else
-      this._errorMsg = "Failed to restrict node.";
-  }
-  async _unrestrictNode(e) {
-    this._statusMsg = "", this._errorMsg = "", (await fetch(`${this._apiBase}/UnrestrictNode?nodeId=${e}`, { method: "DELETE" })).ok ? (this._statusMsg = `Node ${e} unrestricted.`, this._loadRestrictedNodes()) : this._errorMsg = `Failed to unrestrict node ${e}.`;
+    super.connectedCallback(), o(this, i, d).call(this);
   }
   render() {
-    return l`
-      <h1>Restricted Content</h1>
-      <p class="description">Manage member-only content gates, role-based access and paywall restrictions.</p>
+    return s`
+      <h1>Restricted content</h1>
+      <p class="description">
+        Require membership of a group to view a page. Protection applies to the page and
+        everything beneath it, and is the same public-access rule Umbraco applies from the
+        content tree.
+      </p>
 
-      ${this._statusMsg ? l`<p class="status">${this._statusMsg}</p>` : p}
-      ${this._errorMsg ? l`<p class="err-msg">${this._errorMsg}</p>` : p}
+      ${o(this, i, x).call(this)}
 
-      <uui-box headline="Restrict a Node">
-        <div class="form-grid">
-          <div class="field">
-            <label>Content Node ID</label>
-            <uui-input placeholder="e.g. 1234" .value=${this._nodeId}
-              @input=${(e) => this._nodeId = e.target.value}
-            ></uui-input>
-          </div>
-          <div class="field">
-            <label>Login Page Node ID</label>
-            <uui-input placeholder="e.g. 1050" .value=${this._loginPageNodeId}
-              @input=${(e) => this._loginPageNodeId = e.target.value}
-            ></uui-input>
-          </div>
-          <div class="field">
-            <label>Error Page Node ID</label>
-            <uui-input placeholder="e.g. 1051" .value=${this._errorPageNodeId}
-              @input=${(e) => this._errorPageNodeId = e.target.value}
-            ></uui-input>
-          </div>
-          <div class="field">
-            <label>Member Groups (comma-separated)</label>
-            <uui-input placeholder="e.g. Members, Premium" .value=${this._memberGroups}
-              @input=${(e) => this._memberGroups = e.target.value}
-            ></uui-input>
-          </div>
-        </div>
-        <uui-button look="primary" label="Apply Restriction" @click=${this._restrictNode}>Apply Restriction</uui-button>
-      </uui-box>
-
-      <uui-box headline="Currently Restricted Nodes" style="margin-top:20px">
-        ${this._loading ? l`<p>Loading...</p>` : this._restrictedNodes.length === 0 ? l`<p class="empty">No restricted nodes found.</p>` : l`
-              <uui-table>
-                <uui-table-head>
-                  <uui-table-head-cell>Node ID</uui-table-head-cell>
-                  <uui-table-head-cell>Actions</uui-table-head-cell>
-                </uui-table-head>
-                ${this._restrictedNodes.map(
-      (e) => l`
-                    <uui-table-row>
-                      <uui-table-cell><strong>${e}</strong></uui-table-cell>
-                      <uui-table-cell>
-                        <uui-button
-                          look="secondary"
-                          label="Remove Restriction"
-                          @click=${() => this._unrestrictNode(e)}
-                        >Remove Restriction</uui-button>
-                      </uui-table-cell>
-                    </uui-table-row>
-                  `
-    )}
-              </uui-table>
-            `}
+      <uui-box headline="Protected pages" style="margin-top:16px;">
+        ${this._loading ? s`<uui-loader></uui-loader>` : this._restricted.length === 0 ? s`<p class="empty">Nothing is protected yet.</p>` : s`
+                <uui-table>
+                  <uui-table-head>
+                    <uui-table-head-cell>Page</uui-table-head-cell>
+                    <uui-table-head-cell>Allowed groups</uui-table-head-cell>
+                    <uui-table-head-cell>Login</uui-table-head-cell>
+                    <uui-table-head-cell>Access denied</uui-table-head-cell>
+                    <uui-table-head-cell></uui-table-head-cell>
+                  </uui-table-head>
+                  ${this._restricted.map((e) => o(this, i, y).call(this, e))}
+                </uui-table>
+              `}
       </uui-box>
     `;
   }
 };
-t.styles = h`
+i = /* @__PURE__ */ new WeakSet();
+d = async function() {
+  this._loading = !0;
+  try {
+    const e = await fetch(`${this._api}/GetRestrictedNodes`, { credentials: "same-origin" });
+    e.ok && (this._restricted = await e.json());
+  } finally {
+    this._loading = !1;
+  }
+};
+h = function(e) {
+  return (e.target.selection ?? String(e.target.value ?? "").split(",")).filter(Boolean);
+};
+_ = async function() {
+  this._saving = !0, this._result = null;
+  try {
+    const e = await fetch(`${this._api}/RestrictNode`, {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        node: this._node[0] ?? "",
+        loginPage: this._loginPage[0] ?? "",
+        errorPage: this._errorPage[0] ?? "",
+        memberGroups: this._groups
+      })
+    });
+    this._result = await e.json(), e.ok && (this._node = [], this._groups = [], await o(this, i, d).call(this));
+  } catch (e) {
+    this._result = { success: !1, message: `The request failed: ${e.message}` };
+  } finally {
+    this._saving = !1;
+  }
+};
+f = async function(e) {
+  if (confirm(`Make "${e.node.name}" public again? Everything beneath it becomes public too.`)) {
+    this._result = null;
+    try {
+      const t = await fetch(`${this._api}/UnrestrictNode?node=${encodeURIComponent(e.node.key)}`, {
+        method: "DELETE",
+        credentials: "same-origin"
+      });
+      this._result = await t.json(), await o(this, i, d).call(this);
+    } catch (t) {
+      this._result = { success: !1, message: `The request failed: ${t.message}` };
+    }
+  }
+};
+v = function(e) {
+  this._node = [e.node.key], this._loginPage = e.loginPage ? [e.loginPage.key] : [], this._errorPage = e.errorPage ? [e.errorPage.key] : [], this._groups = e.memberGroups.filter((t) => t.key !== "00000000-0000-0000-0000-000000000000").map((t) => t.key), this._result = null, this.scrollIntoView({ behavior: "smooth", block: "start" });
+};
+x = function() {
+  return s`
+      <uui-box headline="Protect a page">
+        <div class="field">
+          <label for="node">Page to protect</label>
+          <p class="help">The page and everything beneath it will require membership.</p>
+          <umb-input-document
+            id="node"
+            max="1"
+            .selection=${this._node}
+            @change=${(e) => this._node = o(this, i, h).call(this, e)}>
+          </umb-input-document>
+        </div>
+
+        <div class="field">
+          <label for="groups">Member groups allowed</label>
+          <p class="help">A member in any one of these groups can see the page.</p>
+          <umb-input-member-group
+            id="groups"
+            .selection=${this._groups}
+            @change=${(e) => this._groups = o(this, i, h).call(this, e)}>
+          </umb-input-member-group>
+        </div>
+
+        <div class="field">
+          <label for="login">Login page</label>
+          <p class="help">Where visitors who are not signed in are sent.</p>
+          <umb-input-document
+            id="login"
+            max="1"
+            .selection=${this._loginPage}
+            @change=${(e) => this._loginPage = o(this, i, h).call(this, e)}>
+          </umb-input-document>
+        </div>
+
+        <div class="field">
+          <label for="error">Access denied page</label>
+          <p class="help">Where signed-in members who are not in an allowed group are sent.</p>
+          <umb-input-document
+            id="error"
+            max="1"
+            .selection=${this._errorPage}
+            @change=${(e) => this._errorPage = o(this, i, h).call(this, e)}>
+          </umb-input-document>
+        </div>
+
+        <div class="actions">
+          <uui-button
+            look="primary"
+            ?disabled=${this._saving || this._node.length === 0}
+            @click=${o(this, i, _)}>
+            ${this._saving ? "Saving…" : "Protect page"}
+          </uui-button>
+        </div>
+
+        ${this._result ? s`<div class="msg ${this._result.success ? "success" : "error"}">
+                   ${this._result.message}
+                 </div>` : m}
+      </uui-box>
+    `;
+};
+y = function(e) {
+  var t, a;
+  return s`
+      <uui-table-row>
+        <uui-table-cell>
+          <strong>${e.node.name}</strong>
+          ${e.node.path ? s`<div class="crumb">${e.node.path}</div>` : m}
+        </uui-table-cell>
+        <uui-table-cell>
+          <div class="groups">
+            ${e.memberGroups.map((n) => n.key === "00000000-0000-0000-0000-000000000000" ? s`<uui-tag look="warning" title="This group no longer exists">
+                         ${n.name}
+                       </uui-tag>` : s`<uui-tag look="secondary">${n.name}</uui-tag>`)}
+          </div>
+        </uui-table-cell>
+        <uui-table-cell>
+          ${((t = e.loginPage) == null ? void 0 : t.name) ?? s`<span class="missing">missing</span>`}
+        </uui-table-cell>
+        <uui-table-cell>
+          ${((a = e.errorPage) == null ? void 0 : a.name) ?? s`<span class="missing">missing</span>`}
+        </uui-table-cell>
+        <uui-table-cell style="text-align:right;white-space:nowrap;">
+          <uui-button look="secondary" compact label="Edit" @click=${() => o(this, i, v).call(this, e)}>
+            Edit
+          </uui-button>
+          <uui-button look="secondary" color="danger" compact label="Remove"
+            @click=${() => o(this, i, f).call(this, e)}>
+            Remove
+          </uui-button>
+        </uui-table-cell>
+      </uui-table-row>
+    `;
+};
+l.styles = w`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
-    p.description { color: var(--uui-color-text-alt, #6b7280); margin: 0 0 24px; }
-    .form-grid { display: grid; gap: 14px; max-width: 480px; margin-bottom: 20px; }
-    .field label { display: block; font-weight: 600; font-size: 0.875rem; margin-bottom: 4px; }
-    .actions { margin-top: 12px; display: flex; gap: 12px; align-items: center; }
-    .status { font-size: 0.875rem; color: #065f46; }
-    .err-msg { font-size: 0.875rem; color: #b91c1c; }
+    p.description { color: var(--uui-color-text-alt, #6b7280); margin: 0 0 24px; max-width: 60ch; }
+    .field { margin-bottom: 18px; }
+    .field > label { display: block; font-weight: 600; font-size: 0.875rem; margin-bottom: 4px; }
+    .field > .help { color: var(--uui-color-text-alt, #6b7280); font-size: 0.8125rem; margin: 0 0 6px; }
+    .actions { display: flex; gap: 12px; align-items: center; margin-top: 8px; }
+    .msg { padding: 10px 14px; border-radius: 4px; margin-top: 16px; }
+    .msg.success { background: #d1fae5; color: #065f46; }
+    .msg.error { background: #fee2e2; color: #991b1b; }
+    .crumb { color: var(--uui-color-text-alt, #6b7280); font-size: 0.8125rem; }
+    .groups { display: flex; gap: 6px; flex-wrap: wrap; }
+    .missing { color: #b45309; }
+    .empty { color: var(--uui-color-text-alt, #6b7280); padding: 16px 0; }
     uui-table { width: 100%; }
-    .empty { color: var(--uui-color-text-alt, #6b7280); padding: 12px 0; }
   `;
-s([
-  r()
-], t.prototype, "_restrictedNodes", 2);
-s([
-  r()
-], t.prototype, "_loading", 2);
-s([
-  r()
-], t.prototype, "_nodeId", 2);
-s([
-  r()
-], t.prototype, "_loginPageNodeId", 2);
-s([
-  r()
-], t.prototype, "_errorPageNodeId", 2);
-s([
-  r()
-], t.prototype, "_memberGroups", 2);
-s([
-  r()
-], t.prototype, "_statusMsg", 2);
-s([
-  r()
-], t.prototype, "_errorMsg", 2);
-t = s([
-  g("restricted-dashboard")
-], t);
-const y = t;
+r([
+  u()
+], l.prototype, "_restricted", 2);
+r([
+  u()
+], l.prototype, "_loading", 2);
+r([
+  u()
+], l.prototype, "_saving", 2);
+r([
+  u()
+], l.prototype, "_node", 2);
+r([
+  u()
+], l.prototype, "_loginPage", 2);
+r([
+  u()
+], l.prototype, "_errorPage", 2);
+r([
+  u()
+], l.prototype, "_groups", 2);
+r([
+  u()
+], l.prototype, "_result", 2);
+l = r([
+  P("restricted-dashboard")
+], l);
+const A = l;
 export {
-  t as RestrictedDashboardElement,
-  y as default
+  l as RestrictedDashboardElement,
+  A as default
 };
