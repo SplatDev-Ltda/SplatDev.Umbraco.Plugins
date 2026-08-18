@@ -1,20 +1,98 @@
-<div class="umb-dashboard">
+<div ng-controller="ToastNotificationsDashboardController" class="toastnotifications-dashboard">
     <div class="umb-panel-header">
-        <h1>Toast Notifications</h1>
-        <p class="umb-panel-description">Configure site-wide toast notification styles, timing, and placement for user feedback.</p>
+        <h1>Toast notifications</h1>
+        <p class="umb-panel-description" style="max-width:62ch;">
+            Short messages shown to editors in the backoffice. A toast can be scheduled with a
+            start and end time, or left open-ended to show until you disable it.
+        </p>
     </div>
+
     <div class="umb-box">
-        <div class="umb-box-header" style="display:flex;align-items:center;gap:12px;padding:16px;">
-            <div style="width:48px;height:48px;border-radius:10px;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;">🔔</div>
-            <div>
-                <h3 style="margin:0 0 4px;font-size:1rem;font-weight:600;">Toast Notifications</h3>
-                <p style="margin:0;font-size:0.875rem;color:#6b7280;">Plugin is installed and running on Umbraco 13.</p>
-            </div>
-            <span style="margin-left:auto;display:inline-block;padding:2px 8px;border-radius:9999px;font-size:0.7rem;font-weight:700;text-transform:uppercase;background:#d1fae5;color:#065f46;">Active</span>
+        <div class="umb-box-header">
+            <h3>{{editingId !== null ? "Edit toast" : "New toast"}}</h3>
         </div>
-        <div class="umb-box-content" style="padding:16px;border-top:1px solid #e5e7eb;">
-            <p style="color:#374151;">Configure site-wide toast notification styles, timing, and placement for user feedback.</p>
-            <p style="color:#6b7280;font-size:0.875rem;margin-top:8px;">Configure this plugin via the Umbraco backoffice settings.</p>
+        <div class="umb-box-content" style="padding:16px;">
+            <div class="control-group" style="margin-bottom:12px;">
+                <label class="control-label">Title</label>
+                <input type="text" class="umb-editor" style="width:100%;" ng-model="draft.title" />
+            </div>
+
+            <div class="control-group" style="margin-bottom:12px;">
+                <label class="control-label">Message</label>
+                <textarea class="umb-editor" style="width:100%;min-height:72px;" ng-model="draft.body"></textarea>
+            </div>
+
+            <div style="display:flex;gap:16px;flex-wrap:wrap;">
+                <div class="control-group">
+                    <label class="control-label">Type</label>
+                    <select class="umb-editor" ng-model="draft.type">
+                        <option value="info">Info</option>
+                        <option value="success">Success</option>
+                        <option value="warning">Warning</option>
+                        <option value="error">Error</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Show from <small>(optional)</small></label>
+                    <input type="datetime-local" class="umb-editor" ng-model="draft.startDate" />
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Show until <small>(optional)</small></label>
+                    <input type="datetime-local" class="umb-editor" ng-model="draft.endDate" />
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Enabled</label>
+                    <input type="checkbox" ng-model="draft.isActive" />
+                </div>
+            </div>
+
+            <div style="margin-top:14px;display:flex;gap:10px;">
+                <button class="btn btn-primary" ng-click="save()" ng-disabled="busy">
+                    {{busy ? "Saving..." : (editingId !== null ? "Save changes" : "Create toast")}}
+                </button>
+                <button class="btn btn-default" ng-if="editingId !== null" ng-click="cancel()">Cancel</button>
+            </div>
+
+            <div ng-if="msg" class="alert" ng-class="msg.ok ? 'alert-success' : 'alert-danger'"
+                 style="margin-top:14px;">
+                {{msg.text}}
+            </div>
+        </div>
+    </div>
+
+    <div class="umb-box" style="margin-top:16px;">
+        <div class="umb-box-header"><h3>All toasts</h3></div>
+        <div class="umb-box-content" style="padding:16px;">
+            <div ng-if="loading" class="umb-loading">Loading...</div>
+            <p ng-if="!loading && toasts.length === 0" style="color:#6b7280;">No toasts yet.</p>
+
+            <table class="table" ng-if="!loading && toasts.length > 0">
+                <thead>
+                    <tr><th>Title</th><th>Type</th><th>State</th><th>Window</th><th></th></tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="t in toasts">
+                        <td>
+                            <strong>{{t.title}}</strong>
+                            <div ng-if="t.body" style="color:#6b7280;font-size:0.8125rem;">{{t.body}}</div>
+                        </td>
+                        <td>{{t.type}}</td>
+                        <td><span class="umb-badge">{{stateOf(t)}}</span></td>
+                        <td style="color:#6b7280;font-size:0.8125rem;">
+                            <span ng-if="!t.startDate && !t.endDate">always</span>
+                            <span ng-if="t.startDate || t.endDate">
+                                {{t.startDate ? (t.startDate | date:'short') : 'any time'}}
+                                &rarr;
+                                {{t.endDate ? (t.endDate | date:'short') : 'no end'}}
+                            </span>
+                        </td>
+                        <td style="text-align:right;white-space:nowrap;">
+                            <button class="btn btn-default btn-sm" ng-click="edit(t)">Edit</button>
+                            <button class="btn btn-danger btn-sm" ng-click="remove(t)" ng-disabled="busy">Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
