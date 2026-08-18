@@ -1,0 +1,10 @@
+<div class="umb-dashboard" ng-controller="GoogleAnalyticsDashboardController">
+    <div class="umb-panel-header"><h1>Google Analytics</h1><p class="umb-panel-description">Configure the GA4 measurement ID.</p></div>
+    <div class="umb-box"><div class="umb-box-content" style="padding:16px;">
+        <div ng-if="loading" class="umb-loading">Loading...</div>
+        <div ng-if="message" class="alert alert-{{message.type}}">{{message.text}}</div>
+        <label>Measurement ID <input type="text" ng-model="settings.measurementId" placeholder="G-XXXXXXXXXX" /></label>
+        <label><input type="checkbox" ng-model="settings.enabled" /> Enabled</label>
+        <button class="btn btn-primary" ng-click="save()" ng-disabled="loading">{{saved ? 'Saved!' : 'Save Settings'}}</button>
+    </div></div>
+</div>

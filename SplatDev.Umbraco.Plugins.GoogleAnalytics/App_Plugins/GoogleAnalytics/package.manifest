@@ -1,0 +1,15 @@
+{
+  "javascript": ["/App_Plugins/GoogleAnalytics/angular/analytics.controller.js"],
+  "css": [],
+  "propertyEditors": [],
+  "gridEditors": [],
+  "dashboards": [
+    {
+      "alias": "GoogleAnalytics.Dashboard",
+      "view": "/App_Plugins/GoogleAnalytics/angular/analytics.html",
+      "sections": ["settings"],
+      "tab": "Analytics",
+      "access": [{"grant": "admin"}]
+    }
+  ]
+}

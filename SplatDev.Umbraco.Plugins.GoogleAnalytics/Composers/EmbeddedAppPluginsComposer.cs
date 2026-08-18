@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,7 +13,7 @@ using Umbraco.Cms.Core.Manifest;
 using Umbraco.Cms.Infrastructure.Manifest;
 #endif
 
-namespace SplatDev.Umbraco.Plugins.Analytics.Composers;
+namespace SplatDev.Umbraco.Plugins.GoogleAnalytics.Composers;
 
 /// <summary>
 /// Serves this plugin's App_Plugins assets straight out of the assembly, and tells the
