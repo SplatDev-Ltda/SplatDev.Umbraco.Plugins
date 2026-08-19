@@ -1,4 +1,4 @@
-# Campaign Suite — spec and plan
+# Newsletter Studio — spec and plan
 
 Status: **draft for approval.** Two decisions below are the user's to make and block the build.
 
@@ -22,34 +22,30 @@ trademark on the same marketplace, in the same category, against the same buyers
 also be confusing rather than competitive: their `.Plugins.Mailjet` naming means a search
 for "newsletter studio mailgun" would surface ours as if it were their add-on.
 
-**Working name used throughout this document: `SplatDev.Umbraco.Plugins.CampaignSuite`.**
-Alternatives if that is not liked: `Broadcast`, `MailRoom`, `Dispatch`, `CampaignDesk`.
-*Decision required before any code is written, because the package id, the `App_Plugins`
-folder, the section alias and the database schema all derive from it and none of them are
-cheap to rename after publication.*
+**Decided: `SplatDev.Umbraco.Plugins.NewsletterStudio`.** The collision is accepted; the
+`SplatDev.` prefix is mandatory in this repo anyway and does identify the publisher. Noted
+once here so the risk is on record, and not raised again.
 
 ---
 
-## 2. This is not a new plugin — it is a consolidation
+## 2. Composition, not consolidation
 
-The estate already contains **three implementations of newsletter campaigns and two of
-email templates**, all published, all overlapping:
+**Decided: every existing plugin stays as it is.** Newsletter Studio references them as
+NuGet packages and builds on top. No code is copied and nothing is deprecated.
 
-| Package | Version | Owns | Route |
-|---|---|---|---|
-| `…Plugins.Newsletter` | 1.2.0 | Campaign, CampaignStats, Subscriber, SubscriberList | `management/api/v1/newsletter` |
-| `…Plugins.Newsletters` | 2.2.0 | NewsletterCampaign, NewsletterSend, NewsletterSubscriber | `api/newsletters` |
-| `…Plugins.EmailNotifications` | 1.2.0 | Campaign, EmailEvent, EmailTemplate, Notification, Subscriber | `api/newsletter`, `api/email-templates`, `api/mailgun` |
-| `…Plugins.EmailTemplates` | 1.2.0 | EmailStyle, EmailTemplate | `management/api/v1/email-templates` |
-| `…Plugins.Mailer` | 2.1.4 | EmailModel, TemplateSource | Microsoft Graph sender |
+That is viable — every one of them exposes a public interface and registers it in DI:
 
-`Newsletter` and `Newsletters` differ by a trailing **s**, ship different APIs, and have
-**identical download counts (568 each)** — which suggests nobody is choosing between them
-deliberately. `EmailNotifications` independently reimplements both newsletters *and* email
-templates, and carries its own Mailgun webhook.
+| Package | Public interface | Registered |
+|---|---|---|
+| `…Newsletter` | `INewsletterService` | ✅ |
+| `…Newsletters` | `INewslettersService` | ✅ |
+| `…EmailNotifications` | `IMailProvider`, `IEmailTemplateService`, `INewsletterService`, `INotificationService` | ✅ |
+| `…EmailTemplates` | `IEmailTemplateService`, `IEmailStyleService` | ✅ |
+| `…Smtp` | `ISmtpService` | ✅ |
+| `…Mailer` | `IEmailService` | ❌ **not registered** |
 
-Building a sixth would make the problem worse. Campaign Suite must **subsume** these, and
-the migration path for existing installs is part of the deliverable, not an afterthought.
+Newsletter Studio becomes a thin orchestration layer plus the parts nobody owns. The gap
+report below is what it has to supply.
 
 ---
 
@@ -76,7 +72,7 @@ Suite consumes it and adds no transport code of its own.
 The ask names MailerSend. Missing against the current market: **MailerSend, Amazon SES,
 Postmark, Brevo (ex-Sendinblue), Resend, Mailjet**. Each is a new
 `SplatDev.Messaging.<Name>` sibling implementing the existing interface — a small, well-
-bounded project apiece, not part of Campaign Suite itself.
+bounded project apiece, not part of Newsletter Studio itself.
 
 ### Gap: the abstraction has no delivery feedback
 
@@ -108,7 +104,7 @@ and hands it to `IFindlayNotificationService`.
 
 The differences are structural, not cosmetic:
 
-| | Findlay (workflow) | Campaign Suite (marketing) |
+| | Findlay (workflow) | Newsletter Studio (marketing) |
 |---|---|---|
 | Trigger | a step transition | a schedule, or manual send |
 | Audience | derived from context — the submitter, the assigned group | a list or a segment |
@@ -129,11 +125,11 @@ Findlay solution**, outside this repository. `FindlayNotification` carries `Payl
 whoever implements `SendAsync` has to build subject and body, resolve placeholders from the
 payload, and pick a transport. Every future customer integration repeats that.
 
-Campaign Suite should own the rendering half and expose it:
+Newsletter Studio should own the rendering half and expose it:
 
 ```
-SplatDev.Umbraco.Plugins.CampaignSuite.Workflow     NEW, small
-    an IActionMessageDispatcher that resolves a Campaign Suite *template* by the action
+SplatDev.Umbraco.Plugins.NewsletterStudio.Workflow     NEW, small
+    an IActionMessageDispatcher that resolves a Newsletter Studio *template* by the action
     alias, binds placeholders from WorkflowEvent.PayloadJson, resolves the audience from
     ActionMessageAudience, and sends through IBulkMessagingController.
 ```
@@ -146,6 +142,81 @@ This also gives the template editor a second consumer, which is a good pressure 
 templates that only ever render marketing HTML tend to grow assumptions (unsubscribe
 footer, tracking pixel, list context) that a transactional message must be able to omit.
 Phase 4 must therefore treat those three as **per-template switches**, not fixtures.
+
+---
+
+## 3b. Gap report across the related plugins
+
+Measured, not assumed. What follows is what Newsletter Studio must supply because no
+referenced package provides it.
+
+### Blocking — composition cannot proceed without these
+
+**G1. `Mailer.IEmailService` is public but never registered.**
+`MailerComposer` registers the concrete `MailerService` and `MicrosoftGraphMailerService`
+as transients; the interface is not bound. A consumer referencing the package cannot
+resolve `IEmailService` from DI at all. One line in Mailer fixes it, and it must be fixed
+in Mailer rather than worked around here.
+
+**G2. Two interface names appear in two packages each.**
+`INewsletterService` exists in both `…Newsletter` and `…EmailNotifications`;
+`IEmailTemplateService` in both `…EmailTemplates` and `…EmailNotifications`. Referencing
+both packages makes the bare name ambiguous (CS0104). This is a compile error rather than
+silent shadowing — the container sees distinct types — so it is a developer-experience
+cost, not a correctness risk. Newsletter Studio should alias them explicitly at the using
+site and never re-export either name.
+
+### Functional gaps — the reason Newsletter Studio exists
+
+**G3. No shared contact model.** Three separate subscriber types
+(`Newsletter.Subscriber`, `Newsletters.NewsletterSubscriber`,
+`EmailNotifications.Subscriber`) with no common identity. A contact subscribed in one is
+invisible to the others. Newsletter Studio owns the canonical contact and maps outward;
+it must not try to unify their storage.
+
+**G4. Delivery feedback is collected two incompatible ways, and only for one provider.**
+`Newsletter` **pulls** counters from the provider's stats API
+(`result.Stats.Opened.Total`, `Failed.Permanent.Total`) at read time.
+`EmailNotifications` **receives** them by webhook — `MailgunWebhookController`, Mailgun
+only. Neither newsletter plugin has a webhook receiver at all.
+
+Consequences: no per-recipient events (only campaign totals), nothing for SendGrid,
+SocketLabs or SMTP, and no suppression anywhere. Continuing to mail an address that hard-
+bounced or complained is how a sending domain gets blocked, so this is an obligation
+rather than a feature. `SplatDev.Messaging.Webhooks` — normalising every provider's
+callback into one `DeliveryEvent` stream — is the single largest piece of new backend work
+and phase 2 of the plan.
+
+**G5. No suppression list.** Follows from G4. Nothing anywhere records "never mail this
+address again".
+
+**G6. No unsubscribe standard.** No `List-Unsubscribe` or `List-Unsubscribe-Post`
+(RFC 8058), required of bulk senders by Gmail and Yahoo since 2024.
+
+**G7. `Newsletters` cannot send.** 542 lines, no transport of any kind — it records
+campaigns and subscribers with no dispatch path. Newsletter Studio must not assume a
+referenced package can deliver just because it models campaigns.
+
+**G8. No email-safe rendering.** `EmailTemplates` stores an `EmailTemplate` and an
+`EmailStyle` and does no inlining, no client-compatibility work, no MJML. Nothing in the
+estate turns authored content into markup Outlook will render. This is phase 4 and the
+approved MJML pipeline.
+
+**G9. No batching or resumability.** No queue, no batch state. A 50,000-recipient campaign
+cannot be one request, and a failed batch must not re-send the ones that already went.
+
+**G10. No consent linkage.** `…Plugins.Lgpd` already models provable, append-only consent
+(art. 8 §1). None of the email plugins reference it, so a subscriber's consent is not
+demonstrable. Newsletter Studio should bind them rather than add a fourth consent store.
+
+**G11. Provider coverage.** Present: SendGrid, Mailgun, SMTP, SocketLabs. Missing:
+**MailerSend** (named in the ask), Amazon SES, Postmark, Brevo, Resend, Mailjet.
+
+**G12. Umbraco 13 reach.** `Newsletter`, `EmailNotifications` and `EmailTemplates` ship a
+v17 manifest only. Newsletter Studio on v13 would surface features whose underlying
+plugins have no v13 UI — acceptable, since Newsletter Studio supplies its own, but it means
+it cannot deep-link into theirs on v13.
+
 
 ---
 
@@ -210,7 +281,7 @@ there rather than tracking silently.
 ## 5. Architecture
 
 ```
-SplatDev.Umbraco.Plugins.CampaignSuite        Umbraco section, dashboards, editor UI,
+SplatDev.Umbraco.Plugins.NewsletterStudio        Umbraco section, dashboards, editor UI,
                                               campaign/contact/list domain, scheduler
         │  consumes
         ▼
@@ -247,15 +318,15 @@ Each phase ships independently and is useful on its own.
 | **5** | Reporting and A/B | Needs phase 2's event stream |
 | **6** | New providers: MailerSend, SES, Postmark, Brevo, Resend, Mailjet | Parallelisable, independent |
 | **7** | Migration from Newsletter / Newsletters / EmailNotifications, deprecation shims | Ship before unlisting anything |
-| **8** | `CampaignSuite.Workflow` — the shared `IActionMessageDispatcher` | Retires the per-customer notification service. Needs phase 4's templates |
+| **8** | `NewsletterStudio.Workflow` — the shared `IActionMessageDispatcher` | Retires the per-customer notification service. Needs phase 4's templates |
 
 ---
 
 ## 7. Decisions required
 
-1. **Name.** `CampaignSuite`, or one of the alternatives, or something else — but not
+1. **Name.** `NewsletterStudio`, or one of the alternatives, or something else — but not
    "Newsletter Studio".
-2. **The five overlapping packages.** Consolidate into Campaign Suite with a migration and
+2. **The five overlapping packages.** Consolidate into Newsletter Studio with a migration and
    deprecation shims (as SPL-3532 specified for the Analytics rename), or leave them
    published alongside? Leaving them means five products competing with our own sixth.
 3. **MJML.** Acceptable as a build-time dependency?
