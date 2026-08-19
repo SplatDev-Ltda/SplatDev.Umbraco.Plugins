@@ -36,6 +36,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
+      - name: Check solution membership
+        # Both workflows key off SplatDev.Core.sln and neither complains when a project is
+        # absent from it. That has cost us twice: Getnet and Santander were skipped from
+        # every release, and ~130 tests never ran while the build stayed green.
+        run: bash tools/check-solution-membership.sh
+
       - name: Restore dependencies
         run: dotnet restore SplatDev.Core.sln
 
