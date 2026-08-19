@@ -88,11 +88,11 @@ export class RestrictedDashboardElement extends UmbElementMixin(LitElement) {
     }
   }
 
-  /** The pickers hand back a comma-separated string of GUID keys. */
+  /** Umbraco 17 pickers expose their selected keys through the value property. */
   #selection(e: Event): string[] {
-    const value = (e.target as { value?: string | string[] }).selection
-      ?? String((e.target as { value?: string }).value ?? "").split(",");
-    return value.filter(Boolean);
+    const raw = (e.target as HTMLInputElement & { value?: string | string[] }).value;
+    const values = Array.isArray(raw) ? raw : String(raw ?? "").split(",");
+    return values.map(value => value.trim()).filter(Boolean);
   }
 
   async #save(): Promise<void> {

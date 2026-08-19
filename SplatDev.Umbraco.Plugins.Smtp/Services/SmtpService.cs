@@ -43,16 +43,6 @@ public class SmtpService : ISmtpService
             });
         }
 
-        if (string.IsNullOrWhiteSpace(settings.Host))
-        {
-            return Task.FromResult(new SmtpTestResult
-            {
-                Success = false,
-                Message = "No SMTP host is configured.",
-                Error = "Set SmtpSettings:Host in configuration."
-            });
-        }
-
         if (!MailAddress.TryCreate(settings.FromEmail, out _))
         {
             return Task.FromResult(new SmtpTestResult
