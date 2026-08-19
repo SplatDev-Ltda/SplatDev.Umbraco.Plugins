@@ -1,0 +1,11 @@
+{
+  "javascript": [ "/App_Plugins/Lgpd/angular/lgpd.controller.js" ],
+  "dashboards": [
+    {
+      "alias": "splatdevLgpd",
+      "view": "/App_Plugins/Lgpd/dashboard.html",
+      "sections": [ "settings" ],
+      "weight": -95
+    }
+  ]
+}

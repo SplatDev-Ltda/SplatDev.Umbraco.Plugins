@@ -1,0 +1,17 @@
+{
+  "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
+  "packageId": "SplatDev.Umbraco.Plugins.Lgpd",
+  "title": "SplatDev LGPD",
+  "description": "Conformidade com a LGPD (Lei 13.709/2018) no Umbraco: consentimento acumulativo e comprovável (art. 8 §1), as dez bases legais do art. 7, os nove direitos do titular do art. 18 com o prazo de 15 dias do art. 19, o registro de operações do art. 37 e a divulgação do encarregado do art. 41. Banner de consentimento no front-end e painel no backoffice. Not a rebadged GDPR plugin - the two laws differ in the data model, not just the labels.",
+  "category": "Editor Tools",
+  "packageType": "Package",
+  "licenseType": "Free",
+  "authorDetails": {
+    "name": "SplatDev Ltda",
+    "url": "https://splatdev.com"
+  },
+  "versions": [
+    { "umbracoMajorVersion": 13 },
+    { "umbracoMajorVersion": 17 }
+  ]
+}
