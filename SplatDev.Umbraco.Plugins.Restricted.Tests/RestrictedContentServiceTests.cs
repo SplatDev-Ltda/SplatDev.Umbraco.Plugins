@@ -226,6 +226,29 @@ public class RestrictedContentServiceTests
     // ── listing ──────────────────────────────────────────────────────────────
 
     [Fact]
+    public async Task Listing_uses_the_supplied_group_catalog_once_for_all_entries()
+    {
+        var page = Page(1063, PageKey, "Members Area", "-1,1063");
+        var login = Page(1010, Guid.NewGuid(), "Login", "-1,1010");
+        var denied = Page(1011, Guid.NewGuid(), "Denied", "-1,1011");
+        var entryId = Guid.NewGuid();
+        var rule = new PublicAccessRule(Guid.NewGuid(), entryId)
+        {
+            RuleType = Constants.Conventions.PublicAccess.MemberRoleRuleType,
+            RuleValue = "Members",
+        };
+        var entry = new PublicAccessEntry(page.Object, login.Object, denied.Object, [rule]);
+        _access.Setup(a => a.GetAll()).Returns([entry]);
+
+        var suppliedCatalog = new[] { Group(MembersKey, "Members") };
+        var result = await Build().GetRestrictedNodesAsync(suppliedCatalog);
+
+        Assert.Single(result);
+        Assert.Equal("Members", result[0].MemberGroups.Single().Name);
+        _groups.Verify(g => g.GetAll(), Times.Never);
+    }
+
+    [Fact]
     public async Task Member_groups_are_listed_alphabetically_for_the_picker()
     {
         var list = await Build().GetMemberGroupsAsync();

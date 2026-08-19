@@ -79,4 +79,27 @@ public class SmtpServiceTests
         Assert.False(result.Success);
         Assert.Contains("No SMTP host", result.Message);
     }
+
+    [Fact]
+    public async Task Sending_a_test_with_no_from_address_fails_fast_and_explains()
+    {
+        var result = await Build(("Host", "mail.example.com")).SendTestAsync();
+
+        Assert.False(result.Success);
+        Assert.Equal("No valid SMTP from address is configured.", result.Message);
+        Assert.Contains("SmtpSettings:FromEmail", result.Error);
+    }
+
+    [Fact]
+    public async Task Sending_a_test_with_an_invalid_from_address_fails_before_connecting()
+    {
+        var result = await Build(
+            ("Host", "mail.example.com"),
+            ("FromEmail", "not-an-email"))
+            .SendTestAsync();
+
+        Assert.False(result.Success);
+        Assert.Equal("No valid SMTP from address is configured.", result.Message);
+        Assert.Contains("SmtpSettings:FromEmail", result.Error);
+    }
 }
