@@ -1,8 +1,12 @@
 import { LitElement, html, css, customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 @customElement("dropzone-dashboard")
 export class DropzoneDashboard extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
     static styles = css`
         :host { display: block; padding: 20px; }
         .drop-area {
@@ -31,7 +35,7 @@ export class DropzoneDashboard extends UmbElementMixin(LitElement) {
     }
 
     async _loadMedia() {
-        const r = await fetch("/umbraco/api/dropzone/GetMedia");
+        const r = await this.#fetch("/umbraco/api/dropzone/GetMedia");
         this._mediaItems = await r.json();
     }
 
@@ -59,7 +63,7 @@ export class DropzoneDashboard extends UmbElementMixin(LitElement) {
             fd.append("file", item.file);
             if (this._parentMediaId) fd.append("parentMediaId", this._parentMediaId);
             try {
-                const r = await fetch("/umbraco/api/dropzone/Upload", { method: "POST", body: fd });
+                const r = await this.#fetch("/umbraco/api/dropzone/Upload", { method: "POST", body: fd });
                 if (r.ok) { item.done = true; } else { const d = await r.json(); item.error = d.error || "Failed"; }
             } catch { item.error = "Upload error"; }
             item.uploading = false;
@@ -69,7 +73,7 @@ export class DropzoneDashboard extends UmbElementMixin(LitElement) {
     }
 
     async _delete(key) {
-        await fetch(`/umbraco/api/dropzone/Delete?mediaKey=${key}`, { method: "DELETE" });
+        await this.#fetch(`/umbraco/api/dropzone/Delete?mediaKey=${key}`, { method: "DELETE" });
         await this._loadMedia();
     }
 

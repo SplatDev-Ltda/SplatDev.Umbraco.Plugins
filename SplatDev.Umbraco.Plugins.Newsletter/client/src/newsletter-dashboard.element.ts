@@ -7,6 +7,8 @@ import {
 } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface SubscriberList {
   id: number;
   name: string;
@@ -50,6 +52,8 @@ const API_BASE = "/umbraco/management/api/v1/newsletter";
 
 @customElement("newsletter-dashboard")
 export class NewsletterDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   @state() private _lists: SubscriberList[] = [];
   @state() private _subscribers: Subscriber[] = [];
   @state() private _campaigns: Campaign[] = [];
@@ -90,7 +94,7 @@ export class NewsletterDashboardElement extends UmbElementMixin(LitElement) {
 
   private async _api<T>(url: string, init?: RequestInit): Promise<T | null> {
     try {
-      const r = await fetch(`${API_BASE}${url}`, {
+      const r = await this.#fetch(`${API_BASE}${url}`, {
         headers: { "Content-Type": "application/json", ...init?.headers },
         ...init,
       });

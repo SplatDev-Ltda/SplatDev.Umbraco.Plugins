@@ -1,13 +1,39 @@
-import { LitElement as d, html as e, css as c, state as p, customElement as h } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as m } from "@umbraco-cms/backoffice/element-api";
-var b = Object.defineProperty, g = Object.getOwnPropertyDescriptor, l = (t, o, s, r) => {
-  for (var a = r > 1 ? void 0 : r ? g(o, s) : o, u = t.length - 1, n; u >= 0; u--)
-    (n = t[u]) && (a = (r ? n(o, s, a) : n(a)) || a);
-  return r && a && b(o, s, a), a;
-};
-let i = class extends m(d) {
+import { LitElement as c, html as s, css as m, state as p, customElement as b } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as f } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as v } from "@umbraco-cms/backoffice/auth";
+function g(e) {
+  let t = null;
+  const r = new Promise((o) => {
+    e.consumeContext(v, async (a) => {
+      var i;
+      try {
+        t = await ((i = a == null ? void 0 : a.getLatestToken) == null ? void 0 : i.call(a)) ?? null;
+      } catch {
+        t = null;
+      }
+      o();
+    }), setTimeout(o, 3e3);
+  });
+  return async (o, a = {}) => {
+    await r;
+    const i = new Headers(a.headers);
+    t && !i.has("Authorization") && i.set("Authorization", `Bearer ${t}`);
+    const l = await fetch(o, { ...a, credentials: "same-origin", headers: i });
+    return (l.status === 401 || l.status === 403) && console.error(
+      `[SplatDev] ${l.status} from ${String(o)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
+    ), l;
+  };
+}
+var y = Object.defineProperty, _ = Object.getOwnPropertyDescriptor, h = (e) => {
+  throw TypeError(e);
+}, u = (e, t, r, o) => {
+  for (var a = o > 1 ? void 0 : o ? _(t, r) : t, i = e.length - 1, l; i >= 0; i--)
+    (l = e[i]) && (a = (o ? l(t, r, a) : l(a)) || a);
+  return o && a && y(t, r, a), a;
+}, x = (e, t, r) => t.has(e) || h("Cannot " + r), w = (e, t, r) => (x(e, t, "read from private field"), r ? r.call(e) : t.get(e)), $ = (e, t, r) => t.has(e) ? h("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, r), d;
+let n = class extends f(c) {
   constructor() {
-    super(...arguments), this._albums = [], this._loading = !0, this._error = "";
+    super(...arguments), $(this, d, g(this)), this._albums = [], this._loading = !0, this._error = "";
   }
   connectedCallback() {
     super.connectedCallback(), this._loadAlbums();
@@ -15,54 +41,54 @@ let i = class extends m(d) {
   async _loadAlbums() {
     this._error = "", this._loading = !0;
     try {
-      const t = await fetch("/umbraco/api/photogallery/GetAlbums");
-      if (!t.ok) throw new Error(await t.text());
-      this._albums = await t.json();
-    } catch (t) {
-      this._error = t instanceof Error ? t.message : "Failed to load albums.";
+      const e = await w(this, d).call(this, "/umbraco/api/photogallery/GetAlbums");
+      if (!e.ok) throw new Error(await e.text());
+      this._albums = await e.json();
+    } catch (e) {
+      this._error = e instanceof Error ? e.message : "Failed to load albums.";
     } finally {
       this._loading = !1;
     }
   }
   render() {
-    return this._loading ? e`
+    return this._loading ? s`
         <uui-box headline="Photo Gallery">
           <div class="loading-container">
             <uui-loader></uui-loader>
           </div>
         </uui-box>
-      ` : this._error ? e`
+      ` : this._error ? s`
         <uui-box headline="Photo Gallery">
           <uui-alert look="danger" class="error-banner">${this._error}</uui-alert>
         </uui-box>
-      ` : this._albums.length === 0 ? e`
+      ` : this._albums.length === 0 ? s`
         <uui-box headline="Photo Gallery">
           <div class="empty-state">
             <p>No albums found. Create your first gallery album.</p>
           </div>
         </uui-box>
-      ` : e`
+      ` : s`
       <uui-box headline="Photo Gallery">
         ${this._albums.map(
-      (t) => e`
-            <uui-box .headline=${t.title} class="album-card">
-              ${t.description ? e`<p class="album-description">${t.description}</p>` : ""}
-              ${(t.photos ?? []).length > 0 ? e`
+      (e) => s`
+            <uui-box .headline=${e.title} class="album-card">
+              ${e.description ? s`<p class="album-description">${e.description}</p>` : ""}
+              ${(e.photos ?? []).length > 0 ? s`
                     <div class="photo-grid">
-                      ${t.photos.map(
-        (o) => e`
+                      ${e.photos.map(
+        (t) => s`
                           <div class="photo-thumb">
                             <img
-                              src=${o.thumbnailUrl ?? o.imageUrl}
-                              alt=${o.title}
+                              src=${t.thumbnailUrl ?? t.imageUrl}
+                              alt=${t.title}
                               loading="lazy"
                             />
-                            ${o.caption ? e`<div class="photo-caption">${o.caption}</div>` : ""}
+                            ${t.caption ? s`<div class="photo-caption">${t.caption}</div>` : ""}
                           </div>
                         `
       )}
                     </div>
-                  ` : e`<p class="album-description">No photos in this album.</p>`}
+                  ` : s`<p class="album-description">No photos in this album.</p>`}
             </uui-box>
           `
     )}
@@ -70,7 +96,8 @@ let i = class extends m(d) {
     `;
   }
 };
-i.styles = c`
+d = /* @__PURE__ */ new WeakMap();
+n.styles = m`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -130,20 +157,20 @@ i.styles = c`
       margin-bottom: var(--uui-size-layout-2, 24px);
     }
   `;
-l([
+u([
   p()
-], i.prototype, "_albums", 2);
-l([
+], n.prototype, "_albums", 2);
+u([
   p()
-], i.prototype, "_loading", 2);
-l([
+], n.prototype, "_loading", 2);
+u([
   p()
-], i.prototype, "_error", 2);
-i = l([
-  h("photogallery-dashboard")
-], i);
-const v = i;
+], n.prototype, "_error", 2);
+n = u([
+  b("photogallery-dashboard")
+], n);
+const k = n;
 export {
-  i as PhotogalleryDashboardElement,
-  v as default
+  n as PhotogalleryDashboardElement,
+  k as default
 };

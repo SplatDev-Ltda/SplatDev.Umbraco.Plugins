@@ -2,6 +2,8 @@ import { LitElement, html, css, nothing } from "@umbraco-cms/backoffice/external
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface RdpConnection {
   id: number;
   name: string;
@@ -30,6 +32,8 @@ const NEW: RdpConnection = {
  */
 @customElement("rdpmanager-dashboard")
 export class RdpManagerDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
@@ -68,7 +72,7 @@ export class RdpManagerDashboardElement extends UmbElementMixin(LitElement) {
   async #load(): Promise<void> {
     this._loading = true;
     try {
-      const r = await fetch(`${this._api}/GetAll`, { credentials: "same-origin" });
+      const r = await this.#fetch(`${this._api}/GetAll`, { credentials: "same-origin" });
       if (r.ok) this._items = await r.json();
     } finally {
       this._loading = false;
@@ -81,7 +85,7 @@ export class RdpManagerDashboardElement extends UmbElementMixin(LitElement) {
     this._msg = null;
     try {
       const editing = this._draft.id > 0;
-      const r = await fetch(`${this._api}/${editing ? "Update" : "Create"}`, {
+      const r = await this.#fetch(`${this._api}/${editing ? "Update" : "Create"}`, {
         method: editing ? "PUT" : "POST",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
@@ -102,7 +106,7 @@ export class RdpManagerDashboardElement extends UmbElementMixin(LitElement) {
     this._busy = true;
     this._msg = null;
     try {
-      const r = await fetch(`${this._api}/Delete?id=${c.id}`, {
+      const r = await this.#fetch(`${this._api}/Delete?id=${c.id}`, {
         method: "DELETE", credentials: "same-origin",
       });
       const result = await r.json();
@@ -126,7 +130,7 @@ export class RdpManagerDashboardElement extends UmbElementMixin(LitElement) {
   async #download(c: RdpConnection): Promise<void> {
     this._msg = null;
     try {
-      const r = await fetch(`${this._api}/DownloadRdpFile?id=${c.id}`, { credentials: "same-origin" });
+      const r = await this.#fetch(`${this._api}/DownloadRdpFile?id=${c.id}`, { credentials: "same-origin" });
       if (!r.ok) throw new Error(String(r.status));
 
       const blob = await r.blob();

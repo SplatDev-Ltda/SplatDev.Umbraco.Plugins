@@ -2,6 +2,8 @@ import { LitElement, html, css } from "@umbraco-cms/backoffice/external/lit";
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface LazyLoadSettings {
   enabled: boolean;
   placeholder: string;
@@ -10,6 +12,8 @@ interface LazyLoadSettings {
 
 @customElement("lazyload-dashboard")
 export class LazyLoadDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   @state() private _settings: LazyLoadSettings = { enabled: true, placeholder: "", lazyLoadIframes: true };
   @state() private _loading = true;
   @state() private _saved = false;
@@ -28,7 +32,7 @@ export class LazyLoadDashboardElement extends UmbElementMixin(LitElement) {
 
   private async _loadSettings(): Promise<void> {
     try {
-      const response = await fetch("/umbraco/api/lazyload/GetSettings");
+      const response = await this.#fetch("/umbraco/api/lazyload/GetSettings");
       this._settings = (await response.json()) as LazyLoadSettings;
     } finally {
       this._loading = false;
@@ -36,7 +40,7 @@ export class LazyLoadDashboardElement extends UmbElementMixin(LitElement) {
   }
 
   private async _saveSettings(): Promise<void> {
-    await fetch("/umbraco/api/lazyload/SaveSettings", {
+    await this.#fetch("/umbraco/api/lazyload/SaveSettings", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(this._settings),

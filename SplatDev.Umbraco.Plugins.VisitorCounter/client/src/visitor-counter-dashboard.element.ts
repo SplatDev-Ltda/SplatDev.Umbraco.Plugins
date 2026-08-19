@@ -1,6 +1,8 @@
 import { LitElement, html, css, customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface VisitorStats {
   totalVisits: number;
   uniqueVisits: number;
@@ -15,6 +17,8 @@ interface DailyCount {
 
 @customElement("visitor-counter-dashboard")
 export class VisitorCounterDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host {
       display: block;
@@ -103,8 +107,8 @@ export class VisitorCounterDashboardElement extends UmbElementMixin(LitElement) 
 
     try {
       const [statsRes, dailyRes] = await Promise.all([
-        fetch(`/umbraco/api/visitorcounter/GetStats?days=${this._days}`),
-        fetch(`/umbraco/api/visitorcounter/GetDailyCounts?days=${this._days}`),
+        this.#fetch(`/umbraco/api/visitorcounter/GetStats?days=${this._days}`),
+        this.#fetch(`/umbraco/api/visitorcounter/GetDailyCounts?days=${this._days}`),
       ]);
 
       if (!statsRes.ok) throw new Error(`Stats HTTP ${statsRes.status}`);

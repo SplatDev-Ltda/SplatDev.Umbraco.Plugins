@@ -2,6 +2,8 @@ import { LitElement, html, css, nothing } from "@umbraco-cms/backoffice/external
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface ConsentSummary {
   sessions: number;
   all: number;
@@ -41,6 +43,8 @@ interface DataRequest {
  */
 @customElement("gdrp-dashboard")
 export class GdrpDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
@@ -84,8 +88,8 @@ export class GdrpDashboardElement extends UmbElementMixin(LitElement) {
     this._loading = true;
     try {
       const [s, r] = await Promise.all([
-        fetch(`${this._api}/GetSummary`, { credentials: "same-origin" }),
-        fetch(`${this._api}/GetRequests?status=${encodeURIComponent(this._statusFilter)}`,
+        this.#fetch(`${this._api}/GetSummary`, { credentials: "same-origin" }),
+        this.#fetch(`${this._api}/GetRequests?status=${encodeURIComponent(this._statusFilter)}`,
               { credentials: "same-origin" }),
       ]);
       if (s.ok) this._summary = await s.json();
@@ -100,7 +104,7 @@ export class GdrpDashboardElement extends UmbElementMixin(LitElement) {
     this._busy = true;
     this._msg = null;
     try {
-      const r = await fetch(
+      const r = await this.#fetch(
         `${this._api}/GetConsentHistory?sessionId=${encodeURIComponent(this._lookup.trim())}`,
         { credentials: "same-origin" });
       if (!r.ok) throw new Error(String(r.status));
@@ -119,7 +123,7 @@ export class GdrpDashboardElement extends UmbElementMixin(LitElement) {
     this._busy = true;
     this._msg = null;
     try {
-      const r = await fetch(`${this._api}/CompleteRequest`, {
+      const r = await this.#fetch(`${this._api}/CompleteRequest`, {
         method: "POST",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
@@ -143,7 +147,7 @@ export class GdrpDashboardElement extends UmbElementMixin(LitElement) {
     this._busy = true;
     this._msg = null;
     try {
-      const r = await fetch(`${this._api}/PurgeConsent?olderThanDays=${this._retentionDays}`, {
+      const r = await this.#fetch(`${this._api}/PurgeConsent?olderThanDays=${this._retentionDays}`, {
         method: "POST", credentials: "same-origin",
       });
       const result = await r.json();

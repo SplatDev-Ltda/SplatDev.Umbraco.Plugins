@@ -4,6 +4,8 @@ import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 import "@umbraco-cms/backoffice/document";
 import "@umbraco-cms/backoffice/member-group";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface MemberGroupRef {
   key: string;
   name: string;
@@ -42,6 +44,8 @@ interface RestrictResult {
  */
 @customElement("restricted-dashboard")
 export class RestrictedDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
@@ -81,7 +85,7 @@ export class RestrictedDashboardElement extends UmbElementMixin(LitElement) {
   async #load(): Promise<void> {
     this._loading = true;
     try {
-      const r = await fetch(`${this._api}/GetRestrictedNodes`, { credentials: "same-origin" });
+      const r = await this.#fetch(`${this._api}/GetRestrictedNodes`, { credentials: "same-origin" });
       if (r.ok) this._restricted = await r.json();
     } finally {
       this._loading = false;
@@ -99,7 +103,7 @@ export class RestrictedDashboardElement extends UmbElementMixin(LitElement) {
     this._saving = true;
     this._result = null;
     try {
-      const r = await fetch(`${this._api}/RestrictNode`, {
+      const r = await this.#fetch(`${this._api}/RestrictNode`, {
         method: "POST",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
@@ -129,7 +133,7 @@ export class RestrictedDashboardElement extends UmbElementMixin(LitElement) {
 
     this._result = null;
     try {
-      const r = await fetch(`${this._api}/UnrestrictNode?node=${encodeURIComponent(entry.node.key)}`, {
+      const r = await this.#fetch(`${this._api}/UnrestrictNode?node=${encodeURIComponent(entry.node.key)}`, {
         method: "DELETE",
         credentials: "same-origin",
       });

@@ -1,10 +1,14 @@
 import { LitElement, html, css, customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 type SendState = "idle" | "loading" | "success" | "error";
 
 @customElement("mailer-dashboard")
 export class MailerDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host {
       display: block;
@@ -101,7 +105,7 @@ export class MailerDashboardElement extends UmbElementMixin(LitElement) {
     this._message = "";
 
     try {
-      const response = await fetch(
+      const response = await this.#fetch(
         `/umbraco/backoffice/api/MailerApi/SendTestAsync?email=${encodeURIComponent(this._email)}`,
         {
           method: "POST",

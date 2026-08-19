@@ -7,6 +7,8 @@ import {
 } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface RedirectUrl {
   id: number;
   url: string;
@@ -18,6 +20,8 @@ const API_BASE = "/umbraco/backoffice/api/RedirectManager";
 
 @customElement("redirect-manager-dashboard")
 export class RedirectManagerDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   @state() private _redirects: RedirectUrl[] = [];
   @state() private _loading = false;
   @state() private _message = "";
@@ -35,7 +39,7 @@ export class RedirectManagerDashboardElement extends UmbElementMixin(LitElement)
   private async _load() {
     this._loading = true;
     try {
-      const r = await fetch(`${API_BASE}/GetAll`);
+      const r = await this.#fetch(`${API_BASE}/GetAll`);
       if (r.ok) this._redirects = await r.json();
     } catch {
       this._redirects = [];
@@ -78,14 +82,14 @@ export class RedirectManagerDashboardElement extends UmbElementMixin(LitElement)
     };
     try {
       if (this._editItem) {
-        await fetch(`${API_BASE}/Put`, {
+        await this.#fetch(`${API_BASE}/Put`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
         });
         this._message = "Redirect updated.";
       } else {
-        await fetch(`${API_BASE}/Post`, {
+        await this.#fetch(`${API_BASE}/Post`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
@@ -103,7 +107,7 @@ export class RedirectManagerDashboardElement extends UmbElementMixin(LitElement)
   private async _delete(id: number) {
     if (!confirm("Delete this redirect?")) return;
     try {
-      await fetch(`${API_BASE}/Delete?id=${id}`, { method: "DELETE" });
+      await this.#fetch(`${API_BASE}/Delete?id=${id}`, { method: "DELETE" });
       await this._load();
       this._message = "Redirect deleted.";
     } catch {

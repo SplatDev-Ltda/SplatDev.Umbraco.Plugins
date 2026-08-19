@@ -1,14 +1,40 @@
-import { LitElement as g, html as n, css as h, state as a, customElement as x } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as b } from "@umbraco-cms/backoffice/element-api";
-var _ = Object.defineProperty, v = Object.getOwnPropertyDescriptor, e = (t, o, i, l) => {
-  for (var s = l > 1 ? void 0 : l ? v(o, i) : o, u = t.length - 1, p; u >= 0; u--)
-    (p = t[u]) && (s = (l ? p(o, i, s) : p(s)) || s);
-  return l && s && _(o, i, s), s;
-};
-const f = "/umbraco/api/pagseguro", c = "#00B1EB", d = "#0ECC8B";
-let r = class extends b(g) {
+import { LitElement as x, html as l, css as _, state as s, customElement as v } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as m } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as y } from "@umbraco-cms/backoffice/auth";
+function $(t) {
+  let o = null;
+  const r = new Promise((n) => {
+    t.consumeContext(y, async (a) => {
+      var c;
+      try {
+        o = await ((c = a == null ? void 0 : a.getLatestToken) == null ? void 0 : c.call(a)) ?? null;
+      } catch {
+        o = null;
+      }
+      n();
+    }), setTimeout(n, 3e3);
+  });
+  return async (n, a = {}) => {
+    await r;
+    const c = new Headers(a.headers);
+    o && !c.has("Authorization") && c.set("Authorization", `Bearer ${o}`);
+    const d = await fetch(n, { ...a, credentials: "same-origin", headers: c });
+    return (d.status === 401 || d.status === 403) && console.error(
+      `[SplatDev] ${d.status} from ${String(n)} — the backoffice token was ${o ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
+    ), d;
+  };
+}
+var k = Object.defineProperty, C = Object.getOwnPropertyDescriptor, b = (t) => {
+  throw TypeError(t);
+}, i = (t, o, r, n) => {
+  for (var a = n > 1 ? void 0 : n ? C(o, r) : o, c = t.length - 1, d; c >= 0; c--)
+    (d = t[c]) && (a = (n ? d(o, r, a) : d(a)) || a);
+  return n && a && k(o, r, a), a;
+}, w = (t, o, r) => o.has(t) || b("Cannot " + r), h = (t, o, r) => (w(t, o, "read from private field"), r ? r.call(t) : o.get(t)), E = (t, o, r) => o.has(t) ? b("Cannot add the same private member more than once") : o instanceof WeakSet ? o.add(t) : o.set(t, r), p;
+const g = "/umbraco/api/pagseguro", u = "#00B1EB", f = "#0ECC8B";
+let e = class extends m(x) {
   constructor() {
-    super(...arguments), this._connStatus = "unknown", this._config = null, this._configError = "", this._txOrderRef = "", this._txAmount = "10.00", this._txDescription = "", this._txLoading = !1, this._txCheckoutUrl = "", this._txError = "", this._stCode = "", this._stLoading = !1, this._stStatus = "", this._stError = "";
+    super(...arguments), E(this, p, $(this)), this._connStatus = "unknown", this._config = null, this._configError = "", this._txOrderRef = "", this._txAmount = "10.00", this._txDescription = "", this._txLoading = !1, this._txCheckoutUrl = "", this._txError = "", this._stCode = "", this._stLoading = !1, this._stStatus = "", this._stError = "";
   }
   // ── Lifecycle ──
   connectedCallback() {
@@ -18,7 +44,7 @@ let r = class extends b(g) {
   async _loadConfig() {
     this._connStatus = "checking", this._configError = "";
     try {
-      const t = await fetch(`${f}/GetConfig`);
+      const t = await h(this, p).call(this, `${g}/GetConfig`);
       t.ok ? (this._config = await t.json(), this._connStatus = "connected") : (this._connStatus = "error", this._configError = `HTTP ${t.status}: ${t.statusText}`);
     } catch (t) {
       this._connStatus = "error", this._configError = t instanceof Error ? t.message : String(t);
@@ -30,7 +56,7 @@ let r = class extends b(g) {
     if (!(isNaN(t) || t <= 0)) {
       this._txLoading = !0, this._txCheckoutUrl = "", this._txError = "";
       try {
-        const o = await fetch(`${f}/CreateTransaction`, {
+        const o = await h(this, p).call(this, `${g}/CreateTransaction`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -40,11 +66,11 @@ let r = class extends b(g) {
           })
         });
         if (o.ok) {
-          const i = await o.json();
-          this._txCheckoutUrl = i.checkoutUrl ?? "";
+          const r = await o.json();
+          this._txCheckoutUrl = r.checkoutUrl ?? "";
         } else {
-          const i = await o.text();
-          this._txError = `HTTP ${o.status}: ${i || o.statusText}`;
+          const r = await o.text();
+          this._txError = `HTTP ${o.status}: ${r || o.statusText}`;
         }
       } catch (o) {
         this._txError = o instanceof Error ? o.message : String(o);
@@ -57,9 +83,7 @@ let r = class extends b(g) {
     if (this._stCode.trim()) {
       this._stLoading = !0, this._stStatus = "", this._stError = "";
       try {
-        const t = await fetch(
-          `${f}/GetTransactionStatus?code=${encodeURIComponent(this._stCode.trim())}`
-        );
+        const t = await h(this, p).call(this, `${g}/GetTransactionStatus?code=${encodeURIComponent(this._stCode.trim())}`);
         if (t.ok) {
           const o = await t.json();
           this._stStatus = o.status ?? "(sem status)";
@@ -90,7 +114,7 @@ let r = class extends b(g) {
   // ── Render ──
   render() {
     var t;
-    return n`
+    return l`
       <!-- Header -->
       <div class="dashboard-header">
         <div class="brand-logo"><span>PS</span></div>
@@ -105,7 +129,7 @@ let r = class extends b(g) {
       </div>
 
       <!-- Config error notice -->
-      ${this._configError ? n`<div class="notice notice--error">
+      ${this._configError ? l`<div class="notice notice--error">
             <strong>Erro ao carregar configuração:</strong> ${this._configError}.
             Verifique as credenciais em <code>appsettings.json</code> (seção
             <code>PagSeguro</code>).
@@ -181,17 +205,17 @@ let r = class extends b(g) {
             label="Criar transação"
             ?disabled=${this._txLoading || !this._txOrderRef.trim()}
             @click=${this._createTransaction}
-            style="--uui-button-background-color:${c};--uui-button-background-color-hover:${d};--uui-button-contrast:#fff;--uui-button-contrast-hover:#fff"
+            style="--uui-button-background-color:${u};--uui-button-background-color-hover:${f};--uui-button-contrast:#fff;--uui-button-contrast-hover:#fff"
           >
             ${this._txLoading ? "Criando…" : "Criar transação"}
           </uui-button>
         </div>
 
-        ${this._txError ? n`<div class="notice notice--error" style="margin-top:12px;margin-bottom:0">
+        ${this._txError ? l`<div class="notice notice--error" style="margin-top:12px;margin-bottom:0">
               ${this._txError}
             </div>` : ""}
 
-        ${this._txCheckoutUrl ? n`
+        ${this._txCheckoutUrl ? l`
             <div class="result-box">
               <div class="result-label">URL de checkout</div>
               <a href="${this._txCheckoutUrl}" target="_blank" rel="noopener noreferrer">
@@ -226,11 +250,11 @@ let r = class extends b(g) {
           </uui-button>
         </div>
 
-        ${this._stError ? n`<div class="notice notice--error" style="margin-top:12px;margin-bottom:0">
+        ${this._stError ? l`<div class="notice notice--error" style="margin-top:12px;margin-bottom:0">
               ${this._stError}
             </div>` : ""}
 
-        ${this._stStatus ? n`
+        ${this._stStatus ? l`
             <div class="result-box">
               <div class="result-label">Status</div>
               <span class="tx-status-badge">${this._stStatus}</span>
@@ -262,7 +286,8 @@ let r = class extends b(g) {
     `;
   }
 };
-r.styles = h`
+p = /* @__PURE__ */ new WeakMap();
+e.styles = _`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -281,7 +306,7 @@ r.styles = h`
       width: 44px;
       height: 44px;
       border-radius: 10px;
-      background: linear-gradient(135deg, ${c}, ${d});
+      background: linear-gradient(135deg, ${u}, ${f});
       display: flex;
       align-items: center;
       justify-content: center;
@@ -358,8 +383,8 @@ r.styles = h`
       color: var(--uui-color-text, #111827);
       word-break: break-all;
     }
-    .info-card__value--blue  { color: ${c}; }
-    .info-card__value--green { color: ${d}; }
+    .info-card__value--blue  { color: ${u}; }
+    .info-card__value--green { color: ${f}; }
     .info-card__value--warn  { color: #d97706; }
 
     /* ── Form rows ── */
@@ -392,7 +417,7 @@ r.styles = h`
       outline: none;
     }
     .native-input:focus {
-      border-color: ${c};
+      border-color: ${u};
       box-shadow: 0 0 0 3px rgba(0, 177, 235, 0.15);
     }
 
@@ -404,8 +429,8 @@ r.styles = h`
       margin-bottom: 14px;
       line-height: 1.5;
     }
-    .notice--info    { background: #e0f5fd; color: #0c4a6e; border-left: 3px solid ${c}; }
-    .notice--success { background: #d1fae5; color: #064e3b; border-left: 3px solid ${d}; }
+    .notice--info    { background: #e0f5fd; color: #0c4a6e; border-left: 3px solid ${u}; }
+    .notice--success { background: #d1fae5; color: #064e3b; border-left: 3px solid ${f}; }
     .notice--warn    { background: #fffbeb; color: #92400e; border-left: 3px solid #f59e0b; }
     .notice--error   { background: #fef2f2; color: #991b1b; border-left: 3px solid #ef4444; }
 
@@ -419,12 +444,12 @@ r.styles = h`
       background: var(--uui-color-surface-alt, #f9fafb);
     }
     .result-box a {
-      color: ${c};
+      color: ${u};
       font-weight: 600;
       word-break: break-all;
     }
     .result-box a:hover {
-      color: ${d};
+      color: ${f};
     }
     .result-label {
       font-size: 0.75rem;
@@ -462,50 +487,50 @@ r.styles = h`
       flex-wrap: wrap;
     }
   `;
-e([
-  a()
-], r.prototype, "_connStatus", 2);
-e([
-  a()
-], r.prototype, "_config", 2);
-e([
-  a()
-], r.prototype, "_configError", 2);
-e([
-  a()
-], r.prototype, "_txOrderRef", 2);
-e([
-  a()
-], r.prototype, "_txAmount", 2);
-e([
-  a()
-], r.prototype, "_txDescription", 2);
-e([
-  a()
-], r.prototype, "_txLoading", 2);
-e([
-  a()
-], r.prototype, "_txCheckoutUrl", 2);
-e([
-  a()
-], r.prototype, "_txError", 2);
-e([
-  a()
-], r.prototype, "_stCode", 2);
-e([
-  a()
-], r.prototype, "_stLoading", 2);
-e([
-  a()
-], r.prototype, "_stStatus", 2);
-e([
-  a()
-], r.prototype, "_stError", 2);
-r = e([
-  x("pagseguro-dashboard")
-], r);
-const y = r;
+i([
+  s()
+], e.prototype, "_connStatus", 2);
+i([
+  s()
+], e.prototype, "_config", 2);
+i([
+  s()
+], e.prototype, "_configError", 2);
+i([
+  s()
+], e.prototype, "_txOrderRef", 2);
+i([
+  s()
+], e.prototype, "_txAmount", 2);
+i([
+  s()
+], e.prototype, "_txDescription", 2);
+i([
+  s()
+], e.prototype, "_txLoading", 2);
+i([
+  s()
+], e.prototype, "_txCheckoutUrl", 2);
+i([
+  s()
+], e.prototype, "_txError", 2);
+i([
+  s()
+], e.prototype, "_stCode", 2);
+i([
+  s()
+], e.prototype, "_stLoading", 2);
+i([
+  s()
+], e.prototype, "_stStatus", 2);
+i([
+  s()
+], e.prototype, "_stError", 2);
+e = i([
+  v("pagseguro-dashboard")
+], e);
+const R = e;
 export {
-  r as PagSeguroDashboardElement,
-  y as default
+  e as PagSeguroDashboardElement,
+  R as default
 };

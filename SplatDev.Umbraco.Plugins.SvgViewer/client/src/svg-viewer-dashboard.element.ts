@@ -2,6 +2,8 @@ import { LitElement, html, css, customElement, state } from "@umbraco-cms/backof
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 import { unsafeHTML } from "@umbraco-cms/backoffice/external/lit";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface SvgInfo {
   mediaKey: string;
   fileName: string;
@@ -12,6 +14,8 @@ interface SvgInfo {
 
 @customElement("svg-viewer-dashboard")
 export class SvgViewerDashboard extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static styles = css`
     :host {
       display: block;
@@ -80,7 +84,7 @@ export class SvgViewerDashboard extends UmbElementMixin(LitElement) {
     this._items = [];
     this._loading = true;
     try {
-      const r = await fetch(`/umbraco/api/svgviewer/GetSvg?mediaKey=${encodeURIComponent(this._mediaKey)}`);
+      const r = await this.#fetch(`/umbraco/api/svgviewer/GetSvg?mediaKey=${encodeURIComponent(this._mediaKey)}`);
       if (!r.ok) throw new Error(await r.text());
       this._items = [await r.json()];
     } catch (e) {
@@ -95,7 +99,7 @@ export class SvgViewerDashboard extends UmbElementMixin(LitElement) {
     this._items = [];
     this._loading = true;
     try {
-      const r = await fetch("/umbraco/api/svgviewer/GetAllSvg");
+      const r = await this.#fetch("/umbraco/api/svgviewer/GetAllSvg");
       if (!r.ok) throw new Error(await r.text());
       this._items = await r.json();
     } catch (e) {

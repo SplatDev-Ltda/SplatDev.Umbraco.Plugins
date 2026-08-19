@@ -2,6 +2,8 @@ import { LitElement, html, css, nothing } from "@umbraco-cms/backoffice/external
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface CopyMapping {
   id: number;
   name: string;
@@ -20,6 +22,8 @@ interface CopyResult {
 
 @customElement("copyvalue-dashboard")
 export class CopyValueDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
@@ -66,7 +70,7 @@ export class CopyValueDashboardElement extends UmbElementMixin(LitElement) {
   private async _load(): Promise<void> {
     this._loading = true;
     try {
-      const r = await fetch(`${this._api}/GetMappings`);
+      const r = await this.#fetch(`${this._api}/GetMappings`);
       if (r.ok) this._mappings = await r.json();
     } catch { this._mappings = []; }
     finally { this._loading = false; }
@@ -79,14 +83,14 @@ export class CopyValueDashboardElement extends UmbElementMixin(LitElement) {
 
   private async _delete(m: CopyMapping): Promise<void> {
     if (!confirm(`Delete mapping '${m.name}'?`)) return;
-    await fetch(`${this._api}/DeleteMapping?id=${m.id}`, { method: "DELETE" });
+    await this.#fetch(`${this._api}/DeleteMapping?id=${m.id}`, { method: "DELETE" });
     await this._load();
   }
 
   private async _save(): Promise<void> {
     this._saving = true;
     try {
-      await fetch(`${this._api}/SaveMapping`, {
+      await this.#fetch(`${this._api}/SaveMapping`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(this._form),
@@ -104,7 +108,7 @@ export class CopyValueDashboardElement extends UmbElementMixin(LitElement) {
     try { mappings = JSON.parse(mapping.propertyMappingsJson); }
     catch { alert("Invalid JSON in mapping template."); return; }
 
-    const r = await fetch(`${this._api}/CopyProperties`, {
+    const r = await this.#fetch(`${this._api}/CopyProperties`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

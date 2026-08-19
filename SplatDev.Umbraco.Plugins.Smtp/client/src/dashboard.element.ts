@@ -2,6 +2,8 @@ import { LitElement, html, css } from "@umbraco-cms/backoffice/external/lit";
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface SmtpSettings {
   host: string;
   port: number;
@@ -30,6 +32,8 @@ interface SmtpTestResult {
  */
 @customElement("smtp-dashboard")
 export class SmtpDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
@@ -65,7 +69,7 @@ export class SmtpDashboardElement extends UmbElementMixin(LitElement) {
     this._loading = true;
     this._loadError = null;
     try {
-      const r = await fetch(`${this._api}/GetSettings`, { credentials: "same-origin" });
+      const r = await this.#fetch(`${this._api}/GetSettings`, { credentials: "same-origin" });
       if (!r.ok) throw new Error(`${r.status}`);
       this._settings = await r.json();
     } catch (e) {
@@ -80,7 +84,7 @@ export class SmtpDashboardElement extends UmbElementMixin(LitElement) {
     this._result = null;
     try {
       const q = this._recipient ? `?to=${encodeURIComponent(this._recipient)}` : "";
-      const r = await fetch(`${this._api}/SendTest${q}`, {
+      const r = await this.#fetch(`${this._api}/SendTest${q}`, {
         method: "POST",
         credentials: "same-origin",
       });

@@ -1,6 +1,8 @@
 import { LitElement, html, css, customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface CachedTweet {
   id: number;
   tweetId: string;
@@ -17,6 +19,8 @@ interface CachedTweet {
 
 @customElement("tweets-dashboard")
 export class TweetsDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host {
       display: block;
@@ -162,7 +166,7 @@ export class TweetsDashboardElement extends UmbElementMixin(LitElement) {
   private async _loadTweets(): Promise<void> {
     this._loading = true;
     try {
-      const res = await fetch(`${this._apiBase}/feed`);
+      const res = await this.#fetch(`${this._apiBase}/feed`);
       if (res.ok) {
         this._tweets = await res.json() as CachedTweet[];
         if (this._tweets.length > 0) {
@@ -177,7 +181,7 @@ export class TweetsDashboardElement extends UmbElementMixin(LitElement) {
   private async _refreshCache(): Promise<void> {
     this._refreshing = true;
     try {
-      const res = await fetch(`${this._apiBase}/refresh`, { method: "POST" });
+      const res = await this.#fetch(`${this._apiBase}/refresh`, { method: "POST" });
       const data = await res.json() as { success: boolean; count?: number; error?: string };
       if (data.success) {
         await this._loadTweets();

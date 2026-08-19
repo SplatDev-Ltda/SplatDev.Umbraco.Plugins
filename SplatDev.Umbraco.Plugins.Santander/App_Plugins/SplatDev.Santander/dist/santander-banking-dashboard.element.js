@@ -1,43 +1,69 @@
-import { LitElement as c, html as s, nothing as l, css as h, state as a, customElement as _ } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as v } from "@umbraco-cms/backoffice/element-api";
-import { UMB_NOTIFICATION_CONTEXT as b } from "@umbraco-cms/backoffice/notification";
-var x = Object.defineProperty, g = Object.getOwnPropertyDescriptor, e = (t, r, o, d) => {
-  for (var u = d > 1 ? void 0 : d ? g(r, o) : r, n = t.length - 1, p; n >= 0; n--)
-    (p = t[n]) && (u = (d ? p(r, o, u) : p(u)) || u);
-  return d && u && x(r, o, u), u;
-};
-const m = "/umbraco/backoffice/santander-banking", y = "X-RISIN-Api-Key";
-let i = class extends v(c) {
+import { LitElement as _, html as r, nothing as n, css as v, state as s, customElement as b } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as f } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as m } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as y } from "@umbraco-cms/backoffice/notification";
+function g(t) {
+  let e = null;
+  const o = new Promise((d) => {
+    t.consumeContext(m, async (l) => {
+      var u;
+      try {
+        e = await ((u = l == null ? void 0 : l.getLatestToken) == null ? void 0 : u.call(l)) ?? null;
+      } catch {
+        e = null;
+      }
+      d();
+    }), setTimeout(d, 3e3);
+  });
+  return async (d, l = {}) => {
+    await o;
+    const u = new Headers(l.headers);
+    e && !u.has("Authorization") && u.set("Authorization", `Bearer ${e}`);
+    const p = await fetch(d, { ...l, credentials: "same-origin", headers: u });
+    return (p.status === 401 || p.status === 403) && console.error(
+      `[SplatDev] ${p.status} from ${String(d)} — the backoffice token was ${e ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
+    ), p;
+  };
+}
+var x = Object.defineProperty, k = Object.getOwnPropertyDescriptor, h = (t) => {
+  throw TypeError(t);
+}, a = (t, e, o, d) => {
+  for (var l = d > 1 ? void 0 : d ? k(e, o) : e, u = t.length - 1, p; u >= 0; u--)
+    (p = t[u]) && (l = (d ? p(e, o, l) : p(l)) || l);
+  return d && l && x(e, o, l), l;
+}, $ = (t, e, o) => e.has(t) || h("Cannot " + o), w = (t, e, o) => ($(t, e, "read from private field"), o ? o.call(t) : e.get(t)), I = (t, e, o) => e.has(t) ? h("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, o), c;
+const R = "/umbraco/backoffice/santander-banking", P = "X-RISIN-Api-Key";
+let i = class extends f(_) {
   constructor() {
-    super(), this._activeTab = "diagnostics", this._apiKey = "", this._loading = !1, this._diagnostics = null, this._balanceResult = null, this._statementResult = null, this._statementFrom = "", this._statementTo = "", this._statementPage = 1, this._pixValor = 0, this._pixDescricao = "", this._pixTxid = "", this._pixExpiracao = 3600, this._pixSearchTxid = "", this._pixResult = null, this._pixLookupResult = null, this._paymentPayload = "", this._paymentId = "", this._paymentResult = null, this._paymentLookupResult = null, this._boletoPayload = "", this._boletoWorkspaceId = "", this._boletoBillId = "", this._boletoResult = null, this._boletoLookupResult = null, this._workspacesResult = null, this._fxPayload = "", this._fxId = "", this._fxResult = null, this._fxLookupResult = null, this._voucherFrom = "", this._voucherTo = "", this._voucherId = "", this._voucherResult = null, this._voucherLookupResult = null, this.consumeContext(b, (t) => {
+    super(), I(this, c, g(this)), this._activeTab = "diagnostics", this._apiKey = "", this._loading = !1, this._diagnostics = null, this._balanceResult = null, this._statementResult = null, this._statementFrom = "", this._statementTo = "", this._statementPage = 1, this._pixValor = 0, this._pixDescricao = "", this._pixTxid = "", this._pixExpiracao = 3600, this._pixSearchTxid = "", this._pixResult = null, this._pixLookupResult = null, this._paymentPayload = "", this._paymentId = "", this._paymentResult = null, this._paymentLookupResult = null, this._boletoPayload = "", this._boletoWorkspaceId = "", this._boletoBillId = "", this._boletoResult = null, this._boletoLookupResult = null, this._workspacesResult = null, this._fxPayload = "", this._fxId = "", this._fxResult = null, this._fxLookupResult = null, this._voucherFrom = "", this._voucherTo = "", this._voucherId = "", this._voucherResult = null, this._voucherLookupResult = null, this.consumeContext(y, (t) => {
       this._notificationContext = t;
     });
   }
-  _notify(t, r) {
+  _notify(t, e) {
     var o;
-    (o = this._notificationContext) == null || o.peek(r, {
+    (o = this._notificationContext) == null || o.peek(e, {
       color: t === "danger" ? "danger" : t === "warning" ? "warning" : t === "positive" ? "positive" : void 0
     });
   }
   _headers() {
     const t = { "Content-Type": "application/json" };
-    return this._apiKey && (t[y] = this._apiKey), t;
+    return this._apiKey && (t[P] = this._apiKey), t;
   }
-  async _api(t, r) {
+  async _api(t, e) {
     try {
-      const o = await fetch(`${m}${t}`, {
+      const o = await w(this, c).call(this, `${R}${t}`, {
         headers: this._headers(),
-        ...r
+        ...e
       });
       if (o.status === 204) return null;
       if ((o.headers.get("content-type") || "").includes("application/json")) {
-        const n = await o.json();
-        if (!o.ok) throw new Error(n.error || n.title || `HTTP ${o.status}`);
-        return n;
+        const u = await o.json();
+        if (!o.ok) throw new Error(u.error || u.title || `HTTP ${o.status}`);
+        return u;
       }
-      const u = await o.text();
-      if (!o.ok) throw new Error(u || `HTTP ${o.status}`);
-      return u;
+      const l = await o.text();
+      if (!o.ok) throw new Error(l || `HTTP ${o.status}`);
+      return l;
     } catch (o) {
       return this._notify("danger", o.message || "Request failed"), null;
     }
@@ -127,8 +153,8 @@ let i = class extends v(c) {
       this._notify("danger", "Invalid JSON payload.");
       return;
     }
-    let r = "/boletos";
-    this._boletoWorkspaceId && (r += `?workspaceId=${encodeURIComponent(this._boletoWorkspaceId)}`), this._loading = !0, this._boletoResult = await this._api(r, { method: "POST", body: JSON.stringify(t) }), this._loading = !1;
+    let e = "/boletos";
+    this._boletoWorkspaceId && (e += `?workspaceId=${encodeURIComponent(this._boletoWorkspaceId)}`), this._loading = !0, this._boletoResult = await this._api(e, { method: "POST", body: JSON.stringify(t) }), this._loading = !1;
   }
   async _consultarBoleto() {
     if (!this._boletoBillId) {
@@ -180,13 +206,13 @@ let i = class extends v(c) {
   // ── Render ──
   _renderDiagnostics() {
     const t = this._diagnostics;
-    return s`
+    return r`
       <uui-box headline="Diagnostics">
         <uui-button look="primary" label="Run Diagnostics" @click=${this._runDiagnostics}>
           Run Diagnostics
         </uui-button>
 
-        ${t ? s`
+        ${t ? r`
               <div class="diag-grid" style="margin-top:var(--uui-size-space-4,12px);">
                 <div class="diag-card">
                   <div class="diag-label">Environment</div>
@@ -236,9 +262,9 @@ let i = class extends v(c) {
               <p style="font-size:0.75rem;font-weight:600;margin:16px 0 8px;color:var(--uui-color-text-alt);">Product Status</p>
               <div class="diag-grid">
                 ${Object.entries(t.products).map(
-      ([r, o]) => s`
+      ([e, o]) => r`
                     <div class="diag-card">
-                      <div class="diag-label">${r}</div>
+                      <div class="diag-label">${e}</div>
                       <div class="diag-value ${o.baseUrl ? "on" : "off"}">
                         ${o.baseUrl ? o.baseUrl : "Not configured"}
                       </div>
@@ -246,7 +272,7 @@ let i = class extends v(c) {
                   `
     )}
               </div>
-            ` : s`
+            ` : r`
               <div style="margin-top:var(--uui-size-space-4,12px);color:var(--uui-color-text-alt,#6b7280);">
                 Click "Run Diagnostics" to check Santander API configuration.
               </div>
@@ -255,17 +281,17 @@ let i = class extends v(c) {
     `;
   }
   _renderBalance() {
-    return s`
+    return r`
       <uui-box headline="Balance">
         <uui-button look="primary" label="Get Balance" @click=${this._getBalance}>
           Get Balance
         </uui-button>
-        ${this._balanceResult ? s`<div class="result-box">${this._asJson(this._balanceResult)}</div>` : l}
+        ${this._balanceResult ? r`<div class="result-box">${this._asJson(this._balanceResult)}</div>` : n}
       </uui-box>
     `;
   }
   _renderStatement() {
-    return s`
+    return r`
       <uui-box headline="Statement">
         <div class="form-grid">
           <div class="form-field">
@@ -292,12 +318,12 @@ let i = class extends v(c) {
             </uui-button>
           </div>
         </div>
-        ${this._statementResult ? s`<div class="result-box">${this._asJson(this._statementResult)}</div>` : l}
+        ${this._statementResult ? r`<div class="result-box">${this._asJson(this._statementResult)}</div>` : n}
       </uui-box>
     `;
   }
   _renderPix() {
-    return s`
+    return r`
       <uui-box headline="PIX QR Code — Create">
         <div class="form-grid">
           <div class="form-field">
@@ -330,7 +356,7 @@ let i = class extends v(c) {
             </uui-button>
           </div>
         </div>
-        ${this._pixResult ? s`<div class="result-box">${this._asJson(this._pixResult)}</div>` : l}
+        ${this._pixResult ? r`<div class="result-box">${this._asJson(this._pixResult)}</div>` : n}
       </uui-box>
 
       <uui-box headline="PIX QR Code — Lookup" style="margin-top:var(--uui-size-space-4,12px);">
@@ -344,12 +370,12 @@ let i = class extends v(c) {
           ></uui-input>
           <uui-button look="primary" label="Lookup" @click=${this._consultarPix}>Lookup</uui-button>
         </div>
-        ${this._pixLookupResult ? s`<div class="result-box">${this._asJson(this._pixLookupResult)}</div>` : l}
+        ${this._pixLookupResult ? r`<div class="result-box">${this._asJson(this._pixLookupResult)}</div>` : n}
       </uui-box>
     `;
   }
   _renderPayments() {
-    return s`
+    return r`
       <uui-box headline="Payments — Initiate">
         <div class="form-field full-width" style="max-width:640px;">
           <label>Payload (JSON)</label>
@@ -368,7 +394,7 @@ let i = class extends v(c) {
             Initiate Payment
           </uui-button>
         </div>
-        ${this._paymentResult ? s`<div class="result-box">${this._asJson(this._paymentResult)}</div>` : l}
+        ${this._paymentResult ? r`<div class="result-box">${this._asJson(this._paymentResult)}</div>` : n}
       </uui-box>
 
       <uui-box headline="Payments — Lookup" style="margin-top:var(--uui-size-space-4,12px);">
@@ -382,17 +408,17 @@ let i = class extends v(c) {
           ></uui-input>
           <uui-button look="primary" label="Lookup" @click=${this._lookupPayment}>Lookup</uui-button>
         </div>
-        ${this._paymentLookupResult ? s`<div class="result-box">${this._asJson(this._paymentLookupResult)}</div>` : l}
+        ${this._paymentLookupResult ? r`<div class="result-box">${this._asJson(this._paymentLookupResult)}</div>` : n}
       </uui-box>
     `;
   }
   _renderBoletos() {
-    return s`
+    return r`
       <uui-box headline="Boletos — Workspaces">
         <uui-button look="primary" label="List Workspaces" @click=${this._listWorkspaces}>
           List Workspaces
         </uui-button>
-        ${this._workspacesResult ? s`<div class="result-box">${this._asJson(this._workspacesResult)}</div>` : l}
+        ${this._workspacesResult ? r`<div class="result-box">${this._asJson(this._workspacesResult)}</div>` : n}
       </uui-box>
 
       <uui-box headline="Boletos — Emit" style="margin-top:var(--uui-size-space-4,12px);">
@@ -421,7 +447,7 @@ let i = class extends v(c) {
             </uui-button>
           </div>
         </div>
-        ${this._boletoResult ? s`<div class="result-box">${this._asJson(this._boletoResult)}</div>` : l}
+        ${this._boletoResult ? r`<div class="result-box">${this._asJson(this._boletoResult)}</div>` : n}
       </uui-box>
 
       <uui-box headline="Boletos — Lookup" style="margin-top:var(--uui-size-space-4,12px);">
@@ -435,12 +461,12 @@ let i = class extends v(c) {
           ></uui-input>
           <uui-button look="primary" label="Lookup" @click=${this._consultarBoleto}>Lookup</uui-button>
         </div>
-        ${this._boletoLookupResult ? s`<div class="result-box">${this._asJson(this._boletoLookupResult)}</div>` : l}
+        ${this._boletoLookupResult ? r`<div class="result-box">${this._asJson(this._boletoLookupResult)}</div>` : n}
       </uui-box>
     `;
   }
   _renderFx() {
-    return s`
+    return r`
       <uui-box headline="FX — Quote">
         <div class="form-field full-width" style="max-width:640px;">
           <label>Payload (JSON)</label>
@@ -459,7 +485,7 @@ let i = class extends v(c) {
             Get FX Quote
           </uui-button>
         </div>
-        ${this._fxResult ? s`<div class="result-box">${this._asJson(this._fxResult)}</div>` : l}
+        ${this._fxResult ? r`<div class="result-box">${this._asJson(this._fxResult)}</div>` : n}
       </uui-box>
 
       <uui-box headline="FX — Lookup" style="margin-top:var(--uui-size-space-4,12px);">
@@ -473,12 +499,12 @@ let i = class extends v(c) {
           ></uui-input>
           <uui-button look="primary" label="Lookup" @click=${this._consultarFx}>Lookup</uui-button>
         </div>
-        ${this._fxLookupResult ? s`<div class="result-box">${this._asJson(this._fxLookupResult)}</div>` : l}
+        ${this._fxLookupResult ? r`<div class="result-box">${this._asJson(this._fxLookupResult)}</div>` : n}
       </uui-box>
     `;
   }
   _renderVouchers() {
-    return s`
+    return r`
       <uui-box headline="Vouchers — List">
         <div class="form-grid">
           <div class="form-field">
@@ -499,7 +525,7 @@ let i = class extends v(c) {
             </uui-button>
           </div>
         </div>
-        ${this._voucherResult ? s`<div class="result-box">${this._asJson(this._voucherResult)}</div>` : l}
+        ${this._voucherResult ? r`<div class="result-box">${this._asJson(this._voucherResult)}</div>` : n}
       </uui-box>
 
       <uui-box headline="Vouchers — Get" style="margin-top:var(--uui-size-space-4,12px);">
@@ -513,7 +539,7 @@ let i = class extends v(c) {
           ></uui-input>
           <uui-button look="primary" label="Get Voucher" @click=${this._getVoucher}>Get Voucher</uui-button>
         </div>
-        ${this._voucherLookupResult ? s`<div class="result-box">${this._asJson(this._voucherLookupResult)}</div>` : l}
+        ${this._voucherLookupResult ? r`<div class="result-box">${this._asJson(this._voucherLookupResult)}</div>` : n}
       </uui-box>
     `;
   }
@@ -535,7 +561,7 @@ let i = class extends v(c) {
       { key: "fx", label: "FX" },
       { key: "vouchers", label: "Vouchers" }
     ];
-    return s`
+    return r`
       <h1>Santander Banking</h1>
       <p class="description">
         Santander Open Banking suite — diagnostics, balance, statement, PIX, payments, boletos, FX, and vouchers.
@@ -546,8 +572,8 @@ let i = class extends v(c) {
           type="password"
           placeholder="X-RISIN-Api-Key"
           .value=${this._apiKey}
-          @input=${(r) => {
-      this._apiKey = r.target.value;
+          @input=${(e) => {
+      this._apiKey = e.target.value;
     }}
         >
           <span slot="prepend">API Key</span>
@@ -556,13 +582,13 @@ let i = class extends v(c) {
 
       <uui-tab-group>
         ${t.map(
-      (r) => s`
+      (e) => r`
             <uui-tab
-              label=${r.label}
-              ?active=${this._activeTab === r.key}
-              @click=${() => this._switchTab(r.key)}
+              label=${e.label}
+              ?active=${this._activeTab === e.key}
+              @click=${() => this._switchTab(e.key)}
             >
-              ${r.label}
+              ${e.label}
             </uui-tab>
           `
     )}
@@ -591,11 +617,12 @@ let i = class extends v(c) {
     })()}
       </div>
 
-      ${this._loading ? s`<uui-loader-bar style="margin-top:var(--uui-size-space-4,12px);"></uui-loader-bar>` : l}
+      ${this._loading ? r`<uui-loader-bar style="margin-top:var(--uui-size-space-4,12px);"></uui-loader-bar>` : n}
     `;
   }
 };
-i.styles = h`
+c = /* @__PURE__ */ new WeakMap();
+i.styles = v`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -751,116 +778,116 @@ i.styles = h`
       gap: var(--uui-size-space-3, 8px);
     }
   `;
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_activeTab", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_apiKey", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_loading", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_diagnostics", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_balanceResult", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_statementResult", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_statementFrom", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_statementTo", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_statementPage", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_pixValor", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_pixDescricao", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_pixTxid", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_pixExpiracao", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_pixSearchTxid", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_pixResult", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_pixLookupResult", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_paymentPayload", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_paymentId", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_paymentResult", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_paymentLookupResult", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_boletoPayload", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_boletoWorkspaceId", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_boletoBillId", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_boletoResult", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_boletoLookupResult", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_workspacesResult", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_fxPayload", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_fxId", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_fxResult", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_fxLookupResult", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_voucherFrom", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_voucherTo", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_voucherId", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_voucherResult", 2);
-e([
-  a()
+a([
+  s()
 ], i.prototype, "_voucherLookupResult", 2);
-i = e([
-  _("santander-banking-dashboard")
+i = a([
+  b("santander-banking-dashboard")
 ], i);
-const w = i;
+const D = i;
 export {
   i as SantanderBankingDashboardElement,
-  w as default
+  D as default
 };

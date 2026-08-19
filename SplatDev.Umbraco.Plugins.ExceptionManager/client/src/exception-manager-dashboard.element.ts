@@ -1,6 +1,8 @@
 import { LitElement, html, css, customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 // NOTE: The API endpoint /umbraco/management/api/v1/exception-manager is pending
 // Phase 3 backend deployment. The Refresh button and filter input are wired up
 // but the fetch call is guarded behind an availability flag until Phase 3 is live.
@@ -15,6 +17,8 @@ interface ExceptionEntry {
 
 @customElement("exception-manager-dashboard")
 export class ExceptionManagerDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host {
       display: block;
@@ -128,7 +132,7 @@ export class ExceptionManagerDashboardElement extends UmbElementMixin(LitElement
         ? `${this._apiBase}?filter=${encodeURIComponent(this._filter)}`
         : this._apiBase;
 
-      const response = await fetch(url, {
+      const response = await this.#fetch(url, {
         headers: { "Content-Type": "application/json" },
       });
 

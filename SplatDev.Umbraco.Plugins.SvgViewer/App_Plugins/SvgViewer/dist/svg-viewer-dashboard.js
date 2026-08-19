@@ -1,18 +1,44 @@
-import { LitElement as p, html as a, unsafeHTML as c, css as x, state as l, customElement as g } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as m } from "@umbraco-cms/backoffice/element-api";
-var v = Object.defineProperty, h = Object.getOwnPropertyDescriptor, r = (e, s, n, o) => {
-  for (var t = o > 1 ? void 0 : o ? h(s, n) : s, u = e.length - 1, d; u >= 0; u--)
-    (d = e[u]) && (t = (o ? d(s, n, t) : d(t)) || t);
-  return o && t && v(s, n, t), t;
-};
-let i = class extends m(p) {
+import { LitElement as v, html as l, unsafeHTML as g, css as m, state as c, customElement as x } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as _ } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as f } from "@umbraco-cms/backoffice/auth";
+function y(e) {
+  let t = null;
+  const i = new Promise((r) => {
+    e.consumeContext(f, async (a) => {
+      var s;
+      try {
+        t = await ((s = a == null ? void 0 : a.getLatestToken) == null ? void 0 : s.call(a)) ?? null;
+      } catch {
+        t = null;
+      }
+      r();
+    }), setTimeout(r, 3e3);
+  });
+  return async (r, a = {}) => {
+    await i;
+    const s = new Headers(a.headers);
+    t && !s.has("Authorization") && s.set("Authorization", `Bearer ${t}`);
+    const o = await fetch(r, { ...a, credentials: "same-origin", headers: s });
+    return (o.status === 401 || o.status === 403) && console.error(
+      `[SplatDev] ${o.status} from ${String(r)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
+    ), o;
+  };
+}
+var w = Object.defineProperty, b = Object.getOwnPropertyDescriptor, h = (e) => {
+  throw TypeError(e);
+}, u = (e, t, i, r) => {
+  for (var a = r > 1 ? void 0 : r ? b(t, i) : t, s = e.length - 1, o; s >= 0; s--)
+    (o = e[s]) && (a = (r ? o(t, i, a) : o(a)) || a);
+  return r && a && w(t, i, a), a;
+}, $ = (e, t, i) => t.has(e) || h("Cannot " + i), p = (e, t, i) => ($(e, t, "read from private field"), i ? i.call(e) : t.get(e)), S = (e, t, i) => t.has(e) ? h("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, i), d;
+let n = class extends _(v) {
   constructor() {
-    super(...arguments), this._mediaKey = "", this._items = [], this._loading = !1, this._error = "";
+    super(...arguments), S(this, d, y(this)), this._mediaKey = "", this._items = [], this._loading = !1, this._error = "";
   }
   async _loadSingle() {
     this._error = "", this._items = [], this._loading = !0;
     try {
-      const e = await fetch(`/umbraco/api/svgviewer/GetSvg?mediaKey=${encodeURIComponent(this._mediaKey)}`);
+      const e = await p(this, d).call(this, `/umbraco/api/svgviewer/GetSvg?mediaKey=${encodeURIComponent(this._mediaKey)}`);
       if (!e.ok) throw new Error(await e.text());
       this._items = [await e.json()];
     } catch (e) {
@@ -24,7 +50,7 @@ let i = class extends m(p) {
   async _loadAll() {
     this._error = "", this._items = [], this._loading = !0;
     try {
-      const e = await fetch("/umbraco/api/svgviewer/GetAllSvg");
+      const e = await p(this, d).call(this, "/umbraco/api/svgviewer/GetAllSvg");
       if (!e.ok) throw new Error(await e.text());
       this._items = await e.json();
     } catch (e) {
@@ -34,22 +60,22 @@ let i = class extends m(p) {
     }
   }
   _renderContent() {
-    return this._loading ? a`<div style="display:flex;justify-content:center;padding:40px;"><uui-loader></uui-loader></div>` : this._error ? a`<uui-badge color="danger" style="margin-top:12px;">${this._error}</uui-badge>` : this._items.length ? a`
+    return this._loading ? l`<div style="display:flex;justify-content:center;padding:40px;"><uui-loader></uui-loader></div>` : this._error ? l`<uui-badge color="danger" style="margin-top:12px;">${this._error}</uui-badge>` : this._items.length ? l`
       <div class="svg-grid">
         ${this._items.map(
-      (e) => a`
+      (e) => l`
             <div class="svg-card">
-              <div class="svg-preview">${c(e.sanitizedContent)}</div>
+              <div class="svg-preview">${g(e.sanitizedContent)}</div>
               <div class="svg-meta">
                 <strong>${e.fileName}</strong>
-                ${e.width && e.height ? a` &mdash; ${e.width}&times;${e.height}` : ""}
+                ${e.width && e.height ? l` &mdash; ${e.width}&times;${e.height}` : ""}
                 <br /><small>${e.mediaKey}</small>
               </div>
             </div>
           `
     )}
       </div>
-    ` : a`
+    ` : l`
         <div class="empty-state">
           <uui-icon name="icon-picture"></uui-icon>
           <p>No SVG files found. Load a single SVG by key or scan all media.</p>
@@ -57,7 +83,7 @@ let i = class extends m(p) {
       `;
   }
   render() {
-    return a`
+    return l`
       <uui-box headline="SVG Viewer">
         <div class="controls">
           <uui-form-layout-item>
@@ -80,7 +106,8 @@ let i = class extends m(p) {
     `;
   }
 };
-i.styles = x`
+d = /* @__PURE__ */ new WeakMap();
+n.styles = m`
     :host {
       display: block;
       padding: var(--uui-size-space-5, 20px);
@@ -137,24 +164,24 @@ i.styles = x`
       opacity: 0.4;
     }
   `;
-r([
-  l()
-], i.prototype, "_mediaKey", 2);
-r([
-  l()
-], i.prototype, "_items", 2);
-r([
-  l()
-], i.prototype, "_loading", 2);
-r([
-  l()
-], i.prototype, "_error", 2);
-i = r([
-  g("svg-viewer-dashboard")
-], i);
-const y = i;
+u([
+  c()
+], n.prototype, "_mediaKey", 2);
+u([
+  c()
+], n.prototype, "_items", 2);
+u([
+  c()
+], n.prototype, "_loading", 2);
+u([
+  c()
+], n.prototype, "_error", 2);
+n = u([
+  x("svg-viewer-dashboard")
+], n);
+const E = n;
 export {
-  i as SvgViewerDashboard,
-  y as default
+  n as SvgViewerDashboard,
+  E as default
 };
 //# sourceMappingURL=svg-viewer-dashboard.js.map

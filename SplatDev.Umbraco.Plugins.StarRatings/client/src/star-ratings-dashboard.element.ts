@@ -1,6 +1,8 @@
 import { LitElement, html, css, customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface ContentRatingSummary {
   contentKey: string;
   averageRating: number;
@@ -9,6 +11,8 @@ interface ContentRatingSummary {
 
 @customElement("star-ratings-dashboard")
 export class StarRatingsDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host {
       display: block;
@@ -64,7 +68,7 @@ export class StarRatingsDashboardElement extends UmbElementMixin(LitElement) {
     this._loading = true;
     this._error = null;
     try {
-      const response = await fetch(`/umbraco/api/starratings/GetTopRated?count=${this._count}`);
+      const response = await this.#fetch(`/umbraco/api/starratings/GetTopRated?count=${this._count}`);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       this._topRated = (await response.json()) as ContentRatingSummary[];
     } catch (err) {

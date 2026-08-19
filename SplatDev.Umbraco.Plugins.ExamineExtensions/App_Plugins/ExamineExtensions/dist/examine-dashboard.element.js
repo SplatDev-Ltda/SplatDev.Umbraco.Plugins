@@ -1,13 +1,39 @@
-import { LitElement as h, html as a, css as c, state as r, customElement as p } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as _ } from "@umbraco-cms/backoffice/element-api";
-var b = Object.defineProperty, g = Object.getOwnPropertyDescriptor, s = (e, t, n, u) => {
-  for (var l = u > 1 ? void 0 : u ? g(t, n) : t, o = e.length - 1, d; o >= 0; o--)
-    (d = e[o]) && (l = (u ? d(t, n, l) : d(l)) || l);
-  return u && l && b(t, n, l), l;
-};
-let i = class extends _(h) {
+import { LitElement as _, html as u, css as b, state as l, customElement as g } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as m } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as f } from "@umbraco-cms/backoffice/auth";
+function y(e) {
+  let t = null;
+  const a = new Promise((n) => {
+    e.consumeContext(f, async (i) => {
+      var o;
+      try {
+        t = await ((o = i == null ? void 0 : i.getLatestToken) == null ? void 0 : o.call(i)) ?? null;
+      } catch {
+        t = null;
+      }
+      n();
+    }), setTimeout(n, 3e3);
+  });
+  return async (n, i = {}) => {
+    await a;
+    const o = new Headers(i.headers);
+    t && !o.has("Authorization") && o.set("Authorization", `Bearer ${t}`);
+    const d = await fetch(n, { ...i, credentials: "same-origin", headers: o });
+    return (d.status === 401 || d.status === 403) && console.error(
+      `[SplatDev] ${d.status} from ${String(n)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
+    ), d;
+  };
+}
+var x = Object.defineProperty, v = Object.getOwnPropertyDescriptor, p = (e) => {
+  throw TypeError(e);
+}, r = (e, t, a, n) => {
+  for (var i = n > 1 ? void 0 : n ? v(t, a) : t, o = e.length - 1, d; o >= 0; o--)
+    (d = e[o]) && (i = (n ? d(t, a, i) : d(i)) || i);
+  return n && i && x(t, a, i), i;
+}, w = (e, t, a) => t.has(e) || p("Cannot " + a), c = (e, t, a) => (w(e, t, "read from private field"), a ? a.call(e) : t.get(e)), $ = (e, t, a) => t.has(e) ? p("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), h;
+let s = class extends m(_) {
   constructor() {
-    super(...arguments), this._baseUrl = "/umbraco/api/examineextensions/", this._indexes = [], this._selectedIndex = "", this._rebuildIndex = "", this._query = "", this._pageSize = 20, this._results = null, this._rebuildMsg = "", this._loading = !0, this._searching = !1, this._rebuilding = !1, this._error = "";
+    super(...arguments), $(this, h, y(this)), this._baseUrl = "/umbraco/api/examineextensions/", this._indexes = [], this._selectedIndex = "", this._rebuildIndex = "", this._query = "", this._pageSize = 20, this._results = null, this._rebuildMsg = "", this._loading = !0, this._searching = !1, this._rebuilding = !1, this._error = "";
   }
   connectedCallback() {
     super.connectedCallback(), this._loadIndexes();
@@ -15,7 +41,7 @@ let i = class extends _(h) {
   async _loadIndexes() {
     this._loading = !0, this._error = "";
     try {
-      const e = await fetch(`${this._baseUrl}GetIndexes`);
+      const e = await c(this, h).call(this, `${this._baseUrl}GetIndexes`);
       if (!e.ok) throw new Error(await e.text());
       this._indexes = await e.json(), this._indexes.length > 0 && (this._selectedIndex = this._indexes[0], this._rebuildIndex = this._indexes[0]);
     } catch (e) {
@@ -28,7 +54,7 @@ let i = class extends _(h) {
     if (this._query.trim()) {
       this._results = null, this._searching = !0, this._error = "";
       try {
-        const e = await fetch(`${this._baseUrl}Search`, {
+        const e = await c(this, h).call(this, `${this._baseUrl}Search`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -51,7 +77,7 @@ let i = class extends _(h) {
     if (this._rebuildIndex) {
       this._rebuildMsg = "", this._rebuilding = !0, this._error = "";
       try {
-        const e = await fetch(`${this._baseUrl}RebuildIndex`, {
+        const e = await c(this, h).call(this, `${this._baseUrl}RebuildIndex`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(this._rebuildIndex)
@@ -83,11 +109,11 @@ let i = class extends _(h) {
     e.key === "Enter" && this._search();
   }
   _renderResults() {
-    return this._results ? a`
+    return this._results ? u`
       <div class="results-header">
         <h3 class="section-title">Results (${this._results.totalItems} total)</h3>
       </div>
-      ${this._results.items.length === 0 ? a`<p class="no-results">No results found.</p>` : a`
+      ${this._results.items.length === 0 ? u`<p class="no-results">No results found.</p>` : u`
             <table class="results-table">
               <thead>
                 <tr>
@@ -98,13 +124,13 @@ let i = class extends _(h) {
               </thead>
               <tbody>
                 ${this._results.items.map(
-      (e) => a`
+      (e) => u`
                     <tr>
                       <td>${e.id}</td>
                       <td>${e.score.toFixed(4)}</td>
                       <td>
                         ${Object.entries(e.fields).map(
-        ([t, n]) => a`<strong>${t}</strong>: ${String(n)}<br />`
+        ([t, a]) => u`<strong>${t}</strong>: ${String(a)}<br />`
       )}
                       </td>
                     </tr>
@@ -113,15 +139,15 @@ let i = class extends _(h) {
               </tbody>
             </table>
           `}
-    ` : a``;
+    ` : u``;
   }
   render() {
     if (this._loading)
-      return a`<uui-loader></uui-loader>`;
+      return u`<uui-loader></uui-loader>`;
     const e = this._indexes.map((t) => ({ name: t, value: t }));
-    return a`
+    return u`
       <uui-box headline="Examine Extensions">
-        ${this._error ? a`<uui-alert look="danger" style="margin-bottom:16px;">${this._error}</uui-alert>` : ""}
+        ${this._error ? u`<uui-alert look="danger" style="margin-bottom:16px;">${this._error}</uui-alert>` : ""}
 
         <div class="dashboard-grid">
           <div>
@@ -186,7 +212,7 @@ let i = class extends _(h) {
                 >
                   ${this._rebuilding ? "Rebuilding..." : "Rebuild Index"}
                 </uui-button>
-                ${this._rebuildMsg ? a`<uui-badge color="positive">${this._rebuildMsg}</uui-badge>` : ""}
+                ${this._rebuildMsg ? u`<uui-badge color="positive">${this._rebuildMsg}</uui-badge>` : ""}
               </div>
             </div>
           </div>
@@ -197,7 +223,8 @@ let i = class extends _(h) {
     `;
   }
 };
-i.styles = c`
+h = /* @__PURE__ */ new WeakMap();
+s.styles = b`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -271,44 +298,44 @@ i.styles = c`
       width: 80px;
     }
   `;
-s([
-  r()
-], i.prototype, "_indexes", 2);
-s([
-  r()
-], i.prototype, "_selectedIndex", 2);
-s([
-  r()
-], i.prototype, "_rebuildIndex", 2);
-s([
-  r()
-], i.prototype, "_query", 2);
-s([
-  r()
-], i.prototype, "_pageSize", 2);
-s([
-  r()
-], i.prototype, "_results", 2);
-s([
-  r()
-], i.prototype, "_rebuildMsg", 2);
-s([
-  r()
-], i.prototype, "_loading", 2);
-s([
-  r()
-], i.prototype, "_searching", 2);
-s([
-  r()
-], i.prototype, "_rebuilding", 2);
-s([
-  r()
-], i.prototype, "_error", 2);
-i = s([
-  p("examine-dashboard")
-], i);
-const f = i;
+r([
+  l()
+], s.prototype, "_indexes", 2);
+r([
+  l()
+], s.prototype, "_selectedIndex", 2);
+r([
+  l()
+], s.prototype, "_rebuildIndex", 2);
+r([
+  l()
+], s.prototype, "_query", 2);
+r([
+  l()
+], s.prototype, "_pageSize", 2);
+r([
+  l()
+], s.prototype, "_results", 2);
+r([
+  l()
+], s.prototype, "_rebuildMsg", 2);
+r([
+  l()
+], s.prototype, "_loading", 2);
+r([
+  l()
+], s.prototype, "_searching", 2);
+r([
+  l()
+], s.prototype, "_rebuilding", 2);
+r([
+  l()
+], s.prototype, "_error", 2);
+s = r([
+  g("examine-dashboard")
+], s);
+const k = s;
 export {
-  i as ExamineDashboardElement,
-  f as default
+  s as ExamineDashboardElement,
+  k as default
 };

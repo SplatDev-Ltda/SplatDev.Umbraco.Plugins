@@ -1,13 +1,39 @@
-import { LitElement as c, html as i, css as b, state as d, customElement as h } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as p } from "@umbraco-cms/backoffice/element-api";
-var g = Object.defineProperty, f = Object.getOwnPropertyDescriptor, r = (e, t, u, s) => {
-  for (var l = s > 1 ? void 0 : s ? f(t, u) : t, o = e.length - 1, n; o >= 0; o--)
-    (n = e[o]) && (l = (s ? n(t, u, l) : n(l)) || l);
-  return s && l && g(t, u, l), l;
-};
-let a = class extends p(c) {
+import { LitElement as b, html as u, css as f, state as c, customElement as _ } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as g } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as m } from "@umbraco-cms/backoffice/auth";
+function v(e) {
+  let t = null;
+  const l = new Promise((r) => {
+    e.consumeContext(m, async (a) => {
+      var s;
+      try {
+        t = await ((s = a == null ? void 0 : a.getLatestToken) == null ? void 0 : s.call(a)) ?? null;
+      } catch {
+        t = null;
+      }
+      r();
+    }), setTimeout(r, 3e3);
+  });
+  return async (r, a = {}) => {
+    await l;
+    const s = new Headers(a.headers);
+    t && !s.has("Authorization") && s.set("Authorization", `Bearer ${t}`);
+    const i = await fetch(r, { ...a, credentials: "same-origin", headers: s });
+    return (i.status === 401 || i.status === 403) && console.error(
+      `[SplatDev] ${i.status} from ${String(r)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
+    ), i;
+  };
+}
+var y = Object.defineProperty, $ = Object.getOwnPropertyDescriptor, p = (e) => {
+  throw TypeError(e);
+}, d = (e, t, l, r) => {
+  for (var a = r > 1 ? void 0 : r ? $(t, l) : t, s = e.length - 1, i; s >= 0; s--)
+    (i = e[s]) && (a = (r ? i(t, l, a) : i(a)) || a);
+  return r && a && y(t, l, a), a;
+}, w = (e, t, l) => t.has(e) || p("Cannot " + l), h = (e, t, l) => (w(e, t, "read from private field"), l ? l.call(e) : t.get(e)), x = (e, t, l) => t.has(e) ? p("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, l), n;
+let o = class extends g(b) {
   constructor() {
-    super(...arguments), this._surveys = [], this._loading = !1, this._error = null, this._apiBase = "/umbraco/api/surveys";
+    super(...arguments), x(this, n, v(this)), this._surveys = [], this._loading = !1, this._error = null, this._apiBase = "/umbraco/api/surveys";
   }
   connectedCallback() {
     super.connectedCallback(), this._loadSurveys();
@@ -15,7 +41,7 @@ let a = class extends p(c) {
   async _loadSurveys() {
     this._loading = !0, this._error = null;
     try {
-      const e = await fetch(`${this._apiBase}/getall`);
+      const e = await h(this, n).call(this, `${this._apiBase}/getall`);
       if (!e.ok) throw new Error(`HTTP ${e.status}`);
       this._surveys = await e.json();
     } catch (e) {
@@ -27,7 +53,7 @@ let a = class extends p(c) {
   async _deleteSurvey(e) {
     if (confirm("Delete this survey and all its responses?"))
       try {
-        await fetch(`${this._apiBase}/delete?id=${e}`, { method: "DELETE" }), this._surveys = this._surveys.filter((t) => t.id !== e);
+        await h(this, n).call(this, `${this._apiBase}/delete?id=${e}`, { method: "DELETE" }), this._surveys = this._surveys.filter((t) => t.id !== e);
       } catch (t) {
         this._error = `Delete failed: ${t instanceof Error ? t.message : String(t)}`;
       }
@@ -36,7 +62,7 @@ let a = class extends p(c) {
     return e.responses && Array.isArray(e.responses) ? e.responses.length : 0;
   }
   render() {
-    return i`
+    return u`
       <div class="dashboard-header">
         <h1>Surveys</h1>
         <p class="description">
@@ -55,12 +81,12 @@ let a = class extends p(c) {
         </uui-button>
       </div>
 
-      ${this._error ? i`<uui-box>
+      ${this._error ? u`<uui-box>
             <p style="color:var(--uui-color-danger)">${this._error}</p>
           </uui-box>` : ""}
 
       <uui-box headline="Survey List">
-        ${this._surveys.length > 0 ? i`
+        ${this._surveys.length > 0 ? u`
               <uui-table>
                 <uui-table-head>
                   <uui-table-head-cell>Title</uui-table-head-cell>
@@ -71,7 +97,7 @@ let a = class extends p(c) {
                   <uui-table-head-cell>Actions</uui-table-head-cell>
                 </uui-table-head>
                 ${this._surveys.map(
-      (e) => i`
+      (e) => u`
                     <uui-table-row>
                       <uui-table-cell>${e.title}</uui-table-cell>
                       <uui-table-cell>
@@ -98,7 +124,7 @@ let a = class extends p(c) {
                   `
     )}
               </uui-table>
-            ` : i`
+            ` : u`
               <div class="empty-state">
                 <uui-icon name="document"></uui-icon>
                 <p>No surveys found. Create your first survey via the API.</p>
@@ -108,7 +134,8 @@ let a = class extends p(c) {
     `;
   }
 };
-a.styles = b`
+n = /* @__PURE__ */ new WeakMap();
+o.styles = f`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -164,18 +191,18 @@ a.styles = b`
       color: #991b1b;
     }
   `;
-r([
-  d()
-], a.prototype, "_surveys", 2);
-r([
-  d()
-], a.prototype, "_loading", 2);
-r([
-  d()
-], a.prototype, "_error", 2);
-a = r([
-  h("surveys-dashboard")
-], a);
+d([
+  c()
+], o.prototype, "_surveys", 2);
+d([
+  c()
+], o.prototype, "_loading", 2);
+d([
+  c()
+], o.prototype, "_error", 2);
+o = d([
+  _("surveys-dashboard")
+], o);
 export {
-  a as SurveysDashboardElement
+  o as SurveysDashboardElement
 };

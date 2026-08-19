@@ -1,13 +1,39 @@
-import { LitElement as b, html as t, nothing as n, css as d, state as r, customElement as p } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as g } from "@umbraco-cms/backoffice/element-api";
-var m = Object.defineProperty, _ = Object.getOwnPropertyDescriptor, l = (e, a, i, o) => {
-  for (var u = o > 1 ? void 0 : o ? _(a, i) : a, c = e.length - 1, h; c >= 0; c--)
-    (h = e[c]) && (u = (o ? h(a, i, u) : h(u)) || u);
-  return o && u && m(a, i, u), u;
-};
-let s = class extends g(b) {
+import { LitElement as g, html as i, nothing as b, css as m, state as n, customElement as _ } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as f } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as v } from "@umbraco-cms/backoffice/auth";
+function y(e) {
+  let t = null;
+  const a = new Promise((u) => {
+    e.consumeContext(v, async (s) => {
+      var r;
+      try {
+        t = await ((r = s == null ? void 0 : s.getLatestToken) == null ? void 0 : r.call(s)) ?? null;
+      } catch {
+        t = null;
+      }
+      u();
+    }), setTimeout(u, 3e3);
+  });
+  return async (u, s = {}) => {
+    await a;
+    const r = new Headers(s.headers);
+    t && !r.has("Authorization") && r.set("Authorization", `Bearer ${t}`);
+    const o = await fetch(u, { ...s, credentials: "same-origin", headers: r });
+    return (o.status === 401 || o.status === 403) && console.error(
+      `[SplatDev] ${o.status} from ${String(u)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
+    ), o;
+  };
+}
+var $ = Object.defineProperty, x = Object.getOwnPropertyDescriptor, p = (e) => {
+  throw TypeError(e);
+}, h = (e, t, a, u) => {
+  for (var s = u > 1 ? void 0 : u ? x(t, a) : t, r = e.length - 1, o; r >= 0; r--)
+    (o = e[r]) && (s = (u ? o(t, a, s) : o(s)) || s);
+  return u && s && $(t, a, s), s;
+}, w = (e, t, a) => t.has(e) || p("Cannot " + a), d = (e, t, a) => (w(e, t, "read from private field"), a ? a.call(e) : t.get(e)), I = (e, t, a) => t.has(e) ? p("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), c;
+let l = class extends f(g) {
   constructor() {
-    super(...arguments), this._activeTab = "overview", this._categories = [], this._allItems = [], this._totalItems = 0, this._searchQuery = "", this._searchResults = [], this._loading = !1, this._apiBase = "/umbraco/api/faqs";
+    super(...arguments), I(this, c, y(this)), this._activeTab = "overview", this._categories = [], this._allItems = [], this._totalItems = 0, this._searchQuery = "", this._searchResults = [], this._loading = !1, this._apiBase = "/umbraco/api/faqs";
   }
   connectedCallback() {
     super.connectedCallback(), this._loadData();
@@ -15,13 +41,13 @@ let s = class extends g(b) {
   async _loadData() {
     this._loading = !0;
     try {
-      const [e, a] = await Promise.all([
-        fetch(`${this._apiBase}/GetCategories?publishedOnly=false`),
-        fetch(`${this._apiBase}/GetItems?publishedOnly=false`)
+      const [e, t] = await Promise.all([
+        d(this, c).call(this, `${this._apiBase}/GetCategories?publishedOnly=false`),
+        d(this, c).call(this, `${this._apiBase}/GetItems?publishedOnly=false`)
       ]);
-      if (e.ok && (this._categories = await e.json()), a.ok) {
-        const i = await a.json();
-        this._allItems = i.items ?? [], this._totalItems = i.total ?? 0;
+      if (e.ok && (this._categories = await e.json()), t.ok) {
+        const a = await t.json();
+        this._allItems = a.items ?? [], this._totalItems = a.total ?? 0;
       }
     } catch {
       this._categories = [], this._allItems = [];
@@ -35,28 +61,26 @@ let s = class extends g(b) {
       return;
     }
     try {
-      const e = await fetch(
-        `${this._apiBase}/Search?q=${encodeURIComponent(this._searchQuery)}&publishedOnly=false`
-      );
+      const e = await d(this, c).call(this, `${this._apiBase}/Search?q=${encodeURIComponent(this._searchQuery)}&publishedOnly=false`);
       e.ok && (this._searchResults = await e.json(), this._activeTab = "search");
     } catch {
       this._searchResults = [];
     }
   }
   async _togglePublish(e) {
-    await fetch(`${this._apiBase}/PublishItem?id=${e.id}&publish=${!e.isPublished}`, {
+    await d(this, c).call(this, `${this._apiBase}/PublishItem?id=${e.id}&publish=${!e.isPublished}`, {
       method: "POST"
     }), e.isPublished = !e.isPublished, this.requestUpdate();
   }
   async _deleteItem(e) {
-    confirm("Delete this FAQ item?") && (await fetch(`${this._apiBase}/DeleteItem?id=${e}`, { method: "DELETE" }), this._allItems = this._allItems.filter((a) => a.id !== e), this._totalItems--, this.requestUpdate());
+    confirm("Delete this FAQ item?") && (await d(this, c).call(this, `${this._apiBase}/DeleteItem?id=${e}`, { method: "DELETE" }), this._allItems = this._allItems.filter((t) => t.id !== e), this._totalItems--, this.requestUpdate());
   }
   async _deleteCategory(e) {
-    confirm("Delete this category and all its FAQ items?") && (await fetch(`${this._apiBase}/DeleteCategory?categoryId=${e}`, { method: "DELETE" }), await this._loadData());
+    confirm("Delete this category and all its FAQ items?") && (await d(this, c).call(this, `${this._apiBase}/DeleteCategory?categoryId=${e}`, { method: "DELETE" }), await this._loadData());
   }
   _getCategoryName(e) {
-    var a;
-    return ((a = this._categories.find((i) => i.id === e)) == null ? void 0 : a.name) ?? "—";
+    var t;
+    return ((t = this._categories.find((a) => a.id === e)) == null ? void 0 : t.name) ?? "—";
   }
   _handleSearchInput(e) {
     this._searchQuery = e.target.value;
@@ -65,7 +89,7 @@ let s = class extends g(b) {
     e.key === "Enter" && await this._search();
   }
   _renderOverviewTab() {
-    return this._loading ? t`<p>Loading...</p>` : t`
+    return this._loading ? i`<p>Loading...</p>` : i`
       <div class="stats-grid">
         <uui-box>
           <p class="stat-label">Categories</p>
@@ -87,19 +111,19 @@ let s = class extends g(b) {
 
       <!-- Accordion preview grouped by category -->
       <uui-box headline="FAQ Preview (accordion)">
-        ${this._categories.length === 0 ? t`<p class="empty">No categories or FAQs yet.</p>` : this._categories.map((e) => {
-      const a = this._allItems.filter((i) => i.categoryId === e.id && i.isPublished);
-      return a.length === 0 ? n : t`
+        ${this._categories.length === 0 ? i`<p class="empty">No categories or FAQs yet.</p>` : this._categories.map((e) => {
+      const t = this._allItems.filter((a) => a.categoryId === e.id && a.isPublished);
+      return t.length === 0 ? b : i`
                 <div class="accordion-section">
                   <h3>${e.name}</h3>
-                  ${a.map(
-        (i) => t`
+                  ${t.map(
+        (a) => i`
                       <details class="faq-item">
                         <summary class="faq-question">
-                          <span>${i.question}</span>
+                          <span>${a.question}</span>
                           <span>&rsaquo;</span>
                         </summary>
-                        <div class="faq-answer">${i.answer}</div>
+                        <div class="faq-answer">${a.answer}</div>
                       </details>
                     `
       )}
@@ -110,9 +134,9 @@ let s = class extends g(b) {
     `;
   }
   _renderItemsTab() {
-    return this._loading ? t`<p>Loading...</p>` : t`
+    return this._loading ? i`<p>Loading...</p>` : i`
       <uui-box headline="All FAQ Items (${this._totalItems})">
-        ${this._allItems.length === 0 ? t`<p class="empty">No FAQ items found.</p>` : t`
+        ${this._allItems.length === 0 ? i`<p class="empty">No FAQ items found.</p>` : i`
               <uui-table>
                 <uui-table-head>
                   <uui-table-head-cell>Question</uui-table-head-cell>
@@ -122,7 +146,7 @@ let s = class extends g(b) {
                   <uui-table-head-cell>Actions</uui-table-head-cell>
                 </uui-table-head>
                 ${this._allItems.map(
-      (e) => t`
+      (e) => i`
                     <uui-table-row>
                       <uui-table-cell style="max-width: 400px;">
                         <strong>${e.question}</strong>
@@ -155,9 +179,9 @@ let s = class extends g(b) {
     `;
   }
   _renderCategoriesTab() {
-    return this._loading ? t`<p>Loading...</p>` : t`
+    return this._loading ? i`<p>Loading...</p>` : i`
       <uui-box headline="Categories (${this._categories.length})">
-        ${this._categories.length === 0 ? t`<p class="empty">No categories found.</p>` : t`
+        ${this._categories.length === 0 ? i`<p class="empty">No categories found.</p>` : i`
               <uui-table>
                 <uui-table-head>
                   <uui-table-head-cell>Name</uui-table-head-cell>
@@ -167,13 +191,13 @@ let s = class extends g(b) {
                   <uui-table-head-cell>Actions</uui-table-head-cell>
                 </uui-table-head>
                 ${this._categories.map(
-      (e) => t`
+      (e) => i`
                     <uui-table-row>
                       <uui-table-cell><strong>${e.name}</strong></uui-table-cell>
                       <uui-table-cell><code>${e.slug}</code></uui-table-cell>
                       <uui-table-cell>${e.sortOrder}</uui-table-cell>
                       <uui-table-cell>
-                        ${this._allItems.filter((a) => a.categoryId === e.id).length}
+                        ${this._allItems.filter((t) => t.categoryId === e.id).length}
                       </uui-table-cell>
                       <uui-table-cell>
                         <uui-button
@@ -191,13 +215,13 @@ let s = class extends g(b) {
     `;
   }
   _renderSearchTab() {
-    return t`
+    return i`
       <p class="search-result-count">
         ${this._searchResults.length} result${this._searchResults.length !== 1 ? "s" : ""}
         for <strong>"${this._searchQuery}"</strong>
       </p>
 
-      ${this._searchResults.length === 0 ? t`<p class="empty">No FAQ items match your search.</p>` : t`
+      ${this._searchResults.length === 0 ? i`<p class="empty">No FAQ items match your search.</p>` : i`
             <uui-table>
               <uui-table-head>
                 <uui-table-head-cell>Question</uui-table-head-cell>
@@ -205,7 +229,7 @@ let s = class extends g(b) {
                 <uui-table-head-cell>Status</uui-table-head-cell>
               </uui-table-head>
               ${this._searchResults.map(
-      (e) => t`
+      (e) => i`
                   <uui-table-row>
                     <uui-table-cell>${e.question}</uui-table-cell>
                     <uui-table-cell>${this._getCategoryName(e.categoryId)}</uui-table-cell>
@@ -222,7 +246,7 @@ let s = class extends g(b) {
     `;
   }
   render() {
-    return t`
+    return i`
       <h1>FAQs Manager</h1>
       <p class="description">
         Manage frequently asked questions, categories and accordion display from the Umbraco backoffice.
@@ -256,13 +280,13 @@ let s = class extends g(b) {
           ?active=${this._activeTab === "categories"}
           @click=${() => this._activeTab = "categories"}
         >Categories</uui-tab>
-        ${this._searchResults.length > 0 || this._activeTab === "search" ? t`
+        ${this._searchResults.length > 0 || this._activeTab === "search" ? i`
               <uui-tab
                 label="Search Results"
                 ?active=${this._activeTab === "search"}
                 @click=${() => this._activeTab = "search"}
               >Search Results</uui-tab>
-            ` : n}
+            ` : b}
       </uui-tab-group>
 
       <div class="tab-content">
@@ -271,7 +295,8 @@ let s = class extends g(b) {
     `;
   }
 };
-s.styles = d`
+c = /* @__PURE__ */ new WeakMap();
+l.styles = m`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -402,32 +427,32 @@ s.styles = d`
       margin-bottom: 12px;
     }
   `;
-l([
-  r()
-], s.prototype, "_activeTab", 2);
-l([
-  r()
-], s.prototype, "_categories", 2);
-l([
-  r()
-], s.prototype, "_allItems", 2);
-l([
-  r()
-], s.prototype, "_totalItems", 2);
-l([
-  r()
-], s.prototype, "_searchQuery", 2);
-l([
-  r()
-], s.prototype, "_searchResults", 2);
-l([
-  r()
-], s.prototype, "_loading", 2);
-s = l([
-  p("faqs-dashboard")
-], s);
-const y = s;
+h([
+  n()
+], l.prototype, "_activeTab", 2);
+h([
+  n()
+], l.prototype, "_categories", 2);
+h([
+  n()
+], l.prototype, "_allItems", 2);
+h([
+  n()
+], l.prototype, "_totalItems", 2);
+h([
+  n()
+], l.prototype, "_searchQuery", 2);
+h([
+  n()
+], l.prototype, "_searchResults", 2);
+h([
+  n()
+], l.prototype, "_loading", 2);
+l = h([
+  _("faqs-dashboard")
+], l);
+const q = l;
 export {
-  s as FaqsDashboardElement,
-  y as default
+  l as FaqsDashboardElement,
+  q as default
 };

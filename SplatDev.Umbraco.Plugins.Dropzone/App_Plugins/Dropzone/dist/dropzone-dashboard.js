@@ -1,45 +1,71 @@
-import { LitElement as p, html as a, css as c, state as u, customElement as h } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as g } from "@umbraco-cms/backoffice/element-api";
-var m = Object.defineProperty, f = Object.getOwnPropertyDescriptor, l = (e, t, i, d) => {
-  for (var r = d > 1 ? void 0 : d ? f(t, i) : t, s = e.length - 1, n; s >= 0; s--)
-    (n = e[s]) && (r = (d ? n(t, i, r) : n(r)) || r);
-  return d && r && m(t, i, r), r;
-};
-let o = class extends g(p) {
+import { LitElement as _, html as s, css as f, state as p, customElement as g } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as m } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as b } from "@umbraco-cms/backoffice/auth";
+function y(e) {
+  let a = null;
+  const r = new Promise((o) => {
+    e.consumeContext(b, async (t) => {
+      var i;
+      try {
+        a = await ((i = t == null ? void 0 : t.getLatestToken) == null ? void 0 : i.call(t)) ?? null;
+      } catch {
+        a = null;
+      }
+      o();
+    }), setTimeout(o, 3e3);
+  });
+  return async (o, t = {}) => {
+    await r;
+    const i = new Headers(t.headers);
+    a && !i.has("Authorization") && i.set("Authorization", `Bearer ${a}`);
+    const d = await fetch(o, { ...t, credentials: "same-origin", headers: i });
+    return (d.status === 401 || d.status === 403) && console.error(
+      `[SplatDev] ${d.status} from ${String(o)} — the backoffice token was ${a ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
+    ), d;
+  };
+}
+var v = Object.defineProperty, $ = Object.getOwnPropertyDescriptor, c = (e) => {
+  throw TypeError(e);
+}, u = (e, a, r, o) => {
+  for (var t = o > 1 ? void 0 : o ? $(a, r) : a, i = e.length - 1, d; i >= 0; i--)
+    (d = e[i]) && (t = (o ? d(a, r, t) : d(t)) || t);
+  return o && t && v(a, r, t), t;
+}, k = (e, a, r) => a.has(e) || c("Cannot " + r), h = (e, a, r) => (k(e, a, "read from private field"), r ? r.call(e) : a.get(e)), w = (e, a, r) => a.has(e) ? c("Cannot add the same private member more than once") : a instanceof WeakSet ? a.add(e) : a.set(e, r), n;
+let l = class extends m(_) {
   constructor() {
-    super(...arguments), this._queue = [], this._mediaItems = [], this._parentMediaId = "", this._dragging = !1;
+    super(...arguments), w(this, n, y(this)), this._queue = [], this._mediaItems = [], this._parentMediaId = "", this._dragging = !1;
   }
   connectedCallback() {
     super.connectedCallback(), this._loadMedia();
   }
   async _loadMedia() {
-    const e = await fetch("/umbraco/api/dropzone/GetMedia");
+    const e = await h(this, n).call(this, "/umbraco/api/dropzone/GetMedia");
     this._mediaItems = await e.json();
   }
   _onDrop(e) {
     e.preventDefault(), this._dragging = !1;
-    const t = Array.from(e.dataTransfer.files);
-    this._addToQueue(t);
+    const a = Array.from(e.dataTransfer.files);
+    this._addToQueue(a);
   }
   _onFileInput(e) {
     this._addToQueue(Array.from(e.target.files));
   }
   _addToQueue(e) {
-    this._queue = [...this._queue, ...e.map((t) => ({ file: t, uploading: !1, done: !1, error: null }))];
+    this._queue = [...this._queue, ...e.map((a) => ({ file: a, uploading: !1, done: !1, error: null }))];
   }
   async _uploadAll() {
     for (const e of this._queue) {
       if (e.done) continue;
       e.uploading = !0, this.requestUpdate();
-      const t = new FormData();
-      t.append("file", e.file), this._parentMediaId && t.append("parentMediaId", this._parentMediaId);
+      const a = new FormData();
+      a.append("file", e.file), this._parentMediaId && a.append("parentMediaId", this._parentMediaId);
       try {
-        const i = await fetch("/umbraco/api/dropzone/Upload", { method: "POST", body: t });
-        if (i.ok)
+        const r = await h(this, n).call(this, "/umbraco/api/dropzone/Upload", { method: "POST", body: a });
+        if (r.ok)
           e.done = !0;
         else {
-          const d = await i.json();
-          e.error = d.error || "Failed";
+          const o = await r.json();
+          e.error = o.error || "Failed";
         }
       } catch {
         e.error = "Upload error";
@@ -49,10 +75,10 @@ let o = class extends g(p) {
     await this._loadMedia();
   }
   async _delete(e) {
-    await fetch(`/umbraco/api/dropzone/Delete?mediaKey=${e}`, { method: "DELETE" }), await this._loadMedia();
+    await h(this, n).call(this, `/umbraco/api/dropzone/Delete?mediaKey=${e}`, { method: "DELETE" }), await this._loadMedia();
   }
   render() {
-    return a`
+    return s`
             <uui-box headline="Dropzone — File Upload">
                 <div
                     class="drop-area ${this._dragging ? "active" : ""}"
@@ -72,24 +98,24 @@ let o = class extends g(p) {
                     <uui-input .value=${this._parentMediaId} @input=${(e) => this._parentMediaId = e.target.value} placeholder="Leave blank for root"></uui-input>
                 </uui-form-layout-item>
 
-                ${this._queue.length ? a`
+                ${this._queue.length ? s`
                     <h4>Upload Queue</h4>
-                    ${this._queue.map((e) => a`
+                    ${this._queue.map((e) => s`
                         <div class="upload-item">
                             <span>${e.file.name}</span>
-                            ${e.uploading ? a`<uui-loader></uui-loader>` : ""}
-                            ${e.done ? a`<uui-badge color="positive">Uploaded</uui-badge>` : ""}
-                            ${e.error ? a`<uui-badge color="danger">${e.error}</uui-badge>` : ""}
+                            ${e.uploading ? s`<uui-loader></uui-loader>` : ""}
+                            ${e.done ? s`<uui-badge color="positive">Uploaded</uui-badge>` : ""}
+                            ${e.error ? s`<uui-badge color="danger">${e.error}</uui-badge>` : ""}
                         </div>`)}
                     <uui-button look="primary" label="Upload All" @click=${this._uploadAll}>Upload All</uui-button>
                 ` : ""}
 
-                ${this._mediaItems.length ? a`
+                ${this._mediaItems.length ? s`
                     <h4 style="margin-top:24px;">Media Items</h4>
                     <table>
                         <thead><tr><th>Name</th><th>Type</th><th>Key</th><th></th></tr></thead>
                         <tbody>
-                            ${this._mediaItems.map((e) => a`
+                            ${this._mediaItems.map((e) => s`
                                 <tr>
                                     <td>${e.name}</td>
                                     <td>${e.contentType}</td>
@@ -101,7 +127,8 @@ let o = class extends g(p) {
             </uui-box>`;
   }
 };
-o.styles = c`
+n = /* @__PURE__ */ new WeakMap();
+l.styles = f`
         :host { display: block; padding: 20px; }
         .drop-area {
             border: 2px dashed var(--uui-color-border);
@@ -117,24 +144,24 @@ o.styles = c`
         th, td { border: 1px solid var(--uui-color-border); padding: 8px 12px; }
         th { background: var(--uui-color-surface-emphasis); }
     `;
-l([
-  u()
-], o.prototype, "_queue", 2);
-l([
-  u()
-], o.prototype, "_mediaItems", 2);
-l([
-  u()
-], o.prototype, "_parentMediaId", 2);
-l([
-  u()
-], o.prototype, "_dragging", 2);
-o = l([
-  h("dropzone-dashboard")
-], o);
-const y = o;
+u([
+  p()
+], l.prototype, "_queue", 2);
+u([
+  p()
+], l.prototype, "_mediaItems", 2);
+u([
+  p()
+], l.prototype, "_parentMediaId", 2);
+u([
+  p()
+], l.prototype, "_dragging", 2);
+l = u([
+  g("dropzone-dashboard")
+], l);
+const T = l;
 export {
-  o as DropzoneDashboard,
-  y as default
+  l as DropzoneDashboard,
+  T as default
 };
 //# sourceMappingURL=dropzone-dashboard.js.map

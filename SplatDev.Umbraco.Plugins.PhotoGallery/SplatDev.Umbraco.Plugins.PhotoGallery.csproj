@@ -8,7 +8,7 @@
     <AssemblyName>SplatDev.Umbraco.Plugins.PhotoGallery</AssemblyName>
     <RootNamespace>SplatDev.Umbraco.Plugins.PhotoGallery</RootNamespace>
     <PackageId>SplatDev.Umbraco.Plugins.PhotoGallery</PackageId>
-    <Version>1.2.0</Version>
+    <Version>1.2.1</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <Authors>SplatDev</Authors>

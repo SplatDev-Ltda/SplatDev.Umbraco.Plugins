@@ -2,6 +2,8 @@ import { LitElement, html, css } from "@umbraco-cms/backoffice/external/lit";
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 const API = "/umbraco/api/pagseguro";
 
 /** Brand palette */
@@ -17,6 +19,8 @@ interface PagSeguroConfig {
 
 @customElement("pagseguro-dashboard")
 export class PagSeguroDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host {
       display: block;
@@ -248,7 +252,7 @@ export class PagSeguroDashboardElement extends UmbElementMixin(LitElement) {
     this._connStatus = "checking";
     this._configError = "";
     try {
-      const r = await fetch(`${API}/GetConfig`);
+      const r = await this.#fetch(`${API}/GetConfig`);
       if (r.ok) {
         this._config = await r.json();
         this._connStatus = "connected";
@@ -271,7 +275,7 @@ export class PagSeguroDashboardElement extends UmbElementMixin(LitElement) {
     this._txCheckoutUrl = "";
     this._txError = "";
     try {
-      const r = await fetch(`${API}/CreateTransaction`, {
+      const r = await this.#fetch(`${API}/CreateTransaction`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -300,7 +304,7 @@ export class PagSeguroDashboardElement extends UmbElementMixin(LitElement) {
     this._stStatus = "";
     this._stError = "";
     try {
-      const r = await fetch(
+      const r = await this.#fetch(
         `${API}/GetTransactionStatus?code=${encodeURIComponent(this._stCode.trim())}`
       );
       if (r.ok) {

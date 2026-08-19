@@ -1,13 +1,39 @@
-import { LitElement as d, html as s, css as p, state as u, customElement as b } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as h } from "@umbraco-cms/backoffice/element-api";
-var g = Object.defineProperty, _ = Object.getOwnPropertyDescriptor, o = (e, t, l, r) => {
-  for (var i = r > 1 ? void 0 : r ? _(t, l) : t, c = e.length - 1, n; c >= 0; c--)
-    (n = e[c]) && (i = (r ? n(t, l, i) : n(i)) || i);
-  return r && i && g(t, l, i), i;
-};
-let a = class extends h(d) {
+import { LitElement as b, html as r, css as _, state as d, customElement as g } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as v } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as f } from "@umbraco-cms/backoffice/auth";
+function m(e) {
+  let t = null;
+  const l = new Promise((s) => {
+    e.consumeContext(f, async (a) => {
+      var i;
+      try {
+        t = await ((i = a == null ? void 0 : a.getLatestToken) == null ? void 0 : i.call(a)) ?? null;
+      } catch {
+        t = null;
+      }
+      s();
+    }), setTimeout(s, 3e3);
+  });
+  return async (s, a = {}) => {
+    await l;
+    const i = new Headers(a.headers);
+    t && !i.has("Authorization") && i.set("Authorization", `Bearer ${t}`);
+    const o = await fetch(s, { ...a, credentials: "same-origin", headers: i });
+    return (o.status === 401 || o.status === 403) && console.error(
+      `[SplatDev] ${o.status} from ${String(s)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
+    ), o;
+  };
+}
+var $ = Object.defineProperty, w = Object.getOwnPropertyDescriptor, p = (e) => {
+  throw TypeError(e);
+}, c = (e, t, l, s) => {
+  for (var a = s > 1 ? void 0 : s ? w(t, l) : t, i = e.length - 1, o; i >= 0; i--)
+    (o = e[i]) && (a = (s ? o(t, l, a) : o(a)) || a);
+  return s && a && $(t, l, a), a;
+}, y = (e, t, l) => t.has(e) || p("Cannot " + l), h = (e, t, l) => (y(e, t, "read from private field"), l ? l.call(e) : t.get(e)), x = (e, t, l) => t.has(e) ? p("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, l), n;
+let u = class extends v(b) {
   constructor() {
-    super(...arguments), this._polls = [], this._loading = !1, this._error = null, this._selectedPollResults = null, this._apiBase = "/umbraco/api/quickpoll";
+    super(...arguments), x(this, n, m(this)), this._polls = [], this._loading = !1, this._error = null, this._selectedPollResults = null, this._apiBase = "/umbraco/api/quickpoll";
   }
   connectedCallback() {
     super.connectedCallback(), this._loadPolls();
@@ -15,7 +41,7 @@ let a = class extends h(d) {
   async _loadPolls() {
     this._loading = !0, this._error = null;
     try {
-      const e = await fetch(`${this._apiBase}/getall`);
+      const e = await h(this, n).call(this, `${this._apiBase}/getall`);
       if (!e.ok) throw new Error(`HTTP ${e.status}`);
       this._polls = await e.json();
     } catch (e) {
@@ -26,7 +52,7 @@ let a = class extends h(d) {
   }
   async _viewResults(e) {
     try {
-      const t = await fetch(`${this._apiBase}/results?pollId=${e}`);
+      const t = await h(this, n).call(this, `${this._apiBase}/results?pollId=${e}`);
       if (!t.ok) throw new Error(`HTTP ${t.status}`);
       this._selectedPollResults = await t.json();
     } catch (t) {
@@ -37,19 +63,19 @@ let a = class extends h(d) {
     var t;
     if (confirm("Delete this poll and all votes?"))
       try {
-        await fetch(`${this._apiBase}/delete?id=${e}`, { method: "DELETE" }), this._polls = this._polls.filter((l) => l.id !== e), ((t = this._selectedPollResults) == null ? void 0 : t.pollId) === e && (this._selectedPollResults = null);
+        await h(this, n).call(this, `${this._apiBase}/delete?id=${e}`, { method: "DELETE" }), this._polls = this._polls.filter((l) => l.id !== e), ((t = this._selectedPollResults) == null ? void 0 : t.pollId) === e && (this._selectedPollResults = null);
       } catch (l) {
         this._error = `Delete failed: ${l instanceof Error ? l.message : String(l)}`;
       }
   }
   render() {
-    return s`
+    return r`
       <h1>Quick Poll</h1>
       <p class="description">
         Manage single-question polls, track votes, and view real-time results.
       </p>
 
-      ${this._error ? s`<uui-box style="margin-bottom:16px">
+      ${this._error ? r`<uui-box style="margin-bottom:16px">
             <p style="color:var(--uui-color-danger)">${this._error}</p>
           </uui-box>` : ""}
 
@@ -64,7 +90,7 @@ let a = class extends h(d) {
 
       <div class="section">
         <uui-box headline="Polls">
-          ${this._polls.length > 0 ? s`
+          ${this._polls.length > 0 ? r`
                 <uui-table>
                   <uui-table-head>
                     <uui-table-head-cell>Question</uui-table-head-cell>
@@ -76,7 +102,7 @@ let a = class extends h(d) {
                   ${this._polls.map(
       (e) => {
         var t;
-        return s`
+        return r`
                       <uui-table-row>
                         <uui-table-cell>${e.question}</uui-table-cell>
                         <uui-table-cell>
@@ -97,16 +123,16 @@ let a = class extends h(d) {
       }
     )}
                 </uui-table>
-              ` : s`<div class="empty-state"><p>No polls found.</p></div>`}
+              ` : r`<div class="empty-state"><p>No polls found.</p></div>`}
         </uui-box>
       </div>
 
-      ${this._selectedPollResults ? s`
+      ${this._selectedPollResults ? r`
             <div class="section">
               <uui-box headline="Results: ${this._selectedPollResults.question}">
                 <p>Total votes: <strong>${this._selectedPollResults.totalVotes}</strong></p>
                 ${this._selectedPollResults.options.map(
-      (e) => s`
+      (e) => r`
                     <div class="result-row">
                       <span class="option-label">${e.optionText}</span>
                       <div class="result-bar-wrap">
@@ -125,7 +151,8 @@ let a = class extends h(d) {
     `;
   }
 };
-a.styles = p`
+n = /* @__PURE__ */ new WeakMap();
+u.styles = _`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -196,21 +223,21 @@ a.styles = p`
       color: var(--uui-color-text-alt);
     }
   `;
-o([
-  u()
-], a.prototype, "_polls", 2);
-o([
-  u()
-], a.prototype, "_loading", 2);
-o([
-  u()
-], a.prototype, "_error", 2);
-o([
-  u()
-], a.prototype, "_selectedPollResults", 2);
-a = o([
-  b("quick-poll-dashboard")
-], a);
+c([
+  d()
+], u.prototype, "_polls", 2);
+c([
+  d()
+], u.prototype, "_loading", 2);
+c([
+  d()
+], u.prototype, "_error", 2);
+c([
+  d()
+], u.prototype, "_selectedPollResults", 2);
+u = c([
+  g("quick-poll-dashboard")
+], u);
 export {
-  a as QuickPollDashboardElement
+  u as QuickPollDashboardElement
 };

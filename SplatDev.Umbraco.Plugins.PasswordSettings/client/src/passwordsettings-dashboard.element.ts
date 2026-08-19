@@ -2,6 +2,8 @@ import { LitElement, html, css, nothing } from "@umbraco-cms/backoffice/external
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface PasswordPolicy {
   id: number;
   minLength: number;
@@ -19,6 +21,8 @@ interface ValidationResult {
 
 @customElement("passwordsettings-dashboard")
 export class PasswordSettingsDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
@@ -51,7 +55,7 @@ export class PasswordSettingsDashboardElement extends UmbElementMixin(LitElement
   private async _loadPolicy(): Promise<void> {
     this._loading = true;
     try {
-      const res = await fetch(`${this._apiBase}/GetPolicy`);
+      const res = await this.#fetch(`${this._apiBase}/GetPolicy`);
       if (res.ok) this._policy = await res.json();
     } finally {
       this._loading = false;
@@ -63,7 +67,7 @@ export class PasswordSettingsDashboardElement extends UmbElementMixin(LitElement
     this._saving = true;
     this._statusMsg = "";
     try {
-      const res = await fetch(`${this._apiBase}/SavePolicy`, {
+      const res = await this.#fetch(`${this._apiBase}/SavePolicy`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(this._policy),
@@ -79,7 +83,7 @@ export class PasswordSettingsDashboardElement extends UmbElementMixin(LitElement
 
   private async _validatePassword(): Promise<void> {
     if (!this._testPassword) return;
-    const res = await fetch(`${this._apiBase}/ValidatePassword`, {
+    const res = await this.#fetch(`${this._apiBase}/ValidatePassword`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ password: this._testPassword }),

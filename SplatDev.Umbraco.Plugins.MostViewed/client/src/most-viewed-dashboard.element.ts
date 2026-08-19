@@ -1,6 +1,8 @@
 import { LitElement, html, css, customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface PageViewSummary {
   contentKey: string;
   nodeName: string;
@@ -10,6 +12,8 @@ interface PageViewSummary {
 
 @customElement("most-viewed-dashboard")
 export class MostViewedDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host {
       display: block;
@@ -76,7 +80,7 @@ export class MostViewedDashboardElement extends UmbElementMixin(LitElement) {
     this._error = null;
     try {
       const url = `/umbraco/api/mostviewed/GetMostViewed?count=${this._count}&days=${this._days}`;
-      const response = await fetch(url);
+      const response = await this.#fetch(url);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       this._pages = (await response.json()) as PageViewSummary[];
     } catch (err) {

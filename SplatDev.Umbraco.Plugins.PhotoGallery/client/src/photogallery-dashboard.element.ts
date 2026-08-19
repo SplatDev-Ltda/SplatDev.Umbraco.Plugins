@@ -1,6 +1,8 @@
 import { LitElement, html, css, customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface Photo {
   id?: string;
   title: string;
@@ -18,6 +20,8 @@ interface PhotoAlbum {
 
 @customElement("photogallery-dashboard")
 export class PhotogalleryDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host {
       display: block;
@@ -92,7 +96,7 @@ export class PhotogalleryDashboardElement extends UmbElementMixin(LitElement) {
     this._error = "";
     this._loading = true;
     try {
-      const response = await fetch("/umbraco/api/photogallery/GetAlbums");
+      const response = await this.#fetch("/umbraco/api/photogallery/GetAlbums");
       if (!response.ok) throw new Error(await response.text());
       this._albums = (await response.json()) as PhotoAlbum[];
     } catch (e: unknown) {

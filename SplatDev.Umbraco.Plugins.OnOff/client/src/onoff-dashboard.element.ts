@@ -2,6 +2,8 @@ import { LitElement, html, css, nothing } from "@umbraco-cms/backoffice/external
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface FeatureToggle {
   id: number;
   name: string;
@@ -17,6 +19,8 @@ type FormData = Omit<FeatureToggle, "id" | "updatedAt"> & { id?: number };
 
 @customElement("onoff-dashboard")
 export class OnOffDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
@@ -56,7 +60,7 @@ export class OnOffDashboardElement extends UmbElementMixin(LitElement) {
   private async _load(): Promise<void> {
     this._loading = true;
     try {
-      const r = await fetch(`${this._api}/GetAll`);
+      const r = await this.#fetch(`${this._api}/GetAll`);
       if (r.ok) this._features = await r.json();
     } catch { this._features = []; }
     finally { this._loading = false; }
@@ -64,13 +68,13 @@ export class OnOffDashboardElement extends UmbElementMixin(LitElement) {
 
   private async _toggle(feature: FeatureToggle): Promise<void> {
     const action = feature.isEnabled ? "Disable" : "Enable";
-    await fetch(`${this._api}/${action}?alias=${encodeURIComponent(feature.alias)}`, { method: "POST" });
+    await this.#fetch(`${this._api}/${action}?alias=${encodeURIComponent(feature.alias)}`, { method: "POST" });
     await this._load();
   }
 
   private async _delete(feature: FeatureToggle): Promise<void> {
     if (!confirm(`Delete feature '${feature.name}'?`)) return;
-    await fetch(`${this._api}/Delete?id=${feature.id}`, { method: "DELETE" });
+    await this.#fetch(`${this._api}/Delete?id=${feature.id}`, { method: "DELETE" });
     await this._load();
   }
 
@@ -87,7 +91,7 @@ export class OnOffDashboardElement extends UmbElementMixin(LitElement) {
   private async _save(): Promise<void> {
     this._saving = true;
     try {
-      await fetch(`${this._api}/UpsertFeature`, {
+      await this.#fetch(`${this._api}/UpsertFeature`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(this._form),

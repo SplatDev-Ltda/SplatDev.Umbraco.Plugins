@@ -1,13 +1,39 @@
-import { LitElement as u, html as r, css as p, state as a, customElement as h } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as m } from "@umbraco-cms/backoffice/element-api";
-var g = Object.defineProperty, b = Object.getOwnPropertyDescriptor, o = (t, i, n, l) => {
-  for (var s = l > 1 ? void 0 : l ? b(i, n) : i, d = t.length - 1, c; d >= 0; d--)
-    (c = t[d]) && (s = (l ? c(i, n, s) : c(s)) || s);
-  return l && s && g(i, n, s), s;
-};
-let e = class extends m(u) {
+import { LitElement as m, html as c, css as g, state as u, customElement as _ } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as v } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as b } from "@umbraco-cms/backoffice/auth";
+function f(t) {
+  let e = null;
+  const s = new Promise((a) => {
+    t.consumeContext(b, async (i) => {
+      var r;
+      try {
+        e = await ((r = i == null ? void 0 : i.getLatestToken) == null ? void 0 : r.call(i)) ?? null;
+      } catch {
+        e = null;
+      }
+      a();
+    }), setTimeout(a, 3e3);
+  });
+  return async (a, i = {}) => {
+    await s;
+    const r = new Headers(i.headers);
+    e && !r.has("Authorization") && r.set("Authorization", `Bearer ${e}`);
+    const n = await fetch(a, { ...i, credentials: "same-origin", headers: r });
+    return (n.status === 401 || n.status === 403) && console.error(
+      `[SplatDev] ${n.status} from ${String(a)} — the backoffice token was ${e ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
+    ), n;
+  };
+}
+var w = Object.defineProperty, x = Object.getOwnPropertyDescriptor, h = (t) => {
+  throw TypeError(t);
+}, d = (t, e, s, a) => {
+  for (var i = a > 1 ? void 0 : a ? x(e, s) : e, r = t.length - 1, n; r >= 0; r--)
+    (n = t[r]) && (i = (a ? n(e, s, i) : n(i)) || i);
+  return a && i && w(e, s, i), i;
+}, y = (t, e, s) => e.has(t) || h("Cannot " + s), p = (t, e, s) => (y(t, e, "read from private field"), s ? s.call(t) : e.get(t)), $ = (t, e, s) => e.has(t) ? h("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, s), l;
+let o = class extends v(m) {
   constructor() {
-    super(...arguments), this._items = [], this._settings = null, this._loading = !1, this._newText = "", this._newUrl = "", this._newSortOrder = 0, this._apiBase = "/umbraco/api/newsticker";
+    super(...arguments), $(this, l, f(this)), this._items = [], this._settings = null, this._loading = !1, this._newText = "", this._newUrl = "", this._newSortOrder = 0, this._apiBase = "/umbraco/api/newsticker";
   }
   connectedCallback() {
     super.connectedCallback(), this._loadItems(), this._loadSettings();
@@ -15,14 +41,14 @@ let e = class extends m(u) {
   async _loadItems() {
     this._loading = !0;
     try {
-      const t = await fetch(`${this._apiBase}/items`);
+      const t = await p(this, l).call(this, `${this._apiBase}/items`);
       t.ok && (this._items = await t.json());
     } finally {
       this._loading = !1;
     }
   }
   async _loadSettings() {
-    const t = await fetch(`${this._apiBase}/settings`);
+    const t = await p(this, l).call(this, `${this._apiBase}/settings`);
     t.ok && (this._settings = await t.json());
   }
   async _addItem() {
@@ -33,31 +59,31 @@ let e = class extends m(u) {
       isActive: !0,
       sortOrder: this._newSortOrder
     };
-    (await fetch(`${this._apiBase}/items`, {
+    (await p(this, l).call(this, `${this._apiBase}/items`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(t)
     })).ok && (this._newText = "", this._newUrl = "", this._newSortOrder = 0, await this._loadItems());
   }
   async _toggleItem(t) {
-    const i = { ...t, isActive: !t.isActive };
-    (await fetch(`${this._apiBase}/items/${t.id}`, {
+    const e = { ...t, isActive: !t.isActive };
+    (await p(this, l).call(this, `${this._apiBase}/items/${t.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(i)
+      body: JSON.stringify(e)
     })).ok && await this._loadItems();
   }
   async _deleteItem(t) {
-    (await fetch(`${this._apiBase}/items/${t}`, { method: "DELETE" })).ok && await this._loadItems();
+    (await p(this, l).call(this, `${this._apiBase}/items/${t}`, { method: "DELETE" })).ok && await this._loadItems();
   }
   render() {
-    return r`
+    return c`
       <h1>News Ticker</h1>
       <p class="description">
         Manage scrolling news ticker items displayed across your Umbraco site.
       </p>
 
-      ${this._settings ? r`
+      ${this._settings ? c`
             <div class="section">
               <uui-box headline="Current Settings">
                 <p>
@@ -106,8 +132,8 @@ let e = class extends m(u) {
 
       <div class="section">
         <uui-box headline="Active Ticker Items">
-          ${this._loading ? r`<uui-loader></uui-loader>` : this._items.length === 0 ? r`<div class="empty-state">No ticker items found. Add one above.</div>` : this._items.map(
-      (t) => r`
+          ${this._loading ? c`<uui-loader></uui-loader>` : this._items.length === 0 ? c`<div class="empty-state">No ticker items found. Add one above.</div>` : this._items.map(
+      (t) => c`
                   <div class="item-row">
                     <div>
                       <span class="${t.isActive ? "badge-active" : "badge-inactive"}">
@@ -116,7 +142,7 @@ let e = class extends m(u) {
                     </div>
                     <div class="item-text">
                       <div>${t.text}</div>
-                      ${t.url ? r`<div class="item-url">${t.url}</div>` : ""}
+                      ${t.url ? c`<div class="item-url">${t.url}</div>` : ""}
                     </div>
                     <div style="font-size:0.75rem; color: var(--uui-color-text-alt);">
                       Order: ${t.sortOrder}
@@ -145,7 +171,8 @@ let e = class extends m(u) {
     `;
   }
 };
-e.styles = p`
+l = /* @__PURE__ */ new WeakMap();
+o.styles = g`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -229,27 +256,27 @@ e.styles = p`
       color: var(--uui-color-text-alt, #6b7280);
     }
   `;
-o([
-  a()
-], e.prototype, "_items", 2);
-o([
-  a()
-], e.prototype, "_settings", 2);
-o([
-  a()
-], e.prototype, "_loading", 2);
-o([
-  a()
-], e.prototype, "_newText", 2);
-o([
-  a()
-], e.prototype, "_newUrl", 2);
-o([
-  a()
-], e.prototype, "_newSortOrder", 2);
-e = o([
-  h("news-ticker-dashboard")
-], e);
+d([
+  u()
+], o.prototype, "_items", 2);
+d([
+  u()
+], o.prototype, "_settings", 2);
+d([
+  u()
+], o.prototype, "_loading", 2);
+d([
+  u()
+], o.prototype, "_newText", 2);
+d([
+  u()
+], o.prototype, "_newUrl", 2);
+d([
+  u()
+], o.prototype, "_newSortOrder", 2);
+o = d([
+  _("news-ticker-dashboard")
+], o);
 export {
-  e as NewsTickerDashboardElement
+  o as NewsTickerDashboardElement
 };

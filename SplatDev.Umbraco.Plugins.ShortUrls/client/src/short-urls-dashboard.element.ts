@@ -1,6 +1,8 @@
 import { LitElement, html, css, customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 // NOTE: CRUD API endpoints under /umbraco/management/api/v1/short-urls are
 // pending Phase 3 backend deployment. All mutating actions (create, edit,
 // delete) are wired up in the UI but guarded behind an _apiAvailable flag.
@@ -17,6 +19,8 @@ type FormMode = "create" | "edit";
 
 @customElement("short-urls-dashboard")
 export class ShortUrlsDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host {
       display: block;
@@ -174,7 +178,7 @@ export class ShortUrlsDashboardElement extends UmbElementMixin(LitElement) {
 
     this._loading = true;
     try {
-      const response = await fetch(this._apiBase, {
+      const response = await this.#fetch(this._apiBase, {
         headers: { "Content-Type": "application/json" },
       });
       if (response.ok) {
@@ -232,7 +236,7 @@ export class ShortUrlsDashboardElement extends UmbElementMixin(LitElement) {
 
       const method = this._formMode === "edit" ? "PUT" : "POST";
 
-      const response = await fetch(url, {
+      const response = await this.#fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -254,7 +258,7 @@ export class ShortUrlsDashboardElement extends UmbElementMixin(LitElement) {
     if (!this._apiAvailable) return;
 
     try {
-      const response = await fetch(`${this._apiBase}/${id}`, {
+      const response = await this.#fetch(`${this._apiBase}/${id}`, {
         method: "DELETE",
       });
       if (response.ok) {

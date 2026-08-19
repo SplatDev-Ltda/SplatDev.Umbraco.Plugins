@@ -1,6 +1,8 @@
 import { LitElement, html, css, customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface SearchField {
   [key: string]: unknown;
 }
@@ -18,6 +20,8 @@ interface SearchResults {
 
 @customElement("examine-dashboard")
 export class ExamineDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host {
       display: block;
@@ -116,7 +120,7 @@ export class ExamineDashboardElement extends UmbElementMixin(LitElement) {
     this._loading = true;
     this._error = "";
     try {
-      const resp = await fetch(`${this._baseUrl}GetIndexes`);
+      const resp = await this.#fetch(`${this._baseUrl}GetIndexes`);
       if (!resp.ok) throw new Error(await resp.text());
       this._indexes = (await resp.json()) as string[];
       if (this._indexes.length > 0) {
@@ -136,7 +140,7 @@ export class ExamineDashboardElement extends UmbElementMixin(LitElement) {
     this._searching = true;
     this._error = "";
     try {
-      const resp = await fetch(`${this._baseUrl}Search`, {
+      const resp = await this.#fetch(`${this._baseUrl}Search`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -161,7 +165,7 @@ export class ExamineDashboardElement extends UmbElementMixin(LitElement) {
     this._rebuilding = true;
     this._error = "";
     try {
-      const resp = await fetch(`${this._baseUrl}RebuildIndex`, {
+      const resp = await this.#fetch(`${this._baseUrl}RebuildIndex`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(this._rebuildIndex),

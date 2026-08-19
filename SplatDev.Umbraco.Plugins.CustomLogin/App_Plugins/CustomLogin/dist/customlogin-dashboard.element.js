@@ -1,13 +1,39 @@
-import { LitElement as g, html as d, css as u, state as l, customElement as c } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as h } from "@umbraco-cms/backoffice/element-api";
-var m = Object.defineProperty, _ = Object.getOwnPropertyDescriptor, a = (e, i, r, o) => {
-  for (var s = o > 1 ? void 0 : o ? _(i, r) : i, n = e.length - 1, p; n >= 0; n--)
-    (p = e[n]) && (s = (o ? p(i, r, s) : p(s)) || s);
-  return o && s && m(i, r, s), s;
-};
-let t = class extends h(g) {
+import { LitElement as h, html as u, css as m, state as d, customElement as _ } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as v } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as f } from "@umbraco-cms/backoffice/auth";
+function b(e) {
+  let t = null;
+  const a = new Promise((i) => {
+    e.consumeContext(f, async (s) => {
+      var o;
+      try {
+        t = await ((o = s == null ? void 0 : s.getLatestToken) == null ? void 0 : o.call(s)) ?? null;
+      } catch {
+        t = null;
+      }
+      i();
+    }), setTimeout(i, 3e3);
+  });
+  return async (i, s = {}) => {
+    await a;
+    const o = new Headers(s.headers);
+    t && !o.has("Authorization") && o.set("Authorization", `Bearer ${t}`);
+    const r = await fetch(i, { ...s, credentials: "same-origin", headers: o });
+    return (r.status === 401 || r.status === 403) && console.error(
+      `[SplatDev] ${r.status} from ${String(i)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
+    ), r;
+  };
+}
+var y = Object.defineProperty, w = Object.getOwnPropertyDescriptor, g = (e) => {
+  throw TypeError(e);
+}, n = (e, t, a, i) => {
+  for (var s = i > 1 ? void 0 : i ? w(t, a) : t, o = e.length - 1, r; o >= 0; o--)
+    (r = e[o]) && (s = (i ? r(t, a, s) : r(s)) || s);
+  return i && s && y(t, a, s), s;
+}, x = (e, t, a) => t.has(e) || g("Cannot " + a), c = (e, t, a) => (x(e, t, "read from private field"), a ? a.call(e) : t.get(e)), $ = (e, t, a) => t.has(e) ? g("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), p;
+let l = class extends v(h) {
   constructor() {
-    super(...arguments), this._settings = {
+    super(...arguments), $(this, p, b(this)), this._settings = {
       brandName: "",
       logoUrl: "",
       backgroundColor: "#ffffff",
@@ -22,7 +48,7 @@ let t = class extends h(g) {
   async _load() {
     this._loading = !0;
     try {
-      const e = await fetch(`${this._apiBase}/GetSettings`);
+      const e = await c(this, p).call(this, `${this._apiBase}/GetSettings`);
       e.ok && (this._settings = await e.json());
     } catch {
     } finally {
@@ -32,7 +58,7 @@ let t = class extends h(g) {
   async _save() {
     this._saving = !0, this._message = null;
     try {
-      (await fetch(`${this._apiBase}/SaveSettings`, {
+      (await c(this, p).call(this, `${this._apiBase}/SaveSettings`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(this._settings)
@@ -43,15 +69,15 @@ let t = class extends h(g) {
       this._saving = !1;
     }
   }
-  _set(e, i) {
-    this._settings = { ...this._settings, [e]: i };
+  _set(e, t) {
+    this._settings = { ...this._settings, [e]: t };
   }
   render() {
-    return this._loading ? d`<p>Loading...</p>` : d`
+    return this._loading ? u`<p>Loading...</p>` : u`
       <h1>Custom Login Settings</h1>
       <p class="description">Configure the branded login page appearance and SSO integration.</p>
 
-      ${this._message ? d`<div class="msg ${this._message.type}">${this._message.text}</div>` : ""}
+      ${this._message ? u`<div class="msg ${this._message.type}">${this._message.text}</div>` : ""}
 
       <uui-box headline="Branding">
         <div class="field-row">
@@ -111,7 +137,8 @@ let t = class extends h(g) {
     `;
   }
 };
-t.styles = u`
+p = /* @__PURE__ */ new WeakMap();
+l.styles = m`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
     p.description { color: var(--uui-color-text-alt, #6b7280); margin: 0 0 24px; }
@@ -132,23 +159,23 @@ t.styles = u`
     .msg.success { background: #d1fae5; color: #065f46; }
     .msg.error { background: #fee2e2; color: #991b1b; }
   `;
-a([
-  l()
-], t.prototype, "_settings", 2);
-a([
-  l()
-], t.prototype, "_loading", 2);
-a([
-  l()
-], t.prototype, "_saving", 2);
-a([
-  l()
-], t.prototype, "_message", 2);
-t = a([
-  c("customlogin-dashboard")
-], t);
-const f = t;
+n([
+  d()
+], l.prototype, "_settings", 2);
+n([
+  d()
+], l.prototype, "_loading", 2);
+n([
+  d()
+], l.prototype, "_saving", 2);
+n([
+  d()
+], l.prototype, "_message", 2);
+l = n([
+  _("customlogin-dashboard")
+], l);
+const E = l;
 export {
-  t as CustomLoginDashboardElement,
-  f as default
+  l as CustomLoginDashboardElement,
+  E as default
 };

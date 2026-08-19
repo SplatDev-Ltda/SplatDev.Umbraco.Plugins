@@ -7,6 +7,8 @@ import {
 } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface EmailTemplate {
   id: number;
   name: string;
@@ -35,6 +37,8 @@ const API_STYLE = "/umbraco/management/api/v1/email-style";
 
 @customElement("email-templates-dashboard")
 export class EmailTemplatesDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   @state() private _templates: EmailTemplate[] = [];
   @state() private _style: EmailStyle | null = null;
   @state() private _loading = false;
@@ -90,7 +94,7 @@ export class EmailTemplatesDashboardElement extends UmbElementMixin(LitElement) 
     init?: RequestInit
   ): Promise<T | null> {
     try {
-      const r = await fetch(`${baseUrl}${path}`, {
+      const r = await this.#fetch(`${baseUrl}${path}`, {
         headers: { "Content-Type": "application/json", ...init?.headers },
         ...init,
       });

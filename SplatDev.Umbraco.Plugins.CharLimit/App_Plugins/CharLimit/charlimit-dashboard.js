@@ -1,13 +1,39 @@
-import { LitElement as p, html as t, nothing as f, css as u, state as c, customElement as h } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as g } from "@umbraco-cms/backoffice/element-api";
-var b = Object.defineProperty, m = Object.getOwnPropertyDescriptor, n = (a, e, s, r) => {
-  for (var o = r > 1 ? void 0 : r ? m(e, s) : e, l = a.length - 1, d; l >= 0; l--)
-    (d = a[l]) && (o = (r ? d(e, s, o) : d(o)) || o);
-  return r && o && b(e, s, o), o;
-};
-let i = class extends g(p) {
+import { LitElement as h, html as l, nothing as u, css as g, state as p, customElement as m } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as v } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as b } from "@umbraco-cms/backoffice/auth";
+function w(a) {
+  let e = null;
+  const o = new Promise((r) => {
+    a.consumeContext(b, async (t) => {
+      var i;
+      try {
+        e = await ((i = t == null ? void 0 : t.getLatestToken) == null ? void 0 : i.call(t)) ?? null;
+      } catch {
+        e = null;
+      }
+      r();
+    }), setTimeout(r, 3e3);
+  });
+  return async (r, t = {}) => {
+    await o;
+    const i = new Headers(t.headers);
+    e && !i.has("Authorization") && i.set("Authorization", `Bearer ${e}`);
+    const n = await fetch(r, { ...t, credentials: "same-origin", headers: i });
+    return (n.status === 401 || n.status === 403) && console.error(
+      `[SplatDev] ${n.status} from ${String(r)} — the backoffice token was ${e ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
+    ), n;
+  };
+}
+var _ = Object.defineProperty, x = Object.getOwnPropertyDescriptor, f = (a) => {
+  throw TypeError(a);
+}, d = (a, e, o, r) => {
+  for (var t = r > 1 ? void 0 : r ? x(e, o) : e, i = a.length - 1, n; i >= 0; i--)
+    (n = a[i]) && (t = (r ? n(e, o, t) : n(t)) || t);
+  return r && t && _(e, o, t), t;
+}, y = (a, e, o) => e.has(a) || f("Cannot " + o), C = (a, e, o) => (y(a, e, "read from private field"), o ? o.call(a) : e.get(a)), k = (a, e, o) => e.has(a) ? f("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(a) : e.set(a, o), c;
+let s = class extends v(h) {
   constructor() {
-    super(), this._config = null, this._loading = !0, this._error = !1;
+    super(), k(this, c, w(this)), this._config = null, this._loading = !0, this._error = !1;
   }
   connectedCallback() {
     super.connectedCallback(), this._loadConfig();
@@ -15,7 +41,7 @@ let i = class extends g(p) {
   async _loadConfig() {
     this._loading = !0, this._error = !1;
     try {
-      const a = await fetch("/umbraco/api/charlimit/GetConfig");
+      const a = await C(this, c).call(this, "/umbraco/api/charlimit/GetConfig");
       if (!a.ok) throw new Error(`HTTP ${a.status}`);
       this._config = await a.json();
     } catch {
@@ -25,15 +51,15 @@ let i = class extends g(p) {
     }
   }
   render() {
-    return this._loading ? t`<uui-loader-circle></uui-loader-circle>` : t`
+    return this._loading ? l`<uui-loader-circle></uui-loader-circle>` : l`
       <h1>Character Limit</h1>
       <p class="subtitle">Enforces a maximum character count on text input properties with an optional countdown display.</p>
 
-      ${this._error ? t`
+      ${this._error ? l`
         <div class="error-state">
           Could not load configuration from the API. Ensure the CharLimit package is installed and the site is running.
         </div>
-      ` : this._config ? t`
+      ` : this._config ? l`
         <div class="card">
           <h2>Configuration</h2>
           <div class="info-row">
@@ -47,7 +73,7 @@ let i = class extends g(p) {
             </span>
           </div>
         </div>
-      ` : f}
+      ` : u}
 
       <div class="card">
         <h2>How to Use</h2>
@@ -67,7 +93,8 @@ let i = class extends g(p) {
     `;
   }
 };
-i.styles = u`
+c = /* @__PURE__ */ new WeakMap();
+s.styles = g`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -110,19 +137,19 @@ i.styles = u`
       padding: 16px; color: #991b1b; font-size: 14px;
     }
   `;
-n([
-  c()
-], i.prototype, "_config", 2);
-n([
-  c()
-], i.prototype, "_loading", 2);
-n([
-  c()
-], i.prototype, "_error", 2);
-i = n([
-  h("charlimit-dashboard")
-], i);
+d([
+  p()
+], s.prototype, "_config", 2);
+d([
+  p()
+], s.prototype, "_loading", 2);
+d([
+  p()
+], s.prototype, "_error", 2);
+s = d([
+  m("charlimit-dashboard")
+], s);
 export {
-  i as CharLimitDashboard
+  s as CharLimitDashboard
 };
 //# sourceMappingURL=charlimit-dashboard.js.map
