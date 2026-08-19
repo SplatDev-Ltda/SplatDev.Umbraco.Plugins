@@ -42,7 +42,18 @@ jobs:
           mkdir -p ./nupkgs
           FAIL=()
           PASS=()
-          for csproj in $(find . -maxdepth 3 -name "SplatDev.Umbraco.Plugins.*.csproj" \
+          # Plugins, plus the libraries they ProjectReference. Packing only the plugins
+          # left those libraries behind: SplatDev.Payments.* and SplatDev.Cache sat at
+          # 1.0.0 on NuGet while the plugins packed a dependency on >= 1.0.1, so
+          # Santander, Getnet and Payments.BancoInter could not be installed at all —
+          # NuGet had no such version to resolve. A plugin is only shippable if what it
+          # depends on ships with it.
+          for csproj in $(find . -maxdepth 3 \
+              \( -name "SplatDev.Umbraco.Plugins.*.csproj" \
+                 -o -name "SplatDev.Payments.*.csproj" \
+                 -o -name "SplatDev.Cache.csproj" \
+                 -o -name "SplatDev.Umbraco.Common.csproj" \
+                 -o -name "SplatDev.Umbraco.Markup.csproj" \) \
             | grep -v "Tests\|BackupManager\|FormsClone\|obj\|bin\|PdfCurator" \
             | sort); do
             name=$(basename "$csproj" .csproj)
