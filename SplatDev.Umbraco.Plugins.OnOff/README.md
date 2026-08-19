@@ -2,6 +2,13 @@
 
 Feature toggle system for Umbraco CMS. Enable, disable and schedule site features via the backoffice dashboard.
 
+
+<!-- screenshot:start -->
+
+![OnOff dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.OnOff/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 ## Supports
 
 - Umbraco 13 (net8.0)

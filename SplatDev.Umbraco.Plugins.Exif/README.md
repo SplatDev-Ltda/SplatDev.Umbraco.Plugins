@@ -2,6 +2,13 @@
 
 EXIF metadata extractor for Umbraco media — reads camera, GPS, and image EXIF data using MetadataExtractor.
 
+
+<!-- screenshot:start -->
+
+![Exif dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Exif/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Exif.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Exif)
 
 ## Compatibility

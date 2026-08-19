@@ -2,6 +2,13 @@
 
 Character limit property editor for Umbraco — enforces max length on text properties with live counter display.
 
+
+<!-- screenshot:start -->
+
+![CharLimit dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.CharLimit/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.CharLimit.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.CharLimit)
 
 ## Compatibility

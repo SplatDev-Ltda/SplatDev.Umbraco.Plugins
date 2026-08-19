@@ -2,6 +2,13 @@
 
 Simple shopping cart for Umbraco — add/remove items, quantity management, and session-based cart with a backoffice dashboard.
 
+
+<!-- screenshot:start -->
+
+![ShopCart dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.ShopCart/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.ShopCart.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.ShopCart)
 
 ## Compatibility

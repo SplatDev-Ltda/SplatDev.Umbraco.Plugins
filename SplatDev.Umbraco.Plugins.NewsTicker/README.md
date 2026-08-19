@@ -2,6 +2,13 @@
 
 A scrolling news ticker plugin for Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
+
+<!-- screenshot:start -->
+
+![NewsTicker dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.NewsTicker/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.NewsTicker.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.NewsTicker)
 
 ## Compatibility

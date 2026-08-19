@@ -2,6 +2,13 @@
 
 Live video embed for Umbraco — generate embed URLs for YouTube Live, Twitch, and Vimeo live streams.
 
+
+<!-- screenshot:start -->
+
+![LiveVideo dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.LiveVideo/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.LiveVideo.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.LiveVideo)
 
 ## Compatibility

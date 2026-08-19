@@ -2,6 +2,13 @@
 
 Fully customizable Umbraco login page with branding support, SSO integration hooks, and 2FA readiness.
 
+
+<!-- screenshot:start -->
+
+![CustomLogin dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.CustomLogin/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.CustomLogin.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.CustomLogin)
 
 ## Compatibility

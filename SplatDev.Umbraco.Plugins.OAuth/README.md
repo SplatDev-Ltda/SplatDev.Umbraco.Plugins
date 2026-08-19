@@ -2,6 +2,13 @@
 
 Umbraco OAuth social login plugin — member authentication via Google, Facebook, and X (Twitter) with configurable provider settings.
 
+
+<!-- screenshot:start -->
+
+![OAuth dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.OAuth/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.OAuth.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.OAuth)
 
 ## Compatibility

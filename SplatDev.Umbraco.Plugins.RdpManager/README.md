@@ -2,6 +2,13 @@
 
 Umbraco Remote Desktop connection manager — store RDP configurations and generate `.rdp` file downloads from the backoffice.
 
+
+<!-- screenshot:start -->
+
+![RdpManager dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.RdpManager/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.RdpManager.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.RdpManager)
 
 ## Compatibility

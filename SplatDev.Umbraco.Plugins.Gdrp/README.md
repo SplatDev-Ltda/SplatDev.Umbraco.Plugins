@@ -2,6 +2,13 @@
 
 GDPR compliance plugin for Umbraco — cookie consent banner, data export, and right-to-erasure request management.
 
+
+<!-- screenshot:start -->
+
+![Gdrp dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Gdrp/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Gdrp.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Gdrp)
 
 ## Compatibility

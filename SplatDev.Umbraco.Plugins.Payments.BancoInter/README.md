@@ -2,6 +2,13 @@
 
 Banco Inter payment integration for Umbraco — supports Pix (immediate and due charges), Boleto com Pix, Banking (outbound Pix, boleto payments, balance/statement), and webhook handling.
 
+
+<!-- screenshot:start -->
+
+![Payments.BancoInter dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Payments.BancoInter/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Payments.BancoInter.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Payments.BancoInter)
 
 ## Compatibility

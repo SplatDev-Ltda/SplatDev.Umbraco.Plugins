@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SplatDev.Umbraco.Plugins.Lgpd.Components;
 using SplatDev.Umbraco.Plugins.Lgpd.Models;
 using SplatDev.Umbraco.Plugins.Lgpd.Services;
 using Umbraco.Cms.Core.Composing;
@@ -18,5 +19,9 @@ public class LgpdComposer : IComposer
             options.UseSqlServer(builder.Config.GetConnectionString("umbracoDbDSN") ?? string.Empty));
 
         builder.Services.AddScoped<ILgpdService, LgpdService>();
+
+        // Creates the lgpd schema on first run. Registering the migration class
+        // without this leaves it as dead code and the tables never exist.
+        builder.Components().Append<LgpdComponent>();
     }
 }

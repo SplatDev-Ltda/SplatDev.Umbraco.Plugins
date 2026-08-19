@@ -2,6 +2,13 @@
 
 Umbraco cache management and warming plugin — multi-layer caching with EF Core second-level cache, response caching, static file compression, and automated cache warming via background service. Consumes the `SplatDev.Cache` abstraction for ICacheService/ICacheProvider. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
+
+<!-- screenshot:start -->
+
+![CacheManager dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.CacheManager/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.CacheManager.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.CacheManager)
 
 ## Compatibility

@@ -2,6 +2,13 @@
 
 Content restriction plugin for Umbraco — member-only content gates using Umbraco's built-in `IPublicAccessService` with role-based access and a backoffice dashboard.
 
+
+<!-- screenshot:start -->
+
+![Restricted dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Restricted/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 ## Compatibility
 
 | Umbraco | .NET | Package Version |

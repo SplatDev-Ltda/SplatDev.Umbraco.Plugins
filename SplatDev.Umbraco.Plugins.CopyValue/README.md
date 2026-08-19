@@ -2,6 +2,13 @@
 
 Copy property values between Umbraco content nodes — bulk copy, property mapping between different document types, with reusable mapping templates.
 
+
+<!-- screenshot:start -->
+
+![CopyValue dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.CopyValue/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 ## Supports
 
 - Umbraco 13 (net8.0)

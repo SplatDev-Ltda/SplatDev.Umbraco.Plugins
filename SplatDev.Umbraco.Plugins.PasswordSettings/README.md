@@ -2,6 +2,13 @@
 
 Password policy enforcement plugin for Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
+
+<!-- screenshot:start -->
+
+![PasswordSettings dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.PasswordSettings/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 ## Features
 
 - Configurable password complexity rules (length, uppercase, digit, special character)

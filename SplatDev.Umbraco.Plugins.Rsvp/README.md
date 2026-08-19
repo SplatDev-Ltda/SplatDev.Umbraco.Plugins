@@ -2,6 +2,13 @@
 
 An event RSVP plugin for Umbraco 13 and Umbraco 17 with capacity management, waitlisting, and cancellation.
 
+
+<!-- screenshot:start -->
+
+![Rsvp dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Rsvp/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 ## Features
 
 - Create and manage events with capacity limits and registration deadlines

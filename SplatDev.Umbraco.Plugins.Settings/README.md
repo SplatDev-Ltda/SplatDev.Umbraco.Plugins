@@ -2,6 +2,13 @@
 
 Umbraco site-wide settings manager plugin — key-value configuration store with a grouped settings backoffice dashboard.
 
+
+<!-- screenshot:start -->
+
+![Settings dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Settings/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Settings.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Settings)
 
 ## Compatibility

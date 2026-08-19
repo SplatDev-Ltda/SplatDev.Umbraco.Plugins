@@ -2,6 +2,13 @@
 
 Set default values for Umbraco content properties by document type and property alias. When a new content node is created, automatically populate specified properties with configured defaults.
 
+
+<!-- screenshot:start -->
+
+![DefaultValue dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.DefaultValue/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 ## Supports
 
 - Umbraco 13 (net8.0)

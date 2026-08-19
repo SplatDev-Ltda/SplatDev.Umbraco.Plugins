@@ -2,6 +2,13 @@
 
 Custom member login plugin for Umbraco — login form with username/email authentication, password reset, remember-me support, account lockout detection, and approval workflow integration.
 
+
+<!-- screenshot:start -->
+
+![MemberLogin dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.MemberLogin/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.MemberLogin.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.MemberLogin)
 
 ## Compatibility

@@ -2,6 +2,13 @@
 
 Google Analytics GA4 integration for Umbraco. The package registers the GA4 integration and its backoffice assets; it does not claim to provide a Google Analytics Data API implementation or automatically inject a front-end script.
 
+
+<!-- screenshot:start -->
+
+![GoogleAnalytics dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.GoogleAnalytics/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.GoogleAnalytics.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.GoogleAnalytics)
 
 ## Compatibility

@@ -2,6 +2,13 @@
 
 JSON-RPC 2.0 API endpoint for Umbraco — expose content as JSON-RPC with API key management and request logging. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
+
+<!-- screenshot:start -->
+
+![JsonRpc dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.JsonRpc/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.JsonRpc.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.JsonRpc)
 
 ## Compatibility

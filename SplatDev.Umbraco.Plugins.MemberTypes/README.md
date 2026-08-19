@@ -2,6 +2,13 @@
 
 Member type management plugin for Umbraco CMS — create, edit, and manage custom member types with profile fields, custom properties, and type templates via API and a backoffice dashboard.
 
+
+<!-- screenshot:start -->
+
+![MemberTypes dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.MemberTypes/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.MemberTypes.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.MemberTypes)
 
 ## Compatibility

@@ -2,6 +2,13 @@
 
 Umbraco redirect manager plugin — CRUD for URL redirects with a backoffice dashboard, NPoco-backed persistence, pattern-based redirects, and a front-end 301 fallback handler. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
+
+<!-- screenshot:start -->
+
+![RedirectManager dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.RedirectManager/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.RedirectManager.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.RedirectManager)
 
 ## Compatibility

@@ -2,6 +2,13 @@
 
 e-Not Assina electronic signature integration for Umbraco. Supports document creation, sequential signing, webhook processing, PDF download, and a Lit 3 backoffice dashboard. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
+
+<!-- screenshot:start -->
+
+![ENotAssina dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.ENotAssina/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.ENotAssina.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.ENotAssina)
 
 ## Compatibility
