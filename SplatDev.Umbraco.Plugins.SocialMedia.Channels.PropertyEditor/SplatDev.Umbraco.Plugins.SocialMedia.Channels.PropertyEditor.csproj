@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup>
+    <ContentTargetFolders>.</ContentTargetFolders><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable><PackageId>SplatDev.Umbraco.Plugins.SocialMedia.Channels.PropertyEditor</PackageId><Version>1.0.0</Version><PackageReadmeFile>README.md</PackageReadmeFile><PackageIcon>icon.png</PackageIcon><Authors>SplatDev</Authors><Description>Social Media Channels property editor for Umbraco 17.</Description><PackageTags>umbraco property-editor social-media</PackageTags><PackageLicenseExpression>MIT</PackageLicenseExpression><RepositoryUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</RepositoryUrl><GenerateAssemblyInfo>false</GenerateAssemblyInfo><GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest></PropertyGroup><ItemGroup><FrameworkReference Include="Microsoft.AspNetCore.App"/><PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.6"/><PackageReference Include="Umbraco.Cms.Core" Version="17.3.4"/><PackageReference Include="Umbraco.Cms.Web.Common" Version="17.3.4"/></ItemGroup><ItemGroup><EmbeddedResource Include="App_Plugins\**\*"/><None Include="README.md" Pack="true" PackagePath="\"/><None Include="icon.png" Pack="true" PackagePath="\"/><None Include="umbraco-marketplace.json" Pack="true" PackagePath="\"/></ItemGroup>
+  <!-- Pack backoffice assets at their App_Plugins paths; embedded resources alone are not deployed by PackageReference. -->
+  <ItemGroup>
+    <Content Include="App_Plugins\**\*" Pack="true" PackagePath="App_Plugins" />
+    <None Include="buildTransitive\**" Pack="true" PackagePath="buildTransitive" />
+  </ItemGroup>
+</Project>

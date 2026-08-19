@@ -1,0 +1,12 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Copy packaged backoffice assets into the consuming Umbraco application's App_Plugins folder. -->
+  <PropertyGroup>
+    <SplatDevUmbracoPluginsD4SignContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\**\*.*</SplatDevUmbracoPluginsD4SignContentFilesPath>
+  </PropertyGroup>
+  <Target Name="CopySplatDevUmbracoPluginsD4SignAssets" BeforeTargets="BeforeBuild">
+    <ItemGroup>
+      <SplatDevUmbracoPluginsD4SignContentFiles Include="$(SplatDevUmbracoPluginsD4SignContentFilesPath)" />
+    </ItemGroup>
+    <Copy SourceFiles="@(SplatDevUmbracoPluginsD4SignContentFiles)" DestinationFiles="@(SplatDevUmbracoPluginsD4SignContentFiles-&gt;'$(MSBuildProjectDirectory)\App_Plugins\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+  </Target>
+</Project>

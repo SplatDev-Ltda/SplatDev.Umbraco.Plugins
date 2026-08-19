@@ -1,0 +1,12 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Copy packaged backoffice assets into the consuming Umbraco application's App_Plugins folder. -->
+  <PropertyGroup>
+    <SplatDevUmbracoPluginsToastNotificationsContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\**\*.*</SplatDevUmbracoPluginsToastNotificationsContentFilesPath>
+  </PropertyGroup>
+  <Target Name="CopySplatDevUmbracoPluginsToastNotificationsAssets" BeforeTargets="BeforeBuild">
+    <ItemGroup>
+      <SplatDevUmbracoPluginsToastNotificationsContentFiles Include="$(SplatDevUmbracoPluginsToastNotificationsContentFilesPath)" />
+    </ItemGroup>
+    <Copy SourceFiles="@(SplatDevUmbracoPluginsToastNotificationsContentFiles)" DestinationFiles="@(SplatDevUmbracoPluginsToastNotificationsContentFiles-&gt;'$(MSBuildProjectDirectory)\App_Plugins\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+  </Target>
+</Project>
