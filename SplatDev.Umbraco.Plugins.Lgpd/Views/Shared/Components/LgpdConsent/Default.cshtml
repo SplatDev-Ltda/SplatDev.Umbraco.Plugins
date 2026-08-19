@@ -1,0 +1,96 @@
+@using SplatDev.Umbraco.Plugins.Lgpd.Models
+@model IReadOnlyList<Consentimento>
+@{
+    var sessionId = (string)ViewBag.SessionId;
+    var finalidade = (string)ViewBag.Finalidade;
+    var jaDecidiu = (bool)ViewBag.JaDecidiu;
+    var encNome = (string)ViewBag.EncarregadoNome;
+    var encEmail = (string)ViewBag.EncarregadoEmail;
+}
+
+@* Nothing renders once the visitor has decided — the banner is not a permanent fixture. *@
+@if (!jaDecidiu)
+{
+    <div class="lgpd-banner" role="dialog" aria-live="polite" aria-label="Aviso de privacidade">
+        <div class="lgpd-banner__text">
+            <strong>Sua privacidade</strong>
+            <p>
+                Usamos cookies e tratamos dados pessoais conforme a Lei nº 13.709/2018 (LGPD).
+                Você pode aceitar, recusar, e mudar de ideia a qualquer momento.
+                <a href="/politica-de-privacidade">Saiba mais</a>.
+            </p>
+        </div>
+        <div class="lgpd-banner__actions">
+            <button type="button" class="lgpd-btn lgpd-btn--ghost" data-lgpd-decide="false">Recusar</button>
+            <button type="button" class="lgpd-btn lgpd-btn--primary" data-lgpd-decide="true">Aceitar</button>
+        </div>
+    </div>
+}
+
+@* Art. 41 §1 requires the encarregado to be publicly identified. Rendering a placeholder
+   would be worse than rendering nothing, so an unconfigured DPO shows a visible warning
+   to the site owner rather than silently omitting a legal obligation. *@
+<div class="lgpd-encarregado">
+    @if (!string.IsNullOrWhiteSpace(encNome) && !string.IsNullOrWhiteSpace(encEmail))
+    {
+        <small>
+            Encarregado pelo tratamento de dados (LGPD art. 41):
+            <strong>@encNome</strong> &mdash; <a href="mailto:@encEmail">@encEmail</a>
+        </small>
+    }
+    else
+    {
+        <!-- LGPD art. 41: encarregado não configurado. Defina Lgpd:EncarregadoNome e
+             Lgpd:EncarregadoEmail nas configurações do site. -->
+    }
+</div>
+
+<script>
+(function () {
+    var sessionId = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(sessionId));
+    var finalidade = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(finalidade));
+
+    document.querySelectorAll("[data-lgpd-decide]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+            var concedido = btn.getAttribute("data-lgpd-decide") === "true";
+            fetch("/umbraco/api/lgpd/RegistrarConsentimento", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    sessionId: sessionId,
+                    finalidade: finalidade,
+                    concedido: concedido,
+                    // The exact wording shown, so what was agreed to is reconstructable later.
+                    textoApresentado: document.querySelector(".lgpd-banner__text p").innerText.trim()
+                })
+            }).then(function () {
+                var banner = document.querySelector(".lgpd-banner");
+                if (banner) banner.remove();
+                document.dispatchEvent(new CustomEvent("lgpd:decidido", {
+                    detail: { concedido: concedido, finalidade: finalidade }
+                }));
+            });
+        });
+    });
+})();
+</script>
+
+<style>
+    .lgpd-banner {
+        position: fixed; inset: auto 0 0 0; z-index: 9999;
+        display: flex; gap: 1.5rem; align-items: center; justify-content: space-between;
+        flex-wrap: wrap; padding: 1rem 1.5rem;
+        background: #1f2937; color: #f9fafb;
+        font-family: system-ui, -apple-system, sans-serif;
+    }
+    .lgpd-banner__text { max-width: 70ch; }
+    .lgpd-banner__text strong { display: block; margin-bottom: 0.25rem; }
+    .lgpd-banner__text p { margin: 0; font-size: 0.9rem; line-height: 1.5; }
+    .lgpd-banner__text a { color: #93c5fd; }
+    .lgpd-banner__actions { display: flex; gap: 0.75rem; }
+    .lgpd-btn { padding: 0.55rem 1.25rem; border: none; border-radius: 6px;
+                cursor: pointer; font-size: 0.9rem; font-family: inherit; }
+    .lgpd-btn--primary { background: #2563eb; color: #fff; }
+    .lgpd-btn--ghost { background: transparent; color: #f9fafb; border: 1px solid #6b7280; }
+    .lgpd-encarregado { font-size: 0.8rem; color: #6b7280; }
+</style>

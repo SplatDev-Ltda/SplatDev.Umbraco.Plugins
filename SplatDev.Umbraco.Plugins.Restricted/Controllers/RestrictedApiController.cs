@@ -1,19 +1,19 @@
 using Microsoft.AspNetCore.Authorization;
-using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Umbraco.Cms.Web.Common.Controllers;
+using SplatDev.Umbraco.Plugins.Restricted.Models;
 using SplatDev.Umbraco.Plugins.Restricted.Services;
+using Umbraco.Cms.Web.Common.Authorization;
 
 namespace SplatDev.Umbraco.Plugins.Restricted.Controllers;
 
 /// <summary>
-/// Controls which nodes require which member groups.
+/// Controls which content requires which member groups.
 /// </summary>
 /// <remarks>
 /// Previously anonymous, with the same problem as HiddenContent but sharper:
 /// UnrestrictNode removed the group requirement from a protected node outright, and
-/// SetRequiredGroups rewrote it. The restriction was enforced by a service anyone could
-/// call to lift it.
+/// SetRequiredGroups rewrote it. The restriction was enforced by a service anyone
+/// could call to lift it.
 /// </remarks>
 [Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/restricted/[action]")]
@@ -21,69 +21,39 @@ public class RestrictedApiController : ControllerBase
 {
     private readonly IRestrictedContentService _service;
 
-    public RestrictedApiController(IRestrictedContentService service)
-    {
-        _service = service;
-    }
+    public RestrictedApiController(IRestrictedContentService service) => _service = service;
 
     [HttpGet]
-    public async Task<IActionResult> GetRestrictedNodes()
+    public async Task<IActionResult> GetRestrictedNodes() =>
+        Ok(await _service.GetRestrictedNodesAsync());
+
+    /// <summary>Populates the group picker, and lets the dashboard show names for keys.</summary>
+    [HttpGet]
+    public async Task<IActionResult> GetMemberGroups() =>
+        Ok(await _service.GetMemberGroupsAsync());
+
+    /// <summary>
+    /// The protection on one node, so the editor can load an existing rule into the form
+    /// and amend it instead of retyping it.
+    /// </summary>
+    [HttpGet]
+    public async Task<IActionResult> GetRestriction([FromQuery] string node)
     {
-        var nodes = await _service.GetRestrictedNodesAsync();
-        return Ok(nodes);
+        var found = await _service.GetRestrictedNodeAsync(node);
+        return found is null ? NotFound() : Ok(found);
     }
 
     [HttpPost]
     public async Task<IActionResult> RestrictNode([FromBody] RestrictNodeRequest request)
     {
-        if (request.NodeId <= 0)
-            return BadRequest("NodeId is required.");
-        if (string.IsNullOrWhiteSpace(request.LoginPageNodeId))
-            return BadRequest("LoginPageNodeId is required.");
-        if (string.IsNullOrWhiteSpace(request.ErrorPageNodeId))
-            return BadRequest("ErrorPageNodeId is required.");
-        if (request.MemberGroups is null || !request.MemberGroups.Any())
-            return BadRequest("At least one member group is required.");
-
-        await _service.RestrictNodeAsync(request.NodeId, request.LoginPageNodeId, request.ErrorPageNodeId, request.MemberGroups);
-        return Ok(new { message = $"Node {request.NodeId} restricted successfully." });
+        var result = await _service.RestrictNodeAsync(request);
+        return result.Success ? Ok(result) : BadRequest(result);
     }
 
     [HttpDelete]
-    public async Task<IActionResult> UnrestrictNode([FromQuery] int nodeId)
+    public async Task<IActionResult> UnrestrictNode([FromQuery] string node)
     {
-        if (nodeId <= 0)
-            return BadRequest("NodeId is required.");
-
-        await _service.UnrestrictNodeAsync(nodeId);
-        return Ok(new { message = $"Node {nodeId} unrestricted." });
+        var result = await _service.UnrestrictNodeAsync(node);
+        return result.Success ? Ok(result) : BadRequest(result);
     }
-
-    [HttpGet]
-    public async Task<IActionResult> GetRequiredGroups([FromQuery] int nodeId)
-    {
-        if (nodeId <= 0)
-            return BadRequest("NodeId is required.");
-
-        var groups = await _service.GetRequiredGroupsAsync(nodeId);
-        return Ok(groups);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> SetRequiredGroups([FromBody] RestrictNodeRequest request)
-    {
-        if (request.NodeId <= 0)
-            return BadRequest("NodeId is required.");
-
-        await _service.SetRequiredGroupsAsync(request.NodeId, request.LoginPageNodeId, request.ErrorPageNodeId, request.MemberGroups ?? []);
-        return Ok(new { message = $"Groups updated for node {request.NodeId}." });
-    }
-}
-
-public class RestrictNodeRequest
-{
-    public int NodeId { get; set; }
-    public string LoginPageNodeId { get; set; } = string.Empty;
-    public string ErrorPageNodeId { get; set; } = string.Empty;
-    public IEnumerable<string>? MemberGroups { get; set; }
 }

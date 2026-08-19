@@ -21,6 +21,15 @@ public class ToastNotificationsApiController : ControllerBase
         _service = service;
     }
 
+    /// <summary>Every toast, for the management dashboard.</summary>
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var toasts = await _service.GetAllToastsAsync();
+        return Ok(toasts);
+    }
+
+    /// <summary>Only what should be showing now — what a front-end widget asks for.</summary>
     [HttpGet]
     public async Task<IActionResult> GetActive()
     {

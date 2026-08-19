@@ -1,69 +1,72 @@
-<div ng-controller="HiddenContentDashboardController" class="hc-dashboard">
+<div ng-controller="HiddenContentDashboardController" class="hiddencontent-dashboard">
+    <div class="umb-panel-header">
+        <h1>Hidden content</h1>
+        <p class="umb-panel-description" style="max-width:62ch;">
+            Hide pages from navigation without unpublishing them. This sets the standard
+            <code>umbracoNaviHide</code> property, so menus built the usual way will skip
+            them while the page stays reachable by URL.
+        </p>
+    </div>
+
     <div class="umb-box">
-        <div class="umb-box-header">
-            <h1>Hidden Content</h1>
-            <p>Hide content nodes from navigation and sitemaps while keeping them accessible by direct URL.</p>
-        </div>
-        <div class="umb-box-content">
-            <p class="hc-success" ng-if="statusMessage">{{ statusMessage }}</p>
-            <p class="hc-error" ng-if="errorMessage">{{ errorMessage }}</p>
-
-            <h3>Check Node Status</h3>
-            <div class="hc-row">
-                <input type="number" ng-model="checkNodeId" placeholder="Node ID" class="hc-input" />
-                <button ng-click="checkNode()" class="btn btn-secondary">Check</button>
-            </div>
-            <div ng-if="checkResult" class="hc-check-result">
-                Node <strong>{{ checkResult.nodeId }}</strong> is
-                <strong ng-if="checkResult.hidden">hidden</strong>
-                <strong ng-if="!checkResult.hidden">visible</strong>.
-                <button ng-if="!checkResult.hidden" ng-click="hideNode(checkResult.nodeId)" class="btn btn-warning btn-xs">Hide</button>
-                <button ng-if="checkResult.hidden" ng-click="showNode(checkResult.nodeId)" class="btn btn-primary btn-xs">Show</button>
+        <div class="umb-box-header"><h3>Hide or restore pages</h3></div>
+        <div class="umb-box-content" style="padding:16px;">
+            <div class="control-group" style="margin-bottom:16px;">
+                <label class="control-label">Pages</label>
+                <p class="umb-panel-description" style="margin:0 0 6px;">
+                    Pick one or several. Restoring works on the same selection.
+                </p>
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                    <span ng-repeat="n in selection" class="umb-badge">{{n.name}}</span>
+                    <button type="button" class="btn btn-default" ng-click="pick()">
+                        {{selection.length ? "Change selection" : "Choose pages"}}
+                    </button>
+                    <button type="button" class="btn btn-link" ng-if="selection.length" ng-click="clear()">
+                        Clear
+                    </button>
+                </div>
             </div>
 
-            <hr />
-
-            <h3>Bulk Operations</h3>
-            <div class="hc-row">
-                <input type="text" ng-model="bulkIds" placeholder="Node IDs (comma-separated)" class="hc-input hc-input-wide" />
-                <button ng-click="bulkHide()" class="btn btn-warning">Bulk Hide</button>
-                <button ng-click="bulkShow()" class="btn btn-primary">Bulk Show</button>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                <button class="btn btn-primary" ng-click="hide()" ng-disabled="busy || !selection.length">
+                    {{busy ? "Working..." : "Hide from navigation"}}
+                </button>
+                <button class="btn btn-default" ng-click="show()" ng-disabled="busy || !selection.length">
+                    Restore to navigation
+                </button>
             </div>
 
-            <hr />
-
-            <h3>Currently Hidden Nodes</h3>
-            <div ng-if="loading"><p>Loading...</p></div>
-            <div ng-if="!loading">
-                <p ng-if="hiddenNodes.length === 0" class="hc-empty">No hidden nodes found.</p>
-                <table ng-if="hiddenNodes.length > 0" class="hc-table">
-                    <thead>
-                        <tr><th>Node ID</th><th>Actions</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr ng-repeat="nodeId in hiddenNodes">
-                            <td>{{ nodeId }}</td>
-                            <td>
-                                <button ng-click="showNode(nodeId)" class="btn btn-primary btn-xs">Show in Nav</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div ng-if="result" class="alert"
+                 ng-class="result.success ? 'alert-success' : 'alert-danger'"
+                 style="margin-top:16px;">
+                {{result.message}}
             </div>
         </div>
     </div>
-</div>
 
-<style>
-    .hc-dashboard { padding: 20px; font-family: sans-serif; }
-    .hc-row { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; }
-    .hc-input { padding: 6px 10px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 0.9rem; width: 160px; }
-    .hc-input-wide { width: 300px; }
-    .hc-table { width: 100%; border-collapse: collapse; }
-    .hc-table th, .hc-table td { text-align: left; padding: 8px 12px; border-bottom: 1px solid #e5e7eb; }
-    .hc-table th { font-weight: 600; background: #f9fafb; }
-    .hc-empty { color: #6b7280; }
-    .hc-success { color: #065f46; }
-    .hc-error { color: #b91c1c; }
-    .hc-check-result { background: #f3f4f6; padding: 8px 12px; border-radius: 4px; margin-top: 8px; font-size: 0.9rem; }
-</style>
+    <div class="umb-box" style="margin-top:16px;">
+        <div class="umb-box-header"><h3>Currently hidden</h3></div>
+        <div class="umb-box-content" style="padding:16px;">
+            <div ng-if="loading" class="umb-loading">Loading...</div>
+            <p ng-if="!loading && hidden.length === 0" style="color:#6b7280;">
+                Nothing is hidden from navigation.
+            </p>
+            <table class="table" ng-if="!loading && hidden.length > 0">
+                <thead><tr><th>Page</th><th></th></tr></thead>
+                <tbody>
+                    <tr ng-repeat="n in hidden">
+                        <td>
+                            <strong>{{n.name}}</strong>
+                            <div ng-if="n.path" style="color:#6b7280;font-size:0.8125rem;">{{n.path}}</div>
+                        </td>
+                        <td style="text-align:right;">
+                            <button class="btn btn-default btn-sm" ng-click="restoreOne(n)" ng-disabled="busy">
+                                Restore
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

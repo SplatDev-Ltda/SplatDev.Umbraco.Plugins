@@ -1,0 +1,19 @@
+{
+  "$schema": "../../umbraco-package-schema.json",
+  "name": "SplatDev LGPD",
+  "version": "1.0.0",
+  "extensions": [
+    {
+      "type": "dashboard",
+      "alias": "splatdev.lgpd.dashboard",
+      "name": "LGPD",
+      "element": "/App_Plugins/Lgpd/dist/dashboard.js",
+      "elementName": "lgpd-dashboard",
+      "weight": -95,
+      "conditions": [
+        { "alias": "Umb.Condition.SectionAlias", "match": "Umb.Section.Settings" }
+      ],
+      "meta": { "pathname": "lgpd", "label": "LGPD" }
+    }
+  ]
+}

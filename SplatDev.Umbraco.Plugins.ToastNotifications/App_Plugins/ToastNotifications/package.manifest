@@ -1,9 +1,10 @@
 {
+  "javascript": [ "/App_Plugins/ToastNotifications/angular/toastnotifications.controller.js" ],
   "dashboards": [
     {
       "alias": "toastNotifications",
       "view": "/App_Plugins/ToastNotifications/dashboard.html",
-      "sections": ["content"],
+      "sections": [ "content" ],
       "weight": -99
     }
   ]

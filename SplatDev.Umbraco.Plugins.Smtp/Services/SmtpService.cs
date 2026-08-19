@@ -29,7 +29,27 @@ public class SmtpService : ISmtpService
         };
     }
 
-    public async Task<SmtpTestResult> TestConnectionAsync(SmtpSettings settings)
+    public Task<SmtpTestResult> SendTestAsync(string? recipient = null)
+    {
+        var settings = GetSettings();
+
+        if (string.IsNullOrWhiteSpace(settings.Host))
+        {
+            return Task.FromResult(new SmtpTestResult
+            {
+                Success = false,
+                Message = "No SMTP host is configured.",
+                Error = "Set SmtpSettings:Host in configuration."
+            });
+        }
+
+        return TestConnectionAsync(settings, recipient);
+    }
+
+    public Task<SmtpTestResult> TestConnectionAsync(SmtpSettings settings) =>
+        TestConnectionAsync(settings, recipient: null);
+
+    private async Task<SmtpTestResult> TestConnectionAsync(SmtpSettings settings, string? recipient)
     {
         try
         {
@@ -42,7 +62,9 @@ public class SmtpService : ISmtpService
             };
 
             var from = new MailAddress(settings.FromEmail, settings.FromName);
-            var message = new MailMessage(from, from)
+            var to = string.IsNullOrWhiteSpace(recipient) ? from : new MailAddress(recipient);
+
+            var message = new MailMessage(from, to)
             {
                 Subject = "Umbraco SMTP Test",
                 Body = "This is a test email sent from the Umbraco SMTP Plugin to verify your configuration."
@@ -53,7 +75,7 @@ public class SmtpService : ISmtpService
             return new SmtpTestResult
             {
                 Success = true,
-                Message = $"Test email sent successfully to {settings.FromEmail}."
+                Message = $"Test email sent successfully to {to.Address}."
             };
         }
         catch (Exception ex)

@@ -24,6 +24,11 @@ public class ToastNotificationsService : IToastNotificationsService
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<ToastMessage>> GetAllToastsAsync()
+        => await _db.ToastMessages
+            .OrderByDescending(t => t.CreatedAt)
+            .ToListAsync();
+
     public async Task<ToastMessage?> GetByIdAsync(int id)
         => await _db.ToastMessages.FindAsync(id);
 

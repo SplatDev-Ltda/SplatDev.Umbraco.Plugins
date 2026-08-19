@@ -48,4 +48,19 @@ public class SmtpApiController : ControllerBase
         var result = await _service.TestConnectionAsync(settings);
         return Ok(result);
     }
+
+    /// <summary>
+    /// Sends a test message using the site's own configured settings.
+    /// </summary>
+    /// <remarks>
+    /// The dashboard calls this rather than TestConnection, because GetSettings masks the
+    /// password: posting the masked values back would try to authenticate with the string
+    /// "********". This way the credential stays on the server.
+    /// </remarks>
+    [HttpPost]
+    public async Task<IActionResult> SendTest([FromQuery] string? to)
+    {
+        var result = await _service.SendTestAsync(to);
+        return Ok(result);
+    }
 }
