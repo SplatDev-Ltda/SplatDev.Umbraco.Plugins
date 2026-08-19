@@ -157,8 +157,30 @@ internal sealed class EmbeddedPackageManifestReader : IPackageManifestReader
         PropertyNameCaseInsensitive = true,
     };
 
+    private readonly IWebHostEnvironment _environment;
+
+    public EmbeddedPackageManifestReader(IWebHostEnvironment environment)
+    {
+        _environment = environment;
+    }
+
     public Task<IEnumerable<PackageManifest>> ReadPackageManifestsAsync()
     {
+        // The NuGet build-transitive target copies App_Plugins to the consuming site's
+        // web root. In that normal installation Umbraco's physical manifest reader is
+        // already authoritative; returning the embedded copy as well creates duplicate
+        // aliases (and can make the section disappear). Keep the embedded reader for
+        // installs that only load the assembly, where no physical manifest exists.
+        var physicalManifest = Path.Combine(
+            _environment.WebRootPath,
+            "App_Plugins",
+            "SplatDev.EmailTemplates",
+            "umbraco-package.json");
+        if (File.Exists(physicalManifest))
+        {
+            return Task.FromResult<IEnumerable<PackageManifest>>(Array.Empty<PackageManifest>());
+        }
+
         var manifests = new List<PackageManifest>();
 
         foreach (var stream in EmbeddedAssets.OpenPackageManifests())
