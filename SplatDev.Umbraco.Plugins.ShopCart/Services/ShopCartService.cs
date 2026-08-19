@@ -20,9 +20,11 @@ public class ShopCartService : IShopCartService
             .ToListAsync();
     }
 
-    public async Task AddItem(CartItem item)
+    public async Task<CartResult> AddItem(string sessionId, CartItem item)
     {
         // If the same product already exists in the session cart, increment quantity instead
+        item.SessionId = sessionId;
+
         var existing = await _db.CartItems
             .FirstOrDefaultAsync(c => c.SessionId == item.SessionId && c.ProductId == item.ProductId);
 
@@ -38,12 +40,17 @@ public class ShopCartService : IShopCartService
         }
 
         await _db.SaveChangesAsync();
+        return CartResult.Ok($"{item.ProductName} added to the cart.");
     }
 
-    public async Task UpdateQuantity(int id, int qty)
+    public async Task<CartResult> UpdateQuantity(string sessionId, int id, int qty)
     {
-        var item = await _db.CartItems.FindAsync(id);
-        if (item is null) return;
+        var item = await _db.CartItems
+            .FirstOrDefaultAsync(i => i.Id == id && i.SessionId == sessionId);
+
+        // Not found covers both "no such line" and "belongs to another cart", deliberately:
+        // distinguishing them would confirm that a given id exists somewhere.
+        if (item is null) return CartResult.Fail("That item is not in your cart.");
 
         if (qty <= 0)
         {
@@ -56,15 +63,19 @@ public class ShopCartService : IShopCartService
         }
 
         await _db.SaveChangesAsync();
+        return CartResult.Ok(qty <= 0 ? "Item removed." : "Quantity updated.");
     }
 
-    public async Task RemoveItem(int id)
+    public async Task<CartResult> RemoveItem(string sessionId, int id)
     {
-        var item = await _db.CartItems.FindAsync(id);
-        if (item is null) return;
+        var item = await _db.CartItems
+            .FirstOrDefaultAsync(i => i.Id == id && i.SessionId == sessionId);
+
+        if (item is null) return CartResult.Fail("That item is not in your cart.");
 
         _db.CartItems.Remove(item);
         await _db.SaveChangesAsync();
+        return CartResult.Ok("Item removed.");
     }
 
     public async Task ClearCart(string sessionId)

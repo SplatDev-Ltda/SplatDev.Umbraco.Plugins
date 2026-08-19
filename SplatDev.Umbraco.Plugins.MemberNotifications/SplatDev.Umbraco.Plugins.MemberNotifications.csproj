@@ -1,14 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>SplatDev.Umbraco.Plugins.MemberNotifications</PackageId>
-    <Version>1.1.2</Version>
+    <Version>1.2.0</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
-    <Description>Member-facing in-app notification system for Umbraco 17 (net10.0). Stores notifications per member key with read/unread state via IScopeProvider and NPoco.</Description>
+    <Description>Member-facing in-app notification system for Umbraco 17 Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0). Stores notifications per member key with read/unread state via IScopeProvider and NPoco.</Description>
     <PackageTags>umbraco umbraco-marketplace notifications members</PackageTags>
     <Company>SplatDev Ltda</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -18,9 +18,6 @@
     <ContentTargetFolders>.</ContentTargetFolders>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.6" />
-  </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="App_Plugins\**\*" />
@@ -28,9 +25,6 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Umbraco.Cms.Core" Version="17.3.4" />
-    <PackageReference Include="Umbraco.Cms.Infrastructure" Version="17.3.4" />
-    <PackageReference Include="Umbraco.Cms.Web.Common" Version="17.3.4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,9 +36,19 @@
     <None Include="umbraco-marketplace.json" Pack="true" PackagePath="\" Condition="Exists('umbraco-marketplace.json')" />
   </ItemGroup>
 
-  <!-- Pack backoffice assets at their App_Plugins paths; embedded resources alone are not deployed by PackageReference. -->
-  <ItemGroup>
-    <Content Include="App_Plugins\**\*" Pack="true" PackagePath="App_Plugins" />
-    <None Include="buildTransitive\**" Pack="true" PackagePath="buildTransitive" />
+  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.11" />
+    <PackageReference Include="Umbraco.Cms.Core" Version="13.12.0" />
+    <PackageReference Include="Umbraco.Cms.Infrastructure" Version="13.12.0" />
+    <PackageReference Include="Umbraco.Cms.Web.Common" Version="13.12.0" />
+    <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="13.12.0" />
   </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.6" />
+    <PackageReference Include="Umbraco.Cms.Core" Version="17.3.4" />
+    <PackageReference Include="Umbraco.Cms.Infrastructure" Version="17.3.4" />
+    <PackageReference Include="Umbraco.Cms.Web.Common" Version="17.3.4" />
+  </ItemGroup>
+
 </Project>

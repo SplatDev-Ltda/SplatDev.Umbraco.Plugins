@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Web.Common.Controllers;
 using SplatDev.Umbraco.Plugins.JsonRpc.Models;
@@ -28,6 +29,10 @@ public class JsonRpcController : ControllerBase
         _db            = db;
     }
 
+    // Deliberately anonymous: this endpoint authenticates its callers with the API key in
+    // the Authorization header, checked below. It is not a backoffice route and must not be
+    // given a backoffice policy, which would lock out every legitimate API client.
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] JsonRpcRequest request)
     {

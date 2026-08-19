@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Web.Common.Controllers;
 using SplatDev.Umbraco.Plugins.PhotoGallery.Models;
@@ -5,6 +7,10 @@ using SplatDev.Umbraco.Plugins.PhotoGallery.Services;
 
 namespace SplatDev.Umbraco.Plugins.PhotoGallery.Controllers;
 
+/// <remarks>
+/// Previously anonymous. CreateAlbum, UpdateAlbum, DeleteAlbum, AddPhoto and DeletePhoto let anyone rewrite the galleries. Viewing stays open.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/photogallery/[action]")]
 public class PhotoGalleryApiController : ControllerBase
 {
@@ -15,10 +21,12 @@ public class PhotoGalleryApiController : ControllerBase
         _service = service;
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetAlbums()
         => Ok(await _service.GetAlbumsAsync());
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetAlbum(int id)
     {
@@ -41,6 +49,7 @@ public class PhotoGalleryApiController : ControllerBase
         return Ok();
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetPhotos(int albumId)
         => Ok(await _service.GetPhotosAsync(albumId));

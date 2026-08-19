@@ -1,49 +1,112 @@
-# UmbracoCms.Plugins.2fa
+# SplatDev.Umbraco.Plugins.2fa
 
-Two-factor authentication plugin for Umbraco CMS. Implements TOTP (Time-based OTP) with EF Core-backed backup code storage.
-
-## Targets
+TOTP two-factor authentication for Umbraco **members**, with single-use backup codes.
 
 - **Umbraco 13** (net8.0)
 - **Umbraco 17** (net10.0)
 
-## Features
+---
 
-- TOTP secret generation (Base64-encoded HMAC-SHA1 key)
-- TOTP verification with ±1 time-step window (30-second windows)
-- Backup code generation (8 × 8-char hyphenated codes)
-- Single-use backup code redemption
-- EF Core schema: `twofactor.TwoFactorSetups`, `twofactor.BackupCodes`
-- Backoffice dashboard (AngularJS for U13, Lit 3 Web Component for U17)
+## ⚠️ 3.0.0 is a security release — upgrade immediately
 
-## Database Migrations
+Versions **2.1.3 and earlier contain a critical vulnerability.** The API was unauthenticated
+and took the member id from the query string, so any anonymous caller could:
 
-Run EF Core migrations to create the schema:
+- disable 2FA for any member — `POST /umbraco/api/twofactor/Disable?memberId=1`
+- generate backup codes for any member **and read them from the response**
+- read any member's TOTP secret via `SetupTotp`
+
+If you have 2.x deployed, treat every enrolled second factor as compromised: upgrade, then
+have members re-enrol (`SetupTotp` issues a fresh secret and invalidates old backup codes).
+
+Two further defects in 2.x are also fixed here:
+
+- **Secrets were Base64-encoded.** Authenticator apps require Base32, so no member could
+  ever complete enrolment — 2FA appeared to work but no standard app could produce a
+  matching code.
+- **Backup codes were stored in plaintext**, so database read access yielded working
+  second factors.
+
+### Breaking changes
+
+| 2.x | 3.0.0 |
+|---|---|
+| `Component.InvokeAsync("TwoFactor", new { memberId })` | `Component.InvokeAsync("TwoFactor")` — the member comes from the session |
+| `POST /umbraco/api/twofactor/Disable?memberId=N` | `POST /umbraco/api/twofactor/Disable` (self) or `/admin/Disable?memberId=N` (backoffice) |
+| `BackupCodes.Code` (plaintext) | `BackupCodes.CodeHash` (SHA-256) |
+| — | `TwoFactorSetups.LastUsedTimeStep` added |
+
+Schema changed; regenerate migrations. No migrations shipped in 2.x, so there is no
+upgrade path to preserve — existing enrolments must be redone regardless.
+
+---
+
+## What it does, and what it does not
+
+It stores TOTP enrolments and backup codes for members, and exposes endpoints to enrol,
+verify and revoke.
+
+**It does not gate sign-in on its own.** This package does not implement Umbraco's
+`ITwoFactorProvider`, so nothing in the member login pipeline consults it. Verification
+happens only where your own code calls it. If you need 2FA enforced at login, wire
+`VerifyTotpAsync` / `UseBackupCodeAsync` into your member login flow — installing this
+package alone does not make member logins two-factor.
+
+## Endpoints
+
+Member self-service — requires an authenticated member, always acts on that member.
+There is no `memberId` parameter:
+
+| Method | Route |
+|--------|-------|
+| GET | `/umbraco/api/twofactor/IsEnabled` |
+| POST | `/umbraco/api/twofactor/SetupTotp` |
+| POST | `/umbraco/api/twofactor/VerifyTotp?code=XXXXXX` |
+| POST | `/umbraco/api/twofactor/GenerateBackupCodes?count=8` |
+| POST | `/umbraco/api/twofactor/UseBackupCode?code=XXXXX-XXXXX` |
+| POST | `/umbraco/api/twofactor/Disable` |
+
+Backoffice — requires `BackOfficeAccess`:
+
+| Method | Route |
+|--------|-------|
+| GET | `/umbraco/api/twofactor/admin/IsEnabled?member={key}` |
+| POST | `/umbraco/api/twofactor/admin/Disable?member={key}` |
+
+An administrator can see enrolment status and revoke it for a lost device, but cannot read
+a member's secret or mint their backup codes — that would let an administrator sign in as
+the member undetected.
+
+`SetupTotp` returns an `otpauth://` URI alongside the secret; render it as a QR code.
+
+## Front-end component
+
+```cshtml
+@await Component.InvokeAsync("TwoFactor")
+```
+
+Renders the signed-in member's own panel, and a sign-in prompt when nobody is signed in.
+
+## Implementation
+
+TOTP is RFC 6238 (HMAC-SHA1, 30-second steps, ±1 step for drift), verified in the test
+suite against the vectors in RFC 6238 Appendix B and RFC 4648 §10. Codes are compared in
+constant time and cannot be replayed within their window. Backup codes are 40 bits of
+CSPRNG output, stored as SHA-256.
+
+## Database
+
+EF Core, schema `twofactor`: `TwoFactorSetups`, `BackupCodes`.
 
 ```bash
 dotnet ef migrations add InitialCreate --context TwoFactorDbContext
 dotnet ef database update --context TwoFactorDbContext
 ```
 
-## API Endpoints
-
-| Method | Route | Description |
-|--------|-------|-------------|
-| POST | `/umbraco/api/twofactor/SetupTotp?memberId=N` | Generate / reset TOTP secret |
-| POST | `/umbraco/api/twofactor/VerifyTotp?memberId=N&code=XXXXXX` | Verify code and enable 2FA |
-| POST | `/umbraco/api/twofactor/GenerateBackupCodes?memberId=N&count=8` | Generate backup codes |
-| POST | `/umbraco/api/twofactor/UseBackupCode?memberId=N&code=XXXX-XXXX` | Redeem a backup code |
-| GET | `/umbraco/api/twofactor/IsEnabled?memberId=N` | Check if 2FA is enabled |
-| POST | `/umbraco/api/twofactor/Disable?memberId=N` | Disable 2FA |
-
-## Note on TOTP
-
-The built-in TOTP implementation is a simplified HMAC-SHA1 approach for demonstration. For production, replace with a dedicated library such as [OtpNet](https://github.com/kspearrin/Otp.NET).
-
-## Client Build
+## Client build
 
 ```bash
 cd client
-npm install
-npm run build
+npm install --include=dev
+npx vite build
 ```

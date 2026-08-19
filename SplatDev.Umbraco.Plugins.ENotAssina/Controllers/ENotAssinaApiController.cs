@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -18,6 +20,10 @@ namespace SplatDev.Umbraco.Plugins.ENotAssina.Controllers;
 ///   <item>Cancel flow       — POST /umbraco/api/enotassina/cancel</item>
 /// </list>
 /// </summary>
+/// <remarks>
+/// Previously anonymous. Documents, ByLocacao and CertificateInfo disclosed signature records, and Cancel withdrew them. The provider webhook stays open.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route(ENotAssinaDefaults.ApiRoutePrefix + "/[action]")]
 public class ENotAssinaApiController(
     IENotAssinaService eNotService,
@@ -33,6 +39,7 @@ public class ENotAssinaApiController(
     /// Receives lifecycle events from e-Not Assina (DocumentConcluded, DocumentCanceled, …).
     /// Pass the webhook URL to e-Not Assina in the document creation payload's <c>webhookUrl</c> field.
     /// </summary>
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> Webhook(
         [FromBody] ENotWebhookPayload? payload,

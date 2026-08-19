@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Umbraco.Cms.Web.Common.Controllers;
@@ -6,6 +8,10 @@ using SplatDev.Umbraco.Plugins.NewsTicker.Services;
 
 namespace SplatDev.Umbraco.Plugins.NewsTicker.Controllers;
 
+/// <remarks>
+/// Previously anonymous. AddItem, UpdateItem and DeleteItem let anyone publish to the ticker. Reads stay open.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/newsticker")]
 public class NewsTickerApiController : ControllerBase
 {
@@ -20,6 +26,7 @@ public class NewsTickerApiController : ControllerBase
         _settings = settings.Value;
     }
 
+    [AllowAnonymous]
     [HttpGet("items")]
     public async Task<IActionResult> GetItems()
     {
@@ -27,6 +34,7 @@ public class NewsTickerApiController : ControllerBase
         return Ok(items);
     }
 
+    [AllowAnonymous]
     [HttpGet("settings")]
     public IActionResult GetSettings()
     {

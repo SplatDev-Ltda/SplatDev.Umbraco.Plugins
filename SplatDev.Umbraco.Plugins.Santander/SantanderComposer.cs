@@ -93,12 +93,24 @@ public class SantanderComposer : IComposer
     /// <summary>mTLS is mandatory on Santander hosts (even the token call); absent config → no cert (mock/dev).</summary>
     internal static X509Certificate2? LoadCertificate(SantanderApiOptions opts)
     {
+        // X509CertificateLoader arrived in .NET 9 and is the non-obsolete path there; on
+        // net8.0 (Umbraco 13) the constructor is still the only option, and is not yet
+        // obsolete. Same PKCS#12 load either way.
+#if NET9_0_OR_GREATER
         if (!string.IsNullOrWhiteSpace(opts.CertificateBase64))
             return X509CertificateLoader.LoadPkcs12(
                 Convert.FromBase64String(opts.CertificateBase64), opts.CertificatePassword);
 
         if (!string.IsNullOrWhiteSpace(opts.CertificatePath) && File.Exists(opts.CertificatePath))
             return X509CertificateLoader.LoadPkcs12FromFile(opts.CertificatePath, opts.CertificatePassword);
+#else
+        if (!string.IsNullOrWhiteSpace(opts.CertificateBase64))
+            return new X509Certificate2(
+                Convert.FromBase64String(opts.CertificateBase64), opts.CertificatePassword);
+
+        if (!string.IsNullOrWhiteSpace(opts.CertificatePath) && File.Exists(opts.CertificatePath))
+            return new X509Certificate2(opts.CertificatePath, opts.CertificatePassword);
+#endif
 
         return null;
     }

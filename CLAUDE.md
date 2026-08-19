@@ -57,7 +57,10 @@ Spins up Umbraco 13 (`:5001`) and Umbraco 17 (`:5000`) baselines plus a Playwrig
 
 **CI skips some plugins.** Both `build.yml` and `publish.yml` iterate `find -maxdepth 3 -name "SplatDev.Umbraco.Plugins.*.csproj"` and `grep -v` out `Tests|BackupManager|FormsClone|CodeFirst|PdfCurator`. If you add a plugin that must ship, confirm it survives that filter; if you exclude one, edit both workflows.
 
-**Not every project is in `SplatDev.Core.sln`.** Getnet, Santander and Schema2Yaml build only via their own `.csproj`, which is why CI builds per-project without `--no-restore`. `SplatDev.Publishable.slnf` is the publishable subset; `SplatDev.Core.slnx` is the newer solution format kept alongside the `.sln`.
+**A publishable plugin must be in `SplatDev.Core.sln`, or it is silently dropped from every release.** `publish.yml` restores the solution *once* and then builds each plugin with `--no-restore`, so a project outside the solution has no assets file, fails instantly, and is skipped with a `::warning::` that nothing surfaces. Getnet and Santander sat outside it and went unpublished for an unknown number of tags — Santander's API-key hardening was stuck at 1.1.6 on NuGet while the repo said 1.3.0. Both are now in the solution. (This paragraph used to say CI builds per-project *without* `--no-restore`, which stopped being true and is exactly how the gap survived.) `SplatDev.Publishable.slnf` is the publishable subset; `SplatDev.Core.slnx` is the newer solution format kept alongside the `.sln`.
+
+**Legacy Umbraco 8 versions can outrank the current package.** Several ids carry `8.18.x` builds whose version numbers sort *above* today's `2.x`/`3.x`, so NuGet resolves the v8 assembly as latest. This is not cosmetic: `Backups` served 8.18.7.2 over the 3.3.0 that added authorization to its anonymous `Restore` and `Delete` endpoints, making a published security fix unreachable. Unlist the legacy versions — `.github/workflows/unlist-legacy.yml`, manual dispatch — and check the *search* index, not the flat container, which lists unlisted versions too:
+`curl -s "https://azuresearch-usnc.nuget.org/query?q=packageid:<id>&prerelease=true"`.
 
 **Private feed.** `nuget.config` maps `PdfCurator.*` to `https://nuget.pkg.github.com/splatdevtech/` and reads `%GITHUB_ACTOR%` / `%GITHUB_TOKEN%` from the environment. Restore of PdfCurator fails without those set.
 

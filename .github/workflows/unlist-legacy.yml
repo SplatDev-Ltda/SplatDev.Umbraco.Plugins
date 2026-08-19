@@ -1,0 +1,70 @@
+name: Unlist legacy NuGet versions
+
+# Some package ids carry Umbraco 8-era builds whose version numbers (8.18.x) sort ABOVE
+# the current Umbraco 13/17 packages (2.x, 3.x). NuGet resolves "latest" by semver, so
+# those legacy builds are what `dotnet add package` installs — which silently serves an
+# Umbraco 8 assembly, and in the case of Backups made a published security fix
+# unreachable. Unlisting hides them from resolution without deleting them, so anyone who
+# pinned an explicit version keeps working.
+#
+# Run from the Actions tab. Deliberately manual: unlisting is not something that should
+# happen on a push.
+
+on:
+  workflow_dispatch:
+    inputs:
+      packages:
+        description: 'Space-separated id@version pairs to unlist'
+        required: true
+        default: >-
+          SplatDev.Umbraco.Plugins.Backups@8.18.7.1
+          SplatDev.Umbraco.Plugins.Backups@8.18.7.2
+          SplatDev.Umbraco.Plugins.CopyValue@8.18.8.1
+          SplatDev.Umbraco.Plugins.DefaultValue@8.18.7.1
+      confirm:
+        description: 'Type UNLIST to proceed'
+        required: true
+        default: ''
+
+jobs:
+  unlist:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check confirmation
+        run: |
+          if [ "${{ github.event.inputs.confirm }}" != "UNLIST" ]; then
+            echo "::error::Confirmation not given. Type UNLIST to proceed."
+            exit 1
+          fi
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Unlist
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          for pair in ${{ github.event.inputs.packages }}; do
+            id="${pair%@*}"
+            version="${pair#*@}"
+            echo "--- Unlisting $id $version ---"
+            # `dotnet nuget delete` against nuget.org unlists; it does not delete.
+            dotnet nuget delete "$id" "$version" \
+              --source https://api.nuget.org/v3/index.json \
+              --api-key "$NUGET_API_KEY" \
+              --non-interactive || echo "::warning::Could not unlist $id $version"
+          done
+
+      - name: Report resolved latest
+        run: |
+          echo "### Latest version now resolving" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          for pair in ${{ github.event.inputs.packages }}; do
+            id="${pair%@*}"
+            lower=$(echo "$id" | tr '[:upper:]' '[:lower:]')
+            sleep 5
+            latest=$(curl -s "https://api.nuget.org/v3-flatcontainer/$lower/index.json" \
+              | python3 -c "import json,sys;print(json.load(sys.stdin)['versions'][-1])" 2>/dev/null || echo "?")
+            echo "- \`$id\` → **$latest**" >> $GITHUB_STEP_SUMMARY
+          done

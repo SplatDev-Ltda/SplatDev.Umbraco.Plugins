@@ -1,9 +1,15 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Web.Common.Controllers;
 using SplatDev.Umbraco.Plugins.MemberTypes.Services;
 
 namespace SplatDev.Umbraco.Plugins.MemberTypes.Controllers;
 
+/// <remarks>
+/// Previously anonymous. Create, Update and Delete rewrote member type definitions.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/membertypes/[action]")]
 public class MemberTypesApiController : ControllerBase
 {

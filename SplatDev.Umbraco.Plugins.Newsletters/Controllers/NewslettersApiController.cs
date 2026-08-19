@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Web.Common.Controllers;
 using SplatDev.Umbraco.Plugins.Newsletters.Models;
@@ -5,6 +7,10 @@ using SplatDev.Umbraco.Plugins.Newsletters.Services;
 
 namespace SplatDev.Umbraco.Plugins.Newsletters.Controllers;
 
+/// <remarks>
+/// Previously anonymous. GetSubscribers returned the subscriber list - personal data - and SendCampaign let anyone send mail to all of them. Subscribing and unsubscribing stay open.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/newsletters")]
 public class NewslettersApiController : ControllerBase
 {
@@ -19,6 +25,7 @@ public class NewslettersApiController : ControllerBase
     public record UnsubscribeRequest(string Email);
     public record SendCampaignRequest(int CampaignId);
 
+    [AllowAnonymous]
     [HttpPost("subscribe")]
     public async Task<IActionResult> Subscribe([FromBody] SubscribeRequest request)
     {
@@ -29,6 +36,7 @@ public class NewslettersApiController : ControllerBase
         return Ok(new { success = result, message = result ? "Subscribed successfully." : "Already subscribed." });
     }
 
+    [AllowAnonymous]
     [HttpPost("unsubscribe")]
     public async Task<IActionResult> Unsubscribe([FromBody] UnsubscribeRequest request)
     {

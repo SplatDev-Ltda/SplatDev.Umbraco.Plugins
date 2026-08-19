@@ -1,0 +1,158 @@
+<div ng-controller="LgpdDashboardController" class="lgpd-dashboard">
+    <div class="umb-panel-header">
+        <h1>LGPD</h1>
+        <p class="umb-panel-description" style="max-width:66ch;">
+            Consentimento, requisições de titulares e o registro das operações de tratamento,
+            conforme a Lei nº 13.709/2018. O consentimento é acumulativo: cada mudança fica
+            registrada, porque o art. 8º §1º atribui ao controlador o ônus de comprová-lo.
+        </p>
+    </div>
+
+    <div ng-if="painel.encarregadoAusente" class="alert alert-danger">
+        <strong>Encarregado não configurado.</strong>
+        O art. 41 §1º exige que a identidade e o contato do encarregado sejam divulgados
+        publicamente. Defina <code>Lgpd:EncarregadoNome</code> e <code>Lgpd:EncarregadoEmail</code>.
+    </div>
+
+    <div ng-if="loading" class="umb-loading">Carregando...</div>
+
+    <div class="umb-box" ng-if="painel">
+        <div class="umb-box-header"><h3>Situação</h3></div>
+        <div class="umb-box-content" style="padding:16px;display:flex;gap:16px;flex-wrap:wrap;">
+            <div><strong style="font-size:1.5rem;color:{{painel.requisicoesVencidas ? '#991b1b' : 'inherit'}};">{{painel.requisicoesVencidas}}</strong><div style="color:#6b7280;font-size:0.8125rem;">vencidas</div></div>
+            <div><strong style="font-size:1.5rem;">{{painel.requisicoesVencendoEm3Dias}}</strong><div style="color:#6b7280;font-size:0.8125rem;">vencem em 3 dias</div></div>
+            <div><strong style="font-size:1.5rem;">{{painel.requisicoesPendentes}}</strong><div style="color:#6b7280;font-size:0.8125rem;">em aberto</div></div>
+            <div><strong style="font-size:1.5rem;">{{painel.sessoes}}</strong><div style="color:#6b7280;font-size:0.8125rem;">sessões</div></div>
+            <div><strong style="font-size:1.5rem;">{{painel.consentimentosConcedidos}}</strong><div style="color:#6b7280;font-size:0.8125rem;">consentimentos</div></div>
+            <div><strong style="font-size:1.5rem;">{{painel.consentimentosRecusados}}</strong><div style="color:#6b7280;font-size:0.8125rem;">recusas</div></div>
+            <div><strong style="font-size:1.5rem;">{{painel.operacoesAtivas}}</strong><div style="color:#6b7280;font-size:0.8125rem;">operações ativas</div></div>
+            <div><strong style="font-size:1.5rem;">{{painel.operacoesComDadoSensivel}}</strong><div style="color:#6b7280;font-size:0.8125rem;">com dado sensível</div></div>
+        </div>
+    </div>
+
+    <div ng-if="msg" class="alert" ng-class="msg.ok ? 'alert-success' : 'alert-danger'" style="margin-top:16px;">
+        {{msg.texto}}
+    </div>
+
+    <div class="umb-box" style="margin-top:16px;">
+        <div class="umb-box-header"><h3>Requisições de titulares (art. 18)</h3></div>
+        <div class="umb-box-content" style="padding:16px;">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+                <button class="btn btn-sm" ng-class="filtro==='pendente' ? 'btn-primary' : 'btn-default'" ng-click="setFiltro('pendente')">pendente</button>
+                <button class="btn btn-sm" ng-class="filtro==='em_andamento' ? 'btn-primary' : 'btn-default'" ng-click="setFiltro('em_andamento')">em andamento</button>
+                <button class="btn btn-sm" ng-class="filtro==='concluida' ? 'btn-primary' : 'btn-default'" ng-click="setFiltro('concluida')">concluída</button>
+                <button class="btn btn-sm" ng-class="filtro==='recusada' ? 'btn-primary' : 'btn-default'" ng-click="setFiltro('recusada')">recusada</button>
+                <button class="btn btn-sm" ng-class="filtro==='' ? 'btn-primary' : 'btn-default'" ng-click="setFiltro('')">todas</button>
+            </div>
+
+            <p ng-if="requisicoes.length === 0" style="color:#6b7280;">Nenhuma requisição.</p>
+
+            <table class="table" ng-if="requisicoes.length > 0">
+                <thead><tr><th>Titular</th><th>Direito</th><th>Prazo</th><th>Status</th><th></th></tr></thead>
+                <tbody>
+                    <tr ng-repeat="r in requisicoes">
+                        <td>
+                            <code>{{r.email}}</code>
+                            <div ng-if="r.nome" style="color:#6b7280;font-size:0.8125rem;">{{r.nome}}</div>
+                        </td>
+                        <td style="color:#6b7280;font-size:0.8125rem;">{{rotuloDireito[r.direito] || r.direito}}</td>
+                        <td ng-style="aberta(r) && diasRestantes(r.prazoEm) < 0 && {'color':'#991b1b','font-weight':'600'}">
+                            {{r.prazoEm | date:'shortDate'}}
+                            <div ng-if="aberta(r)" style="color:#6b7280;font-size:0.8125rem;">
+                                <span ng-if="diasRestantes(r.prazoEm) < 0">{{-diasRestantes(r.prazoEm)}} dia(s) em atraso</span>
+                                <span ng-if="diasRestantes(r.prazoEm) >= 0">{{diasRestantes(r.prazoEm)}} dia(s)</span>
+                            </div>
+                        </td>
+                        <td><span class="umb-badge">{{r.status}}</span></td>
+                        <td style="text-align:right;white-space:nowrap;">
+                            <span ng-if="aberta(r)">
+                                <button class="btn btn-default btn-sm" ng-click="concluir(r)" ng-disabled="busy">Concluir</button>
+                                <button class="btn btn-danger btn-sm" ng-click="recusar(r)" ng-disabled="busy">Recusar</button>
+                            </span>
+                            <span ng-if="!aberta(r) && r.justificativa" style="color:#6b7280;font-size:0.8125rem;">{{r.justificativa}}</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="umb-box" style="margin-top:16px;">
+        <div class="umb-box-header"><h3>Registro de operações de tratamento (art. 37)</h3></div>
+        <div class="umb-box-content" style="padding:16px;">
+            <button class="btn btn-primary" ng-click="novaOperacao()" ng-disabled="busy">Nova operação</button>
+
+            <p ng-if="operacoes.length === 0" style="color:#6b7280;margin-top:12px;">
+                Nenhuma operação registrada. O art. 37 obriga o controlador a manter este
+                registro, e é a primeira coisa que a ANPD solicita.
+            </p>
+
+            <table class="table" ng-if="operacoes.length > 0" style="margin-top:12px;">
+                <thead><tr><th>Operação</th><th>Base legal</th><th>Dados</th><th></th></tr></thead>
+                <tbody>
+                    <tr ng-repeat="o in operacoes">
+                        <td>
+                            <strong>{{o.nome}}</strong>
+                            <span ng-if="!o.ativa" class="umb-badge">inativa</span>
+                            <div style="color:#6b7280;font-size:0.8125rem;">{{o.finalidade}}</div>
+                        </td>
+                        <td style="color:#6b7280;font-size:0.8125rem;">{{rotuloBase[o.baseLegal] || o.baseLegal}}</td>
+                        <td style="color:#6b7280;font-size:0.8125rem;">
+                            {{o.categoriasDados || "—"}}
+                            <div ng-if="o.contemDadoSensivel"><span class="umb-badge">dado sensível</span></div>
+                        </td>
+                        <td style="text-align:right;white-space:nowrap;">
+                            <button class="btn btn-default btn-sm" ng-click="editarOperacao(o)">Editar</button>
+                            <button class="btn btn-danger btn-sm" ng-click="removerOperacao(o)" ng-disabled="busy">Remover</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="umb-box" ng-if="opDraft" style="margin-top:16px;">
+        <div class="umb-box-header"><h3>{{opDraft.id ? "Editar operação" : "Nova operação"}}</h3></div>
+        <div class="umb-box-content" style="padding:16px;">
+            <div class="control-group" style="margin-bottom:12px;">
+                <label class="control-label">Nome</label>
+                <input type="text" class="umb-editor" style="width:100%;" ng-model="opDraft.nome" />
+            </div>
+            <div class="control-group" style="margin-bottom:12px;">
+                <label class="control-label">Base legal (art. 7º)</label>
+                <select class="umb-editor" ng-model="opDraft.baseLegal"
+                        ng-options="b as (rotuloBase[b] || b) for b in vocab.basesLegais"></select>
+            </div>
+            <div class="control-group" style="margin-bottom:12px;">
+                <label class="control-label">Finalidade</label>
+                <textarea class="umb-editor" style="width:100%;min-height:64px;" ng-model="opDraft.finalidade"></textarea>
+            </div>
+            <div class="control-group" style="margin-bottom:12px;">
+                <label class="control-label">Compartilhamento (art. 18, VII)</label>
+                <textarea class="umb-editor" style="width:100%;min-height:64px;" ng-model="opDraft.compartilhamento"></textarea>
+            </div>
+            <div style="display:flex;gap:16px;flex-wrap:wrap;">
+                <div class="control-group">
+                    <label class="control-label">Categorias de dados</label>
+                    <input type="text" class="umb-editor" ng-model="opDraft.categoriasDados" />
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Retenção</label>
+                    <input type="text" class="umb-editor" ng-model="opDraft.retencao" />
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Dado sensível (art. 5º, II)</label>
+                    <input type="checkbox" ng-model="opDraft.contemDadoSensivel" />
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Ativa</label>
+                    <input type="checkbox" ng-model="opDraft.ativa" />
+                </div>
+            </div>
+            <div style="margin-top:14px;display:flex;gap:10px;">
+                <button class="btn btn-primary" ng-click="salvarOperacao()" ng-disabled="busy">Salvar</button>
+                <button class="btn btn-default" ng-click="opDraft = null">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>

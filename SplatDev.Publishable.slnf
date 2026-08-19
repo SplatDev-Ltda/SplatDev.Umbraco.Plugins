@@ -36,7 +36,7 @@
       "SplatDev.Umbraco.NPoco/SplatDev.Umbraco.NPoco.csproj",
       "SplatDev.Umbraco.Pagination/SplatDev.Umbraco.Pagination.csproj",
       "SplatDev.Umbraco.Plugins.2fa/SplatDev.Umbraco.Plugins.2fa.csproj",
-      "SplatDev.Umbraco.Plugins.Analytics/SplatDev.Umbraco.Plugins.Analytics.csproj",
+      "SplatDev.Umbraco.Plugins.GoogleAnalytics/SplatDev.Umbraco.Plugins.GoogleAnalytics.csproj",
       "SplatDev.Umbraco.Plugins.Blog/SplatDev.Umbraco.Plugins.Blog.csproj",
       "SplatDev.Umbraco.Plugins.CacheManager/SplatDev.Umbraco.Plugins.CacheManager.csproj",
       "SplatDev.Umbraco.Plugins.CopyValue/SplatDev.Umbraco.Plugins.CopyValue.csproj",

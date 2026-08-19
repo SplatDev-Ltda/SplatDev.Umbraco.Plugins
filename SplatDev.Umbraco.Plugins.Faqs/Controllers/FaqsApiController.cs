@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Web.Common.Controllers;
 using SplatDev.Umbraco.Plugins.Faqs.Models;
@@ -5,6 +7,10 @@ using SplatDev.Umbraco.Plugins.Faqs.Services;
 
 namespace SplatDev.Umbraco.Plugins.Faqs.Controllers;
 
+/// <remarks>
+/// Previously anonymous. CreateItem, UpdateItem, DeleteItem, PublishItem, CreateCategory and DeleteCategory let anyone rewrite the FAQ. Reads and search stay open.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/faqs/[action]")]
 public class FaqsApiController : ControllerBase
 {
@@ -15,6 +21,7 @@ public class FaqsApiController : ControllerBase
         _service = service;
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetCategories([FromQuery] bool publishedOnly = true)
     {
@@ -22,6 +29,7 @@ public class FaqsApiController : ControllerBase
         return Ok(categories);
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetCategory(
         [FromQuery] string slug,
@@ -35,6 +43,7 @@ public class FaqsApiController : ControllerBase
         return Ok(category);
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetItems(
         [FromQuery] int? categoryId = null,
@@ -45,6 +54,7 @@ public class FaqsApiController : ControllerBase
         return Ok(new { items, total });
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetItem([FromQuery] int id)
     {
@@ -53,6 +63,7 @@ public class FaqsApiController : ControllerBase
         return Ok(item);
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> Search(
         [FromQuery] string q,

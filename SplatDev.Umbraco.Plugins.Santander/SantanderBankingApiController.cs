@@ -6,9 +6,16 @@ namespace SplatDev.Umbraco.Plugins.Santander;
 
 /// <summary>
 /// Backoffice/server-to-server surface for the Santander Open Banking suite.
-/// Guarded by the X-RISIN-Api-Key header (Santander:ApiKey config) — banking endpoints must
-/// never be anonymous. Returns 401 for every call while the key is unset.
 /// </summary>
+/// <remarks>
+/// Guarded by <see cref="SantanderApiKeyAttribute"/>: every action requires a valid
+/// X-RISIN-Api-Key header, and all of them are refused while Santander:ApiKey is unset.
+///
+/// Previously each action called a private guard helper — three directly, the rest via
+/// the shared Execute wrapper. That covered every action, but only for as long as each
+/// new action remembered to opt in. Moving it to the pipeline removes that requirement.
+/// </remarks>
+[SantanderApiKey]
 [ApiController]
 [Route("umbraco/backoffice/santander-banking")]
 public class SantanderBankingApiController(
@@ -30,7 +37,6 @@ public class SantanderBankingApiController(
     [HttpGet("diagnostics")]
     public IActionResult Diagnostics()
     {
-        if (Unauthorized(out var challenge)) return challenge;
 
         return Ok(new
         {
@@ -74,7 +80,6 @@ public class SantanderBankingApiController(
     [HttpPost("pix/qrcode")]
     public async Task<IActionResult> CriarPixQrCode([FromBody] CriarPixRequest request, CancellationToken ct)
     {
-        if (Unauthorized(out var challenge)) return challenge;
         try
         {
             var charge = await pixService.CriarCobrancaAsync(request.Valor, request.Descricao, request.Txid, request.ExpiracaoSegundos, ct);
@@ -161,7 +166,6 @@ public class SantanderBankingApiController(
 
     private async Task<IActionResult> Execute(Func<Task<JsonDocument>> action)
     {
-        if (Unauthorized(out var challenge)) return challenge;
         try
         {
             using var doc = await action();
@@ -178,18 +182,6 @@ public class SantanderBankingApiController(
         }
     }
 
-    /// <summary>API-key guard: 401 when Santander:ApiKey is unset or the header doesn't match.</summary>
-    private bool Unauthorized(out IActionResult challenge)
-    {
-        var supplied = Request.Headers[ApiKeyHeader].ToString();
-        if (string.IsNullOrWhiteSpace(options.ApiKey) || supplied != options.ApiKey)
-        {
-            challenge = StatusCode(401, new { error = "Missing or invalid API key." });
-            return true;
-        }
-        challenge = null!;
-        return false;
-    }
 
     private IActionResult SantanderError(SantanderApiException ex)
     {

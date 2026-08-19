@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Web.Common.Controllers;
 using SplatDev.Umbraco.Plugins.Rsvp.Models;
@@ -5,6 +7,10 @@ using SplatDev.Umbraco.Plugins.Rsvp.Services;
 
 namespace SplatDev.Umbraco.Plugins.Rsvp.Controllers;
 
+/// <remarks>
+/// Previously anonymous. GetAttendees returned every attendee's name, email and phone for any event id to any caller - a straight personal-data disclosure - and CancelRegistration cancelled anyone's booking by id. Browsing events and registering stay open.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/rsvp/[action]")]
 public class RsvpApiController : ControllerBase
 {
@@ -15,10 +21,12 @@ public class RsvpApiController : ControllerBase
         _service = service;
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetEvents(CancellationToken cancellationToken = default)
         => Ok(await _service.GetEventsAsync(cancellationToken));
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetEvent(int id, CancellationToken cancellationToken = default)
     {
@@ -50,6 +58,7 @@ public class RsvpApiController : ControllerBase
         return deleted ? NoContent() : NotFound();
     }
 
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> Register([FromBody] RsvpAttendee attendee, CancellationToken cancellationToken = default)
     {

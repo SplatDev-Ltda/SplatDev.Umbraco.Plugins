@@ -1,9 +1,15 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Web.Common.Controllers;
 using SplatDev.Umbraco.Plugins.Tweets.Services;
 
 namespace SplatDev.Umbraco.Plugins.Tweets.Controllers;
 
+/// <remarks>
+/// Previously anonymous. Refresh calls the upstream Twitter API on demand, so an anonymous caller could burn the API quota or the bill. Reading cached tweets stays open.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/tweets")]
 public class TweetsApiController : ControllerBase
 {
@@ -14,6 +20,7 @@ public class TweetsApiController : ControllerBase
         _service = service;
     }
 
+    [AllowAnonymous]
     [HttpGet("feed")]
     public async Task<IActionResult> GetTweets()
     {

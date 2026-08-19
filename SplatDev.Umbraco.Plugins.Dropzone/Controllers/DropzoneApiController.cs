@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Web.Common.Controllers;
 using SplatDev.Umbraco.Plugins.Dropzone.Models;
@@ -6,6 +8,15 @@ using SplatDev.Umbraco.Plugins.Dropzone.Services;
 
 namespace SplatDev.Umbraco.Plugins.Dropzone.Controllers;
 
+/// <summary>
+/// Media upload for the backoffice Dropzone dashboard.
+/// </summary>
+/// <remarks>
+/// Previously anonymous, which meant any caller on the internet could write files into
+/// the media library — the classic path to dropping something executable onto a host —
+/// and delete existing media.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/dropzone/[action]")]
 public class DropzoneApiController : ControllerBase
 {

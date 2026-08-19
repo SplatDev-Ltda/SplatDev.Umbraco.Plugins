@@ -1,17 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <ContentTargetFolders>.</ContentTargetFolders>
-    <!-- Umbraco 17 only. The repo convention is net8.0;net10.0, and this deliberately
-         does not follow it: the UI is Lit 3, and supporting Umbraco 13 would mean a
-         second AngularJS bundle for a dashboard that is a convenience, not a dependency. -->
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>SplatDev.Umbraco.Plugins.NuGetCatalog</PackageId>
-    <Version>1.0.2</Version>
+    <Version>1.1.0</Version>
     <Authors>SplatDev</Authors>
-    <Description>Backoffice dashboard listing your published NuGet packages with download counts, latest version and a short summary. Add packages by URL, hide the ones you do not care about. Umbraco 17 (net10.0).</Description>
+    <Description>Backoffice dashboard listing your published NuGet packages with download counts, latest version and a short summary. Add packages by URL, hide the ones you do not care about. Umbraco 17 Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).</Description>
     <PackageTags>umbraco umbraco-marketplace nuget packages dashboard downloads</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
@@ -24,12 +20,6 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.6" />
-    <PackageReference Include="Umbraco.Cms.Core" Version="17.3.4" />
-    <PackageReference Include="Umbraco.Cms.Web.Common" Version="17.3.4" />
-    <PackageReference Include="Umbraco.Cms.Api.Management" Version="17.3.4" />
-  </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="App_Plugins\**\*" />
@@ -42,9 +32,18 @@
   </ItemGroup>
 
 
-  <!-- Pack backoffice assets at their App_Plugins paths; embedded resources alone are not deployed by PackageReference. -->
-  <ItemGroup>
-    <Content Include="App_Plugins\**\*" Pack="true" PackagePath="App_Plugins" />
-    <None Include="buildTransitive\**" Pack="true" PackagePath="buildTransitive" />
+  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.11" />
+    <PackageReference Include="Umbraco.Cms.Core" Version="13.12.0" />
+    <PackageReference Include="Umbraco.Cms.Web.Common" Version="13.12.0" />
+    <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="13.12.0" />
   </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.6" />
+    <PackageReference Include="Umbraco.Cms.Core" Version="17.3.4" />
+    <PackageReference Include="Umbraco.Cms.Web.Common" Version="17.3.4" />
+    <PackageReference Include="Umbraco.Cms.Api.Management" Version="17.3.4" />
+  </ItemGroup>
+
 </Project>

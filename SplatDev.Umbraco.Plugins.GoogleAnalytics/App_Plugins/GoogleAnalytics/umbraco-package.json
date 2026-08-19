@@ -1,0 +1,42 @@
+{
+  "$schema": "../../umbraco-package-schema.json",
+  "name": "Analytics",
+  "version": "2.0.0",
+  "extensions": [
+    {
+      "type": "dashboard",
+      "alias": "GoogleAnalytics.Dashboard",
+      "name": "Analytics Dashboard",
+      "element": "/App_Plugins/GoogleAnalytics/dist/analytics-dashboard.element.js",
+      "elementName": "analytics-dashboard",
+      "weight": 100,
+      "meta": {
+        "label": "Analytics",
+        "pathname": "analytics"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.SectionAlias",
+          "match": "Umb.Section.Settings"
+        }
+      ]
+    },
+    {
+      "type": "localization",
+      "alias": "UmbracoCms.GoogleAnalytics.Localization.En",
+      "name": "Google Analytics — English",
+      "meta": {
+        "culture": "en",
+        "localizations": {
+          "section": {
+            "googleanalytics_heading": "Analytics",
+            "googleanalytics_description": "Configure Google Analytics GA4 integration",
+            "googleanalytics_measurementId": "Measurement ID",
+            "googleanalytics_enabled": "Enabled",
+            "googleanalytics_pageViews": "Page Views"
+          }
+        }
+      }
+    }
+  ]
+}

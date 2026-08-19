@@ -1,20 +1,90 @@
-<div class="umb-dashboard">
+<div ng-controller="SmtpDashboardController" class="smtp-dashboard">
     <div class="umb-panel-header">
-        <h1>SMTP Settings</h1>
-        <p class="umb-panel-description">Configure SMTP mail server settings for outbound email. Test your email configuration.</p>
+        <h1>SMTP</h1>
+        <p class="umb-panel-description">
+            The mail configuration this site is running with, and a test that sends through it.
+        </p>
     </div>
-    <div class="umb-box">
-        <div class="umb-box-header" style="display:flex;align-items:center;gap:12px;padding:16px;">
-            <div style="width:48px;height:48px;border-radius:10px;background:#6366f1;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;">📧</div>
-            <div>
-                <h3 style="margin:0 0 4px;font-size:1rem;font-weight:600;">SMTP Settings</h3>
-                <p style="margin:0;font-size:0.875rem;color:#6b7280;">Plugin is installed and running on Umbraco 13.</p>
+
+    <div ng-if="loading" class="umb-loading">Loading...</div>
+
+    <div ng-if="loadError && !loading" class="alert alert-danger">{{loadError}}</div>
+
+    <div ng-if="settings && !loading">
+        <div class="umb-box">
+            <div class="umb-box-header"><h3>Current configuration</h3></div>
+            <div class="umb-box-content" style="padding:16px;">
+                <table class="table table-condensed" style="margin:0;">
+                    <tbody>
+                        <tr>
+                            <th style="width:140px;">Host</th>
+                            <td><code ng-if="settings.host">{{settings.host}}</code>
+                                <em ng-if="!settings.host" style="color:#b45309;">not set</em></td>
+                        </tr>
+                        <tr><th>Port</th><td><code>{{settings.port}}</code></td></tr>
+                        <tr><th>SSL</th><td>{{settings.enableSsl ? "enabled" : "disabled"}}</td></tr>
+                        <tr>
+                            <th>Username</th>
+                            <td><code ng-if="settings.username">{{settings.username}}</code>
+                                <em ng-if="!settings.username" style="color:#b45309;">not set</em></td>
+                        </tr>
+                        <tr>
+                            <th>Password</th>
+                            <td>
+                                <span ng-if="settings.password">
+                                    ••••••••
+                                    <small style="color:#6b7280;">(never sent to the browser)</small>
+                                </span>
+                                <em ng-if="!settings.password" style="color:#b45309;">not set</em>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>From</th>
+                            <td><code ng-if="settings.fromEmail">{{settings.fromEmail}}</code>
+                                <em ng-if="!settings.fromEmail" style="color:#b45309;">not set</em></td>
+                        </tr>
+                        <tr>
+                            <th>From name</th>
+                            <td><code ng-if="settings.fromName">{{settings.fromName}}</code>
+                                <em ng-if="!settings.fromName" style="color:#b45309;">not set</em></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p style="color:#6b7280;font-size:0.875rem;margin-top:12px;">
+                    Read from the <code>SmtpSettings</code> configuration section. Change it in
+                    appsettings.json, user secrets, or environment variables &mdash; not from here.
+                </p>
             </div>
-            <span style="margin-left:auto;display:inline-block;padding:2px 8px;border-radius:9999px;font-size:0.7rem;font-weight:700;text-transform:uppercase;background:#d1fae5;color:#065f46;">Active</span>
         </div>
-        <div class="umb-box-content" style="padding:16px;border-top:1px solid #e5e7eb;">
-            <p style="color:#374151;">Configure SMTP mail server settings for outbound email. Test your email configuration.</p>
-            <p style="color:#6b7280;font-size:0.875rem;margin-top:8px;">Configure this plugin via the Umbraco backoffice settings.</p>
+
+        <div class="umb-box" style="margin-top:16px;">
+            <div class="umb-box-header"><h3>Send a test message</h3></div>
+            <div class="umb-box-content" style="padding:16px;">
+                <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                    <input type="email" class="umb-editor" style="min-width:260px;"
+                           ng-model="recipient"
+                           placeholder="{{settings.fromEmail || 'recipient@example.com'}}" />
+                    <button class="btn btn-primary"
+                            ng-click="sendTest()"
+                            ng-disabled="sending || !settings.host">
+                        {{sending ? "Sending..." : "Send test"}}
+                    </button>
+                </div>
+                <p style="color:#6b7280;font-size:0.875rem;margin-top:12px;">
+                    Leave blank to send to the configured from-address. The message is sent with
+                    the credentials above, which stay on the server.
+                </p>
+
+                <div ng-if="result"
+                     class="alert"
+                     ng-class="result.success ? 'alert-success' : 'alert-danger'"
+                     style="margin-top:14px;">
+                    {{result.message}}
+                    <div ng-if="result.error" style="margin-top:6px;font-size:0.8125rem;opacity:0.85;">
+                        <code>{{result.error}}</code>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

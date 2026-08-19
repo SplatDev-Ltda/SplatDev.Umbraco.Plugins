@@ -1,79 +1,69 @@
 angular.module("umbraco").controller("HiddenContentDashboardController", [
     "$scope",
     "$http",
-    function ($scope, $http) {
+    "editorService",
+    function ($scope, $http, editorService) {
+        // Umbraco 13 counterpart. The previous version had a "Node ID" number box for the
+        // single case and a second box wanting "Node IDs (comma-separated)" for bulk —
+        // two ways to type an identifier an editor cannot see. One picker covers both.
+        var api = "/umbraco/api/hiddencontent";
+
         $scope.loading = true;
-        $scope.hiddenNodes = [];
-        $scope.checkNodeId = "";
-        $scope.checkResult = null;
-        $scope.bulkIds = "";
-        $scope.statusMessage = "";
-        $scope.errorMessage = "";
+        $scope.busy = false;
+        $scope.hidden = [];
+        $scope.selection = [];
+        $scope.result = null;
 
-        $scope.loadHiddenNodes = function () {
+        $scope.load = function () {
             $scope.loading = true;
-            $http.get("/umbraco/api/hiddencontent/GetHiddenNodes")
-                .then(function (response) {
-                    $scope.hiddenNodes = response.data || [];
-                })
-                .catch(function () {
-                    $scope.errorMessage = "Failed to load hidden nodes.";
-                })
-                .finally(function () {
-                    $scope.loading = false;
-                });
+            $http.get(api + "/GetHiddenNodes")
+                .then(function (r) { $scope.hidden = r.data; })
+                .finally(function () { $scope.loading = false; });
         };
 
-        $scope.hideNode = function (nodeId) {
-            $http.post("/umbraco/api/hiddencontent/HideNode?nodeId=" + nodeId)
-                .then(function (response) {
-                    $scope.statusMessage = response.data.message;
-                    $scope.loadHiddenNodes();
-                })
-                .catch(function () { $scope.errorMessage = "Failed to hide node."; });
+        $scope.pick = function () {
+            editorService.contentPicker({
+                multiPicker: true,
+                submit: function (model) {
+                    $scope.selection = (model.selection || []).map(function (n) {
+                        return { key: n.key || n.udi, name: n.name };
+                    });
+                    editorService.close();
+                },
+                close: function () { editorService.close(); }
+            });
         };
 
-        $scope.showNode = function (nodeId) {
-            $http.post("/umbraco/api/hiddencontent/ShowNode?nodeId=" + nodeId)
-                .then(function (response) {
-                    $scope.statusMessage = response.data.message;
-                    $scope.loadHiddenNodes();
+        $scope.clear = function () { $scope.selection = []; };
+
+        function post(action, nodes) {
+            $scope.busy = true;
+            $scope.result = null;
+            $http.post(api + "/" + action, { nodes: nodes })
+                .then(function (r) {
+                    $scope.result = r.data;
+                    $scope.selection = [];
+                    $scope.load();
+                }, function (r) {
+                    $scope.result = (r.data && r.data.message)
+                        ? r.data
+                        : { success: false, message: "The request failed." };
                 })
-                .catch(function () { $scope.errorMessage = "Failed to show node."; });
+                .finally(function () { $scope.busy = false; });
+        }
+
+        $scope.hide = function () {
+            post("Hide", $scope.selection.map(function (n) { return String(n.key); }));
         };
 
-        $scope.checkNode = function () {
-            if (!$scope.checkNodeId) return;
-            $http.get("/umbraco/api/hiddencontent/IsHidden?nodeId=" + $scope.checkNodeId)
-                .then(function (response) {
-                    $scope.checkResult = response.data;
-                })
-                .catch(function () { $scope.checkResult = null; });
+        $scope.show = function () {
+            post("Show", $scope.selection.map(function (n) { return String(n.key); }));
         };
 
-        $scope.bulkHide = function () {
-            var ids = $scope.bulkIds.split(",").map(function (s) { return parseInt(s.trim(), 10); }).filter(function (n) { return !isNaN(n); });
-            if (!ids.length) return;
-            $http.post("/umbraco/api/hiddencontent/BulkHide", { nodeIds: ids })
-                .then(function (response) {
-                    $scope.statusMessage = response.data.message;
-                    $scope.loadHiddenNodes();
-                })
-                .catch(function () { $scope.errorMessage = "Bulk hide failed."; });
+        $scope.restoreOne = function (node) {
+            post("Show", [String(node.key)]);
         };
 
-        $scope.bulkShow = function () {
-            var ids = $scope.bulkIds.split(",").map(function (s) { return parseInt(s.trim(), 10); }).filter(function (n) { return !isNaN(n); });
-            if (!ids.length) return;
-            $http.post("/umbraco/api/hiddencontent/BulkShow", { nodeIds: ids })
-                .then(function (response) {
-                    $scope.statusMessage = response.data.message;
-                    $scope.loadHiddenNodes();
-                })
-                .catch(function () { $scope.errorMessage = "Bulk show failed."; });
-        };
-
-        // Init
-        $scope.loadHiddenNodes();
+        $scope.load();
     }
 ]);

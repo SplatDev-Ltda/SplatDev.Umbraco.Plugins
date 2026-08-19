@@ -60,6 +60,52 @@ namespace SplatDev.Umbraco.Plugins.RdpManager.Services
             }
         }
 
+        public async Task<RdpResult> SaveAsync(RdpConnection connection)
+        {
+            if (string.IsNullOrWhiteSpace(connection.Name))
+                return RdpResult.Fail("Give the connection a name.");
+
+            if (string.IsNullOrWhiteSpace(connection.Host))
+                return RdpResult.Fail("Enter a host name or IP address.");
+
+            if (connection.Port is < 1 or > 65535)
+                return RdpResult.Fail($"Port {connection.Port} is outside the valid range 1-65535.");
+
+            if (connection.Width < 640 || connection.Height < 480)
+                return RdpResult.Fail("Resolution must be at least 640x480.");
+
+            // 15, 16, 24 and 32 are the only depths mstsc accepts; anything else makes the
+            // client fall back silently, which looks like the setting was ignored.
+            if (connection.ColorDepth is not (15 or 16 or 24 or 32))
+                return RdpResult.Fail("Colour depth must be 15, 16, 24 or 32.");
+
+            var clash = await _dbContext.RdpConnections
+                .FirstOrDefaultAsync(c => c.Name == connection.Name && c.Id != connection.Id);
+            if (clash is not null)
+                return RdpResult.Fail($"Another connection is already called \"{connection.Name}\".");
+
+            if (connection.Id > 0)
+            {
+                var updated = await UpdateAsync(connection);
+                return updated is null
+                    ? RdpResult.Fail("That connection no longer exists.")
+                    : RdpResult.Ok(updated, $"\"{updated.Name}\" saved.");
+            }
+
+            var created = await CreateAsync(connection);
+            return RdpResult.Ok(created, $"\"{created.Name}\" created.");
+        }
+
+        public async Task<RdpResult> RemoveAsync(int id)
+        {
+            var existing = await _dbContext.RdpConnections.FindAsync(id);
+            if (existing is null)
+                return RdpResult.Fail("That connection no longer exists.");
+
+            await DeleteAsync(id);
+            return RdpResult.Ok(existing, $"\"{existing.Name}\" deleted.");
+        }
+
         public async Task<string> GenerateRdpContentAsync(int id)
         {
             var connection = await _dbContext.RdpConnections.FindAsync(id)

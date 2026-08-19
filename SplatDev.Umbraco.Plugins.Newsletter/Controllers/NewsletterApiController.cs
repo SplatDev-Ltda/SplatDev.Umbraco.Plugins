@@ -1,7 +1,11 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+#if NET10_0_OR_GREATER
 using Umbraco.Cms.Api.Management.Controllers;
+#else
+using Umbraco.Cms.Web.BackOffice.Controllers;
+#endif
 using SplatDev.Umbraco.Plugins.Newsletter.Models;
 using SplatDev.Umbraco.Plugins.Newsletter.Services;
 
@@ -10,7 +14,12 @@ namespace SplatDev.Umbraco.Plugins.Newsletter.Controllers;
 [Route("umbraco/management/api/v1/newsletter")]
 public class NewsletterApiController(
     INewsletterService newsletterService,
-    ILogger<NewsletterApiController> logger) : ManagementApiControllerBase
+    ILogger<NewsletterApiController> logger)
+#if NET10_0_OR_GREATER
+    : ManagementApiControllerBase
+#else
+    : UmbracoAuthorizedApiController
+#endif
 {
     // ── Subscriber lists ─────────────────────────────────────────────────────
 

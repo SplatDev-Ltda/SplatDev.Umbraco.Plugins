@@ -1,161 +1,149 @@
-import { LitElement as c, nothing as h, html as s, css as p, state as u, customElement as _ } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as b } from "@umbraco-cms/backoffice/element-api";
-var k = Object.defineProperty, g = Object.getOwnPropertyDescriptor, o = (e, d, a, l) => {
-  for (var i = l > 1 ? void 0 : l ? g(d, a) : d, n = e.length - 1, r; n >= 0; n--)
-    (r = e[n]) && (i = (l ? r(d, a, i) : r(i)) || i);
-  return l && i && k(d, a, i), i;
-};
-let t = class extends b(c) {
+import { LitElement as f, nothing as m, html as l, css as y, state as u, customElement as v } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as x } from "@umbraco-cms/backoffice/element-api";
+import "@umbraco-cms/backoffice/document";
+var w = Object.defineProperty, $ = Object.getOwnPropertyDescriptor, g = (e) => {
+  throw TypeError(e);
+}, r = (e, t, i, c) => {
+  for (var o = c > 1 ? void 0 : c ? $(t, i) : t, h = e.length - 1, p; h >= 0; h--)
+    (p = e[h]) && (o = (c ? p(t, i, o) : p(o)) || o);
+  return c && o && w(t, i, o), o;
+}, k = (e, t, i) => t.has(e) || g("Cannot " + i), C = (e, t, i) => t.has(e) ? g("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, i), n = (e, t, i) => (k(e, t, "access private method"), i), a, b, _, d;
+let s = class extends x(f) {
   constructor() {
-    super(...arguments), this._hiddenNodes = [], this._loading = !1, this._checkNodeId = "", this._checkResult = null, this._bulkIds = "", this._statusMsg = "", this._errorMsg = "", this._apiBase = "/umbraco/api/hiddencontent";
+    super(...arguments), C(this, a), this._hidden = [], this._loading = !0, this._busy = !1, this._selection = [], this._result = null, this._api = "/umbraco/api/hiddencontent";
   }
   connectedCallback() {
-    super.connectedCallback(), this._loadHiddenNodes();
-  }
-  async _loadHiddenNodes() {
-    this._loading = !0;
-    try {
-      const e = await fetch(`${this._apiBase}/GetHiddenNodes`);
-      e.ok && (this._hiddenNodes = await e.json());
-    } finally {
-      this._loading = !1;
-    }
-  }
-  async _post(e, d, a) {
-    this._statusMsg = "", this._errorMsg = "";
-    const l = `${this._apiBase}/${e}${d ? `?${d}` : ""}`, i = await fetch(l, {
-      method: "POST",
-      headers: a ? { "Content-Type": "application/json" } : {},
-      body: a ? JSON.stringify(a) : void 0
-    });
-    if (i.ok) {
-      const n = await i.json();
-      return this._statusMsg = n.message ?? "Done.", !0;
-    }
-    return this._errorMsg = `Request to ${e} failed.`, !1;
-  }
-  async _hideNode(e) {
-    await this._post("HideNode", `nodeId=${e}`) && this._loadHiddenNodes();
-  }
-  async _showNode(e) {
-    await this._post("ShowNode", `nodeId=${e}`) && this._loadHiddenNodes();
-  }
-  async _checkNode() {
-    if (!this._checkNodeId) return;
-    const e = await fetch(`${this._apiBase}/IsHidden?nodeId=${this._checkNodeId}`);
-    e.ok && (this._checkResult = await e.json());
-  }
-  _parseBulkIds() {
-    return this._bulkIds.split(",").map((e) => parseInt(e.trim(), 10)).filter((e) => !isNaN(e));
-  }
-  async _bulkHide() {
-    const e = this._parseBulkIds();
-    e.length && await this._post("BulkHide", void 0, { nodeIds: e }) && this._loadHiddenNodes();
-  }
-  async _bulkShow() {
-    const e = this._parseBulkIds();
-    e.length && await this._post("BulkShow", void 0, { nodeIds: e }) && this._loadHiddenNodes();
+    super.connectedCallback(), n(this, a, b).call(this);
   }
   render() {
-    return s`
-      <h1>Hidden Content</h1>
-      <p class="description">Hide nodes from navigation and sitemaps while keeping them accessible by direct URL.</p>
+    return l`
+      <h1>Hidden content</h1>
+      <p class="description">
+        Hide pages from navigation without unpublishing them. This sets the standard
+        <code>umbracoNaviHide</code> property, so menus built the usual way will skip them
+        while the page stays reachable by URL.
+      </p>
 
-      ${this._statusMsg ? s`<p class="status">${this._statusMsg}</p>` : h}
-      ${this._errorMsg ? s`<p class="err-msg">${this._errorMsg}</p>` : h}
-
-      <uui-box headline="Check Node Status">
-        <div class="row">
-          <uui-input
-            placeholder="Node ID"
-            type="number"
-            .value=${this._checkNodeId}
-            @input=${(e) => this._checkNodeId = e.target.value}
-          ></uui-input>
-          <uui-button look="secondary" label="Check" @click=${this._checkNode}>Check</uui-button>
+      <uui-box headline="Hide or restore pages">
+        <div class="field">
+          <label for="pages">Pages</label>
+          <p class="help">Pick one or several. Restoring works on the same selection.</p>
+          <umb-input-document
+            id="pages"
+            .selection=${this._selection}
+            @change=${(e) => this._selection = n(this, a, _).call(this, e)}>
+          </umb-input-document>
         </div>
-        ${this._checkResult ? s`
-              <div class="check-result">
-                Node <strong>${this._checkResult.nodeId}</strong> is
-                <strong>${this._checkResult.hidden ? "hidden" : "visible"}</strong>.
-                ${this._checkResult.hidden ? s`<uui-button look="primary" label="Show" @click=${() => this._showNode(this._checkResult.nodeId)}>Show in Nav</uui-button>` : s`<uui-button look="secondary" label="Hide" @click=${() => this._hideNode(this._checkResult.nodeId)}>Hide from Nav</uui-button>`}
-              </div>
-            ` : h}
+
+        <div class="actions">
+          <uui-button look="primary" ?disabled=${this._busy || this._selection.length === 0}
+            @click=${() => n(this, a, d).call(this, "Hide", this._selection)}>
+            ${this._busy ? "Working…" : "Hide from navigation"}
+          </uui-button>
+          <uui-button look="secondary" ?disabled=${this._busy || this._selection.length === 0}
+            @click=${() => n(this, a, d).call(this, "Show", this._selection)}>
+            Restore to navigation
+          </uui-button>
+        </div>
+
+        ${this._result ? l`<div class="msg ${this._result.success ? "success" : "error"}">
+                   ${this._result.message}
+                 </div>` : m}
       </uui-box>
 
-      <uui-box headline="Bulk Operations" style="margin-top:20px">
-        <div class="row">
-          <uui-input
-            placeholder="Node IDs (comma-separated)"
-            .value=${this._bulkIds}
-            @input=${(e) => this._bulkIds = e.target.value}
-            style="min-width:280px"
-          ></uui-input>
-          <uui-button look="secondary" label="Bulk Hide" @click=${this._bulkHide}>Bulk Hide</uui-button>
-          <uui-button look="primary" label="Bulk Show" @click=${this._bulkShow}>Bulk Show</uui-button>
-        </div>
-      </uui-box>
-
-      <uui-box headline="Currently Hidden Nodes" style="margin-top:20px">
-        ${this._loading ? s`<p>Loading...</p>` : this._hiddenNodes.length === 0 ? s`<p class="empty">No hidden nodes found.</p>` : s`
-              <uui-table>
-                <uui-table-head>
-                  <uui-table-head-cell>Node ID</uui-table-head-cell>
-                  <uui-table-head-cell>Actions</uui-table-head-cell>
-                </uui-table-head>
-                ${this._hiddenNodes.map(
-      (e) => s`
+      <uui-box headline="Currently hidden" style="margin-top:16px;">
+        ${this._loading ? l`<uui-loader></uui-loader>` : this._hidden.length === 0 ? l`<p class="empty">Nothing is hidden from navigation.</p>` : l`
+                <uui-table>
+                  <uui-table-head>
+                    <uui-table-head-cell>Page</uui-table-head-cell>
+                    <uui-table-head-cell></uui-table-head-cell>
+                  </uui-table-head>
+                  ${this._hidden.map((e) => l`
                     <uui-table-row>
-                      <uui-table-cell><strong>${e}</strong></uui-table-cell>
                       <uui-table-cell>
-                        <uui-button look="primary" label="Show in Nav" @click=${() => this._showNode(e)}>Show in Nav</uui-button>
+                        <strong>${e.name}</strong>
+                        ${e.path ? l`<div class="crumb">${e.path}</div>` : m}
+                      </uui-table-cell>
+                      <uui-table-cell style="text-align:right;white-space:nowrap;">
+                        <uui-button look="secondary" compact label="Restore"
+                          ?disabled=${this._busy}
+                          @click=${() => n(this, a, d).call(this, "Show", [e.key])}>
+                          Restore
+                        </uui-button>
                       </uui-table-cell>
                     </uui-table-row>
-                  `
-    )}
-              </uui-table>
-            `}
+                  `)}
+                </uui-table>
+              `}
       </uui-box>
     `;
   }
 };
-t.styles = p`
+a = /* @__PURE__ */ new WeakSet();
+b = async function() {
+  this._loading = !0;
+  try {
+    const e = await fetch(`${this._api}/GetHiddenNodes`, { credentials: "same-origin" });
+    e.ok && (this._hidden = await e.json());
+  } finally {
+    this._loading = !1;
+  }
+};
+_ = function(e) {
+  const t = e.target;
+  return (t.selection ?? String(t.value ?? "").split(",")).filter(Boolean);
+};
+d = async function(e, t) {
+  this._busy = !0, this._result = null;
+  try {
+    const i = await fetch(`${this._api}/${e}`, {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nodes: t })
+    });
+    this._result = await i.json(), i.ok && (this._selection = [], await n(this, a, b).call(this));
+  } catch (i) {
+    this._result = { success: !1, message: `The request failed: ${i.message}`, affected: [] };
+  } finally {
+    this._busy = !1;
+  }
+};
+s.styles = y`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
-    p.description { color: var(--uui-color-text-alt, #6b7280); margin: 0 0 24px; }
-    .row { display: flex; gap: 10px; align-items: center; margin-bottom: 14px; flex-wrap: wrap; }
-    .status { font-size: 0.875rem; color: #065f46; margin-bottom: 10px; }
-    .err-msg { font-size: 0.875rem; color: #b91c1c; margin-bottom: 10px; }
-    .check-result { background: var(--uui-color-surface-alt, #f3f4f6); padding: 10px 14px; border-radius: 4px; font-size: 0.9rem; margin-bottom: 16px; }
+    p.description { color: var(--uui-color-text-alt, #6b7280); margin: 0 0 24px; max-width: 62ch; }
+    .field { margin-bottom: 16px; }
+    .field > label { display: block; font-weight: 600; font-size: 0.875rem; margin-bottom: 4px; }
+    .field > .help { color: var(--uui-color-text-alt, #6b7280); font-size: 0.8125rem; margin: 0 0 6px; }
+    .actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .msg { padding: 10px 14px; border-radius: 4px; margin-top: 16px; }
+    .msg.success { background: #d1fae5; color: #065f46; }
+    .msg.error { background: #fee2e2; color: #991b1b; }
+    .crumb { color: var(--uui-color-text-alt, #6b7280); font-size: 0.8125rem; }
+    .empty { color: var(--uui-color-text-alt, #6b7280); padding: 16px 0; }
     uui-table { width: 100%; }
-    .empty { color: var(--uui-color-text-alt, #6b7280); padding: 12px 0; }
   `;
-o([
+r([
   u()
-], t.prototype, "_hiddenNodes", 2);
-o([
+], s.prototype, "_hidden", 2);
+r([
   u()
-], t.prototype, "_loading", 2);
-o([
+], s.prototype, "_loading", 2);
+r([
   u()
-], t.prototype, "_checkNodeId", 2);
-o([
+], s.prototype, "_busy", 2);
+r([
   u()
-], t.prototype, "_checkResult", 2);
-o([
+], s.prototype, "_selection", 2);
+r([
   u()
-], t.prototype, "_bulkIds", 2);
-o([
-  u()
-], t.prototype, "_statusMsg", 2);
-o([
-  u()
-], t.prototype, "_errorMsg", 2);
-t = o([
-  _("hiddencontent-dashboard")
-], t);
-const N = t;
+], s.prototype, "_result", 2);
+s = r([
+  v("hiddencontent-dashboard")
+], s);
+const S = s;
 export {
-  t as HiddenContentDashboardElement,
-  N as default
+  s as HiddenContentDashboardElement,
+  S as default
 };

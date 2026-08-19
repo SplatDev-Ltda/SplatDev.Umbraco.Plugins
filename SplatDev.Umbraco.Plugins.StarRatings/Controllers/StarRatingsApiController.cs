@@ -1,9 +1,15 @@
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Web.Common.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Web.Common.Controllers;
 using SplatDev.Umbraco.Plugins.StarRatings.Services;
 
 namespace SplatDev.Umbraco.Plugins.StarRatings.Controllers;
 
+/// <remarks>
+/// Previously anonymous. Entirely public by design; recorded here so the next audit does not have to work that out again.
+/// </remarks>
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [Route("umbraco/api/starratings/[action]")]
 public class StarRatingsApiController : ControllerBase
 {
@@ -12,6 +18,7 @@ public class StarRatingsApiController : ControllerBase
     public StarRatingsApiController(IStarRatingsService service) => _service = service;
 
     /// <summary>GET /umbraco/api/starratings/GetRating?contentKey={guid}</summary>
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetRating([FromQuery] Guid contentKey)
     {
@@ -21,6 +28,7 @@ public class StarRatingsApiController : ControllerBase
     }
 
     /// <summary>POST /umbraco/api/starratings/Rate</summary>
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> Rate([FromBody] RateRequest request)
     {
@@ -43,6 +51,7 @@ public class StarRatingsApiController : ControllerBase
     }
 
     /// <summary>GET /umbraco/api/starratings/GetTopRated?count=10</summary>
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetTopRated([FromQuery] int count = 10)
     {

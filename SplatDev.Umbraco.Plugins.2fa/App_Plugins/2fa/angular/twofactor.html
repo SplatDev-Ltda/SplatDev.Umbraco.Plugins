@@ -1,59 +1,52 @@
 <div ng-controller="TwoFactorDashboardController" class="twofactor-dashboard">
     <div class="umb-panel-header">
         <h1>Two-Factor Authentication</h1>
-        <p class="umb-panel-description">Manage TOTP 2FA and backup codes for Umbraco members.</p>
+        <p class="umb-panel-description" style="max-width:62ch;">
+            Pick a member to see whether they have TOTP enrolled, and revoke it if they have
+            lost their device. Members enrol and generate their own backup codes from the
+            front-end component &mdash; an administrator cannot read a member's secret or
+            codes from here.
+        </p>
     </div>
 
-    <div class="control-group" style="margin-bottom:16px;">
-        <label class="control-label">Member ID</label>
-        <div class="controls" style="display:flex;gap:8px;align-items:center;">
-            <input type="number" ng-model="memberId" class="umb-editor" style="width:160px;" placeholder="Enter member ID" />
-            <button class="btn btn-default" ng-click="checkStatus()" ng-disabled="!memberId || loading">Check Status</button>
+    <div class="umb-box">
+        <div class="umb-box-header"><h3>Find a member</h3></div>
+        <div class="umb-box-content" style="padding:16px;">
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                <span ng-if="member" class="umb-node-preview__name">{{member.name}}</span>
+                <button type="button" class="btn btn-default" ng-click="pickMember()">
+                    {{member ? "Change member" : "Choose member"}}
+                </button>
+                <button class="btn btn-primary" ng-click="checkStatus()"
+                        ng-disabled="!member || loading">
+                    Check status
+                </button>
+            </div>
         </div>
     </div>
 
-    <div ng-if="loading" class="umb-loading">Loading...</div>
-
-    <div ng-if="message && !loading" class="alert alert-{{message.type === 'success' ? 'success' : 'danger'}}" style="margin-bottom:16px;">
+    <div ng-if="message" class="alert"
+         ng-class="message.type === 'success' ? 'alert-success' : 'alert-danger'"
+         style="margin-top:16px;">
         {{message.text}}
     </div>
 
-    <div ng-if="status !== null && !loading">
-        <div class="umb-panel-body" style="margin-bottom:16px;">
+    <div class="umb-box" ng-if="status !== null && !loading" style="margin-top:16px;">
+        <div class="umb-box-header"><h3>2FA for {{member.name}}</h3></div>
+        <div class="umb-box-content" style="padding:16px;">
             <p>
-                2FA Status:
-                <strong ng-if="status" style="color:green;">Enabled</strong>
-                <strong ng-if="!status" style="color:orange;">Disabled</strong>
+                Status:
+                <strong ng-if="status" style="color:#065f46;">Enabled</strong>
+                <strong ng-if="!status" style="color:#92400e;">Not enrolled</strong>
             </p>
-        </div>
 
-        <!-- Enabled actions -->
-        <div ng-if="status">
-            <button class="btn btn-default" ng-click="generateBackupCodes()" style="margin-right:8px;">Generate Backup Codes</button>
-            <button class="btn btn-danger" ng-click="disable()">Disable 2FA</button>
+            <button class="btn btn-danger" ng-if="status" ng-click="disable()" ng-disabled="loading">
+                Revoke 2FA
+            </button>
 
-            <div ng-if="backupCodes.length > 0" style="margin-top:16px;background:#f9fafb;padding:1rem;border-radius:6px;">
-                <strong>Backup Codes (save these now):</strong>
-                <ul style="margin-top:8px;font-family:monospace;">
-                    <li ng-repeat="code in backupCodes">{{code}}</li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- Disabled - setup -->
-        <div ng-if="!status">
-            <button class="btn btn-primary" ng-click="setup()">Set Up TOTP</button>
-
-            <div ng-if="setupSecret" style="margin-top:16px;background:#eff6ff;padding:1rem;border-radius:6px;">
-                <p><strong>TOTP Secret Key:</strong> <code>{{setupSecret}}</code></p>
-                <p style="margin-top:8px;">Enter this key in your authenticator app, then verify below:</p>
-                <div style="display:flex;gap:8px;margin-top:8px;align-items:center;">
-                    <input type="text" ng-model="totpCode" maxlength="6" class="umb-editor"
-                           style="width:120px;font-size:1.2rem;letter-spacing:0.2em;text-align:center;"
-                           placeholder="000000" />
-                    <button class="btn btn-success" ng-click="verify()">Verify &amp; Enable</button>
-                </div>
-            </div>
+            <p ng-if="!status" class="umb-panel-description">
+                This member has not enrolled. Enrolment happens on the member's own account page.
+            </p>
         </div>
     </div>
 </div>
