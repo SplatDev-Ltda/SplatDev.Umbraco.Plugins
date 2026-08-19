@@ -321,6 +321,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SplatDev.Payments.Santander
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SplatDev.Umbraco.Plugins.RdpManager.Tests", "SplatDev.Umbraco.Plugins.RdpManager.Tests\SplatDev.Umbraco.Plugins.RdpManager.Tests.csproj", "{D33B7149-7A51-4BC4-9741-D3EF0F12E579}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SplatDev.Umbraco.Plugins.ShopCart.Tests", "SplatDev.Umbraco.Plugins.ShopCart.Tests\SplatDev.Umbraco.Plugins.ShopCart.Tests.csproj", "{D6226117-DBDF-40F2-BFF5-3D3A28380347}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -2095,6 +2097,18 @@ Global
 		{D33B7149-7A51-4BC4-9741-D3EF0F12E579}.Release|x64.Build.0 = Release|Any CPU
 		{D33B7149-7A51-4BC4-9741-D3EF0F12E579}.Release|x86.ActiveCfg = Release|Any CPU
 		{D33B7149-7A51-4BC4-9741-D3EF0F12E579}.Release|x86.Build.0 = Release|Any CPU
+		{D6226117-DBDF-40F2-BFF5-3D3A28380347}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6226117-DBDF-40F2-BFF5-3D3A28380347}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6226117-DBDF-40F2-BFF5-3D3A28380347}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D6226117-DBDF-40F2-BFF5-3D3A28380347}.Debug|x64.Build.0 = Debug|Any CPU
+		{D6226117-DBDF-40F2-BFF5-3D3A28380347}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D6226117-DBDF-40F2-BFF5-3D3A28380347}.Debug|x86.Build.0 = Debug|Any CPU
+		{D6226117-DBDF-40F2-BFF5-3D3A28380347}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6226117-DBDF-40F2-BFF5-3D3A28380347}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6226117-DBDF-40F2-BFF5-3D3A28380347}.Release|x64.ActiveCfg = Release|Any CPU
+		{D6226117-DBDF-40F2-BFF5-3D3A28380347}.Release|x64.Build.0 = Release|Any CPU
+		{D6226117-DBDF-40F2-BFF5-3D3A28380347}.Release|x86.ActiveCfg = Release|Any CPU
+		{D6226117-DBDF-40F2-BFF5-3D3A28380347}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

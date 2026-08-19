@@ -12,6 +12,7 @@ public class ShopCartComposer : IComposer
     public void Compose(IUmbracoBuilder builder)
     {
         builder.Services.AddScoped<IShopCartService, ShopCartService>();
+        builder.Services.AddScoped<IShopCartAdminService, ShopCartAdminService>();
 
         builder.Services.AddDbContext<ShopCartDbContext>(options =>
             options.UseSqlServer(
