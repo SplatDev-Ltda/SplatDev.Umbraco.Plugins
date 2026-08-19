@@ -1,5 +1,6 @@
 {
   "$schema": "../../umbraco-package-schema.json",
+  "id": "AdPreview",
   "name": "AdPreview",
   "version": "1.0.0",
   "allowPackageTelemetry": false,

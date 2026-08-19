@@ -1,4 +1,5 @@
 import { LitElement, html, css, customElement, property, state } from "@umbraco-cms/backoffice/external/lit";
+import { UmbChangeEvent } from "@umbraco-cms/backoffice/event";
 import type { UmbPropertyEditorUiElement } from "@umbraco-cms/backoffice/property-editor";
 
 type AdValue = { img: string; title: string; description: string; url: string; tooltip: string; referrer: string; css: string; overlay: boolean };
@@ -28,12 +29,12 @@ export class AdPreviewPropertyEditorElement extends LitElement implements UmbPro
     this.#value = { ...this.#draft, css: this.#safeClass(this.#draft.css) };
     this.editing = false;
     this.requestUpdate();
-    this.dispatchEvent(new CustomEvent("property-value-change", { bubbles: true, composed: true, detail: { value: this.#value } }));
+    this.dispatchEvent(new UmbChangeEvent());
   }
   #remove() {
     if (this.readonly) return;
     this.#value = empty(); this.editing = false; this.requestUpdate();
-    this.dispatchEvent(new CustomEvent("property-value-change", { bubbles: true, composed: true, detail: { value: this.#value } }));
+    this.dispatchEvent(new UmbChangeEvent());
   }
   #set(field: keyof AdValue, event: Event) { const target = event.target as HTMLInputElement | HTMLTextAreaElement; this.#draft = { ...this.#draft, [field]: target.type === "checkbox" ? (target as HTMLInputElement).checked : target.value }; }
 
