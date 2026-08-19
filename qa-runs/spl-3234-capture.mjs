@@ -20,8 +20,11 @@ await page.screenshot({path:'qa-runs/00-authenticated-home.png',fullPage:true});
 const text=(await page.locator('body').innerText());
 console.log('sections',await page.locator('a,button,[role=button],umb-section, uui-menu-item').allTextContents());
 console.log('links',await page.locator('a').evaluateAll(es=>es.map(e=>({text:e.textContent,href:e.href})).slice(0,100)));
-if(!text.includes('Email Templates')) throw new Error('Email Templates section not visible');
-await page.getByText('Email Templates',{exact:true}).first().click(); await page.waitForTimeout(3000); await page.screenshot({path:'qa-runs/01-templates.png',fullPage:true});
+// Bellissima renders section labels inside web components, so body.innerText does not
+// reliably include them. Assert on the actual section route/link instead.
+const emailSection = page.getByText('Email Templates', {exact: true}).first();
+if (await emailSection.count() === 0) throw new Error('Email Templates section not visible');
+await emailSection.click(); await page.waitForTimeout(3000); await page.screenshot({path:'qa-runs/01-templates.png',fullPage:true});
 await page.getByText('Style Settings',{exact:true}).click(); await page.waitForTimeout(2000); await page.screenshot({path:'qa-runs/02-style.png',fullPage:true});
 await page.getByText('Templates',{exact:true}).click(); await page.waitForTimeout(2000);
 const buttons=await page.getByRole('button').allTextContents(); console.log('template buttons',buttons);

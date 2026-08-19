@@ -15,5 +15,10 @@
     "ImageUrl": "https://github.com/splatdevtech.png",
     "SyncContributorsFromRepository": true
   },
-  "Screenshots": []
+  "Screenshots": [
+    "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/qa-runs/01-templates.png",
+    "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/qa-runs/02-style.png",
+    "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/qa-runs/03-template-create.png",
+    "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/qa-runs/04-preview.png"
+  ]
 }
