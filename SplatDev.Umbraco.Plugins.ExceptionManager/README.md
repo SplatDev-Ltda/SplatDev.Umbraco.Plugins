@@ -2,6 +2,13 @@
 
 Umbraco exception handling middleware plugin — configures production error pages and developer exception pages based on the application environment.
 
+
+<!-- screenshot:start -->
+
+![ExceptionManager dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.ExceptionManager/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.ExceptionManager.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.ExceptionManager)
 
 ## Compatibility

@@ -2,6 +2,13 @@
 
 Document type properties report for Umbraco — generate a comprehensive report of all properties across content types with a backoffice dashboard.
 
+
+<!-- screenshot:start -->
+
+![PropertiesReport dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.PropertiesReport/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.PropertiesReport.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.PropertiesReport)
 
 ## Compatibility

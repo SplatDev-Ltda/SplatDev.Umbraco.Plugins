@@ -2,6 +2,13 @@
 
 Member registration plugin for Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
+
+<!-- screenshot:start -->
+
+![MemberRegistration dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.MemberRegistration/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 ## Features
 
 - Registration form with name, email, username, password

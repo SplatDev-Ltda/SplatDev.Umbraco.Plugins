@@ -2,6 +2,13 @@
 
 MercadoPago payment integration for Umbraco — create payment preferences, track payment status, and handle webhook notifications via a backoffice dashboard.
 
+
+<!-- screenshot:start -->
+
+![Payments.MercadoPago dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Payments.MercadoPago/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Payments.MercadoPago.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Payments.MercadoPago)
 
 ## Compatibility

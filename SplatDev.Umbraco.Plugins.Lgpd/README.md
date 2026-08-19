@@ -4,6 +4,13 @@ Conformidade com a **LGPD** (Lei nº 13.709/2018) no Umbraco: consentimento comp
 requisições de titulares com o prazo do art. 19, registro de operações do art. 37 e
 divulgação do encarregado do art. 41.
 
+
+<!-- screenshot:start -->
+
+![Lgpd dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Lgpd/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 Umbraco 13 (net8.0) e Umbraco 17 (net10.0).
 
 ---

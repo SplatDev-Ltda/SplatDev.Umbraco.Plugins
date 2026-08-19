@@ -2,6 +2,13 @@
 
 A lightweight quick poll plugin for Umbraco 13 and Umbraco 17.
 
+
+<!-- screenshot:start -->
+
+![QuickPoll dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.QuickPoll/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 ## Features
 
 - Create single-question polls with multiple options

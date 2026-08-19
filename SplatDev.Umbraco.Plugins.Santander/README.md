@@ -2,6 +2,13 @@
 
 Umbraco 17 (net10.0) plugin for the **Santander Open Banking** suite. Wires up
 
+
+<!-- screenshot:start -->
+
+![Santander dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Santander/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Santander.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Santander)
 
 ## Compatibility

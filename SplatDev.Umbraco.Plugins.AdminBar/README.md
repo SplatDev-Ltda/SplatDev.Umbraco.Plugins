@@ -2,6 +2,13 @@
 
 Fixed admin bar for Umbraco — injects a toolbar at the top of front-end pages for logged-in backoffice users with Edit Page, Preview, and Publish shortcuts.
 
+
+<!-- screenshot:start -->
+
+![AdminBar dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.AdminBar/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.AdminBar.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.AdminBar)
 
 ## Compatibility

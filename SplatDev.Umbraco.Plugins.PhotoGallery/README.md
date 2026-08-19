@@ -2,6 +2,13 @@
 
 Photo gallery plugin for Umbraco — stores gallery albums and photos with EF Core, renders via view component.
 
+
+<!-- screenshot:start -->
+
+![PhotoGallery dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.PhotoGallery/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.PhotoGallery.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.PhotoGallery)
 
 ## Compatibility

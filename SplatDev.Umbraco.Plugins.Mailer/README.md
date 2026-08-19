@@ -2,6 +2,13 @@
 
 Umbraco email integration plugin — send templated HTML emails from Umbraco using SMTP (MailKit) or Microsoft Graph API. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
+
+<!-- screenshot:start -->
+
+![Mailer dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Mailer/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Mailer.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Mailer)
 
 ## Compatibility

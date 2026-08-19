@@ -3,6 +3,13 @@
 A Settings dashboard listing the packages you publish to nuget.org — download counts,
 latest version and a one-line summary per package.
 
+
+<!-- screenshot:start -->
+
+![NuGetCatalog dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.NuGetCatalog/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 ## Package
 
 **NuGet:** `SplatDev.Umbraco.Plugins.NuGetCatalog` (v1.0.0)

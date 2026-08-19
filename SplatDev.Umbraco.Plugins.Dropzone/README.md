@@ -2,6 +2,13 @@
 
 Dropzone.js file upload integration for Umbraco — drag-and-drop file upload with progress feedback.
 
+
+<!-- screenshot:start -->
+
+![Dropzone dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Dropzone/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Dropzone.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Dropzone)
 
 ## Compatibility

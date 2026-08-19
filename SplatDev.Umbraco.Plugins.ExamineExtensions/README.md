@@ -2,6 +2,13 @@
 
 Examine search extensions for Umbraco — query helpers, index inspection, and rebuild management via a backoffice dashboard.
 
+
+<!-- screenshot:start -->
+
+![ExamineExtensions dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.ExamineExtensions/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.ExamineExtensions.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.ExamineExtensions)
 
 ## Compatibility

@@ -2,6 +2,13 @@
 
 TOTP two-factor authentication for Umbraco **members**, with single-use backup codes.
 
+
+<!-- screenshot:start -->
+
+![2fa dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.2fa/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 - **Umbraco 13** (net8.0)
 - **Umbraco 17** (net10.0)
 

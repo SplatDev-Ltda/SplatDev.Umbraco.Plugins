@@ -2,6 +2,13 @@
 
 Newsletter subscriber management, campaigns, and send tracking for Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
+
+<!-- screenshot:start -->
+
+![Newsletters dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Newsletters/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 ## Features
 
 - Subscriber management (subscribe / unsubscribe / confirmation flow)

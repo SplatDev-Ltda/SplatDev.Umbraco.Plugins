@@ -2,6 +2,13 @@
 
 Most-viewed content tracking plugin for Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
+
+<!-- screenshot:start -->
+
+![MostViewed dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.MostViewed/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 ## Features
 - Automatic page view recording via ASP.NET Core middleware
 - Tracks content key, node name, URL, viewer IP, and timestamp

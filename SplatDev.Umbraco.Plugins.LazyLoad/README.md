@@ -2,6 +2,13 @@
 
 Lazy loading image plugin for Umbraco — intercepts content rendering to add loading=lazy to img tags.
 
+
+<!-- screenshot:start -->
+
+![LazyLoad dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.LazyLoad/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.LazyLoad.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.LazyLoad)
 
 ## Compatibility

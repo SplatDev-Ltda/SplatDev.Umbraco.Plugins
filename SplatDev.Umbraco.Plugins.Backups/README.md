@@ -2,6 +2,13 @@
 
 A comprehensive backup plugin for Umbraco that lets you create, schedule, and restore backups directly from the backoffice. Supports multiple cloud storage providers.
 
+
+<!-- screenshot:start -->
+
+![Backups dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Backups/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Backups)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Backups)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 

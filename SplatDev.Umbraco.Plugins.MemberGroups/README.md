@@ -2,6 +2,13 @@
 
 Member group management plugin for Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
+
+<!-- screenshot:start -->
+
+![MemberGroups dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.MemberGroups/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 Upgraded from Umbraco 8 (net472) to modern SDK-style multi-targeting.
 
 ## Upgrade Summary (Umbraco 8 → 13/17)

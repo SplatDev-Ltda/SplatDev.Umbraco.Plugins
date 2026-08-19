@@ -2,6 +2,13 @@
 
 Umbraco short URL plugin — generate, store, and resolve short URLs backed by any EF Core `DbContext`. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
+
+<!-- screenshot:start -->
+
+![ShortUrls dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.ShortUrls/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.ShortUrls.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.ShortUrls)
 
 ## Compatibility
