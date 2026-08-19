@@ -8,6 +8,7 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>umbraco-packager</ToolCommandName>
     <PackageId>SplatDev.Umbraco.Tools.Packager</PackageId>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <Version>1.0.1</Version>
     <Authors>SplatDev</Authors>
     <Company>SplatDev Ltda</Company>
@@ -21,6 +22,7 @@
 
   <ItemGroup>
     <None Include="icon.png" Pack="true" PackagePath="\" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />

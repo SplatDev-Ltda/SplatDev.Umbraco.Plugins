@@ -6,6 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<PackageId>SplatDev.Umbraco.Examine</PackageId>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<Version>2.0.1</Version>
 		<Authors>SplatDev</Authors>
 		<Description>Examine/Lucene search extensions for Umbraco 13 (net8.0) and Umbraco 17 (net10.0)</Description>
@@ -19,6 +20,7 @@
 
   <ItemGroup>
     <None Include="icon.png" Pack="true" PackagePath="\" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">

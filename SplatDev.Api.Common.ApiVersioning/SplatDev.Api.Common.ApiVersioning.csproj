@@ -4,6 +4,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <PackageId>SplatDev.Api.Common.ApiVersioning</PackageId>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <Version>2.0.0</Version>
     <Authors>SplatDev</Authors>
     <Company>SplatDev Ltda</Company>
@@ -21,4 +22,8 @@
     <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />
     <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
 </Project>

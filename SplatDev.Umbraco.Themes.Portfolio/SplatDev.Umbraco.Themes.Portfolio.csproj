@@ -7,6 +7,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <PackageId>SplatDev.Umbraco.Themes.Portfolio</PackageId>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <Version>1.0.2</Version>
     <Authors>SplatDev</Authors>
     <Description>Portfolio theme for Umbraco - project grid, project detail, filtering, lightbox, about</Description>
@@ -21,6 +22,7 @@
 
   <ItemGroup>
     <None Include="icon.png" Pack="true" PackagePath="\" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>

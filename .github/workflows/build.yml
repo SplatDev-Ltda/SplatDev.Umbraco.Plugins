@@ -36,6 +36,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
+      - name: Check solution membership
+        # Both workflows key off SplatDev.Core.sln and neither complains when a project is
+        # absent from it. That has cost us twice: Getnet and Santander were skipped from
+        # every release, and ~130 tests never ran while the build stayed green.
+        run: bash tools/check-solution-membership.sh
+
+      - name: Check version bumps
+        # publish.yml skips versions already on NuGet.org, silently. A plugin whose code
+        # changed without a version bump is packed, found to exist, skipped, and reported
+        # as a normal no-op — the change never ships. This caught the ShopCart cart
+        # isolation fix, where a sed matched the wrong string and left the version alone.
+        run: bash tools/check-version-bumps.sh
+
       - name: Restore dependencies
         run: dotnet restore SplatDev.Core.sln
 

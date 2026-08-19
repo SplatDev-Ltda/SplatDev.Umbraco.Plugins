@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <PackageId>SplatDev.Umbraco.Themes.Hotel</PackageId>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <Version>1.0.1</Version>
     <Authors>SplatDev</Authors>
     <Description>Hotel/hospitality theme for Umbraco - rooms, booking, gallery, amenities, reviews, location map</Description>
