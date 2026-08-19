@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>SplatDev.Messaging.ClickSend</PackageId>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <Version>1.0.0</Version>
     <Authors>SplatDev</Authors>
     <Company>SplatDev Ltda</Company>
@@ -20,4 +21,8 @@
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
 </Project>

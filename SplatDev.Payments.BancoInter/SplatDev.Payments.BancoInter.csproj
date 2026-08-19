@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>SplatDev.Payments.BancoInter</PackageId>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <Version>1.0.1</Version>
     <Authors>SplatDev-Ltda</Authors>
     <Company>SplatDev Ltda</Company>
@@ -19,5 +20,6 @@
 
   <ItemGroup>
     <None Include="icon.png" Pack="true" PackagePath="\" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 </Project>

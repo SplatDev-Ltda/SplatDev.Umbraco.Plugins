@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>SplatDev.ScheduledTasks</PackageId>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <Version>1.0.0</Version>
     <Authors>SplatDev-Ltda</Authors>
     <Company>SplatDev Ltda</Company>
@@ -21,4 +22,8 @@
   <ItemGroup>
     <ProjectReference Include="../SplatDev.Logger/SplatDev.Logger.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
 </Project>

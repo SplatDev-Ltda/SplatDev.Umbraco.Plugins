@@ -6,6 +6,7 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<PackageId>SplatDev.Umbraco.Authorization.Ldap</PackageId>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<Version>2.0.1</Version>
 		<Authors>SplatDev</Authors>
 		<Title>SplatDev.Umbraco.Authorization.Ldap</Title>
@@ -20,6 +21,7 @@
 
   <ItemGroup>
     <None Include="icon.png" Pack="true" PackagePath="\" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
