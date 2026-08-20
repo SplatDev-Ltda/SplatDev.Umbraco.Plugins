@@ -93,4 +93,8 @@
     <None Include="icon.png" Pack="true" PackagePath="\" />
     <None Include="umbraco-marketplace.json" Pack="true" PackagePath="\" Condition="Exists('umbraco-marketplace.json')" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_Plugins\**\*" Pack="true" PackagePath="App_Plugins" />
+    <None Include="buildTransitive\**" Pack="true" PackagePath="buildTransitive" />
+  </ItemGroup>
 </Project>
