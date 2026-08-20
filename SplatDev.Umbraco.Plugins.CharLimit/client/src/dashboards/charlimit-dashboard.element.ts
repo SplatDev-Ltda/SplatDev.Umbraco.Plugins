@@ -1,6 +1,8 @@
 import { LitElement, html, css, customElement, state, nothing } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "../auth-fetch";
+
 interface CharLimitConfig {
   maxChars: number;
   showCountdown: boolean;
@@ -8,6 +10,8 @@ interface CharLimitConfig {
 
 @customElement("charlimit-dashboard")
 export class CharLimitDashboard extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   @state() private _config: CharLimitConfig | null = null;
   @state() private _loading = true;
   @state() private _error = false;
@@ -69,7 +73,7 @@ export class CharLimitDashboard extends UmbElementMixin(LitElement) {
     this._loading = true;
     this._error = false;
     try {
-      const response = await fetch("/umbraco/api/charlimit/GetConfig");
+      const response = await this.#fetch("/umbraco/api/charlimit/GetConfig");
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       this._config = await response.json();
     } catch {

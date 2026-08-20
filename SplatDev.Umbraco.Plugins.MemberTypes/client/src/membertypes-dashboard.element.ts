@@ -2,6 +2,8 @@ import { LitElement, html, css } from "@umbraco-cms/backoffice/external/lit";
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface MemberTypeItem {
   id: number;
   alias: string;
@@ -12,6 +14,8 @@ interface MemberTypeItem {
 
 @customElement("membertypes-dashboard")
 export class MemberTypesDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
@@ -33,7 +37,7 @@ export class MemberTypesDashboardElement extends UmbElementMixin(LitElement) {
   private async _load(): Promise<void> {
     this._loading = true;
     try {
-      const response = await fetch(`${this._apiBase}/GetAll`);
+      const response = await this.#fetch(`${this._apiBase}/GetAll`);
       if (response.ok) this._memberTypes = await response.json();
     } catch {
       this._memberTypes = [];

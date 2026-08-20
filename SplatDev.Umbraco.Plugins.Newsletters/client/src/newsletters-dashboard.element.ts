@@ -1,6 +1,8 @@
 import { LitElement, html, css, customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface NewsletterSubscriber {
   id: number;
   email: string;
@@ -27,6 +29,8 @@ const STATUS_LABELS: Record<number, string> = {
 
 @customElement("newsletters-dashboard")
 export class NewslettersDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host {
       display: block;
@@ -151,7 +155,7 @@ export class NewslettersDashboardElement extends UmbElementMixin(LitElement) {
   private async _loadSubscribers(): Promise<void> {
     this._loading = true;
     try {
-      const res = await fetch(`${this._apiBase}/subscribers`);
+      const res = await this.#fetch(`${this._apiBase}/subscribers`);
       if (res.ok) this._subscribers = await res.json() as NewsletterSubscriber[];
     } finally {
       this._loading = false;
@@ -159,12 +163,12 @@ export class NewslettersDashboardElement extends UmbElementMixin(LitElement) {
   }
 
   private async _loadCampaigns(): Promise<void> {
-    const res = await fetch(`${this._apiBase}/campaigns`);
+    const res = await this.#fetch(`${this._apiBase}/campaigns`);
     if (res.ok) this._campaigns = await res.json() as NewsletterCampaign[];
   }
 
   private async _sendCampaign(campaign: NewsletterCampaign): Promise<void> {
-    const res = await fetch(`${this._apiBase}/send`, {
+    const res = await this.#fetch(`${this._apiBase}/send`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ campaignId: campaign.id }),

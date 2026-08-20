@@ -1,13 +1,39 @@
-import { LitElement as n, html as t, nothing as h, css as g, state as o, customElement as b } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as d } from "@umbraco-cms/backoffice/element-api";
-var _ = Object.defineProperty, f = Object.getOwnPropertyDescriptor, i = (e, s, r, u) => {
-  for (var l = u > 1 ? void 0 : u ? f(s, r) : s, p = e.length - 1, c; p >= 0; p--)
-    (c = e[p]) && (l = (u ? c(s, r, l) : c(l)) || l);
-  return u && l && _(s, r, l), l;
-};
-let a = class extends d(n) {
+import { LitElement as g, html as s, nothing as b, css as _, state as c, customElement as f } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as m } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as v } from "@umbraco-cms/backoffice/auth";
+function y(e) {
+  let t = null;
+  const i = new Promise((o) => {
+    e.consumeContext(v, async (a) => {
+      var u;
+      try {
+        t = await ((u = a == null ? void 0 : a.getLatestToken) == null ? void 0 : u.call(a)) ?? null;
+      } catch {
+        t = null;
+      }
+      o();
+    }), setTimeout(o, 3e3);
+  });
+  return async (o, a = {}) => {
+    await i;
+    const u = new Headers(a.headers);
+    t && !u.has("Authorization") && u.set("Authorization", `Bearer ${t}`);
+    const r = await fetch(o, { ...a, credentials: "same-origin", headers: u });
+    return (r.status === 401 || r.status === 403) && console.error(
+      `[SplatDev] ${r.status} from ${String(o)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
+    ), r;
+  };
+}
+var x = Object.defineProperty, $ = Object.getOwnPropertyDescriptor, d = (e) => {
+  throw TypeError(e);
+}, n = (e, t, i, o) => {
+  for (var a = o > 1 ? void 0 : o ? $(t, i) : t, u = e.length - 1, r; u >= 0; u--)
+    (r = e[u]) && (a = (o ? r(t, i, a) : r(a)) || a);
+  return o && a && x(t, i, a), a;
+}, P = (e, t, i) => t.has(e) || d("Cannot " + i), h = (e, t, i) => (P(e, t, "read from private field"), i ? i.call(e) : t.get(e)), w = (e, t, i) => t.has(e) ? d("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, i), p;
+let l = class extends m(g) {
   constructor() {
-    super(...arguments), this._activeTab = "posts", this._posts = [], this._categories = [], this._tags = [], this._totalPosts = 0, this._page = 1, this._loading = !1, this._pageSize = 10, this._apiBase = "/umbraco/api/blog";
+    super(...arguments), w(this, p, y(this)), this._activeTab = "posts", this._posts = [], this._categories = [], this._tags = [], this._totalPosts = 0, this._page = 1, this._loading = !1, this._pageSize = 10, this._apiBase = "/umbraco/api/blog";
   }
   connectedCallback() {
     super.connectedCallback(), this._loadPosts(), this._loadCategories(), this._loadTags();
@@ -15,12 +41,10 @@ let a = class extends d(n) {
   async _loadPosts() {
     this._loading = !0;
     try {
-      const e = await fetch(
-        `${this._apiBase}/GetPosts?page=${this._page}&pageSize=${this._pageSize}&publishedOnly=false`
-      );
+      const e = await h(this, p).call(this, `${this._apiBase}/GetPosts?page=${this._page}&pageSize=${this._pageSize}&publishedOnly=false`);
       if (e.ok) {
-        const s = await e.json();
-        this._posts = s.posts ?? [], this._totalPosts = s.total ?? 0;
+        const t = await e.json();
+        this._posts = t.posts ?? [], this._totalPosts = t.total ?? 0;
       }
     } catch {
       this._posts = [];
@@ -30,7 +54,7 @@ let a = class extends d(n) {
   }
   async _loadCategories() {
     try {
-      const e = await fetch(`${this._apiBase}/GetCategories`);
+      const e = await h(this, p).call(this, `${this._apiBase}/GetCategories`);
       e.ok && (this._categories = await e.json());
     } catch {
       this._categories = [];
@@ -38,7 +62,7 @@ let a = class extends d(n) {
   }
   async _loadTags() {
     try {
-      const e = await fetch(`${this._apiBase}/GetTags`);
+      const e = await h(this, p).call(this, `${this._apiBase}/GetTags`);
       e.ok && (this._tags = await e.json());
     } catch {
       this._tags = [];
@@ -58,7 +82,7 @@ let a = class extends d(n) {
     this._page * this._pageSize < this._totalPosts && (this._page++, await this._loadPosts());
   }
   _renderPostsTab() {
-    return this._loading ? t`<p>Loading posts...</p>` : t`
+    return this._loading ? s`<p>Loading posts...</p>` : s`
       <div class="stats-grid">
         <uui-box>
           <p class="stat-label">Total Posts</p>
@@ -75,7 +99,7 @@ let a = class extends d(n) {
       </div>
 
       <uui-box headline="Blog Posts">
-        ${this._posts.length === 0 ? t`<p class="empty">No posts found.</p>` : t`
+        ${this._posts.length === 0 ? s`<p class="empty">No posts found.</p>` : s`
               <uui-table>
                 <uui-table-head>
                   <uui-table-head-cell>Title</uui-table-head-cell>
@@ -87,12 +111,12 @@ let a = class extends d(n) {
                 </uui-table-head>
                 ${this._posts.map(
       (e) => {
-        var s;
-        return t`
+        var t;
+        return s`
                     <uui-table-row>
                       <uui-table-cell><strong>${e.title}</strong></uui-table-cell>
                       <uui-table-cell>${e.authorName}</uui-table-cell>
-                      <uui-table-cell>${((s = e.category) == null ? void 0 : s.name) ?? "—"}</uui-table-cell>
+                      <uui-table-cell>${((t = e.category) == null ? void 0 : t.name) ?? "—"}</uui-table-cell>
                       <uui-table-cell>${this._formatDate(e.publishedAt)}</uui-table-cell>
                       <uui-table-cell>${e.viewCount}</uui-table-cell>
                       <uui-table-cell>
@@ -106,7 +130,7 @@ let a = class extends d(n) {
     )}
               </uui-table>
 
-              ${this._totalPosts > this._pageSize ? t`
+              ${this._totalPosts > this._pageSize ? s`
                     <div class="pagination">
                       <uui-button
                         look="secondary"
@@ -122,15 +146,15 @@ let a = class extends d(n) {
                         @click=${this._nextPage}
                       >Next</uui-button>
                     </div>
-                  ` : h}
+                  ` : b}
             `}
       </uui-box>
     `;
   }
   _renderCategoriesTab() {
-    return t`
+    return s`
       <uui-box headline="Categories (${this._categories.length})">
-        ${this._categories.length === 0 ? t`<p class="empty">No categories found.</p>` : t`
+        ${this._categories.length === 0 ? s`<p class="empty">No categories found.</p>` : s`
               <uui-table>
                 <uui-table-head>
                   <uui-table-head-cell>Name</uui-table-head-cell>
@@ -138,7 +162,7 @@ let a = class extends d(n) {
                   <uui-table-head-cell>Description</uui-table-head-cell>
                 </uui-table-head>
                 ${this._categories.map(
-      (e) => t`
+      (e) => s`
                     <uui-table-row>
                       <uui-table-cell><strong>${e.name}</strong></uui-table-cell>
                       <uui-table-cell><code>${e.slug}</code></uui-table-cell>
@@ -152,18 +176,18 @@ let a = class extends d(n) {
     `;
   }
   _renderTagsTab() {
-    return t`
+    return s`
       <uui-box headline="Tags (${this._tags.length})">
-        ${this._tags.length === 0 ? t`<p class="empty">No tags found.</p>` : t`
+        ${this._tags.length === 0 ? s`<p class="empty">No tags found.</p>` : s`
               <div class="tag-cloud">
-                ${this._tags.map((e) => t`<span class="tag-chip">${e.name}</span>`)}
+                ${this._tags.map((e) => s`<span class="tag-chip">${e.name}</span>`)}
               </div>
             `}
       </uui-box>
     `;
   }
   render() {
-    return t`
+    return s`
       <h1>Blog Manager</h1>
       <p class="description">
         Manage blog posts, categories, tags and comments from the Umbraco backoffice.
@@ -171,7 +195,7 @@ let a = class extends d(n) {
 
       <uui-tab-group>
         ${["posts", "categories", "tags"].map(
-      (e) => t`
+      (e) => s`
             <uui-tab
               label=${e.charAt(0).toUpperCase() + e.slice(1)}
               ?active=${this._activeTab === e}
@@ -189,7 +213,8 @@ let a = class extends d(n) {
     `;
   }
 };
-a.styles = g`
+p = /* @__PURE__ */ new WeakMap();
+l.styles = _`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -283,32 +308,32 @@ a.styles = g`
       padding: 24px 0;
     }
   `;
-i([
-  o()
-], a.prototype, "_activeTab", 2);
-i([
-  o()
-], a.prototype, "_posts", 2);
-i([
-  o()
-], a.prototype, "_categories", 2);
-i([
-  o()
-], a.prototype, "_tags", 2);
-i([
-  o()
-], a.prototype, "_totalPosts", 2);
-i([
-  o()
-], a.prototype, "_page", 2);
-i([
-  o()
-], a.prototype, "_loading", 2);
-a = i([
-  b("blog-dashboard")
-], a);
-const v = a;
+n([
+  c()
+], l.prototype, "_activeTab", 2);
+n([
+  c()
+], l.prototype, "_posts", 2);
+n([
+  c()
+], l.prototype, "_categories", 2);
+n([
+  c()
+], l.prototype, "_tags", 2);
+n([
+  c()
+], l.prototype, "_totalPosts", 2);
+n([
+  c()
+], l.prototype, "_page", 2);
+n([
+  c()
+], l.prototype, "_loading", 2);
+l = n([
+  f("blog-dashboard")
+], l);
+const C = l;
 export {
-  a as BlogDashboardElement,
-  v as default
+  l as BlogDashboardElement,
+  C as default
 };

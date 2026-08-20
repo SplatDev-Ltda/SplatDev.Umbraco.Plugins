@@ -1,14 +1,40 @@
-import { LitElement as d, html as a, css as b, state as l, customElement as p } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as m } from "@umbraco-cms/backoffice/element-api";
-var h = Object.defineProperty, g = Object.getOwnPropertyDescriptor, s = (e, t, u, r) => {
-  for (var n = r > 1 ? void 0 : r ? g(t, u) : t, o = e.length - 1, c; o >= 0; o--)
-    (c = e[o]) && (n = (r ? c(t, u, n) : c(n)) || n);
-  return r && n && h(t, u, n), n;
-};
-const _ = "/umbraco/management/api/v1/newsletter";
-let i = class extends m(d) {
+import { LitElement as h, html as a, css as b, state as r, customElement as m } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as _ } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as g } from "@umbraco-cms/backoffice/auth";
+function v(e) {
+  let t = null;
+  const i = new Promise((n) => {
+    e.consumeContext(g, async (u) => {
+      var o;
+      try {
+        t = await ((o = u == null ? void 0 : u.getLatestToken) == null ? void 0 : o.call(u)) ?? null;
+      } catch {
+        t = null;
+      }
+      n();
+    }), setTimeout(n, 3e3);
+  });
+  return async (n, u = {}) => {
+    await i;
+    const o = new Headers(u.headers);
+    t && !o.has("Authorization") && o.set("Authorization", `Bearer ${t}`);
+    const c = await fetch(n, { ...u, credentials: "same-origin", headers: o });
+    return (c.status === 401 || c.status === 403) && console.error(
+      `[SplatDev] ${c.status} from ${String(n)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
+    ), c;
+  };
+}
+var f = Object.defineProperty, w = Object.getOwnPropertyDescriptor, p = (e) => {
+  throw TypeError(e);
+}, l = (e, t, i, n) => {
+  for (var u = n > 1 ? void 0 : n ? w(t, i) : t, o = e.length - 1, c; o >= 0; o--)
+    (c = e[o]) && (u = (n ? c(t, i, u) : c(u)) || u);
+  return n && u && f(t, i, u), u;
+}, $ = (e, t, i) => t.has(e) || p("Cannot " + i), y = (e, t, i) => ($(e, t, "read from private field"), i ? i.call(e) : t.get(e)), S = (e, t, i) => t.has(e) ? p("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, i), d;
+const C = "/umbraco/management/api/v1/newsletter";
+let s = class extends _(h) {
   constructor() {
-    super(...arguments), this._lists = [], this._subscribers = [], this._campaigns = [], this._stats = null, this._loading = !1, this._message = "", this._messageType = "", this._activeTab = "subscribers", this._selectedListId = null, this._newListName = "", this._newSubEmail = "", this._newSubName = "", this._showCampaignForm = !1, this._editingCampaign = null, this._campaignForm = { name: "", subject: "", listId: 0, templateId: "" }, this._selectedStatsCampaignId = null;
+    super(...arguments), S(this, d, v(this)), this._lists = [], this._subscribers = [], this._campaigns = [], this._stats = null, this._loading = !1, this._message = "", this._messageType = "", this._activeTab = "subscribers", this._selectedListId = null, this._newListName = "", this._newSubEmail = "", this._newSubName = "", this._showCampaignForm = !1, this._editingCampaign = null, this._campaignForm = { name: "", subject: "", listId: 0, templateId: "" }, this._selectedStatsCampaignId = null;
   }
   connectedCallback() {
     super.connectedCallback(), this._loadLists(), this._loadCampaigns();
@@ -21,14 +47,14 @@ let i = class extends m(d) {
   }
   async _api(e, t) {
     try {
-      const u = await fetch(`${_}${e}`, {
+      const i = await y(this, d).call(this, `${C}${e}`, {
         headers: { "Content-Type": "application/json", ...t == null ? void 0 : t.headers },
         ...t
       });
-      if (u.status === 204) return null;
-      if (u.ok) return u.json();
-      const r = await u.text();
-      return this._showMessage(r || `Request failed (${u.status})`, "error"), null;
+      if (i.status === 204) return null;
+      if (i.ok) return i.json();
+      const n = await i.text();
+      return this._showMessage(n || `Request failed (${i.status})`, "error"), null;
     } catch {
       return this._showMessage("Network error", "error"), null;
     }
@@ -478,7 +504,8 @@ let i = class extends m(d) {
     `;
   }
 };
-i.styles = b`
+d = /* @__PURE__ */ new WeakMap();
+s.styles = b`
     :host {
       display: block;
       padding: var(--uui-size-layout-1);
@@ -581,58 +608,58 @@ i.styles = b`
       width: 100%;
     }
   `;
-s([
-  l()
-], i.prototype, "_lists", 2);
-s([
-  l()
-], i.prototype, "_subscribers", 2);
-s([
-  l()
-], i.prototype, "_campaigns", 2);
-s([
-  l()
-], i.prototype, "_stats", 2);
-s([
-  l()
-], i.prototype, "_loading", 2);
-s([
-  l()
-], i.prototype, "_message", 2);
-s([
-  l()
-], i.prototype, "_messageType", 2);
-s([
-  l()
-], i.prototype, "_activeTab", 2);
-s([
-  l()
-], i.prototype, "_selectedListId", 2);
-s([
-  l()
-], i.prototype, "_newListName", 2);
-s([
-  l()
-], i.prototype, "_newSubEmail", 2);
-s([
-  l()
-], i.prototype, "_newSubName", 2);
-s([
-  l()
-], i.prototype, "_showCampaignForm", 2);
-s([
-  l()
-], i.prototype, "_editingCampaign", 2);
-s([
-  l()
-], i.prototype, "_campaignForm", 2);
-s([
-  l()
-], i.prototype, "_selectedStatsCampaignId", 2);
-i = s([
-  p("newsletter-dashboard")
-], i);
+l([
+  r()
+], s.prototype, "_lists", 2);
+l([
+  r()
+], s.prototype, "_subscribers", 2);
+l([
+  r()
+], s.prototype, "_campaigns", 2);
+l([
+  r()
+], s.prototype, "_stats", 2);
+l([
+  r()
+], s.prototype, "_loading", 2);
+l([
+  r()
+], s.prototype, "_message", 2);
+l([
+  r()
+], s.prototype, "_messageType", 2);
+l([
+  r()
+], s.prototype, "_activeTab", 2);
+l([
+  r()
+], s.prototype, "_selectedListId", 2);
+l([
+  r()
+], s.prototype, "_newListName", 2);
+l([
+  r()
+], s.prototype, "_newSubEmail", 2);
+l([
+  r()
+], s.prototype, "_newSubName", 2);
+l([
+  r()
+], s.prototype, "_showCampaignForm", 2);
+l([
+  r()
+], s.prototype, "_editingCampaign", 2);
+l([
+  r()
+], s.prototype, "_campaignForm", 2);
+l([
+  r()
+], s.prototype, "_selectedStatsCampaignId", 2);
+s = l([
+  m("newsletter-dashboard")
+], s);
 export {
-  i as NewsletterDashboardElement
+  s as NewsletterDashboardElement
 };
 //# sourceMappingURL=newsletter-dashboard.js.map

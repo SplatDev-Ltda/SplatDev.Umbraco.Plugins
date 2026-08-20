@@ -2,6 +2,8 @@ import { LitElement, html, css, nothing } from "@umbraco-cms/backoffice/external
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 type SettingType = "text" | "boolean" | "number" | "json";
 
 interface SettingGroup {
@@ -45,6 +47,8 @@ const NEW_SETTING: SiteSetting = {
  */
 @customElement("settings-dashboard")
 export class SettingsDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
@@ -90,8 +94,8 @@ export class SettingsDashboardElement extends UmbElementMixin(LitElement) {
     this._loading = true;
     try {
       const [g, s] = await Promise.all([
-        fetch(`${this._api}/GetGroups`, { credentials: "same-origin" }),
-        fetch(`${this._api}/GetAll`, { credentials: "same-origin" }),
+        this.#fetch(`${this._api}/GetGroups`, { credentials: "same-origin" }),
+        this.#fetch(`${this._api}/GetAll`, { credentials: "same-origin" }),
       ]);
       if (g.ok) this._groups = await g.json();
       if (s.ok) this._settings = await s.json();
@@ -104,7 +108,7 @@ export class SettingsDashboardElement extends UmbElementMixin(LitElement) {
     this._busy = true;
     this._msg = null;
     try {
-      const r = await fetch(`${this._api}/${path}`, {
+      const r = await this.#fetch(`${this._api}/${path}`, {
         method,
         credentials: "same-origin",
         headers: body ? { "Content-Type": "application/json" } : undefined,

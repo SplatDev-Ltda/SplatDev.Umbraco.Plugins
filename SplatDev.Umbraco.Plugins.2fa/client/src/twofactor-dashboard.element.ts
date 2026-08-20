@@ -3,6 +3,8 @@ import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 import "@umbraco-cms/backoffice/member";
 
+import { createAuthFetch } from "./auth-fetch";
+
 /**
  * Administrative view of member 2FA.
  *
@@ -14,6 +16,8 @@ import "@umbraco-cms/backoffice/member";
  */
 @customElement("twofactor-dashboard")
 export class TwoFactorDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
@@ -42,7 +46,7 @@ export class TwoFactorDashboardElement extends UmbElementMixin(LitElement) {
     this._loading = true;
     this._message = null;
     try {
-      const r = await fetch(
+      const r = await this.#fetch(
         `${this._api}/IsEnabled?member=${encodeURIComponent(this._member[0] ?? "")}`,
         { credentials: "same-origin" },
       );
@@ -62,7 +66,7 @@ export class TwoFactorDashboardElement extends UmbElementMixin(LitElement) {
     if (!confirm("Revoke 2FA for this member? They will need to enrol again.")) return;
     this._loading = true;
     try {
-      const r = await fetch(
+      const r = await this.#fetch(
         `${this._api}/Disable?member=${encodeURIComponent(this._member[0] ?? "")}`,
         { method: "POST", credentials: "same-origin" },
       );

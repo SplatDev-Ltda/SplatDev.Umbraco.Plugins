@@ -1,27 +1,53 @@
-import { LitElement as g, html as d, css as h, state as u, customElement as c } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as p } from "@umbraco-cms/backoffice/element-api";
-var _ = Object.defineProperty, m = Object.getOwnPropertyDescriptor, o = (e, s, l, i) => {
-  for (var t = i > 1 ? void 0 : i ? m(s, l) : s, r = e.length - 1, n; r >= 0; r--)
-    (n = e[r]) && (t = (i ? n(s, l, t) : n(t)) || t);
-  return i && t && _(s, l, t), t;
-};
-let a = class extends p(g) {
+import { LitElement as p, html as h, css as _, state as u, customElement as m } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as f } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as v } from "@umbraco-cms/backoffice/auth";
+function y(e) {
+  let t = null;
+  const s = new Promise((i) => {
+    e.consumeContext(v, async (a) => {
+      var o;
+      try {
+        t = await ((o = a == null ? void 0 : a.getLatestToken) == null ? void 0 : o.call(a)) ?? null;
+      } catch {
+        t = null;
+      }
+      i();
+    }), setTimeout(i, 3e3);
+  });
+  return async (i, a = {}) => {
+    await s;
+    const o = new Headers(a.headers);
+    t && !o.has("Authorization") && o.set("Authorization", `Bearer ${t}`);
+    const r = await fetch(i, { ...a, credentials: "same-origin", headers: o });
+    return (r.status === 401 || r.status === 403) && console.error(
+      `[SplatDev] ${r.status} from ${String(i)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
+    ), r;
+  };
+}
+var b = Object.defineProperty, w = Object.getOwnPropertyDescriptor, g = (e) => {
+  throw TypeError(e);
+}, d = (e, t, s, i) => {
+  for (var a = i > 1 ? void 0 : i ? w(t, s) : t, o = e.length - 1, r; o >= 0; o--)
+    (r = e[o]) && (a = (i ? r(t, s, a) : r(a)) || a);
+  return i && a && b(t, s, a), a;
+}, S = (e, t, s) => t.has(e) || g("Cannot " + s), c = (e, t, s) => (S(e, t, "read from private field"), s ? s.call(e) : t.get(e)), L = (e, t, s) => t.has(e) ? g("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, s), l;
+let n = class extends f(p) {
   constructor() {
-    super(...arguments), this._settings = { enabled: !0, placeholder: "", lazyLoadIframes: !0 }, this._loading = !0, this._saved = !1;
+    super(...arguments), L(this, l, y(this)), this._settings = { enabled: !0, placeholder: "", lazyLoadIframes: !0 }, this._loading = !0, this._saved = !1;
   }
   connectedCallback() {
     super.connectedCallback(), this._loadSettings();
   }
   async _loadSettings() {
     try {
-      const e = await fetch("/umbraco/api/lazyload/GetSettings");
+      const e = await c(this, l).call(this, "/umbraco/api/lazyload/GetSettings");
       this._settings = await e.json();
     } finally {
       this._loading = !1;
     }
   }
   async _saveSettings() {
-    await fetch("/umbraco/api/lazyload/SaveSettings", {
+    await c(this, l).call(this, "/umbraco/api/lazyload/SaveSettings", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(this._settings)
@@ -33,7 +59,7 @@ let a = class extends p(g) {
     this._settings = { ...this._settings, [e]: !this._settings[e] };
   }
   render() {
-    return this._loading ? d`<uui-loader></uui-loader>` : d`
+    return this._loading ? h`<uui-loader></uui-loader>` : h`
       <uui-box headline="Lazy Load Settings">
         <div class="form-row">
           <label>Enabled</label>
@@ -49,32 +75,33 @@ let a = class extends p(g) {
             @input=${(e) => this._settings = { ...this._settings, placeholder: e.target.value }} />
         </div>
         <uui-button look="primary" @click=${this._saveSettings}>Save Settings</uui-button>
-        ${this._saved ? d`<uui-tag color="positive" look="secondary">Saved!</uui-tag>` : ""}
+        ${this._saved ? h`<uui-tag color="positive" look="secondary">Saved!</uui-tag>` : ""}
       </uui-box>
     `;
   }
 };
-a.styles = h`
+l = /* @__PURE__ */ new WeakMap();
+n.styles = _`
     :host { display: block; padding: 1rem; }
     .form-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
     label { min-width: 160px; font-weight: 600; }
     input[type="text"] { flex: 1; padding: 0.4rem; border: 1px solid var(--uui-color-border); border-radius: 4px; }
   `;
-o([
+d([
   u()
-], a.prototype, "_settings", 2);
-o([
+], n.prototype, "_settings", 2);
+d([
   u()
-], a.prototype, "_loading", 2);
-o([
+], n.prototype, "_loading", 2);
+d([
   u()
-], a.prototype, "_saved", 2);
-a = o([
-  c("lazyload-dashboard")
-], a);
-const y = a;
+], n.prototype, "_saved", 2);
+n = d([
+  m("lazyload-dashboard")
+], n);
+const T = n;
 export {
-  a as LazyLoadDashboardElement,
-  y as default
+  n as LazyLoadDashboardElement,
+  T as default
 };
 //# sourceMappingURL=lazyload-dashboard.element.js.map

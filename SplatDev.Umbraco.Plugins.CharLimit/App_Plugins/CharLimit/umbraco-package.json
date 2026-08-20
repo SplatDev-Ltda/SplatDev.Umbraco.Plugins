@@ -15,7 +15,8 @@
       "type": "dashboard",
       "alias": "CharLimit.Dashboard",
       "name": "Character Limit",
-      "element": "/App_Plugins/CharLimit/dashboard.js",
+      "element": "/App_Plugins/CharLimit/charlimit-dashboard.js",
+      "elementName": "charlimit-dashboard",
       "weight": 100,
       "meta": {
         "label": "Character Limit",

@@ -7,6 +7,8 @@ import {
 } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface CacheEntry {
   id: number;
   url: string;
@@ -30,6 +32,8 @@ const API_BASE = "/umbraco/backoffice/api/CacheWarmer";
 
 @customElement("cache-manager-dashboard")
 export class CacheManagerDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   @state() private _stats: CacheStats | null = null;
   @state() private _history: CacheEntry[] = [];
   @state() private _notFound: UrlNotFound[] = [];
@@ -54,7 +58,7 @@ export class CacheManagerDashboardElement extends UmbElementMixin(LitElement) {
 
   private async _loadStats() {
     try {
-      const r = await fetch(`${API_BASE}/GetStatistics`);
+      const r = await this.#fetch(`${API_BASE}/GetStatistics`);
       if (r.ok) this._stats = await r.json();
     } catch {
       // stats endpoint requires preview features — may not be available
@@ -63,7 +67,7 @@ export class CacheManagerDashboardElement extends UmbElementMixin(LitElement) {
 
   private async _loadHistory() {
     try {
-      const r = await fetch(`${API_BASE}/GetLastTask`);
+      const r = await this.#fetch(`${API_BASE}/GetLastTask`);
       if (r.ok) this._history = await r.json();
     } catch {
       this._history = [];
@@ -72,7 +76,7 @@ export class CacheManagerDashboardElement extends UmbElementMixin(LitElement) {
 
   private async _loadNotFound() {
     try {
-      const r = await fetch(`${API_BASE}/GetUrlNotFound`);
+      const r = await this.#fetch(`${API_BASE}/GetUrlNotFound`);
       if (r.ok) this._notFound = await r.json();
     } catch {
       this._notFound = [];
@@ -82,7 +86,7 @@ export class CacheManagerDashboardElement extends UmbElementMixin(LitElement) {
   private async _clearCache() {
     this._loading = true;
     try {
-      const r = await fetch(`${API_BASE}/ClearCache`, { method: "POST" });
+      const r = await this.#fetch(`${API_BASE}/ClearCache`, { method: "POST" });
       this._message = r.ok ? "Cache cleared successfully." : "Failed to clear cache.";
     } catch {
       this._message = "Error clearing cache.";
@@ -94,7 +98,7 @@ export class CacheManagerDashboardElement extends UmbElementMixin(LitElement) {
     this._loading = true;
     this._message = "Refreshing cache — this may take a moment...";
     try {
-      const r = await fetch(`${API_BASE}/RefreshCache`, { method: "POST" });
+      const r = await this.#fetch(`${API_BASE}/RefreshCache`, { method: "POST" });
       this._message = r.ok ? "Cache refreshed successfully." : "Failed to refresh cache.";
       if (r.ok) await this._loadHistory();
     } catch {
@@ -105,7 +109,7 @@ export class CacheManagerDashboardElement extends UmbElementMixin(LitElement) {
 
   private async _clearLog() {
     try {
-      await fetch(`${API_BASE}/ClearLog`, { method: "POST" });
+      await this.#fetch(`${API_BASE}/ClearLog`, { method: "POST" });
       this._history = [];
       this._message = "Cache log cleared.";
     } catch {

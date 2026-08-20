@@ -6,6 +6,8 @@ import {
 } from "@umbraco-cms/backoffice/external/lit";
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
+import { createAuthFetch } from "./auth-fetch";
+
 import {
   UmbNotificationContext,
   UMB_NOTIFICATION_CONTEXT,
@@ -79,6 +81,8 @@ const API_BASE = "/umbraco/api";
 
 @customElement("email-notifications-dashboard")
 export class EmailNotificationsDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host {
       display: block;
@@ -342,7 +346,7 @@ export class EmailNotificationsDashboardElement extends UmbElementMixin(LitEleme
 
   private async _api<T>(path: string, options?: RequestInit): Promise<T | null> {
     try {
-      const res = await fetch(`${API_BASE}${path}`, {
+      const res = await this.#fetch(`${API_BASE}${path}`, {
         headers: { "Content-Type": "application/json", ...options?.headers },
         ...options,
       });

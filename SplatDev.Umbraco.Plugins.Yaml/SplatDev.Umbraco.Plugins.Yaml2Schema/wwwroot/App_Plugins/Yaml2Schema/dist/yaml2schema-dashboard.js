@@ -1,10 +1,10 @@
-import { LitElement as u, html as t, nothing as c, css as f, state as p, customElement as m } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as h } from "@umbraco-cms/backoffice/element-api";
+import { LitElement as p, html as t, nothing as c, css as f, state as u, customElement as h } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as m } from "@umbraco-cms/backoffice/element-api";
 import { UMB_AUTH_CONTEXT as b } from "@umbraco-cms/backoffice/auth";
-var g = Object.defineProperty, v = Object.getOwnPropertyDescriptor, d = (e, a, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? v(a, i) : a, n = e.length - 1, l; n >= 0; n--)
+var v = Object.defineProperty, g = Object.getOwnPropertyDescriptor, d = (e, a, i, s) => {
+  for (var o = s > 1 ? void 0 : s ? g(a, i) : a, n = e.length - 1, l; n >= 0; n--)
     (l = e[n]) && (o = (s ? l(a, i, o) : l(o)) || o);
-  return s && o && g(a, i, o), o;
+  return s && o && v(a, i, o), o;
 };
 const x = "/umbraco/api/Yaml2Schema", y = [
   "Languages",
@@ -23,18 +23,20 @@ const x = "/umbraco/api/Yaml2Schema", y = [
   "Property Editors",
   "Static Assets"
 ];
-let r = class extends h(u) {
+let r = class extends m(p) {
   constructor() {
-    super(), this._status = null, this._loadingStatus = !1, this._authContext = null;
+    super(), this._status = null, this._loadingStatus = !1, this._authContext = null, this._authReady = new Promise((e) => {
+      this._authResolve = e;
+    });
   }
   connectedCallback() {
     super.connectedCallback(), this.consumeContext(b, (e) => {
-      this._authContext = e, this._loadStatus();
+      this._authContext = e, this._authResolve(), this._loadStatus();
     });
   }
   async _getToken() {
     var e, a;
-    return this._authContext ? ((a = (e = this._authContext).getLatestToken) == null ? void 0 : a.call(e)) ?? null : null;
+    return await this._authReady, this._authContext ? ((a = (e = this._authContext).getLatestToken) == null ? void 0 : a.call(e)) ?? null : null;
   }
   async _fetchAuthenticated(e, a = {}) {
     const i = {
@@ -151,13 +153,13 @@ r.styles = f`
     uui-loader-circle { margin: 12px 0; }
   `;
 d([
-  p()
+  u()
 ], r.prototype, "_status", 2);
 d([
-  p()
+  u()
 ], r.prototype, "_loadingStatus", 2);
 r = d([
-  m("yaml2schema-dashboard")
+  h("yaml2schema-dashboard")
 ], r);
 export {
   r as Yaml2SchemaDashboard

@@ -2,6 +2,8 @@ import { LitElement, html, css, nothing } from "@umbraco-cms/backoffice/external
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface Toast {
   id: number;
   title: string;
@@ -34,6 +36,8 @@ const EMPTY: Draft = {
  */
 @customElement("toastnotifications-dashboard")
 export class ToastNotificationsDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
@@ -72,7 +76,7 @@ export class ToastNotificationsDashboardElement extends UmbElementMixin(LitEleme
     this._loading = true;
     try {
       // GetAll, not GetActive: a scheduled or expired toast must still be manageable.
-      const r = await fetch(`${this._api}/GetAll`, { credentials: "same-origin" });
+      const r = await this.#fetch(`${this._api}/GetAll`, { credentials: "same-origin" });
       if (r.ok) this._toasts = await r.json();
     } finally {
       this._loading = false;
@@ -119,7 +123,7 @@ export class ToastNotificationsDashboardElement extends UmbElementMixin(LitEleme
     try {
       const editing = this._editingId !== null;
       const url = editing ? `${this._api}/Update?id=${this._editingId}` : `${this._api}/Create`;
-      const r = await fetch(url, {
+      const r = await this.#fetch(url, {
         method: editing ? "PUT" : "POST",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
@@ -142,7 +146,7 @@ export class ToastNotificationsDashboardElement extends UmbElementMixin(LitEleme
     this._busy = true;
     this._msg = null;
     try {
-      const r = await fetch(`${this._api}/Delete?id=${t.id}`, {
+      const r = await this.#fetch(`${this._api}/Delete?id=${t.id}`, {
         method: "DELETE", credentials: "same-origin",
       });
       if (!r.ok) throw new Error(`${r.status}`);

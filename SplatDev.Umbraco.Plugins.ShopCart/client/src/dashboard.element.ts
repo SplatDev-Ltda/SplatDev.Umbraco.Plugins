@@ -2,6 +2,8 @@ import { LitElement, html, css, nothing } from "@umbraco-cms/backoffice/external
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface Overview {
   carts: number; items: number; value: number;
   abandoned: number; abandonedValue: number;
@@ -22,6 +24,8 @@ interface CartSummary {
  */
 @customElement("shopcart-dashboard")
 export class ShopCartDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
@@ -64,8 +68,8 @@ export class ShopCartDashboardElement extends UmbElementMixin(LitElement) {
     this._loading = true;
     try {
       const [o, c] = await Promise.all([
-        fetch(`${this._api}/Overview?abandonedAfterDays=${this._days}`, { credentials: "same-origin" }),
-        fetch(`${this._api}/Carts?abandonedAfterDays=${this._days}&onlyAbandoned=${this._onlyAbandoned}`,
+        this.#fetch(`${this._api}/Overview?abandonedAfterDays=${this._days}`, { credentials: "same-origin" }),
+        this.#fetch(`${this._api}/Carts?abandonedAfterDays=${this._days}&onlyAbandoned=${this._onlyAbandoned}`,
               { credentials: "same-origin" }),
       ]);
       if (o.ok) this._overview = await o.json();
@@ -79,7 +83,7 @@ export class ShopCartDashboardElement extends UmbElementMixin(LitElement) {
     this._busy = true;
     this._msg = null;
     try {
-      const r = await fetch(`${this._api}/${path}`, { method, credentials: "same-origin" });
+      const r = await this.#fetch(`${this._api}/${path}`, { method, credentials: "same-origin" });
       const result = await r.json();
       this._msg = { ok: r.ok, text: result.message ?? (r.ok ? "Done." : "Failed.") };
       await this.#load();

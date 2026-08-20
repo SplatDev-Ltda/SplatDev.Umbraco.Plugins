@@ -1,13 +1,39 @@
-import { LitElement as d, html as o, css as h, state as r, customElement as p } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as b } from "@umbraco-cms/backoffice/element-api";
-var _ = Object.defineProperty, g = Object.getOwnPropertyDescriptor, i = (e, t, s, u) => {
-  for (var l = u > 1 ? void 0 : u ? g(t, s) : t, n = e.length - 1, c; n >= 0; n--)
-    (c = e[n]) && (l = (u ? c(t, s, l) : c(l)) || l);
-  return u && l && _(t, s, l), l;
-};
-let a = class extends b(d) {
+import { LitElement as p, html as n, css as _, state as c, customElement as b } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as v } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as g } from "@umbraco-cms/backoffice/auth";
+function m(e) {
+  let t = null;
+  const r = new Promise((o) => {
+    e.consumeContext(g, async (a) => {
+      var i;
+      try {
+        t = await ((i = a == null ? void 0 : a.getLatestToken) == null ? void 0 : i.call(a)) ?? null;
+      } catch {
+        t = null;
+      }
+      o();
+    }), setTimeout(o, 3e3);
+  });
+  return async (o, a = {}) => {
+    await r;
+    const i = new Headers(a.headers);
+    t && !i.has("Authorization") && i.set("Authorization", `Bearer ${t}`);
+    const l = await fetch(o, { ...a, credentials: "same-origin", headers: i });
+    return (l.status === 401 || l.status === 403) && console.error(
+      `[SplatDev] ${l.status} from ${String(o)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
+    ), l;
+  };
+}
+var f = Object.defineProperty, y = Object.getOwnPropertyDescriptor, h = (e) => {
+  throw TypeError(e);
+}, u = (e, t, r, o) => {
+  for (var a = o > 1 ? void 0 : o ? y(t, r) : t, i = e.length - 1, l; i >= 0; i--)
+    (l = e[i]) && (a = (o ? l(t, r, a) : l(a)) || a);
+  return o && a && f(t, r, a), a;
+}, w = (e, t, r) => t.has(e) || h("Cannot " + r), $ = (e, t, r) => (w(e, t, "read from private field"), r ? r.call(e) : t.get(e)), k = (e, t, r) => t.has(e) ? h("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, r), d;
+let s = class extends v(p) {
   constructor() {
-    super(...arguments), this._loading = !1, this._pages = [], this._error = null, this._count = 10, this._days = 30;
+    super(...arguments), k(this, d, m(this)), this._loading = !1, this._pages = [], this._error = null, this._count = 10, this._days = 30;
   }
   connectedCallback() {
     super.connectedCallback(), this._load();
@@ -15,7 +41,7 @@ let a = class extends b(d) {
   async _load() {
     this._loading = !0, this._error = null;
     try {
-      const e = `/umbraco/api/mostviewed/GetMostViewed?count=${this._count}&days=${this._days}`, t = await fetch(e);
+      const e = `/umbraco/api/mostviewed/GetMostViewed?count=${this._count}&days=${this._days}`, t = await $(this, d).call(this, e);
       if (!t.ok) throw new Error(`HTTP ${t.status}`);
       this._pages = await t.json();
     } catch (e) {
@@ -25,7 +51,7 @@ let a = class extends b(d) {
     }
   }
   render() {
-    return o`
+    return n`
       <h1>Most Viewed</h1>
       <p class="description">Top pages by view count in the last ${this._days} days.</p>
 
@@ -39,7 +65,7 @@ let a = class extends b(d) {
           >${this._loading ? "Loading…" : "Refresh"}</uui-button>
         </div>
 
-        ${this._error ? o`<uui-tag color="danger">${this._error}</uui-tag>` : this._loading ? o`<uui-loader></uui-loader>` : this._pages.length === 0 ? o`<div class="empty-state">No page views recorded yet.</div>` : o`
+        ${this._error ? n`<uui-tag color="danger">${this._error}</uui-tag>` : this._loading ? n`<uui-loader></uui-loader>` : this._pages.length === 0 ? n`<div class="empty-state">No page views recorded yet.</div>` : n`
               <uui-table>
                 <uui-table-head>
                   <uui-table-head-cell>#</uui-table-head-cell>
@@ -48,7 +74,7 @@ let a = class extends b(d) {
                   <uui-table-head-cell>Views</uui-table-head-cell>
                 </uui-table-head>
                 ${this._pages.map(
-      (e, t) => o`
+      (e, t) => n`
                     <uui-table-row>
                       <uui-table-cell><span class="rank">${t + 1}</span></uui-table-cell>
                       <uui-table-cell>${e.nodeName}</uui-table-cell>
@@ -65,7 +91,8 @@ let a = class extends b(d) {
     `;
   }
 };
-a.styles = h`
+d = /* @__PURE__ */ new WeakMap();
+s.styles = _`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -114,24 +141,24 @@ a.styles = h`
       width: 100%;
     }
   `;
-i([
-  r()
-], a.prototype, "_loading", 2);
-i([
-  r()
-], a.prototype, "_pages", 2);
-i([
-  r()
-], a.prototype, "_error", 2);
-i([
-  r()
-], a.prototype, "_count", 2);
-i([
-  r()
-], a.prototype, "_days", 2);
-a = i([
-  p("most-viewed-dashboard")
-], a);
+u([
+  c()
+], s.prototype, "_loading", 2);
+u([
+  c()
+], s.prototype, "_pages", 2);
+u([
+  c()
+], s.prototype, "_error", 2);
+u([
+  c()
+], s.prototype, "_count", 2);
+u([
+  c()
+], s.prototype, "_days", 2);
+s = u([
+  b("most-viewed-dashboard")
+], s);
 export {
-  a as MostViewedDashboardElement
+  s as MostViewedDashboardElement
 };

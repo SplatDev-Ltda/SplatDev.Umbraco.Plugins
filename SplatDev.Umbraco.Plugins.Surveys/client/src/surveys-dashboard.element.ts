@@ -2,6 +2,8 @@ import { LitElement, html, css } from "@umbraco-cms/backoffice/external/lit";
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface Survey {
   id: number;
   title: string;
@@ -14,6 +16,8 @@ interface Survey {
 
 @customElement("surveys-dashboard")
 export class SurveysDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host {
       display: block;
@@ -86,7 +90,7 @@ export class SurveysDashboardElement extends UmbElementMixin(LitElement) {
     this._loading = true;
     this._error = null;
     try {
-      const response = await fetch(`${this._apiBase}/getall`);
+      const response = await this.#fetch(`${this._apiBase}/getall`);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       this._surveys = await response.json();
     } catch (e) {
@@ -99,7 +103,7 @@ export class SurveysDashboardElement extends UmbElementMixin(LitElement) {
   private async _deleteSurvey(id: number) {
     if (!confirm("Delete this survey and all its responses?")) return;
     try {
-      await fetch(`${this._apiBase}/delete?id=${id}`, { method: "DELETE" });
+      await this.#fetch(`${this._apiBase}/delete?id=${id}`, { method: "DELETE" });
       this._surveys = this._surveys.filter((s) => s.id !== id);
     } catch (e) {
       this._error = `Delete failed: ${e instanceof Error ? e.message : String(e)}`;

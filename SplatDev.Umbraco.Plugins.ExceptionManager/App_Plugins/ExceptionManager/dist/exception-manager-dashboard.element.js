@@ -1,13 +1,39 @@
-import { LitElement as d, html as s, css as h, state as c, customElement as p } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as b } from "@umbraco-cms/backoffice/element-api";
-var g = Object.defineProperty, f = Object.getOwnPropertyDescriptor, o = (t, e, l, u) => {
-  for (var i = u > 1 ? void 0 : u ? f(e, l) : e, n = t.length - 1, r; n >= 0; n--)
-    (r = t[n]) && (i = (u ? r(e, l, i) : r(i)) || i);
-  return u && i && g(e, l, i), i;
-};
-let a = class extends b(d) {
+import { LitElement as p, html as r, css as b, state as d, customElement as f } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as g } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as m } from "@umbraco-cms/backoffice/auth";
+function v(t) {
+  let e = null;
+  const i = new Promise((l) => {
+    t.consumeContext(m, async (a) => {
+      var u;
+      try {
+        e = await ((u = a == null ? void 0 : a.getLatestToken) == null ? void 0 : u.call(a)) ?? null;
+      } catch {
+        e = null;
+      }
+      l();
+    }), setTimeout(l, 3e3);
+  });
+  return async (l, a = {}) => {
+    await i;
+    const u = new Headers(a.headers);
+    e && !u.has("Authorization") && u.set("Authorization", `Bearer ${e}`);
+    const s = await fetch(l, { ...a, credentials: "same-origin", headers: u });
+    return (s.status === 401 || s.status === 403) && console.error(
+      `[SplatDev] ${s.status} from ${String(l)} — the backoffice token was ${e ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
+    ), s;
+  };
+}
+var _ = Object.defineProperty, y = Object.getOwnPropertyDescriptor, h = (t) => {
+  throw TypeError(t);
+}, n = (t, e, i, l) => {
+  for (var a = l > 1 ? void 0 : l ? y(e, i) : e, u = t.length - 1, s; u >= 0; u--)
+    (s = t[u]) && (a = (l ? s(e, i, a) : s(a)) || a);
+  return l && a && _(e, i, a), a;
+}, w = (t, e, i) => e.has(t) || h("Cannot " + i), x = (t, e, i) => (w(t, e, "read from private field"), i ? i.call(t) : e.get(t)), z = (t, e, i) => e.has(t) ? h("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, i), c;
+let o = class extends g(p) {
   constructor() {
-    super(...arguments), this._filter = "", this._loading = !1, this._exceptions = [], this._apiAvailable = !1, this._apiBase = "/umbraco/management/api/v1/exception-manager";
+    super(...arguments), z(this, c, v(this)), this._filter = "", this._loading = !1, this._exceptions = [], this._apiAvailable = !1, this._apiBase = "/umbraco/management/api/v1/exception-manager";
   }
   _handleFilterInput(t) {
     const e = t.target;
@@ -17,12 +43,12 @@ let a = class extends b(d) {
     if (this._apiAvailable) {
       this._loading = !0;
       try {
-        const t = this._filter ? `${this._apiBase}?filter=${encodeURIComponent(this._filter)}` : this._apiBase, e = await fetch(t, {
+        const t = this._filter ? `${this._apiBase}?filter=${encodeURIComponent(this._filter)}` : this._apiBase, e = await x(this, c).call(this, t, {
           headers: { "Content-Type": "application/json" }
         });
         if (e.ok) {
-          const l = await e.json();
-          this._exceptions = l;
+          const i = await e.json();
+          this._exceptions = i;
         }
       } catch {
       } finally {
@@ -39,7 +65,7 @@ let a = class extends b(d) {
   }
   render() {
     const t = this._filteredExceptions;
-    return s`
+    return r`
       <div class="dashboard-header">
         <h1>Exception Manager</h1>
         <p>
@@ -83,7 +109,7 @@ let a = class extends b(d) {
             </uui-button>
           </div>
 
-          ${t.length > 0 ? s`
+          ${t.length > 0 ? r`
                 <uui-table>
                   <uui-table-head>
                     <uui-table-head-cell>URL</uui-table-head-cell>
@@ -93,7 +119,7 @@ let a = class extends b(d) {
                     <uui-table-head-cell>Message</uui-table-head-cell>
                   </uui-table-head>
                   ${t.map(
-      (e) => s`
+      (e) => r`
                       <uui-table-row>
                         <uui-table-cell>${e.url}</uui-table-cell>
                         <uui-table-cell>${e.ip}</uui-table-cell>
@@ -104,7 +130,7 @@ let a = class extends b(d) {
                     `
     )}
                 </uui-table>
-              ` : s`
+              ` : r`
                 <uui-table>
                   <uui-table-head>
                     <uui-table-head-cell>URL</uui-table-head-cell>
@@ -124,7 +150,8 @@ let a = class extends b(d) {
     `;
   }
 };
-a.styles = h`
+c = /* @__PURE__ */ new WeakMap();
+o.styles = b`
     :host {
       display: block;
       padding: var(--uui-size-layout-1);
@@ -206,20 +233,20 @@ a.styles = h`
       margin-top: 2px;
     }
   `;
-o([
-  c()
-], a.prototype, "_filter", 2);
-o([
-  c()
-], a.prototype, "_loading", 2);
-o([
-  c()
-], a.prototype, "_exceptions", 2);
-a = o([
-  p("exception-manager-dashboard")
-], a);
-const _ = a;
+n([
+  d()
+], o.prototype, "_filter", 2);
+n([
+  d()
+], o.prototype, "_loading", 2);
+n([
+  d()
+], o.prototype, "_exceptions", 2);
+o = n([
+  f("exception-manager-dashboard")
+], o);
+const P = o;
 export {
-  a as ExceptionManagerDashboardElement,
-  _ as default
+  o as ExceptionManagerDashboardElement,
+  P as default
 };

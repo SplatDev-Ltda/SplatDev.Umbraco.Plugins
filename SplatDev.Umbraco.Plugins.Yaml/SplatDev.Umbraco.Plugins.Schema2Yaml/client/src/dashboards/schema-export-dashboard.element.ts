@@ -235,6 +235,9 @@ export class Schema2YamlDashboard extends UmbElementMixin(LitElement) {
         this._hasExport = false;
         this._authContext = null;
         this._notificationContext = null;
+        // consumeContext resolves asynchronously; _getToken waits on this so a request
+        // cannot go out before the token exists and come back 401.
+        this._authReady = new Promise((resolve) => { this._authResolve = resolve; });
         this._profiles         = [];
         this._activeProfile    = null;
         this._showConfigDialog = false;
@@ -264,6 +267,7 @@ export class Schema2YamlDashboard extends UmbElementMixin(LitElement) {
         // Resolve auth context for authenticated fetches
         this.consumeContext(UMB_AUTH_CONTEXT, (ctx) => {
             this._authContext = ctx;
+            this._authResolve();
             // Load last-export statistics on mount (silently — may not exist yet)
             this._loadStatistics();
             this._loadActiveProfile();
@@ -278,6 +282,7 @@ export class Schema2YamlDashboard extends UmbElementMixin(LitElement) {
     // ─── Auth helpers ──────────────────────────────────────────────────────────
 
     async _getToken() {
+        await this._authReady;
         if (!this._authContext) return null;
         // getLatestToken() is deprecated in Umbraco 17 but functional until v19.
         // getOpenApiConfiguration() configures the OpenAPI SDK client and does not

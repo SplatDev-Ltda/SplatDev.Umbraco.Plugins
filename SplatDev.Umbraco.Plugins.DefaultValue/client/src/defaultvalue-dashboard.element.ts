@@ -2,6 +2,8 @@ import { LitElement, html, css, nothing } from "@umbraco-cms/backoffice/external
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface DefaultValueRule {
   id: number;
   documentTypeAlias: string;
@@ -15,6 +17,8 @@ type FormData = Omit<DefaultValueRule, "id"> & { id?: number };
 
 @customElement("defaultvalue-dashboard")
 export class DefaultValueDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
@@ -54,7 +58,7 @@ export class DefaultValueDashboardElement extends UmbElementMixin(LitElement) {
   private async _load(): Promise<void> {
     this._loading = true;
     try {
-      const r = await fetch(`${this._api}/GetRules`);
+      const r = await this.#fetch(`${this._api}/GetRules`);
       if (r.ok) this._rules = await r.json();
     } catch { this._rules = []; }
     finally { this._loading = false; }
@@ -75,14 +79,14 @@ export class DefaultValueDashboardElement extends UmbElementMixin(LitElement) {
 
   private async _delete(rule: DefaultValueRule): Promise<void> {
     if (!confirm("Delete this rule?")) return;
-    await fetch(`${this._api}/DeleteRule?id=${rule.id}`, { method: "DELETE" });
+    await this.#fetch(`${this._api}/DeleteRule?id=${rule.id}`, { method: "DELETE" });
     await this._load();
   }
 
   private async _save(): Promise<void> {
     this._saving = true;
     try {
-      await fetch(`${this._api}/SaveRule`, {
+      await this.#fetch(`${this._api}/SaveRule`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(this._form),

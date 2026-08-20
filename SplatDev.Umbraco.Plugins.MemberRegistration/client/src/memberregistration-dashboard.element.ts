@@ -2,6 +2,8 @@ import { LitElement, html, css } from "@umbraco-cms/backoffice/external/lit";
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface PendingMember {
   id: number;
   name: string;
@@ -12,6 +14,8 @@ interface PendingMember {
 
 @customElement("memberregistration-dashboard")
 export class MemberRegistrationDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host {
       display: block;
@@ -44,7 +48,7 @@ export class MemberRegistrationDashboardElement extends UmbElementMixin(LitEleme
 
   private async _loadPending(): Promise<void> {
     try {
-      const resp = await fetch(`${this._apiBase}/GetPending`);
+      const resp = await this.#fetch(`${this._apiBase}/GetPending`);
       if (resp.ok) this._pending = await resp.json();
     } catch {
       this._pending = [];
@@ -52,7 +56,7 @@ export class MemberRegistrationDashboardElement extends UmbElementMixin(LitEleme
   }
 
   private async _approveMember(id: number): Promise<void> {
-    await fetch(`${this._apiBase}/Approve?memberId=${id}`, { method: "POST" });
+    await this.#fetch(`${this._apiBase}/Approve?memberId=${id}`, { method: "POST" });
     await this._loadPending();
   }
 

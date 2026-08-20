@@ -2,8 +2,12 @@ import { LitElement, html, css } from "@umbraco-cms/backoffice/external/lit";
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 @customElement("memberlogin-dashboard")
 export class MemberLoginDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host {
       display: block;
@@ -31,7 +35,7 @@ export class MemberLoginDashboardElement extends UmbElementMixin(LitElement) {
     this._loading = true;
     this._result = null;
     try {
-      const resp = await fetch(`${this._apiBase}/${action}`, {
+      const resp = await this.#fetch(`${this._apiBase}/${action}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),

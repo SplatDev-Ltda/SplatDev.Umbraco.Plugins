@@ -1,6 +1,8 @@
 import { LitElement, html, css, customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface NewsTickerItem {
   id: number;
   text: string;
@@ -20,6 +22,8 @@ interface NewsTickerSettings {
 
 @customElement("news-ticker-dashboard")
 export class NewsTickerDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host {
       display: block;
@@ -123,7 +127,7 @@ export class NewsTickerDashboardElement extends UmbElementMixin(LitElement) {
   private async _loadItems(): Promise<void> {
     this._loading = true;
     try {
-      const res = await fetch(`${this._apiBase}/items`);
+      const res = await this.#fetch(`${this._apiBase}/items`);
       if (res.ok) this._items = await res.json() as NewsTickerItem[];
     } finally {
       this._loading = false;
@@ -131,7 +135,7 @@ export class NewsTickerDashboardElement extends UmbElementMixin(LitElement) {
   }
 
   private async _loadSettings(): Promise<void> {
-    const res = await fetch(`${this._apiBase}/settings`);
+    const res = await this.#fetch(`${this._apiBase}/settings`);
     if (res.ok) this._settings = await res.json() as NewsTickerSettings;
   }
 
@@ -143,7 +147,7 @@ export class NewsTickerDashboardElement extends UmbElementMixin(LitElement) {
       isActive: true,
       sortOrder: this._newSortOrder,
     };
-    const res = await fetch(`${this._apiBase}/items`, {
+    const res = await this.#fetch(`${this._apiBase}/items`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(item),
@@ -158,7 +162,7 @@ export class NewsTickerDashboardElement extends UmbElementMixin(LitElement) {
 
   private async _toggleItem(item: NewsTickerItem): Promise<void> {
     const updated = { ...item, isActive: !item.isActive };
-    const res = await fetch(`${this._apiBase}/items/${item.id}`, {
+    const res = await this.#fetch(`${this._apiBase}/items/${item.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updated),
@@ -167,7 +171,7 @@ export class NewsTickerDashboardElement extends UmbElementMixin(LitElement) {
   }
 
   private async _deleteItem(id: number): Promise<void> {
-    const res = await fetch(`${this._apiBase}/items/${id}`, { method: "DELETE" });
+    const res = await this.#fetch(`${this._apiBase}/items/${id}`, { method: "DELETE" });
     if (res.ok) await this._loadItems();
   }
 

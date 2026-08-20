@@ -3,6 +3,8 @@ import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 import "@umbraco-cms/backoffice/document";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface ContentRef {
   id: number;
   key: string;
@@ -27,6 +29,8 @@ interface HiddenResult {
  */
 @customElement("hiddencontent-dashboard")
 export class HiddenContentDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
@@ -59,7 +63,7 @@ export class HiddenContentDashboardElement extends UmbElementMixin(LitElement) {
   async #load(): Promise<void> {
     this._loading = true;
     try {
-      const r = await fetch(`${this._api}/GetHiddenNodes`, { credentials: "same-origin" });
+      const r = await this.#fetch(`${this._api}/GetHiddenNodes`, { credentials: "same-origin" });
       if (r.ok) this._hidden = await r.json();
     } finally {
       this._loading = false;
@@ -75,7 +79,7 @@ export class HiddenContentDashboardElement extends UmbElementMixin(LitElement) {
     this._busy = true;
     this._result = null;
     try {
-      const r = await fetch(`${this._api}/${action}`, {
+      const r = await this.#fetch(`${this._api}/${action}`, {
         method: "POST",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },

@@ -9,7 +9,7 @@
     <AssemblyName>SplatDev.Umbraco.Plugins.Slider</AssemblyName>
     <RootNamespace>SplatDev.Umbraco.Plugins.Slider</RootNamespace>
     <PackageId>SplatDev.Umbraco.Plugins.Slider</PackageId>
-    <Version>1.2.0</Version>
+    <Version>1.2.1</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <Authors>SplatDev</Authors>

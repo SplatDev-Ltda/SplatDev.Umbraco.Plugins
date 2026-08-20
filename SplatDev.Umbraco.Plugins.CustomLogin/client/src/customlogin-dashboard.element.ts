@@ -2,6 +2,8 @@ import { LitElement, html, css } from "@umbraco-cms/backoffice/external/lit";
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface CustomLoginSettings {
   brandName: string;
   logoUrl: string;
@@ -13,6 +15,8 @@ interface CustomLoginSettings {
 
 @customElement("customlogin-dashboard")
 export class CustomLoginDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
@@ -57,7 +61,7 @@ export class CustomLoginDashboardElement extends UmbElementMixin(LitElement) {
   private async _load(): Promise<void> {
     this._loading = true;
     try {
-      const response = await fetch(`${this._apiBase}/GetSettings`);
+      const response = await this.#fetch(`${this._apiBase}/GetSettings`);
       if (response.ok) this._settings = await response.json();
     } catch {
       /* use defaults */
@@ -70,7 +74,7 @@ export class CustomLoginDashboardElement extends UmbElementMixin(LitElement) {
     this._saving = true;
     this._message = null;
     try {
-      const response = await fetch(`${this._apiBase}/SaveSettings`, {
+      const response = await this.#fetch(`${this._apiBase}/SaveSettings`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(this._settings),

@@ -10,10 +10,12 @@ var v = Object.defineProperty, x = Object.getOwnPropertyDescriptor, c = (a, e, t
 const h = "/umbraco/api/enotassina";
 let r = class extends g(m) {
   constructor() {
-    super(), this._loading = !1, this._error = null, this._documents = [], this._search = "", this._statusFilter = "", this._confirmDialog = null, this.consumeContext(p, (a) => {
+    super(), this._loading = !1, this._error = null, this._documents = [], this._search = "", this._statusFilter = "", this._confirmDialog = null, this._authReady = new Promise((a) => {
+      this._authResolve = a;
+    }), this.consumeContext(p, (a) => {
       this._notificationContext = a;
     }), this.consumeContext(f, (a) => {
-      this._authContext = a;
+      this._authContext = a, this._authResolve();
     });
   }
   connectedCallback() {
@@ -21,6 +23,7 @@ let r = class extends g(m) {
   }
   async _fetch(a, e = {}) {
     var i;
+    await this._authReady;
     const t = await ((i = this._authContext) == null ? void 0 : i.getLatestToken()), o = { "Content-Type": "application/json" };
     return e.headers && (Object.assign(o, e.headers), delete e.headers), t && (o.Authorization = `Bearer ${t}`), fetch(a, { credentials: "include", ...e, headers: o });
   }

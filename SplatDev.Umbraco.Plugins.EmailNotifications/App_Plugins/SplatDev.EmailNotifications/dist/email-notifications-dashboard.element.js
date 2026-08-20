@@ -1,38 +1,64 @@
-import { LitElement as d, nothing as o, html as i, css as p, state as u, customElement as m } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as h } from "@umbraco-cms/backoffice/element-api";
-import { UMB_NOTIFICATION_CONTEXT as f } from "@umbraco-cms/backoffice/notification";
-var g = Object.defineProperty, _ = Object.getOwnPropertyDescriptor, a = (e, l, s, n) => {
-  for (var r = n > 1 ? void 0 : n ? _(l, s) : l, c = e.length - 1, b; c >= 0; c--)
-    (b = e[c]) && (r = (n ? b(l, s, r) : b(r)) || r);
-  return n && r && g(l, s, r), r;
-};
-const v = "/umbraco/api";
-let t = class extends h(d) {
+import { LitElement as m, nothing as d, html as a, css as h, state as u, customElement as f } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as g } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as _ } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as v } from "@umbraco-cms/backoffice/notification";
+function w(e) {
+  let i = null;
+  const t = new Promise((o) => {
+    e.consumeContext(_, async (r) => {
+      var n;
+      try {
+        i = await ((n = r == null ? void 0 : r.getLatestToken) == null ? void 0 : n.call(r)) ?? null;
+      } catch {
+        i = null;
+      }
+      o();
+    }), setTimeout(o, 3e3);
+  });
+  return async (o, r = {}) => {
+    await t;
+    const n = new Headers(r.headers);
+    i && !n.has("Authorization") && n.set("Authorization", `Bearer ${i}`);
+    const c = await fetch(o, { ...r, credentials: "same-origin", headers: n });
+    return (c.status === 401 || c.status === 403) && console.error(
+      `[SplatDev] ${c.status} from ${String(o)} — the backoffice token was ${i ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
+    ), c;
+  };
+}
+var y = Object.defineProperty, x = Object.getOwnPropertyDescriptor, p = (e) => {
+  throw TypeError(e);
+}, l = (e, i, t, o) => {
+  for (var r = o > 1 ? void 0 : o ? x(i, t) : i, n = e.length - 1, c; n >= 0; n--)
+    (c = e[n]) && (r = (o ? c(i, t, r) : c(r)) || r);
+  return o && r && y(i, t, r), r;
+}, $ = (e, i, t) => i.has(e) || p("Cannot " + t), C = (e, i, t) => ($(e, i, "read from private field"), t ? t.call(e) : i.get(e)), I = (e, i, t) => i.has(e) ? p("Cannot add the same private member more than once") : i instanceof WeakSet ? i.add(e) : i.set(e, t), b;
+const S = "/umbraco/api";
+let s = class extends g(m) {
   constructor() {
-    super(), this._activeTab = "notifications", this._loading = !1, this._notifications = [], this._notificationMemberId = "", this._newNotificationType = "System", this._newNotificationMessage = "", this._subscribers = [], this._subscriberListId = "", this._subscribeEmail = "", this._subscribeFirstName = "", this._subscribeLastName = "", this._unsubscribeEmail = "", this._campaigns = [], this._newCampaignSubject = "", this._newCampaignTemplateId = "", this._newCampaignListId = "", this._statsCampaignId = null, this._campaignStats = null, this._templates = [], this._previewTemplateId = null, this._previewHtml = "", this.consumeContext(f, (e) => {
+    super(), I(this, b, w(this)), this._activeTab = "notifications", this._loading = !1, this._notifications = [], this._notificationMemberId = "", this._newNotificationType = "System", this._newNotificationMessage = "", this._subscribers = [], this._subscriberListId = "", this._subscribeEmail = "", this._subscribeFirstName = "", this._subscribeLastName = "", this._unsubscribeEmail = "", this._campaigns = [], this._newCampaignSubject = "", this._newCampaignTemplateId = "", this._newCampaignListId = "", this._statsCampaignId = null, this._campaignStats = null, this._templates = [], this._previewTemplateId = null, this._previewHtml = "", this.consumeContext(v, (e) => {
       this._notificationContext = e;
     });
   }
-  _notify(e, l) {
-    var s;
-    (s = this._notificationContext) == null || s.peek(l, {
+  _notify(e, i) {
+    var t;
+    (t = this._notificationContext) == null || t.peek(i, {
       color: e === "danger" ? "danger" : e === "warning" ? "warning" : e === "positive" ? "positive" : void 0
     });
   }
-  async _api(e, l) {
+  async _api(e, i) {
     try {
-      const s = await fetch(`${v}${e}`, {
-        headers: { "Content-Type": "application/json", ...l == null ? void 0 : l.headers },
-        ...l
+      const t = await C(this, b).call(this, `${S}${e}`, {
+        headers: { "Content-Type": "application/json", ...i == null ? void 0 : i.headers },
+        ...i
       });
-      if (s.status === 204) return null;
-      if (!s.ok) {
-        const r = await s.text();
-        throw new Error(r || `HTTP ${s.status}`);
+      if (t.status === 204) return null;
+      if (!t.ok) {
+        const r = await t.text();
+        throw new Error(r || `HTTP ${t.status}`);
       }
-      return (s.headers.get("content-type") || "").includes("text/html") ? await s.text() : await s.json();
-    } catch (s) {
-      return this._notify("danger", s.message || "Request failed"), null;
+      return (t.headers.get("content-type") || "").includes("text/html") ? await t.text() : await t.json();
+    } catch (t) {
+      return this._notify("danger", t.message || "Request failed"), null;
     }
   }
   // ── Notifications ──
@@ -72,8 +98,8 @@ let t = class extends h(d) {
   // ── Subscribers ──
   async _loadSubscribers() {
     this._loading = !0;
-    const e = this._subscriberListId.trim() ? `?listId=${encodeURIComponent(this._subscriberListId)}` : "", l = await this._api(`/newsletter/subscribers${e}`);
-    this._subscribers = l ?? [], this._loading = !1;
+    const e = this._subscriberListId.trim() ? `?listId=${encodeURIComponent(this._subscriberListId)}` : "", i = await this._api(`/newsletter/subscribers${e}`);
+    this._subscribers = i ?? [], this._loading = !1;
   }
   async _subscribe() {
     if (!this._subscribeEmail.trim()) {
@@ -130,8 +156,8 @@ let t = class extends h(d) {
   }
   async _showStats(e) {
     this._loading = !0;
-    const l = await this._api(`/newsletter/campaigns/${e}/stats`);
-    this._campaignStats = l, this._statsCampaignId = e, this._loading = !1;
+    const i = await this._api(`/newsletter/campaigns/${e}/stats`);
+    this._campaignStats = i, this._statsCampaignId = e, this._loading = !1;
   }
   // ── Templates ──
   async _loadTemplates() {
@@ -158,7 +184,7 @@ let t = class extends h(d) {
   }
   // ── Render sections ──
   _renderNotifications() {
-    return i`
+    return a`
       <uui-box>
         <div slot="headline">Notifications</div>
         <div class="toolbar">
@@ -180,7 +206,7 @@ let t = class extends h(d) {
           </uui-button>
         </div>
 
-        ${this._notifications.length > 0 ? i`
+        ${this._notifications.length > 0 ? a`
               <uui-table>
                 <uui-table-head>
                   <uui-table-head-cell>ID</uui-table-head-cell>
@@ -191,7 +217,7 @@ let t = class extends h(d) {
                   <uui-table-head-cell>Actions</uui-table-head-cell>
                 </uui-table-head>
                 ${this._notifications.map(
-      (e) => i`
+      (e) => a`
                     <uui-table-row>
                       <uui-table-cell>${e.id}</uui-table-cell>
                       <uui-table-cell>
@@ -214,7 +240,7 @@ let t = class extends h(d) {
                       </uui-table-cell>
                       <uui-table-cell>
                         <div class="actions">
-                          ${e.isRead ? o : i`
+                          ${e.isRead ? d : a`
                                 <uui-button
                                   size="s"
                                   look="outline"
@@ -230,7 +256,7 @@ let t = class extends h(d) {
                   `
     )}
               </uui-table>
-            ` : i`
+            ` : a`
               <div class="empty-state">
                 ${this._notificationMemberId ? "No notifications found for this member." : "Enter a member ID and click Load to view notifications."}
               </div>
@@ -277,7 +303,7 @@ let t = class extends h(d) {
     `;
   }
   _renderSubscribers() {
-    return i`
+    return a`
       <uui-box>
         <div slot="headline">Subscribers</div>
         <div class="toolbar">
@@ -291,7 +317,7 @@ let t = class extends h(d) {
           <uui-button look="primary" label="Load" @click=${this._loadSubscribers}></uui-button>
         </div>
 
-        ${this._subscribers.length > 0 ? i`
+        ${this._subscribers.length > 0 ? a`
               <uui-table>
                 <uui-table-head>
                   <uui-table-head-cell>ID</uui-table-head-cell>
@@ -302,7 +328,7 @@ let t = class extends h(d) {
                   <uui-table-head-cell>Subscribed</uui-table-head-cell>
                 </uui-table-head>
                 ${this._subscribers.map(
-      (e) => i`
+      (e) => a`
                     <uui-table-row>
                       <uui-table-cell>${e.id}</uui-table-cell>
                       <uui-table-cell>${e.email}</uui-table-cell>
@@ -322,7 +348,7 @@ let t = class extends h(d) {
                   `
     )}
               </uui-table>
-            ` : i`
+            ` : a`
               <div class="empty-state">
                 No subscribers found. Click Load to fetch subscriber data.
               </div>
@@ -389,10 +415,10 @@ let t = class extends h(d) {
     `;
   }
   _renderCampaigns() {
-    return i`
+    return a`
       <uui-box>
         <div slot="headline">Campaigns</div>
-        ${this._campaigns.length > 0 ? i`
+        ${this._campaigns.length > 0 ? a`
               <uui-table>
                 <uui-table-head>
                   <uui-table-head-cell>ID</uui-table-head-cell>
@@ -404,19 +430,19 @@ let t = class extends h(d) {
                 </uui-table-head>
                 ${this._campaigns.map(
       (e) => {
-        var l;
-        return i`
+        var i;
+        return a`
                     <uui-table-row>
                       <uui-table-cell>${e.id}</uui-table-cell>
                       <uui-table-cell>${e.subject}</uui-table-cell>
-                      <uui-table-cell>${((l = e.template) == null ? void 0 : l.name) ?? "-"}</uui-table-cell>
+                      <uui-table-cell>${((i = e.template) == null ? void 0 : i.name) ?? "-"}</uui-table-cell>
                       <uui-table-cell>
                         <span class="badge ${e.status.toLowerCase()}">${e.status}</span>
                       </uui-table-cell>
                       <uui-table-cell>${e.recipientCount}</uui-table-cell>
                       <uui-table-cell>
                         <div class="actions">
-                          ${e.status === "Draft" || e.status === "Scheduled" ? i`
+                          ${e.status === "Draft" || e.status === "Scheduled" ? a`
                                 <uui-button
                                   size="s"
                                   look="primary"
@@ -425,8 +451,8 @@ let t = class extends h(d) {
                                 >
                                   Send
                                 </uui-button>
-                              ` : o}
-                          ${e.status === "Sent" || e.status === "Sending" ? i`
+                              ` : d}
+                          ${e.status === "Sent" || e.status === "Sending" ? a`
                                 <uui-button
                                   size="s"
                                   look="outline"
@@ -435,7 +461,7 @@ let t = class extends h(d) {
                                 >
                                   Stats
                                 </uui-button>
-                              ` : o}
+                              ` : d}
                         </div>
                       </uui-table-cell>
                     </uui-table-row>
@@ -443,7 +469,7 @@ let t = class extends h(d) {
       }
     )}
               </uui-table>
-            ` : i`<div class="empty-state">No campaigns found. Create one below.</div>`}
+            ` : a`<div class="empty-state">No campaigns found. Create one below.</div>`}
       </uui-box>
 
       <uui-box headline="New Campaign" style="margin-top:var(--uui-size-space-4,12px);">
@@ -487,7 +513,7 @@ let t = class extends h(d) {
         </div>
       </uui-box>
 
-      ${this._campaignStats ? i`
+      ${this._campaignStats ? a`
             <uui-box
               headline="Campaign Stats"
               style="margin-top:var(--uui-size-space-4,12px);"
@@ -503,7 +529,7 @@ let t = class extends h(d) {
       { label: "Bounces", value: this._campaignStats.bounces },
       { label: "Unsubscribes", value: this._campaignStats.unsubscribes }
     ].map(
-      (e) => i`
+      (e) => a`
                     <div class="stat-card">
                       <div class="stat-value">${e.value}</div>
                       <div class="stat-label">${e.label}</div>
@@ -512,13 +538,13 @@ let t = class extends h(d) {
     )}
               </div>
             </uui-box>
-          ` : o}
+          ` : d}
     `;
   }
   _renderTemplates() {
-    return i`
+    return a`
       <uui-box headline="Email Templates">
-        ${this._templates.length > 0 ? i`
+        ${this._templates.length > 0 ? a`
               <uui-table>
                 <uui-table-head>
                   <uui-table-head-cell>ID</uui-table-head-cell>
@@ -529,7 +555,7 @@ let t = class extends h(d) {
                   <uui-table-head-cell>Actions</uui-table-head-cell>
                 </uui-table-head>
                 ${this._templates.map(
-      (e) => i`
+      (e) => a`
                     <uui-table-row>
                       <uui-table-cell>${e.id}</uui-table-cell>
                       <uui-table-cell>${e.name}</uui-table-cell>
@@ -558,10 +584,10 @@ let t = class extends h(d) {
                   `
     )}
               </uui-table>
-            ` : i`<div class="empty-state">No templates found. Click a tab to load data.</div>`}
+            ` : a`<div class="empty-state">No templates found. Click a tab to load data.</div>`}
       </uui-box>
 
-      ${this._previewHtml ? i`
+      ${this._previewHtml ? a`
             <uui-box headline="Template Preview" style="margin-top:var(--uui-size-space-4,12px);">
               <div class="preview-header">
                 <span style="font-size:0.8rem;color:var(--uui-color-text-alt,#6b7280);">
@@ -585,7 +611,7 @@ let t = class extends h(d) {
                 sandbox="allow-same-origin"
               ></iframe>
             </uui-box>
-          ` : o}
+          ` : d}
     `;
   }
   render() {
@@ -595,7 +621,7 @@ let t = class extends h(d) {
       campaigns: "Campaigns",
       templates: "Templates"
     };
-    return i`
+    return a`
       <h1>Email Notifications</h1>
       <p class="description">
         Manage member notifications, newsletter subscribers, email campaigns, and templates.
@@ -603,13 +629,13 @@ let t = class extends h(d) {
 
       <uui-tab-group>
         ${["notifications", "subscribers", "campaigns", "templates"].map(
-      (s) => i`
+      (t) => a`
             <uui-tab
-              label=${e[s]}
-              ?active=${this._activeTab === s}
-              @click=${() => this._switchTab(s)}
+              label=${e[t]}
+              ?active=${this._activeTab === t}
+              @click=${() => this._switchTab(t)}
             >
-              ${e[s]}
+              ${e[t]}
             </uui-tab>
           `
     )}
@@ -619,11 +645,12 @@ let t = class extends h(d) {
         ${this._activeTab === "notifications" ? this._renderNotifications() : this._activeTab === "subscribers" ? this._renderSubscribers() : this._activeTab === "campaigns" ? this._renderCampaigns() : this._renderTemplates()}
       </div>
 
-      ${this._loading ? i`<uui-loader-bar style="margin-top:var(--uui-size-space-4,12px);"></uui-loader-bar>` : o}
+      ${this._loading ? a`<uui-loader-bar style="margin-top:var(--uui-size-space-4,12px);"></uui-loader-bar>` : d}
     `;
   }
 };
-t.styles = p`
+b = /* @__PURE__ */ new WeakMap();
+s.styles = h`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -841,74 +868,74 @@ t.styles = p`
       margin-bottom: var(--uui-size-space-4, 12px);
     }
   `;
-a([
+l([
   u()
-], t.prototype, "_activeTab", 2);
-a([
+], s.prototype, "_activeTab", 2);
+l([
   u()
-], t.prototype, "_loading", 2);
-a([
+], s.prototype, "_loading", 2);
+l([
   u()
-], t.prototype, "_notifications", 2);
-a([
+], s.prototype, "_notifications", 2);
+l([
   u()
-], t.prototype, "_notificationMemberId", 2);
-a([
+], s.prototype, "_notificationMemberId", 2);
+l([
   u()
-], t.prototype, "_newNotificationType", 2);
-a([
+], s.prototype, "_newNotificationType", 2);
+l([
   u()
-], t.prototype, "_newNotificationMessage", 2);
-a([
+], s.prototype, "_newNotificationMessage", 2);
+l([
   u()
-], t.prototype, "_subscribers", 2);
-a([
+], s.prototype, "_subscribers", 2);
+l([
   u()
-], t.prototype, "_subscriberListId", 2);
-a([
+], s.prototype, "_subscriberListId", 2);
+l([
   u()
-], t.prototype, "_subscribeEmail", 2);
-a([
+], s.prototype, "_subscribeEmail", 2);
+l([
   u()
-], t.prototype, "_subscribeFirstName", 2);
-a([
+], s.prototype, "_subscribeFirstName", 2);
+l([
   u()
-], t.prototype, "_subscribeLastName", 2);
-a([
+], s.prototype, "_subscribeLastName", 2);
+l([
   u()
-], t.prototype, "_unsubscribeEmail", 2);
-a([
+], s.prototype, "_unsubscribeEmail", 2);
+l([
   u()
-], t.prototype, "_campaigns", 2);
-a([
+], s.prototype, "_campaigns", 2);
+l([
   u()
-], t.prototype, "_newCampaignSubject", 2);
-a([
+], s.prototype, "_newCampaignSubject", 2);
+l([
   u()
-], t.prototype, "_newCampaignTemplateId", 2);
-a([
+], s.prototype, "_newCampaignTemplateId", 2);
+l([
   u()
-], t.prototype, "_newCampaignListId", 2);
-a([
+], s.prototype, "_newCampaignListId", 2);
+l([
   u()
-], t.prototype, "_statsCampaignId", 2);
-a([
+], s.prototype, "_statsCampaignId", 2);
+l([
   u()
-], t.prototype, "_campaignStats", 2);
-a([
+], s.prototype, "_campaignStats", 2);
+l([
   u()
-], t.prototype, "_templates", 2);
-a([
+], s.prototype, "_templates", 2);
+l([
   u()
-], t.prototype, "_previewTemplateId", 2);
-a([
+], s.prototype, "_previewTemplateId", 2);
+l([
   u()
-], t.prototype, "_previewHtml", 2);
-t = a([
-  m("email-notifications-dashboard")
-], t);
-const $ = t;
+], s.prototype, "_previewHtml", 2);
+s = l([
+  f("email-notifications-dashboard")
+], s);
+const E = s;
 export {
-  t as EmailNotificationsDashboardElement,
-  $ as default
+  s as EmailNotificationsDashboardElement,
+  E as default
 };

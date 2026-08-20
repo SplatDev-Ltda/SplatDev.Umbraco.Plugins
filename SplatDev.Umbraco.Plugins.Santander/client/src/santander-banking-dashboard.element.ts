@@ -6,6 +6,8 @@ import {
 } from "@umbraco-cms/backoffice/external/lit";
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
+import { createAuthFetch } from "./auth-fetch";
+
 import {
   UmbNotificationContext,
   UMB_NOTIFICATION_CONTEXT,
@@ -26,6 +28,8 @@ const AUTH_HEADER = "X-RISIN-Api-Key";
 
 @customElement("santander-banking-dashboard")
 export class SantanderBankingDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host {
       display: block;
@@ -250,7 +254,7 @@ export class SantanderBankingDashboardElement extends UmbElementMixin(LitElement
 
   private async _api<T>(path: string, options?: RequestInit): Promise<T | null> {
     try {
-      const res = await fetch(`${API_BASE}${path}`, {
+      const res = await this.#fetch(`${API_BASE}${path}`, {
         headers: this._headers(),
         ...options,
       });

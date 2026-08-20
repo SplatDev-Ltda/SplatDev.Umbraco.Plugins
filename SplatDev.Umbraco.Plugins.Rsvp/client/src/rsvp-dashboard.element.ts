@@ -2,6 +2,8 @@ import { LitElement, html, css } from "@umbraco-cms/backoffice/external/lit";
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface RsvpEvent {
   id: number;
   title: string;
@@ -31,6 +33,8 @@ const STATUS_TEXT_COLORS = ["#065f46", "#92400e", "#991b1b"] as const;
 
 @customElement("rsvp-dashboard")
 export class RsvpDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host {
       display: block;
@@ -101,7 +105,7 @@ export class RsvpDashboardElement extends UmbElementMixin(LitElement) {
     this._loading = true;
     this._error = null;
     try {
-      const res = await fetch(`${this._apiBase}/getevents`);
+      const res = await this.#fetch(`${this._apiBase}/getevents`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       this._events = await res.json();
     } catch (e) {
@@ -113,7 +117,7 @@ export class RsvpDashboardElement extends UmbElementMixin(LitElement) {
 
   private async _selectEvent(event: RsvpEvent) {
     try {
-      const res = await fetch(`${this._apiBase}/getevent?id=${event.id}`);
+      const res = await this.#fetch(`${this._apiBase}/getevent?id=${event.id}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       this._selectedEvent = await res.json();
     } catch (e) {
@@ -124,7 +128,7 @@ export class RsvpDashboardElement extends UmbElementMixin(LitElement) {
   private async _cancelRegistration(attendeeId: number) {
     if (!confirm("Cancel this registration?")) return;
     try {
-      const res = await fetch(`${this._apiBase}/cancelregistration?attendeeId=${attendeeId}`, { method: "POST" });
+      const res = await this.#fetch(`${this._apiBase}/cancelregistration?attendeeId=${attendeeId}`, { method: "POST" });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       // Reload the selected event
       if (this._selectedEvent) await this._selectEvent(this._selectedEvent);
@@ -136,7 +140,7 @@ export class RsvpDashboardElement extends UmbElementMixin(LitElement) {
   private async _deleteEvent(id: number) {
     if (!confirm("Delete this event and all registrations?")) return;
     try {
-      await fetch(`${this._apiBase}/deleteevent?id=${id}`, { method: "DELETE" });
+      await this.#fetch(`${this._apiBase}/deleteevent?id=${id}`, { method: "DELETE" });
       this._events = this._events.filter((e) => e.id !== id);
       if (this._selectedEvent?.id === id) this._selectedEvent = null;
     } catch (e) {

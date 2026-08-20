@@ -2,6 +2,8 @@ import { LitElement, html, css } from "@umbraco-cms/backoffice/external/lit";
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface MemberGroup {
   id: number;
   name: string;
@@ -24,6 +26,8 @@ interface MemberInfo {
 
 @customElement("membergroups-dashboard")
 export class MemberGroupsDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host {
       display: block;
@@ -60,14 +64,14 @@ export class MemberGroupsDashboardElement extends UmbElementMixin(LitElement) {
 
   private async _loadGroups(): Promise<void> {
     try {
-      const resp = await fetch(`${this._apiBase}/GetMemberGroups`);
+      const resp = await this.#fetch(`${this._apiBase}/GetMemberGroups`);
       if (resp.ok) this._groups = await resp.json();
     } catch { this._groups = []; }
   }
 
   private async _loadTypes(): Promise<void> {
     try {
-      const resp = await fetch(`${this._apiBase}/GetMemberTypes`);
+      const resp = await this.#fetch(`${this._apiBase}/GetMemberTypes`);
       if (resp.ok) this._types = await resp.json();
     } catch { this._types = []; }
   }
@@ -79,7 +83,7 @@ export class MemberGroupsDashboardElement extends UmbElementMixin(LitElement) {
       const url = typeof body === "string"
         ? `${this._apiBase}/${action}?${body}`
         : `${this._apiBase}/${action}`;
-      const resp = await fetch(url, {
+      const resp = await this.#fetch(url, {
         method: "POST",
         headers: typeof body === "object" ? { "Content-Type": "application/json" } : {},
         body: typeof body === "object" ? JSON.stringify(body) : undefined,
@@ -98,7 +102,7 @@ export class MemberGroupsDashboardElement extends UmbElementMixin(LitElement) {
     this._foundMember = null;
     this._result = null;
     try {
-      const resp = await fetch(`${this._apiBase}/GetMemberByEmail?email=${encodeURIComponent(email)}`);
+      const resp = await this.#fetch(`${this._apiBase}/GetMemberByEmail?email=${encodeURIComponent(email)}`);
       if (resp.ok) {
         this._foundMember = await resp.json();
       } else {

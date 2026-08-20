@@ -1,13 +1,39 @@
-import { LitElement as h, html as t, css as p, state as l, customElement as u } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as f } from "@umbraco-cms/backoffice/element-api";
-var g = Object.defineProperty, m = Object.getOwnPropertyDescriptor, i = (e, a, n, o) => {
-  for (var r = o > 1 ? void 0 : o ? m(a, n) : a, c = e.length - 1, d; c >= 0; c--)
-    (d = e[c]) && (r = (o ? d(a, n, r) : d(r)) || r);
-  return o && r && g(a, n, r), r;
-};
-let s = class extends f(h) {
+import { LitElement as f, html as l, css as g, state as h, customElement as w } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as m } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as v } from "@umbraco-cms/backoffice/auth";
+function _(e) {
+  let t = null;
+  const r = new Promise((s) => {
+    e.consumeContext(v, async (a) => {
+      var i;
+      try {
+        t = await ((i = a == null ? void 0 : a.getLatestToken) == null ? void 0 : i.call(a)) ?? null;
+      } catch {
+        t = null;
+      }
+      s();
+    }), setTimeout(s, 3e3);
+  });
+  return async (s, a = {}) => {
+    await r;
+    const i = new Headers(a.headers);
+    t && !i.has("Authorization") && i.set("Authorization", `Bearer ${t}`);
+    const o = await fetch(s, { ...a, credentials: "same-origin", headers: i });
+    return (o.status === 401 || o.status === 403) && console.error(
+      `[SplatDev] ${o.status} from ${String(s)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
+    ), o;
+  };
+}
+var b = Object.defineProperty, x = Object.getOwnPropertyDescriptor, u = (e) => {
+  throw TypeError(e);
+}, c = (e, t, r, s) => {
+  for (var a = s > 1 ? void 0 : s ? x(t, r) : t, i = e.length - 1, o; i >= 0; i--)
+    (o = e[i]) && (a = (s ? o(t, r, a) : o(a)) || a);
+  return s && a && b(t, r, a), a;
+}, y = (e, t, r) => t.has(e) || u("Cannot " + r), p = (e, t, r) => (y(e, t, "read from private field"), r ? r.call(e) : t.get(e)), $ = (e, t, r) => t.has(e) ? u("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, r), d;
+let n = class extends m(f) {
   constructor() {
-    super(...arguments), this._tweets = [], this._loading = !1, this._refreshing = !1, this._lastRefresh = null, this._apiBase = "/umbraco/api/tweets";
+    super(...arguments), $(this, d, _(this)), this._tweets = [], this._loading = !1, this._refreshing = !1, this._lastRefresh = null, this._apiBase = "/umbraco/api/tweets";
   }
   connectedCallback() {
     super.connectedCallback(), this._loadTweets();
@@ -15,7 +41,7 @@ let s = class extends f(h) {
   async _loadTweets() {
     this._loading = !0;
     try {
-      const e = await fetch(`${this._apiBase}/feed`);
+      const e = await p(this, d).call(this, `${this._apiBase}/feed`);
       e.ok && (this._tweets = await e.json(), this._tweets.length > 0 && (this._lastRefresh = this._tweets[0].cachedAt));
     } finally {
       this._loading = !1;
@@ -24,21 +50,21 @@ let s = class extends f(h) {
   async _refreshCache() {
     this._refreshing = !0;
     try {
-      (await (await fetch(`${this._apiBase}/refresh`, { method: "POST" })).json()).success && await this._loadTweets();
+      (await (await p(this, d).call(this, `${this._apiBase}/refresh`, { method: "POST" })).json()).success && await this._loadTweets();
     } finally {
       this._refreshing = !1;
     }
   }
   _renderTweetCard(e) {
-    const a = new Date(e.publishedAt).toLocaleDateString("en-US", {
+    const t = new Date(e.publishedAt).toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
       year: "numeric"
     });
-    return t`
+    return l`
       <div class="tweet-card">
         <div class="tweet-header">
-          ${e.authorAvatarUrl ? t`<img src="${e.authorAvatarUrl}" alt="${e.authorName}" class="tweet-avatar" />` : t`<div class="tweet-avatar">${e.authorHandle.charAt(0).toUpperCase()}</div>`}
+          ${e.authorAvatarUrl ? l`<img src="${e.authorAvatarUrl}" alt="${e.authorName}" class="tweet-avatar" />` : l`<div class="tweet-avatar">${e.authorHandle.charAt(0).toUpperCase()}</div>`}
           <div style="flex:1;">
             <div class="tweet-author-name">${e.authorName}</div>
             <div class="tweet-author-handle">@${e.authorHandle}</div>
@@ -71,13 +97,13 @@ let s = class extends f(h) {
             </svg>
             ${e.retweetCount.toLocaleString()}
           </span>
-          <span class="tweet-time">${a}</span>
+          <span class="tweet-time">${t}</span>
         </div>
       </div>
     `;
   }
   render() {
-    return t`
+    return l`
       <h1>Tweets</h1>
       <p class="description">
         Preview and manage the locally cached Twitter/X feed displayed on your site.
@@ -107,7 +133,7 @@ let s = class extends f(h) {
         >
           Reload
         </uui-button>
-        ${this._lastRefresh ? t`
+        ${this._lastRefresh ? l`
               <span style="font-size:0.8rem; color: var(--uui-color-text-alt);">
                 Last cached: ${new Date(this._lastRefresh).toLocaleString()}
               </span>
@@ -115,16 +141,17 @@ let s = class extends f(h) {
       </div>
 
       <uui-box headline="Cached Feed (${this._tweets.length} tweet${this._tweets.length !== 1 ? "s" : ""})">
-        ${this._loading ? t`<uui-loader></uui-loader>` : this._tweets.length === 0 ? t`
+        ${this._loading ? l`<uui-loader></uui-loader>` : this._tweets.length === 0 ? l`
               <div class="empty-state">
                 <p>No cached tweets. Click <strong>Refresh from API</strong> to fetch the latest tweets.</p>
               </div>
-            ` : t`<div class="tweet-grid">${this._tweets.map((e) => this._renderTweetCard(e))}</div>`}
+            ` : l`<div class="tweet-grid">${this._tweets.map((e) => this._renderTweetCard(e))}</div>`}
       </uui-box>
     `;
   }
 };
-s.styles = p`
+d = /* @__PURE__ */ new WeakMap();
+n.styles = g`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -253,21 +280,21 @@ s.styles = p`
       font-size: 0.8rem;
     }
   `;
-i([
-  l()
-], s.prototype, "_tweets", 2);
-i([
-  l()
-], s.prototype, "_loading", 2);
-i([
-  l()
-], s.prototype, "_refreshing", 2);
-i([
-  l()
-], s.prototype, "_lastRefresh", 2);
-s = i([
-  u("tweets-dashboard")
-], s);
+c([
+  h()
+], n.prototype, "_tweets", 2);
+c([
+  h()
+], n.prototype, "_loading", 2);
+c([
+  h()
+], n.prototype, "_refreshing", 2);
+c([
+  h()
+], n.prototype, "_lastRefresh", 2);
+n = c([
+  w("tweets-dashboard")
+], n);
 export {
-  s as TweetsDashboardElement
+  n as TweetsDashboardElement
 };

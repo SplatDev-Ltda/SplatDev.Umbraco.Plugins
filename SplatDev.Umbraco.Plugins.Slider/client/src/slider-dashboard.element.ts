@@ -2,6 +2,8 @@ import { LitElement, html, css, nothing } from "@umbraco-cms/backoffice/external
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface Slide {
   id: number;
   sliderId: number;
@@ -25,6 +27,8 @@ interface SliderConfig {
 
 @customElement("slider-dashboard")
 export class SliderDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   @state()
   private _sliders: SliderConfig[] = [];
 
@@ -107,7 +111,7 @@ export class SliderDashboardElement extends UmbElementMixin(LitElement) {
 
   private async _loadSliders(): Promise<void> {
     try {
-      const response = await fetch("/umbraco/api/slider/GetSliders");
+      const response = await this.#fetch("/umbraco/api/slider/GetSliders");
       this._sliders = (await response.json()) as SliderConfig[];
     } finally {
       this._loading = false;

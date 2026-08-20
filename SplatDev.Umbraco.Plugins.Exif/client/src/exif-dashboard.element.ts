@@ -1,6 +1,8 @@
 import { LitElement, html, css, customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface ExifData {
   camera?: string;
   lens?: string;
@@ -29,6 +31,8 @@ const EXIF_FIELDS: { key: keyof ExifData; label: string; suffix?: string }[] = [
 
 @customElement("exif-dashboard")
 export class ExifDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host {
       display: block;
@@ -101,7 +105,7 @@ export class ExifDashboardElement extends UmbElementMixin(LitElement) {
     this._error = "";
     this._loading = true;
     try {
-      const r = await fetch(
+      const r = await this.#fetch(
         `${this._baseUrl}GetByMediaKey?mediaKey=${encodeURIComponent(this._mediaKey)}`
       );
       if (!r.ok) throw new Error(await r.text());
@@ -118,7 +122,7 @@ export class ExifDashboardElement extends UmbElementMixin(LitElement) {
     this._error = "";
     this._loading = true;
     try {
-      const r = await fetch(
+      const r = await this.#fetch(
         `${this._baseUrl}GetByFilePath?filePath=${encodeURIComponent(this._filePath)}`
       );
       if (!r.ok) throw new Error(await r.text());

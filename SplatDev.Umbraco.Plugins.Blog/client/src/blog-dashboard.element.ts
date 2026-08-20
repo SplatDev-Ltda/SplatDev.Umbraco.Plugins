@@ -2,6 +2,8 @@ import { LitElement, html, css, nothing } from "@umbraco-cms/backoffice/external
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface BlogPost {
   id: number;
   title: string;
@@ -28,6 +30,8 @@ interface BlogTag {
 
 @customElement("blog-dashboard")
 export class BlogDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host {
       display: block;
@@ -144,7 +148,7 @@ export class BlogDashboardElement extends UmbElementMixin(LitElement) {
   private async _loadPosts(): Promise<void> {
     this._loading = true;
     try {
-      const response = await fetch(
+      const response = await this.#fetch(
         `${this._apiBase}/GetPosts?page=${this._page}&pageSize=${this._pageSize}&publishedOnly=false`
       );
       if (response.ok) {
@@ -161,7 +165,7 @@ export class BlogDashboardElement extends UmbElementMixin(LitElement) {
 
   private async _loadCategories(): Promise<void> {
     try {
-      const response = await fetch(`${this._apiBase}/GetCategories`);
+      const response = await this.#fetch(`${this._apiBase}/GetCategories`);
       if (response.ok) this._categories = await response.json();
     } catch {
       this._categories = [];
@@ -170,7 +174,7 @@ export class BlogDashboardElement extends UmbElementMixin(LitElement) {
 
   private async _loadTags(): Promise<void> {
     try {
-      const response = await fetch(`${this._apiBase}/GetTags`);
+      const response = await this.#fetch(`${this._apiBase}/GetTags`);
       if (response.ok) this._tags = await response.json();
     } catch {
       this._tags = [];

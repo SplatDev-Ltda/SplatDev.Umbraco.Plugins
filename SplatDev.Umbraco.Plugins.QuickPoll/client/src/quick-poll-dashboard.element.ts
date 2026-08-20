@@ -2,6 +2,8 @@ import { LitElement, html, css } from "@umbraco-cms/backoffice/external/lit";
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface PollOption {
   id: number;
   optionText: string;
@@ -32,6 +34,8 @@ interface PollResults {
 
 @customElement("quick-poll-dashboard")
 export class QuickPollDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host {
       display: block;
@@ -120,7 +124,7 @@ export class QuickPollDashboardElement extends UmbElementMixin(LitElement) {
     this._loading = true;
     this._error = null;
     try {
-      const res = await fetch(`${this._apiBase}/getall`);
+      const res = await this.#fetch(`${this._apiBase}/getall`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       this._polls = await res.json();
     } catch (e) {
@@ -132,7 +136,7 @@ export class QuickPollDashboardElement extends UmbElementMixin(LitElement) {
 
   private async _viewResults(pollId: number) {
     try {
-      const res = await fetch(`${this._apiBase}/results?pollId=${pollId}`);
+      const res = await this.#fetch(`${this._apiBase}/results?pollId=${pollId}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       this._selectedPollResults = await res.json();
     } catch (e) {
@@ -143,7 +147,7 @@ export class QuickPollDashboardElement extends UmbElementMixin(LitElement) {
   private async _deletePoll(id: number) {
     if (!confirm("Delete this poll and all votes?")) return;
     try {
-      await fetch(`${this._apiBase}/delete?id=${id}`, { method: "DELETE" });
+      await this.#fetch(`${this._apiBase}/delete?id=${id}`, { method: "DELETE" });
       this._polls = this._polls.filter((p) => p.id !== id);
       if (this._selectedPollResults?.pollId === id) {
         this._selectedPollResults = null;

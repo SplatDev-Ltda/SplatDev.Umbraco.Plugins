@@ -2,6 +2,8 @@ import { LitElement, html, css, nothing } from "@umbraco-cms/backoffice/external
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface Painel {
   sessoes: number;
   consentimentosConcedidos: number;
@@ -67,6 +69,8 @@ const OPERACAO_NOVA: Operacao = {
 /** LGPD compliance: consent, art. 18 requests, and the art. 37 record of operations. */
 @customElement("lgpd-dashboard")
 export class LgpdDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
@@ -118,10 +122,10 @@ export class LgpdDashboardElement extends UmbElementMixin(LitElement) {
     this._loading = true;
     try {
       const [p, v, r, o] = await Promise.all([
-        fetch(`${this._api}/Painel`, { credentials: "same-origin" }),
-        fetch(`${this._api}/Vocabulario`, { credentials: "same-origin" }),
-        fetch(`${this._api}/Requisicoes?status=${encodeURIComponent(this._filtro)}`, { credentials: "same-origin" }),
-        fetch(`${this._api}/Operacoes`, { credentials: "same-origin" }),
+        this.#fetch(`${this._api}/Painel`, { credentials: "same-origin" }),
+        this.#fetch(`${this._api}/Vocabulario`, { credentials: "same-origin" }),
+        this.#fetch(`${this._api}/Requisicoes?status=${encodeURIComponent(this._filtro)}`, { credentials: "same-origin" }),
+        this.#fetch(`${this._api}/Operacoes`, { credentials: "same-origin" }),
       ]);
       if (p.ok) this._painel = await p.json();
       if (v.ok) this._vocab = await v.json();
@@ -136,7 +140,7 @@ export class LgpdDashboardElement extends UmbElementMixin(LitElement) {
     this._busy = true;
     this._msg = null;
     try {
-      const res = await fetch(`${this._api}/${path}`, {
+      const res = await this.#fetch(`${this._api}/${path}`, {
         method,
         credentials: "same-origin",
         headers: body ? { "Content-Type": "application/json" } : undefined,

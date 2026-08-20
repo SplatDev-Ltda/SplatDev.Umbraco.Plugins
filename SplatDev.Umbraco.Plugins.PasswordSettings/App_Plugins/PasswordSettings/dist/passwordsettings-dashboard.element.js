@@ -1,13 +1,39 @@
-import { LitElement as d, html as e, nothing as c, css as h, state as o, customElement as g } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as y } from "@umbraco-cms/backoffice/element-api";
-var _ = Object.defineProperty, v = Object.getOwnPropertyDescriptor, a = (i, l, n, r) => {
-  for (var s = r > 1 ? void 0 : r ? v(l, n) : l, p = i.length - 1, u; p >= 0; p--)
-    (u = i[p]) && (s = (r ? u(l, n, s) : u(s)) || s);
-  return r && s && _(l, n, s), s;
-};
-let t = class extends y(d) {
+import { LitElement as _, html as n, nothing as h, css as y, state as u, customElement as v } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as m } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as f } from "@umbraco-cms/backoffice/auth";
+function w(t) {
+  let e = null;
+  const s = new Promise((a) => {
+    t.consumeContext(f, async (i) => {
+      var l;
+      try {
+        e = await ((l = i == null ? void 0 : i.getLatestToken) == null ? void 0 : l.call(i)) ?? null;
+      } catch {
+        e = null;
+      }
+      a();
+    }), setTimeout(a, 3e3);
+  });
+  return async (a, i = {}) => {
+    await s;
+    const l = new Headers(i.headers);
+    e && !l.has("Authorization") && l.set("Authorization", `Bearer ${e}`);
+    const r = await fetch(a, { ...i, credentials: "same-origin", headers: l });
+    return (r.status === 401 || r.status === 403) && console.error(
+      `[SplatDev] ${r.status} from ${String(a)} — the backoffice token was ${e ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
+    ), r;
+  };
+}
+var b = Object.defineProperty, P = Object.getOwnPropertyDescriptor, g = (t) => {
+  throw TypeError(t);
+}, p = (t, e, s, a) => {
+  for (var i = a > 1 ? void 0 : a ? P(e, s) : e, l = t.length - 1, r; l >= 0; l--)
+    (r = t[l]) && (i = (a ? r(e, s, i) : r(i)) || i);
+  return a && i && b(e, s, i), i;
+}, $ = (t, e, s) => e.has(t) || g("Cannot " + s), c = (t, e, s) => ($(t, e, "read from private field"), s ? s.call(t) : e.get(t)), x = (t, e, s) => e.has(t) ? g("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, s), d;
+let o = class extends m(_) {
   constructor() {
-    super(...arguments), this._policy = null, this._loading = !1, this._saving = !1, this._testPassword = "", this._validationResult = null, this._statusMsg = "", this._apiBase = "/umbraco/api/passwordsettings";
+    super(...arguments), x(this, d, w(this)), this._policy = null, this._loading = !1, this._saving = !1, this._testPassword = "", this._validationResult = null, this._statusMsg = "", this._apiBase = "/umbraco/api/passwordsettings";
   }
   connectedCallback() {
     super.connectedCallback(), this._loadPolicy();
@@ -15,8 +41,8 @@ let t = class extends y(d) {
   async _loadPolicy() {
     this._loading = !0;
     try {
-      const i = await fetch(`${this._apiBase}/GetPolicy`);
-      i.ok && (this._policy = await i.json());
+      const t = await c(this, d).call(this, `${this._apiBase}/GetPolicy`);
+      t.ok && (this._policy = await t.json());
     } finally {
       this._loading = !1;
     }
@@ -25,12 +51,12 @@ let t = class extends y(d) {
     if (this._policy) {
       this._saving = !0, this._statusMsg = "";
       try {
-        const i = await fetch(`${this._apiBase}/SavePolicy`, {
+        const t = await c(this, d).call(this, `${this._apiBase}/SavePolicy`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(this._policy)
         });
-        i.ok && (this._policy = await i.json(), this._statusMsg = "Policy saved successfully.");
+        t.ok && (this._policy = await t.json(), this._statusMsg = "Policy saved successfully.");
       } finally {
         this._saving = !1;
       }
@@ -38,22 +64,22 @@ let t = class extends y(d) {
   }
   async _validatePassword() {
     if (!this._testPassword) return;
-    const i = await fetch(`${this._apiBase}/ValidatePassword`, {
+    const t = await c(this, d).call(this, `${this._apiBase}/ValidatePassword`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ password: this._testPassword })
     });
-    i.ok && (this._validationResult = await i.json());
+    t.ok && (this._validationResult = await t.json());
   }
-  _setField(i, l) {
-    this._policy && (this._policy = { ...this._policy, [i]: l });
+  _setField(t, e) {
+    this._policy && (this._policy = { ...this._policy, [t]: e });
   }
   render() {
-    return e`
+    return n`
       <h1>Password Settings</h1>
       <p class="description">Configure complexity rules, expiration and reuse prevention for member passwords.</p>
 
-      ${this._loading ? e`<p>Loading...</p>` : this._policy ? e`
+      ${this._loading ? n`<p>Loading...</p>` : this._policy ? n`
             <uui-box headline="Password Policy">
               <div class="form-grid">
                 <div class="field">
@@ -61,27 +87,27 @@ let t = class extends y(d) {
                   <uui-input
                     type="number"
                     .value=${String(this._policy.minLength)}
-                    @input=${(i) => this._setField("minLength", parseInt(i.target.value, 10))}
+                    @input=${(t) => this._setField("minLength", parseInt(t.target.value, 10))}
                   ></uui-input>
                 </div>
                 <div class="field check-row">
                   <uui-toggle
                     ?checked=${this._policy.requireUppercase}
-                    @change=${(i) => this._setField("requireUppercase", i.target.checked)}
+                    @change=${(t) => this._setField("requireUppercase", t.target.checked)}
                   ></uui-toggle>
                   <label>Require Uppercase</label>
                 </div>
                 <div class="field check-row">
                   <uui-toggle
                     ?checked=${this._policy.requireDigit}
-                    @change=${(i) => this._setField("requireDigit", i.target.checked)}
+                    @change=${(t) => this._setField("requireDigit", t.target.checked)}
                   ></uui-toggle>
                   <label>Require Digit</label>
                 </div>
                 <div class="field check-row">
                   <uui-toggle
                     ?checked=${this._policy.requireSpecial}
-                    @change=${(i) => this._setField("requireSpecial", i.target.checked)}
+                    @change=${(t) => this._setField("requireSpecial", t.target.checked)}
                   ></uui-toggle>
                   <label>Require Special Character</label>
                 </div>
@@ -90,7 +116,7 @@ let t = class extends y(d) {
                   <uui-input
                     type="number"
                     .value=${String(this._policy.expirationDays)}
-                    @input=${(i) => this._setField("expirationDays", parseInt(i.target.value, 10))}
+                    @input=${(t) => this._setField("expirationDays", parseInt(t.target.value, 10))}
                   ></uui-input>
                 </div>
                 <div class="field">
@@ -98,7 +124,7 @@ let t = class extends y(d) {
                   <uui-input
                     type="number"
                     .value=${String(this._policy.historyCount)}
-                    @input=${(i) => this._setField("historyCount", parseInt(i.target.value, 10))}
+                    @input=${(t) => this._setField("historyCount", parseInt(t.target.value, 10))}
                   ></uui-input>
                 </div>
               </div>
@@ -109,7 +135,7 @@ let t = class extends y(d) {
                   ?disabled=${this._saving}
                   @click=${this._savePolicy}
                 >${this._saving ? "Saving..." : "Save Policy"}</uui-button>
-                ${this._statusMsg ? e`<span class="status">${this._statusMsg}</span>` : c}
+                ${this._statusMsg ? n`<span class="status">${this._statusMsg}</span>` : h}
               </div>
             </uui-box>
 
@@ -118,18 +144,19 @@ let t = class extends y(d) {
                 <uui-input
                   placeholder="Enter a password to test..."
                   .value=${this._testPassword}
-                  @input=${(i) => this._testPassword = i.target.value}
+                  @input=${(t) => this._testPassword = t.target.value}
                   style="width:100%;margin-bottom:10px"
                 ></uui-input>
                 <uui-button look="secondary" label="Validate" @click=${this._validatePassword}>Validate</uui-button>
-                ${this._validationResult ? this._validationResult.valid ? e`<p class="valid-msg">Password meets all requirements.</p>` : e`<ul class="error-list">${this._validationResult.errors.map((i) => e`<li>${i}</li>`)}</ul>` : c}
+                ${this._validationResult ? this._validationResult.valid ? n`<p class="valid-msg">Password meets all requirements.</p>` : n`<ul class="error-list">${this._validationResult.errors.map((t) => n`<li>${t}</li>`)}</ul>` : h}
               </div>
             </uui-box>
-          ` : e`<p>No policy found.</p>`}
+          ` : n`<p>No policy found.</p>`}
     `;
   }
 };
-t.styles = h`
+d = /* @__PURE__ */ new WeakMap();
+o.styles = y`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
     p.description { color: var(--uui-color-text-alt, #6b7280); margin: 0 0 24px; }
@@ -143,29 +170,29 @@ t.styles = h`
     .actions { margin-top: 20px; display: flex; gap: 12px; align-items: center; }
     .status { font-size: 0.875rem; color: #065f46; }
   `;
-a([
-  o()
-], t.prototype, "_policy", 2);
-a([
-  o()
-], t.prototype, "_loading", 2);
-a([
-  o()
-], t.prototype, "_saving", 2);
-a([
-  o()
-], t.prototype, "_testPassword", 2);
-a([
-  o()
-], t.prototype, "_validationResult", 2);
-a([
-  o()
-], t.prototype, "_statusMsg", 2);
-t = a([
-  g("passwordsettings-dashboard")
-], t);
-const b = t;
+p([
+  u()
+], o.prototype, "_policy", 2);
+p([
+  u()
+], o.prototype, "_loading", 2);
+p([
+  u()
+], o.prototype, "_saving", 2);
+p([
+  u()
+], o.prototype, "_testPassword", 2);
+p([
+  u()
+], o.prototype, "_validationResult", 2);
+p([
+  u()
+], o.prototype, "_statusMsg", 2);
+o = p([
+  v("passwordsettings-dashboard")
+], o);
+const T = o;
 export {
-  t as PasswordSettingsDashboardElement,
-  b as default
+  o as PasswordSettingsDashboardElement,
+  T as default
 };

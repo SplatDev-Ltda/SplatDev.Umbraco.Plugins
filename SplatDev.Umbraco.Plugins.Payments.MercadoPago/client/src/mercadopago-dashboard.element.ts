@@ -23,6 +23,8 @@ import { LitElement, html, css } from "@umbraco-cms/backoffice/external/lit";
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 const API = "/umbraco/api/mercadopago";
 
 // Brand color: #009EE3 (MercadoPago blue)
@@ -36,6 +38,8 @@ type ConnStatus = "checking" | "connected" | "error";
 
 @customElement("mercadopago-dashboard")
 export class MercadoPagoDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host {
       display: block;
@@ -250,7 +254,7 @@ export class MercadoPagoDashboardElement extends UmbElementMixin(LitElement) {
     this._configError = "";
     this._config = null;
     try {
-      const r = await fetch(`${API}/GetConfig`);
+      const r = await this.#fetch(`${API}/GetConfig`);
       if (r.ok) {
         this._config = await r.json() as ConfigResponse;
         this._connStatus = "connected";
@@ -268,7 +272,7 @@ export class MercadoPagoDashboardElement extends UmbElementMixin(LitElement) {
     this._prefLoading = true;
     this._prefResult = "";
     try {
-      const r = await fetch(`${API}/CreatePreference`, {
+      const r = await this.#fetch(`${API}/CreatePreference`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -290,7 +294,7 @@ export class MercadoPagoDashboardElement extends UmbElementMixin(LitElement) {
     this._statusLoading = true;
     this._statusResult = "";
     try {
-      const r = await fetch(
+      const r = await this.#fetch(
         `${API}/GetPaymentStatus?paymentId=${encodeURIComponent(this._statusPaymentId.trim())}`
       );
       const body = await r.json();

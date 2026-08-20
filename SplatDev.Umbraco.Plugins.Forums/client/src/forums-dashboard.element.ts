@@ -2,6 +2,8 @@ import { LitElement, html, css, nothing } from "@umbraco-cms/backoffice/external
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface ForumCategory {
   id: number;
   name: string;
@@ -26,6 +28,8 @@ interface ForumThread {
 
 @customElement("forums-dashboard")
 export class ForumsDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host {
       display: block;
@@ -163,7 +167,7 @@ export class ForumsDashboardElement extends UmbElementMixin(LitElement) {
   private async _loadCategories(): Promise<void> {
     this._loading = true;
     try {
-      const response = await fetch(`${this._apiBase}/GetCategories`);
+      const response = await this.#fetch(`${this._apiBase}/GetCategories`);
       if (response.ok) this._categories = await response.json();
     } catch {
       this._categories = [];
@@ -183,7 +187,7 @@ export class ForumsDashboardElement extends UmbElementMixin(LitElement) {
     if (!this._selectedCategory) return;
     this._loading = true;
     try {
-      const response = await fetch(
+      const response = await this.#fetch(
         `${this._apiBase}/GetThreads?categoryId=${this._selectedCategory.id}&page=${this._page}&pageSize=${this._pageSize}`
       );
       if (response.ok) {
@@ -199,7 +203,7 @@ export class ForumsDashboardElement extends UmbElementMixin(LitElement) {
   }
 
   private async _lockThread(thread: ForumThread): Promise<void> {
-    await fetch(`${this._apiBase}/LockThread?threadId=${thread.id}&locked=${!thread.isLocked}`, {
+    await this.#fetch(`${this._apiBase}/LockThread?threadId=${thread.id}&locked=${!thread.isLocked}`, {
       method: "POST",
     });
     thread.isLocked = !thread.isLocked;
@@ -207,7 +211,7 @@ export class ForumsDashboardElement extends UmbElementMixin(LitElement) {
   }
 
   private async _pinThread(thread: ForumThread): Promise<void> {
-    await fetch(`${this._apiBase}/PinThread?threadId=${thread.id}&pinned=${!thread.isPinned}`, {
+    await this.#fetch(`${this._apiBase}/PinThread?threadId=${thread.id}&pinned=${!thread.isPinned}`, {
       method: "POST",
     });
     thread.isPinned = !thread.isPinned;
@@ -216,7 +220,7 @@ export class ForumsDashboardElement extends UmbElementMixin(LitElement) {
 
   private async _deleteThread(threadId: number): Promise<void> {
     if (!confirm("Delete this thread and all its replies?")) return;
-    await fetch(`${this._apiBase}/DeleteThread?threadId=${threadId}`, { method: "DELETE" });
+    await this.#fetch(`${this._apiBase}/DeleteThread?threadId=${threadId}`, { method: "DELETE" });
     this._threads = this._threads.filter((t) => t.id !== threadId);
     this._totalThreads--;
     this.requestUpdate();

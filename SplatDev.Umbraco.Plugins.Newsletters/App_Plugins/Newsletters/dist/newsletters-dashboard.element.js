@@ -1,18 +1,44 @@
-import { LitElement as b, html as s, css as p, state as n, customElement as u } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as g } from "@umbraco-cms/backoffice/element-api";
-var h = Object.defineProperty, m = Object.getOwnPropertyDescriptor, o = (a, e, t, d) => {
-  for (var i = d > 1 ? void 0 : d ? m(e, t) : e, c = a.length - 1, l; c >= 0; c--)
-    (l = a[c]) && (i = (d ? l(e, t, i) : l(i)) || i);
-  return d && i && h(e, t, i), i;
-};
-const v = {
+import { LitElement as h, html as i, css as g, state as b, customElement as m } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as v } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as f } from "@umbraco-cms/backoffice/auth";
+function _(a) {
+  let e = null;
+  const t = new Promise((r) => {
+    a.consumeContext(f, async (s) => {
+      var o;
+      try {
+        e = await ((o = s == null ? void 0 : s.getLatestToken) == null ? void 0 : o.call(s)) ?? null;
+      } catch {
+        e = null;
+      }
+      r();
+    }), setTimeout(r, 3e3);
+  });
+  return async (r, s = {}) => {
+    await t;
+    const o = new Headers(s.headers);
+    e && !o.has("Authorization") && o.set("Authorization", `Bearer ${e}`);
+    const d = await fetch(r, { ...s, credentials: "same-origin", headers: o });
+    return (d.status === 401 || d.status === 403) && console.error(
+      `[SplatDev] ${d.status} from ${String(r)} — the backoffice token was ${e ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
+    ), d;
+  };
+}
+var w = Object.defineProperty, x = Object.getOwnPropertyDescriptor, u = (a) => {
+  throw TypeError(a);
+}, l = (a, e, t, r) => {
+  for (var s = r > 1 ? void 0 : r ? x(e, t) : e, o = a.length - 1, d; o >= 0; o--)
+    (d = a[o]) && (s = (r ? d(e, t, s) : d(s)) || s);
+  return r && s && w(e, t, s), s;
+}, y = (a, e, t) => e.has(a) || u("Cannot " + t), p = (a, e, t) => (y(a, e, "read from private field"), t ? t.call(a) : e.get(a)), $ = (a, e, t) => e.has(a) ? u("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(a) : e.set(a, t), c;
+const S = {
   0: "Draft",
   1: "Scheduled",
   2: "Sent"
 };
-let r = class extends g(b) {
+let n = class extends v(h) {
   constructor() {
-    super(...arguments), this._subscribers = [], this._campaigns = [], this._loading = !1, this._activeTab = "subscribers", this._apiBase = "/umbraco/api/newsletters";
+    super(...arguments), $(this, c, _(this)), this._subscribers = [], this._campaigns = [], this._loading = !1, this._activeTab = "subscribers", this._apiBase = "/umbraco/api/newsletters";
   }
   connectedCallback() {
     super.connectedCallback(), this._loadSubscribers(), this._loadCampaigns();
@@ -20,18 +46,18 @@ let r = class extends g(b) {
   async _loadSubscribers() {
     this._loading = !0;
     try {
-      const a = await fetch(`${this._apiBase}/subscribers`);
+      const a = await p(this, c).call(this, `${this._apiBase}/subscribers`);
       a.ok && (this._subscribers = await a.json());
     } finally {
       this._loading = !1;
     }
   }
   async _loadCampaigns() {
-    const a = await fetch(`${this._apiBase}/campaigns`);
+    const a = await p(this, c).call(this, `${this._apiBase}/campaigns`);
     a.ok && (this._campaigns = await a.json());
   }
   async _sendCampaign(a) {
-    (await fetch(`${this._apiBase}/send`, {
+    (await p(this, c).call(this, `${this._apiBase}/send`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ campaignId: a.id })
@@ -39,11 +65,11 @@ let r = class extends g(b) {
   }
   _statusBadge(a) {
     const e = ["badge-draft", "badge-scheduled", "badge-sent"][a] ?? "badge-draft";
-    return s`<span class="badge ${e}">${v[a] ?? "Unknown"}</span>`;
+    return i`<span class="badge ${e}">${S[a] ?? "Unknown"}</span>`;
   }
   render() {
     const a = this._subscribers.filter((t) => t.isConfirmed).length, e = this._campaigns.filter((t) => t.status === 2).length;
-    return s`
+    return i`
       <h1>Newsletters</h1>
       <p class="description">
         Manage newsletter subscribers and send campaigns to your audience.
@@ -83,9 +109,9 @@ let r = class extends g(b) {
         </button>
       </div>
 
-      ${this._activeTab === "subscribers" ? s`
+      ${this._activeTab === "subscribers" ? i`
             <uui-box headline="Subscribers">
-              ${this._loading ? s`<uui-loader></uui-loader>` : this._subscribers.length === 0 ? s`<div class="empty-state">No subscribers yet.</div>` : s`
+              ${this._loading ? i`<uui-loader></uui-loader>` : this._subscribers.length === 0 ? i`<div class="empty-state">No subscribers yet.</div>` : i`
                     <div class="table-wrap">
                       <table>
                         <thead>
@@ -98,7 +124,7 @@ let r = class extends g(b) {
                         </thead>
                         <tbody>
                           ${this._subscribers.map(
-      (t) => s`
+      (t) => i`
                               <tr>
                                 <td>${t.email}</td>
                                 <td>${t.firstName} ${t.lastName}</td>
@@ -116,9 +142,9 @@ let r = class extends g(b) {
                     </div>
                   `}
             </uui-box>
-          ` : s`
+          ` : i`
             <uui-box headline="Campaigns">
-              ${this._campaigns.length === 0 ? s`<div class="empty-state">No campaigns found.</div>` : s`
+              ${this._campaigns.length === 0 ? i`<div class="empty-state">No campaigns found.</div>` : i`
                     <div class="table-wrap">
                       <table>
                         <thead>
@@ -131,7 +157,7 @@ let r = class extends g(b) {
                         </thead>
                         <tbody>
                           ${this._campaigns.map(
-      (t) => s`
+      (t) => i`
                               <tr>
                                 <td>${t.subject}</td>
                                 <td>${this._statusBadge(t.status)}</td>
@@ -139,7 +165,7 @@ let r = class extends g(b) {
                                   ${t.sentAt ? new Date(t.sentAt).toLocaleString() : "—"}
                                 </td>
                                 <td>
-                                  ${t.status !== 2 ? s`
+                                  ${t.status !== 2 ? i`
                                         <uui-button
                                           look="primary"
                                           compact
@@ -162,7 +188,8 @@ let r = class extends g(b) {
     `;
   }
 };
-r.styles = p`
+c = /* @__PURE__ */ new WeakMap();
+n.styles = g`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -269,21 +296,21 @@ r.styles = p`
       color: var(--uui-color-text-alt, #6b7280);
     }
   `;
-o([
-  n()
-], r.prototype, "_subscribers", 2);
-o([
-  n()
-], r.prototype, "_campaigns", 2);
-o([
-  n()
-], r.prototype, "_loading", 2);
-o([
-  n()
-], r.prototype, "_activeTab", 2);
-r = o([
-  u("newsletters-dashboard")
-], r);
+l([
+  b()
+], n.prototype, "_subscribers", 2);
+l([
+  b()
+], n.prototype, "_campaigns", 2);
+l([
+  b()
+], n.prototype, "_loading", 2);
+l([
+  b()
+], n.prototype, "_activeTab", 2);
+n = l([
+  m("newsletters-dashboard")
+], n);
 export {
-  r as NewslettersDashboardElement
+  n as NewslettersDashboardElement
 };

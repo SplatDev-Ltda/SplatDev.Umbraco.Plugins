@@ -2,6 +2,8 @@ import { LitElement, html, css, nothing } from "@umbraco-cms/backoffice/external
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface BookEntry {
   id: number;
   title: string;
@@ -10,6 +12,8 @@ interface BookEntry {
 
 @customElement("pdf-curator-dashboard")
 export class PdfCuratorDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host {
       display: block;
@@ -104,7 +108,7 @@ export class PdfCuratorDashboardElement extends UmbElementMixin(LitElement) {
   private async _fetchBooks(): Promise<void> {
     this._loadingBooks = true;
     try {
-      const response = await fetch("/umbraco/api/ManagerApi/GetAllAsync");
+      const response = await this.#fetch("/umbraco/api/ManagerApi/GetAllAsync");
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       this._books = (await response.json()) as BookEntry[];
     } catch {
@@ -117,7 +121,7 @@ export class PdfCuratorDashboardElement extends UmbElementMixin(LitElement) {
   private async _deleteBook(id: number): Promise<void> {
     if (!confirm("Are you sure you want to delete this entry?")) return;
     try {
-      const response = await fetch(`/umbraco/api/ManagerApi/Delete/${id}`, { method: "DELETE" });
+      const response = await this.#fetch(`/umbraco/api/ManagerApi/Delete/${id}`, { method: "DELETE" });
       if (response.ok) {
         this._books = this._books.filter((b) => b.id !== id);
       }
@@ -139,7 +143,7 @@ export class PdfCuratorDashboardElement extends UmbElementMixin(LitElement) {
     try {
       const formData = new FormData();
       formData.append("file", this._selectedFile);
-      const response = await fetch("/umbraco/api/UploadApi/UploadFiles", {
+      const response = await this.#fetch("/umbraco/api/UploadApi/UploadFiles", {
         method: "POST",
         body: formData,
       });

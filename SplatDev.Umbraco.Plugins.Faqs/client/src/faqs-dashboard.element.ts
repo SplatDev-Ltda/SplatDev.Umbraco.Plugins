@@ -2,6 +2,8 @@ import { LitElement, html, css, nothing } from "@umbraco-cms/backoffice/external
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 interface FaqCategory {
   id: number;
   name: string;
@@ -22,6 +24,8 @@ interface FaqItem {
 
 @customElement("faqs-dashboard")
 export class FaqsDashboardElement extends UmbElementMixin(LitElement) {
+  readonly #fetch = createAuthFetch(this);
+
   static override styles = css`
     :host {
       display: block;
@@ -173,8 +177,8 @@ export class FaqsDashboardElement extends UmbElementMixin(LitElement) {
     this._loading = true;
     try {
       const [catResp, itemResp] = await Promise.all([
-        fetch(`${this._apiBase}/GetCategories?publishedOnly=false`),
-        fetch(`${this._apiBase}/GetItems?publishedOnly=false`),
+        this.#fetch(`${this._apiBase}/GetCategories?publishedOnly=false`),
+        this.#fetch(`${this._apiBase}/GetItems?publishedOnly=false`),
       ]);
 
       if (catResp.ok) this._categories = await catResp.json();
@@ -197,7 +201,7 @@ export class FaqsDashboardElement extends UmbElementMixin(LitElement) {
       return;
     }
     try {
-      const response = await fetch(
+      const response = await this.#fetch(
         `${this._apiBase}/Search?q=${encodeURIComponent(this._searchQuery)}&publishedOnly=false`
       );
       if (response.ok) {
@@ -210,7 +214,7 @@ export class FaqsDashboardElement extends UmbElementMixin(LitElement) {
   }
 
   private async _togglePublish(item: FaqItem): Promise<void> {
-    await fetch(`${this._apiBase}/PublishItem?id=${item.id}&publish=${!item.isPublished}`, {
+    await this.#fetch(`${this._apiBase}/PublishItem?id=${item.id}&publish=${!item.isPublished}`, {
       method: "POST",
     });
     item.isPublished = !item.isPublished;
@@ -219,7 +223,7 @@ export class FaqsDashboardElement extends UmbElementMixin(LitElement) {
 
   private async _deleteItem(id: number): Promise<void> {
     if (!confirm("Delete this FAQ item?")) return;
-    await fetch(`${this._apiBase}/DeleteItem?id=${id}`, { method: "DELETE" });
+    await this.#fetch(`${this._apiBase}/DeleteItem?id=${id}`, { method: "DELETE" });
     this._allItems = this._allItems.filter((i) => i.id !== id);
     this._totalItems--;
     this.requestUpdate();
@@ -227,7 +231,7 @@ export class FaqsDashboardElement extends UmbElementMixin(LitElement) {
 
   private async _deleteCategory(categoryId: number): Promise<void> {
     if (!confirm("Delete this category and all its FAQ items?")) return;
-    await fetch(`${this._apiBase}/DeleteCategory?categoryId=${categoryId}`, { method: "DELETE" });
+    await this.#fetch(`${this._apiBase}/DeleteCategory?categoryId=${categoryId}`, { method: "DELETE" });
     await this._loadData();
   }
 

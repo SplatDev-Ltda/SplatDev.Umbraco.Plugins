@@ -1,13 +1,39 @@
-import { LitElement as d, html as l, css as p, state as s, customElement as h } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as b } from "@umbraco-cms/backoffice/element-api";
-var g = Object.defineProperty, _ = Object.getOwnPropertyDescriptor, o = (t, e, u, i) => {
-  for (var a = i > 1 ? void 0 : i ? _(e, u) : e, n = t.length - 1, c; n >= 0; n--)
-    (c = t[n]) && (a = (i ? c(e, u, a) : c(a)) || a);
-  return i && a && g(e, u, a), a;
-};
-let r = class extends b(d) {
+import { LitElement as p, html as n, css as _, state as c, customElement as b } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as g } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as f } from "@umbraco-cms/backoffice/auth";
+function v(e) {
+  let t = null;
+  const r = new Promise((o) => {
+    e.consumeContext(f, async (a) => {
+      var l;
+      try {
+        t = await ((l = a == null ? void 0 : a.getLatestToken) == null ? void 0 : l.call(a)) ?? null;
+      } catch {
+        t = null;
+      }
+      o();
+    }), setTimeout(o, 3e3);
+  });
+  return async (o, a = {}) => {
+    await r;
+    const l = new Headers(a.headers);
+    t && !l.has("Authorization") && l.set("Authorization", `Bearer ${t}`);
+    const s = await fetch(o, { ...a, credentials: "same-origin", headers: l });
+    return (s.status === 401 || s.status === 403) && console.error(
+      `[SplatDev] ${s.status} from ${String(o)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
+    ), s;
+  };
+}
+var m = Object.defineProperty, y = Object.getOwnPropertyDescriptor, h = (e) => {
+  throw TypeError(e);
+}, u = (e, t, r, o) => {
+  for (var a = o > 1 ? void 0 : o ? y(t, r) : t, l = e.length - 1, s; l >= 0; l--)
+    (s = e[l]) && (a = (o ? s(t, r, a) : s(a)) || a);
+  return o && a && m(t, r, a), a;
+}, w = (e, t, r) => t.has(e) || h("Cannot " + r), $ = (e, t, r) => (w(e, t, "read from private field"), r ? r.call(e) : t.get(e)), R = (e, t, r) => t.has(e) ? h("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, r), d;
+let i = class extends g(p) {
   constructor() {
-    super(...arguments), this._loading = !1, this._topRated = [], this._error = null, this._count = 10;
+    super(...arguments), R(this, d, v(this)), this._loading = !1, this._topRated = [], this._error = null, this._count = 10;
   }
   connectedCallback() {
     super.connectedCallback(), this._load();
@@ -15,21 +41,21 @@ let r = class extends b(d) {
   async _load() {
     this._loading = !0, this._error = null;
     try {
-      const t = await fetch(`/umbraco/api/starratings/GetTopRated?count=${this._count}`);
-      if (!t.ok) throw new Error(`HTTP ${t.status}`);
-      this._topRated = await t.json();
-    } catch (t) {
-      this._error = t instanceof Error ? t.message : "Unknown error";
+      const e = await $(this, d).call(this, `/umbraco/api/starratings/GetTopRated?count=${this._count}`);
+      if (!e.ok) throw new Error(`HTTP ${e.status}`);
+      this._topRated = await e.json();
+    } catch (e) {
+      this._error = e instanceof Error ? e.message : "Unknown error";
     } finally {
       this._loading = !1;
     }
   }
-  _renderStars(t) {
-    const e = Math.round(t);
-    return "★".repeat(e) + "☆".repeat(5 - e);
+  _renderStars(e) {
+    const t = Math.round(e);
+    return "★".repeat(t) + "☆".repeat(5 - t);
   }
   render() {
-    return l`
+    return n`
       <h1>Star Ratings</h1>
       <p class="description">Top-rated content across your Umbraco site.</p>
 
@@ -43,7 +69,7 @@ let r = class extends b(d) {
           >${this._loading ? "Loading…" : "Refresh"}</uui-button>
         </div>
 
-        ${this._error ? l`<uui-tag color="danger">${this._error}</uui-tag>` : this._loading ? l`<uui-loader></uui-loader>` : this._topRated.length === 0 ? l`<div class="empty-state">No ratings recorded yet.</div>` : l`
+        ${this._error ? n`<uui-tag color="danger">${this._error}</uui-tag>` : this._loading ? n`<uui-loader></uui-loader>` : this._topRated.length === 0 ? n`<div class="empty-state">No ratings recorded yet.</div>` : n`
               <uui-table>
                 <uui-table-head>
                   <uui-table-head-cell>Content Key</uui-table-head-cell>
@@ -52,14 +78,14 @@ let r = class extends b(d) {
                   <uui-table-head-cell>Votes</uui-table-head-cell>
                 </uui-table-head>
                 ${this._topRated.map(
-      (t) => l`
+      (e) => n`
                     <uui-table-row>
-                      <uui-table-cell>${t.contentKey}</uui-table-cell>
+                      <uui-table-cell>${e.contentKey}</uui-table-cell>
                       <uui-table-cell>
-                        <span class="stars">${this._renderStars(t.averageRating)}</span>
+                        <span class="stars">${this._renderStars(e.averageRating)}</span>
                       </uui-table-cell>
-                      <uui-table-cell>${t.averageRating.toFixed(1)} / 5</uui-table-cell>
-                      <uui-table-cell>${t.totalVotes}</uui-table-cell>
+                      <uui-table-cell>${e.averageRating.toFixed(1)} / 5</uui-table-cell>
+                      <uui-table-cell>${e.totalVotes}</uui-table-cell>
                     </uui-table-row>
                   `
     )}
@@ -69,7 +95,8 @@ let r = class extends b(d) {
     `;
   }
 };
-r.styles = p`
+d = /* @__PURE__ */ new WeakMap();
+i.styles = _`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -109,21 +136,21 @@ r.styles = p`
       width: 100%;
     }
   `;
-o([
-  s()
-], r.prototype, "_loading", 2);
-o([
-  s()
-], r.prototype, "_topRated", 2);
-o([
-  s()
-], r.prototype, "_error", 2);
-o([
-  s()
-], r.prototype, "_count", 2);
-r = o([
-  h("star-ratings-dashboard")
-], r);
+u([
+  c()
+], i.prototype, "_loading", 2);
+u([
+  c()
+], i.prototype, "_topRated", 2);
+u([
+  c()
+], i.prototype, "_error", 2);
+u([
+  c()
+], i.prototype, "_count", 2);
+i = u([
+  b("star-ratings-dashboard")
+], i);
 export {
-  r as StarRatingsDashboardElement
+  i as StarRatingsDashboardElement
 };

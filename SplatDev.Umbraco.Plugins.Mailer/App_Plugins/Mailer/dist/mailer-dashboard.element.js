@@ -1,13 +1,39 @@
-import { LitElement as c, html as d, css as m, state as u, customElement as h } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as p } from "@umbraco-cms/backoffice/element-api";
-var g = Object.defineProperty, v = Object.getOwnPropertyDescriptor, r = (e, t, o, a) => {
-  for (var s = a > 1 ? void 0 : a ? v(t, o) : t, n = e.length - 1, l; n >= 0; n--)
-    (l = e[n]) && (s = (a ? l(t, o, s) : l(s)) || s);
-  return a && s && g(t, o, s), s;
-};
-let i = class extends p(c) {
+import { LitElement as m, html as d, css as p, state as c, customElement as v } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as f } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as g } from "@umbraco-cms/backoffice/auth";
+function _(e) {
+  let t = null;
+  const s = new Promise((i) => {
+    e.consumeContext(g, async (a) => {
+      var r;
+      try {
+        t = await ((r = a == null ? void 0 : a.getLatestToken) == null ? void 0 : r.call(a)) ?? null;
+      } catch {
+        t = null;
+      }
+      i();
+    }), setTimeout(i, 3e3);
+  });
+  return async (i, a = {}) => {
+    await s;
+    const r = new Headers(a.headers);
+    t && !r.has("Authorization") && r.set("Authorization", `Bearer ${t}`);
+    const o = await fetch(i, { ...a, credentials: "same-origin", headers: r });
+    return (o.status === 401 || o.status === 403) && console.error(
+      `[SplatDev] ${o.status} from ${String(i)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
+    ), o;
+  };
+}
+var b = Object.defineProperty, y = Object.getOwnPropertyDescriptor, h = (e) => {
+  throw TypeError(e);
+}, l = (e, t, s, i) => {
+  for (var a = i > 1 ? void 0 : i ? y(t, s) : t, r = e.length - 1, o; r >= 0; r--)
+    (o = e[r]) && (a = (i ? o(t, s, a) : o(a)) || a);
+  return i && a && b(t, s, a), a;
+}, S = (e, t, s) => t.has(e) || h("Cannot " + s), x = (e, t, s) => (S(e, t, "read from private field"), s ? s.call(e) : t.get(e)), $ = (e, t, s) => t.has(e) ? h("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, s), u;
+let n = class extends f(m) {
   constructor() {
-    super(...arguments), this._email = "", this._sendState = "idle", this._message = "";
+    super(...arguments), $(this, u, _(this)), this._email = "", this._sendState = "idle", this._message = "";
   }
   _handleEmailInput(e) {
     const t = e.target;
@@ -20,15 +46,12 @@ let i = class extends p(c) {
     }
     this._sendState = "loading", this._message = "";
     try {
-      const e = await fetch(
-        `/umbraco/backoffice/api/MailerApi/SendTestAsync?email=${encodeURIComponent(this._email)}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          }
+      const e = await x(this, u).call(this, `/umbraco/backoffice/api/MailerApi/SendTestAsync?email=${encodeURIComponent(this._email)}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
         }
-      );
+      });
       if (e.ok)
         this._sendState = "success", this._message = `Test email sent successfully to ${this._email}.`;
       else {
@@ -100,7 +123,8 @@ let i = class extends p(c) {
     `;
   }
 };
-i.styles = m`
+u = /* @__PURE__ */ new WeakMap();
+n.styles = p`
     :host {
       display: block;
       padding: var(--uui-size-layout-1);
@@ -170,20 +194,20 @@ i.styles = m`
       color: var(--uui-color-text);
     }
   `;
-r([
-  u()
-], i.prototype, "_email", 2);
-r([
-  u()
-], i.prototype, "_sendState", 2);
-r([
-  u()
-], i.prototype, "_message", 2);
-i = r([
-  h("mailer-dashboard")
-], i);
-const _ = i;
+l([
+  c()
+], n.prototype, "_email", 2);
+l([
+  c()
+], n.prototype, "_sendState", 2);
+l([
+  c()
+], n.prototype, "_message", 2);
+n = l([
+  v("mailer-dashboard")
+], n);
+const E = n;
 export {
-  i as MailerDashboardElement,
-  _ as default
+  n as MailerDashboardElement,
+  E as default
 };

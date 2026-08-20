@@ -1,14 +1,40 @@
-import { LitElement as d, html as l, css as b, state as o, customElement as h } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as p } from "@umbraco-cms/backoffice/element-api";
-var g = Object.defineProperty, _ = Object.getOwnPropertyDescriptor, n = (e, t, a, u) => {
-  for (var i = u > 1 ? void 0 : u ? _(t, a) : t, r = e.length - 1, c; r >= 0; r--)
-    (c = e[r]) && (i = (u ? c(t, a, i) : c(i)) || i);
-  return u && i && g(t, a, i), i;
-};
-const m = ["Confirmed", "Waitlisted", "Cancelled"], v = ["#d1fae5", "#fef3c7", "#fee2e2"], f = ["#065f46", "#92400e", "#991b1b"];
-let s = class extends p(d) {
+import { LitElement as p, html as i, css as _, state as h, customElement as g } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as v } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as m } from "@umbraco-cms/backoffice/auth";
+function f(e) {
+  let t = null;
+  const a = new Promise((s) => {
+    e.consumeContext(m, async (l) => {
+      var n;
+      try {
+        t = await ((n = l == null ? void 0 : l.getLatestToken) == null ? void 0 : n.call(l)) ?? null;
+      } catch {
+        t = null;
+      }
+      s();
+    }), setTimeout(s, 3e3);
+  });
+  return async (s, l = {}) => {
+    await a;
+    const n = new Headers(l.headers);
+    t && !n.has("Authorization") && n.set("Authorization", `Bearer ${t}`);
+    const r = await fetch(s, { ...l, credentials: "same-origin", headers: n });
+    return (r.status === 401 || r.status === 403) && console.error(
+      `[SplatDev] ${r.status} from ${String(s)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
+    ), r;
+  };
+}
+var $ = Object.defineProperty, y = Object.getOwnPropertyDescriptor, b = (e) => {
+  throw TypeError(e);
+}, c = (e, t, a, s) => {
+  for (var l = s > 1 ? void 0 : s ? y(t, a) : t, n = e.length - 1, r; n >= 0; n--)
+    (r = e[n]) && (l = (s ? r(t, a, l) : r(l)) || l);
+  return s && l && $(t, a, l), l;
+}, E = (e, t, a) => t.has(e) || b("Cannot " + a), d = (e, t, a) => (E(e, t, "read from private field"), a ? a.call(e) : t.get(e)), w = (e, t, a) => t.has(e) ? b("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), u;
+const x = ["Confirmed", "Waitlisted", "Cancelled"], C = ["#d1fae5", "#fef3c7", "#fee2e2"], k = ["#065f46", "#92400e", "#991b1b"];
+let o = class extends v(p) {
   constructor() {
-    super(...arguments), this._events = [], this._loading = !1, this._error = null, this._selectedEvent = null, this._apiBase = "/umbraco/api/rsvp";
+    super(...arguments), w(this, u, f(this)), this._events = [], this._loading = !1, this._error = null, this._selectedEvent = null, this._apiBase = "/umbraco/api/rsvp";
   }
   connectedCallback() {
     super.connectedCallback(), this._loadEvents();
@@ -16,7 +42,7 @@ let s = class extends p(d) {
   async _loadEvents() {
     this._loading = !0, this._error = null;
     try {
-      const e = await fetch(`${this._apiBase}/getevents`);
+      const e = await d(this, u).call(this, `${this._apiBase}/getevents`);
       if (!e.ok) throw new Error(`HTTP ${e.status}`);
       this._events = await e.json();
     } catch (e) {
@@ -27,7 +53,7 @@ let s = class extends p(d) {
   }
   async _selectEvent(e) {
     try {
-      const t = await fetch(`${this._apiBase}/getevent?id=${e.id}`);
+      const t = await d(this, u).call(this, `${this._apiBase}/getevent?id=${e.id}`);
       if (!t.ok) throw new Error(`HTTP ${t.status}`);
       this._selectedEvent = await t.json();
     } catch (t) {
@@ -37,7 +63,7 @@ let s = class extends p(d) {
   async _cancelRegistration(e) {
     if (confirm("Cancel this registration?"))
       try {
-        const t = await fetch(`${this._apiBase}/cancelregistration?attendeeId=${e}`, { method: "POST" });
+        const t = await d(this, u).call(this, `${this._apiBase}/cancelregistration?attendeeId=${e}`, { method: "POST" });
         if (!t.ok) throw new Error(`HTTP ${t.status}`);
         this._selectedEvent && await this._selectEvent(this._selectedEvent);
       } catch (t) {
@@ -48,7 +74,7 @@ let s = class extends p(d) {
     var t;
     if (confirm("Delete this event and all registrations?"))
       try {
-        await fetch(`${this._apiBase}/deleteevent?id=${e}`, { method: "DELETE" }), this._events = this._events.filter((a) => a.id !== e), ((t = this._selectedEvent) == null ? void 0 : t.id) === e && (this._selectedEvent = null);
+        await d(this, u).call(this, `${this._apiBase}/deleteevent?id=${e}`, { method: "DELETE" }), this._events = this._events.filter((a) => a.id !== e), ((t = this._selectedEvent) == null ? void 0 : t.id) === e && (this._selectedEvent = null);
       } catch (a) {
         this._error = `Delete failed: ${a instanceof Error ? a.message : String(a)}`;
       }
@@ -62,13 +88,13 @@ let s = class extends p(d) {
     return ((t = e.attendees) == null ? void 0 : t.filter((a) => a.status === 1).length) ?? 0;
   }
   render() {
-    return l`
+    return i`
       <h1>RSVP</h1>
       <p class="description">
         Manage event registrations, track attendees, and handle capacity limits and waitlists.
       </p>
 
-      ${this._error ? l`<uui-box style="margin-bottom:16px">
+      ${this._error ? i`<uui-box style="margin-bottom:16px">
             <p style="color:var(--uui-color-danger)">${this._error}</p>
           </uui-box>` : ""}
 
@@ -76,7 +102,7 @@ let s = class extends p(d) {
     `;
   }
   _renderEventList() {
-    return l`
+    return i`
       <div class="toolbar">
         <uui-button
           look="secondary"
@@ -87,7 +113,7 @@ let s = class extends p(d) {
       </div>
 
       <uui-box headline="Events">
-        ${this._events.length > 0 ? l`
+        ${this._events.length > 0 ? i`
               <uui-table>
                 <uui-table-head>
                   <uui-table-head-cell>Title</uui-table-head-cell>
@@ -98,7 +124,7 @@ let s = class extends p(d) {
                   <uui-table-head-cell>Actions</uui-table-head-cell>
                 </uui-table-head>
                 ${this._events.map(
-      (e) => l`
+      (e) => i`
                     <uui-table-row>
                       <uui-table-cell>${e.title}</uui-table-cell>
                       <uui-table-cell>${new Date(e.eventDate).toLocaleDateString()}</uui-table-cell>
@@ -106,8 +132,8 @@ let s = class extends p(d) {
                       <uui-table-cell>
                         <div class="event-stats">
                           <span>${this._getConfirmedCount(e)} confirmed</span>
-                          ${this._getWaitlistCount(e) > 0 ? l`<span>${this._getWaitlistCount(e)} waitlisted</span>` : ""}
-                          ${e.maxCapacity ? l`<span>/ ${e.maxCapacity} max</span>` : ""}
+                          ${this._getWaitlistCount(e) > 0 ? i`<span>${this._getWaitlistCount(e)} waitlisted</span>` : ""}
+                          ${e.maxCapacity ? i`<span>/ ${e.maxCapacity} max</span>` : ""}
                         </div>
                       </uui-table-cell>
                       <uui-table-cell>
@@ -125,13 +151,13 @@ let s = class extends p(d) {
                   `
     )}
               </uui-table>
-            ` : l`<div class="empty-state"><p>No events found.</p></div>`}
+            ` : i`<div class="empty-state"><p>No events found.</p></div>`}
       </uui-box>
     `;
   }
   _renderEventDetail() {
     const e = this._selectedEvent;
-    return l`
+    return i`
       <div class="back-btn">
         <uui-button look="secondary" @click=${() => this._selectedEvent = null}>
           &larr; Back to Events
@@ -141,13 +167,13 @@ let s = class extends p(d) {
       <uui-box headline="${e.title}">
         <div style="margin-bottom:16px">
           <p><strong>Date:</strong> ${new Date(e.eventDate).toLocaleString()}</p>
-          ${e.location ? l`<p><strong>Location:</strong> ${e.location}</p>` : ""}
-          ${e.maxCapacity ? l`<p><strong>Capacity:</strong> ${e.maxCapacity}</p>` : ""}
-          ${e.description ? l`<p>${e.description}</p>` : ""}
+          ${e.location ? i`<p><strong>Location:</strong> ${e.location}</p>` : ""}
+          ${e.maxCapacity ? i`<p><strong>Capacity:</strong> ${e.maxCapacity}</p>` : ""}
+          ${e.description ? i`<p>${e.description}</p>` : ""}
         </div>
 
         <h3>Attendees</h3>
-        ${e.attendees && e.attendees.length > 0 ? l`
+        ${e.attendees && e.attendees.length > 0 ? i`
               <uui-table>
                 <uui-table-head>
                   <uui-table-head-cell>Name</uui-table-head-cell>
@@ -158,32 +184,33 @@ let s = class extends p(d) {
                   <uui-table-head-cell>Actions</uui-table-head-cell>
                 </uui-table-head>
                 ${e.attendees.map(
-      (t) => l`
+      (t) => i`
                     <uui-table-row>
                       <uui-table-cell>${t.firstName} ${t.lastName}</uui-table-cell>
                       <uui-table-cell>${t.email}</uui-table-cell>
                       <uui-table-cell>${t.phone ?? "—"}</uui-table-cell>
                       <uui-table-cell>
                         <span class="badge"
-                          style="background:${v[t.status]};color:${f[t.status]}">
-                          ${m[t.status]}
+                          style="background:${C[t.status]};color:${k[t.status]}">
+                          ${x[t.status]}
                         </span>
                       </uui-table-cell>
                       <uui-table-cell>${new Date(t.registeredAt).toLocaleDateString()}</uui-table-cell>
                       <uui-table-cell>
-                        ${t.status !== 2 ? l`<uui-button look="danger" compact label="Cancel"
+                        ${t.status !== 2 ? i`<uui-button look="danger" compact label="Cancel"
                               @click=${() => this._cancelRegistration(t.id)}>Cancel</uui-button>` : "—"}
                       </uui-table-cell>
                     </uui-table-row>
                   `
     )}
               </uui-table>
-            ` : l`<div class="empty-state"><p>No attendees yet.</p></div>`}
+            ` : i`<div class="empty-state"><p>No attendees yet.</p></div>`}
       </uui-box>
     `;
   }
 };
-s.styles = b`
+u = /* @__PURE__ */ new WeakMap();
+o.styles = _`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -236,21 +263,21 @@ s.styles = b`
       margin-bottom: 16px;
     }
   `;
-n([
-  o()
-], s.prototype, "_events", 2);
-n([
-  o()
-], s.prototype, "_loading", 2);
-n([
-  o()
-], s.prototype, "_error", 2);
-n([
-  o()
-], s.prototype, "_selectedEvent", 2);
-s = n([
-  h("rsvp-dashboard")
-], s);
+c([
+  h()
+], o.prototype, "_events", 2);
+c([
+  h()
+], o.prototype, "_loading", 2);
+c([
+  h()
+], o.prototype, "_error", 2);
+c([
+  h()
+], o.prototype, "_selectedEvent", 2);
+o = c([
+  g("rsvp-dashboard")
+], o);
 export {
-  s as RsvpDashboardElement
+  o as RsvpDashboardElement
 };
