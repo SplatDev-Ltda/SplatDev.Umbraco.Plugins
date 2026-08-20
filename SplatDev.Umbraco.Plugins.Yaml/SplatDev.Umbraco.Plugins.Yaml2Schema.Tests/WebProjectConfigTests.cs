@@ -39,10 +39,10 @@ namespace SplatDev.Umbraco.Plugins.Yaml2Schema.Tests
         }
 
         [Fact]
-        public void WebConfig_ShouldHaveThreeDataTypes()
+        public void WebConfig_ShouldHaveTwoDataTypes()
         {
             var result = Parse();
-            Assert.Equal(3, result.DataTypes.Count);
+            Assert.Equal(2, result.DataTypes.Count);
         }
 
         [Fact]
@@ -52,7 +52,6 @@ namespace SplatDev.Umbraco.Plugins.Yaml2Schema.Tests
             var aliases = result.DataTypes.Select(dt => dt.Alias).ToList();
             Assert.Contains("textString", aliases);
             Assert.Contains("richText", aliases);
-            Assert.Contains("markdown", aliases);
         }
 
         [Fact]
@@ -117,12 +116,12 @@ namespace SplatDev.Umbraco.Plugins.Yaml2Schema.Tests
         }
 
         [Fact]
-        public void WebConfig_BlogChildHasNestedArticles()
+        public void WebConfig_HomeChildIsAbout()
         {
             var result = Parse();
-            var blog = result.Content[0].Children.FirstOrDefault(c => c.Alias == "blog");
-            Assert.NotNull(blog);
-            Assert.NotEmpty(blog!.Children);
+            var about = result.Content[0].Children.FirstOrDefault(c => c.Alias == "about");
+            Assert.NotNull(about);
+            Assert.Equal("About", about!.Name);
         }
 
         // ── No REMOVE/UPDATE flags in the web config ──────────────────────────

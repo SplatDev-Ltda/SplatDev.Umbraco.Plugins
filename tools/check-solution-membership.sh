@@ -20,7 +20,12 @@ while IFS= read -r csproj; do
     echo "::error file=$csproj::$name is not in $SLN — it will be skipped by publish.yml and never tested by build.yml"
     missing=$((missing+1))
   fi
-done < <(find . -maxdepth 2 -name "SplatDev.Umbraco.Plugins.*.csproj" -o -maxdepth 2 -name "SplatDev.*.Tests.csproj" | sort)
+# -maxdepth 3 matches publish.yml's own discovery. It used to be 2, which left nested
+# plugins (SplatDev.Umbraco.Plugins.Yaml/SplatDev.Umbraco.Plugins.Schema2Yaml) invisible
+# to this guard while publish.yml still tried to build them — exactly the gap the guard
+# exists to close. Schema2Yaml was dropped from the v2.1.5 release that way.
+done < <(find . -maxdepth 3 \( -name "SplatDev.Umbraco.Plugins.*.csproj" -o -name "SplatDev.*.Tests.csproj" \) \
+         -not -path "*/obj/*" -not -path "*/bin/*" | sort)
 
 if [ "$missing" -gt 0 ]; then
   echo ""

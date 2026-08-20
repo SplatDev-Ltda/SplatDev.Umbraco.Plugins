@@ -1,7 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <!-- net10.0 only, like Yaml2Schema.Tests. These tests mock ILanguageService,
+         IDictionaryItemService and ITemplateService and call GetAllAsync(), all of which
+         are Umbraco 14+ APIs; on net8.0 the plugin uses ILocalizationService/IFileService
+         with a synchronous surface instead. The project multi-targeted net8.0 but had no
+         conditionals, so it simply never compiled there - it was absent from the solution,
+         so nothing ever built it to find out. -->
+    <TargetFramework>net10.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
