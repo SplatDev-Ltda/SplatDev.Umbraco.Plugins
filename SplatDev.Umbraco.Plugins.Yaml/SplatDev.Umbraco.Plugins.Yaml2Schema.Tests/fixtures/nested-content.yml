@@ -1,0 +1,30 @@
+# Fixture for multi-level content nesting.
+#
+# The shipped demo config (config/umbraco.yml) nests only one level deep, and the
+# integration test named ParseYaml_ShouldHandleNestedContentStructure asserts the
+# root has no children at all and then builds a child object in memory — so nothing
+# actually exercised the parser on a grandchild until this fixture existed.
+
+content:
+  - alias: home
+    name: Home
+    documentType: page
+    isPublished: true
+    sortOrder: 0
+    children:
+      - alias: blog
+        name: Blog
+        documentType: page
+        isPublished: true
+        sortOrder: 0
+        children:
+          - alias: firstPost
+            name: First Post
+            documentType: article
+            isPublished: true
+            sortOrder: 0
+          - alias: secondPost
+            name: Second Post
+            documentType: article
+            isPublished: false
+            sortOrder: 1
