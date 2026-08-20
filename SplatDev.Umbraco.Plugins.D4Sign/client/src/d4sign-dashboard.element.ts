@@ -49,17 +49,26 @@ export class D4SignDashboardElement extends UmbElementMixin(LitElement) {
   private _stats: D4SignStats = { total: 0, aguardando: 0, assinados: 0, cancelados: 0 };
 
   private _authContext: UmbAuthContext | null = null;
+
+  // consumeContext resolves asynchronously. Any _fetch that runs before it does would
+  // go out with no Authorization header and come back 401, so every request waits.
+  private _authReady!: Promise<void>;
+  private _authResolve!: () => void;
   private _notifContext: UmbNotificationContext | null = null;
   private _error: string | null = null;
 
   constructor() {
     super();
+    this._authReady = new Promise<void>((resolve) => {
+      this._authResolve = resolve;
+    });
   }
 
   connectedCallback(): void {
     super.connectedCallback();
     this.consumeContext(UMB_AUTH_CONTEXT, (ctx: UmbAuthContext) => {
       this._authContext = ctx;
+      this._authResolve();
       this._loadDocuments();
     });
     this.consumeContext(UMB_NOTIFICATION_CONTEXT, (ctx: UmbNotificationContext) => {
@@ -73,11 +82,10 @@ export class D4SignDashboardElement extends UmbElementMixin(LitElement) {
       Object.assign(headers, options.headers);
       delete options.headers;
     }
-    if (this._authContext) {
-      const token = await this._authContext.getLatestToken();
-      if (token) headers["Authorization"] = `Bearer ${token}`;
-    }
-    return fetch(`${API_BASE}${path}`, { ...options, headers });
+    await this._authReady;
+    const token = await this._authContext?.getLatestToken();
+    if (token) headers["Authorization"] = `Bearer ${token}`;
+    return fetch(`${API_BASE}${path}`, { credentials: "same-origin", ...options, headers });
   }
 
   private async _loadDocuments(): Promise<void> {

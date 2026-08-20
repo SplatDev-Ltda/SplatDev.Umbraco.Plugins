@@ -8,7 +8,7 @@
 
     <!-- NuGet package metadata -->
     <PackageId>SplatDev.Umbraco.Plugins.Yaml2Schema</PackageId>
-    <Version>1.0.39</Version>
+    <Version>1.0.40</Version>
     <Authors>Carlos Casalicchio</Authors>
     <Company>SplatDev</Company>
     <Copyright>Copyright © 2026 SplatDev</Copyright>

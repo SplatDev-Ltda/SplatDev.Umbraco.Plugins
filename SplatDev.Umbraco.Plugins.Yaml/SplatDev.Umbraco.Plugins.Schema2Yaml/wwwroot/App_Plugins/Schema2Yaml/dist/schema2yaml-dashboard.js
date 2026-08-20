@@ -14,7 +14,9 @@ typeof window < "u" && window.navigation && window.navigation.addEventListener("
 const v = "/umbraco/api/SchemaExport";
 let l = class extends P(w) {
   constructor() {
-    super(), this._loading = !1, this._downloadingZip = !1, this._stats = null, this._yaml = "", this._yamlPreview = "", this._previewTruncated = !1, this._hasExport = !1, this._profiles = [], this._activeProfile = null, this._showConfigDialog = !1, this._editingProfileId = null, this._editingProfileName = "", this._configuring = !1, this._loadingItems = !1, this._availableItems = null, this._contentTree = [], this._mediaTree = [], this._expandedCategories = {}, this._expandedTreeNodes = {}, this._loading = !1, this._downloadingZip = !1, this._stats = null, this._yaml = null, this._yamlPreview = null, this._previewTruncated = !1, this._hasExport = !1, this._authContext = null, this._notificationContext = null, this._profiles = [], this._activeProfile = null, this._showConfigDialog = !1, this._editingProfileId = null, this._editingProfileName = "", this._configuring = this._defaultSelection(), this._loadingItems = !1, this._availableItems = null, this._contentTree = null, this._mediaTree = null, this._expandedCategories = /* @__PURE__ */ new Set(), this._expandedTreeNodes = /* @__PURE__ */ new Set();
+    super(), this._loading = !1, this._downloadingZip = !1, this._stats = null, this._yaml = "", this._yamlPreview = "", this._previewTruncated = !1, this._hasExport = !1, this._profiles = [], this._activeProfile = null, this._showConfigDialog = !1, this._editingProfileId = null, this._editingProfileName = "", this._configuring = !1, this._loadingItems = !1, this._availableItems = null, this._contentTree = [], this._mediaTree = [], this._expandedCategories = {}, this._expandedTreeNodes = {}, this._loading = !1, this._downloadingZip = !1, this._stats = null, this._yaml = null, this._yamlPreview = null, this._previewTruncated = !1, this._hasExport = !1, this._authContext = null, this._notificationContext = null, this._authReady = new Promise((e) => {
+      this._authResolve = e;
+    }), this._profiles = [], this._activeProfile = null, this._showConfigDialog = !1, this._editingProfileId = null, this._editingProfileName = "", this._configuring = this._defaultSelection(), this._loadingItems = !1, this._availableItems = null, this._contentTree = null, this._mediaTree = null, this._expandedCategories = /* @__PURE__ */ new Set(), this._expandedTreeNodes = /* @__PURE__ */ new Set();
   }
   _defaultSelection() {
     const e = () => ({ includeAll: !0, aliases: [], nodeIds: [] });
@@ -33,7 +35,7 @@ let l = class extends P(w) {
   }
   connectedCallback() {
     super.connectedCallback(), this.consumeContext($, (e) => {
-      this._authContext = e, this._loadStatistics(), this._loadActiveProfile();
+      this._authContext = e, this._authResolve(), this._loadStatistics(), this._loadActiveProfile();
     }), this.consumeContext(T, (e) => {
       this._notificationContext = e;
     });
@@ -41,7 +43,7 @@ let l = class extends P(w) {
   // ─── Auth helpers ──────────────────────────────────────────────────────────
   async _getToken() {
     var e, t;
-    return this._authContext ? ((t = (e = this._authContext).getLatestToken) == null ? void 0 : t.call(e)) ?? null : null;
+    return await this._authReady, this._authContext ? ((t = (e = this._authContext).getLatestToken) == null ? void 0 : t.call(e)) ?? null : null;
   }
   async _fetchAuthenticated(e, t = {}) {
     const i = { "Content-Type": "application/json", ...t.headers ?? {} }, a = await this._getToken();

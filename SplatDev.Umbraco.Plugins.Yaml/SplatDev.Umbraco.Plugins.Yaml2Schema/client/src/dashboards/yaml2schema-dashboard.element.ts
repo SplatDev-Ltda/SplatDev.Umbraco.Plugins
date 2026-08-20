@@ -25,6 +25,11 @@ export class Yaml2SchemaDashboard extends UmbElementMixin(LitElement) {
   @state() private _loadingStatus = false;
   private _authContext: UmbAuthContext | null = null;
 
+  // consumeContext resolves asynchronously; _getToken waits on this so a request
+  // cannot go out before the token exists and come back 401.
+  private _authReady!: Promise<void>;
+  private _authResolve!: () => void;
+
   static override styles = css`
     :host {
       display: block;
@@ -84,17 +89,22 @@ export class Yaml2SchemaDashboard extends UmbElementMixin(LitElement) {
 
   constructor() {
     super();
+    this._authReady = new Promise<void>((resolve) => {
+      this._authResolve = resolve;
+    });
   }
 
   override connectedCallback() {
     super.connectedCallback();
     this.consumeContext(UMB_AUTH_CONTEXT, (ctx: UmbAuthContext) => {
       this._authContext = ctx;
+      this._authResolve();
       this._loadStatus();
     });
   }
 
   private async _getToken(): Promise<string | null> {
+    await this._authReady;
     if (!this._authContext) return null;
     return (this._authContext as any).getLatestToken?.() ?? null;
   }

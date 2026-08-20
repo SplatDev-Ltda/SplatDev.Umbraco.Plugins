@@ -54,13 +54,23 @@ export class EnotAssinaDashboardElement extends UmbElementMixin(LitElement) {
   private _notificationContext?: UmbNotificationContext;
   private _authContext?: UmbAuthContext;
 
+  // The context is consumed in the constructor but resolves asynchronously, while
+  // _loadDocuments() fires from connectedCallback. Without this the first request
+  // raced ahead of the token and came back 401.
+  private _authReady!: Promise<void>;
+  private _authResolve!: () => void;
+
   constructor() {
     super();
+    this._authReady = new Promise<void>((resolve) => {
+      this._authResolve = resolve;
+    });
     this.consumeContext(UMB_NOTIFICATION_CONTEXT, (ctx: UmbNotificationContext) => {
       this._notificationContext = ctx;
     });
     this.consumeContext(UMB_AUTH_CONTEXT, (ctx: UmbAuthContext) => {
       this._authContext = ctx;
+      this._authResolve();
     });
   }
 
@@ -70,6 +80,7 @@ export class EnotAssinaDashboardElement extends UmbElementMixin(LitElement) {
   }
 
   private async _fetch(url: string, options: RequestInit = {}): Promise<Response> {
+    await this._authReady;
     const token = await this._authContext?.getLatestToken();
     const headers: Record<string, string> = { "Content-Type": "application/json" };
     if (options.headers) {
