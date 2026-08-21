@@ -1,75 +1,75 @@
-import { LitElement as y, html as l, css as v, state as d, customElement as w } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as $ } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as k } from "@umbraco-cms/backoffice/auth";
-import { UMB_NOTIFICATION_CONTEXT as M } from "@umbraco-cms/backoffice/notification";
-function x(e) {
+import { LitElement as T, html as s, css as k, state as d, customElement as M } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as E } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as G } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as N } from "@umbraco-cms/backoffice/notification";
+function C(e) {
   let t = null, a = null;
-  const o = e.consumeContext.bind(e), u = new Promise((i) => {
-    o(k, async (s) => {
+  const o = e.consumeContext.bind(e), l = new Promise((i) => {
+    o(G, async (r) => {
       var b;
       try {
-        t = await ((b = s == null ? void 0 : s.getLatestToken) == null ? void 0 : b.call(s)) ?? null;
+        t = await ((b = r == null ? void 0 : r.getLatestToken) == null ? void 0 : b.call(r)) ?? null;
       } catch {
         t = null;
       }
       i();
     }), setTimeout(i, 3e3);
   });
-  return o(M, (i) => {
+  return o(N, (i) => {
     a = i;
-  }), async (i, s = {}) => {
-    await u;
-    const b = new Headers(s.headers);
+  }), async (i, r = {}) => {
+    await l;
+    const b = new Headers(r.headers);
     t && !b.has("Authorization") && b.set("Authorization", `Bearer ${t}`);
-    const n = await fetch(i, { ...s, credentials: "same-origin", headers: b });
-    if (!n.ok) {
-      const m = n.status === 401 || n.status === 403, f = m ? "Not authorised" : "Could not load data", _ = m ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${n.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${n.status}. Anything shown below may be incomplete.`;
-      console.error(`[SplatDev] ${n.status} from ${String(i)} — ${_}`), a == null || a.peek("danger", { data: { headline: f, message: _ } });
+    const c = await fetch(i, { ...r, credentials: "same-origin", headers: b });
+    if (!c.ok) {
+      const g = c.status === 401 || c.status === 403, x = g ? "Not authorised" : "Could not load data", y = g ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${c.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${c.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${c.status} from ${String(i)} — ${y}`), a == null || a.peek("danger", { data: { headline: x, message: y } });
     }
-    return n;
+    return c;
   };
 }
-var T = Object.defineProperty, E = Object.getOwnPropertyDescriptor, g = (e) => {
+var O = Object.defineProperty, A = Object.getOwnPropertyDescriptor, w = (e) => {
   throw TypeError(e);
-}, c = (e, t, a, o) => {
-  for (var u = o > 1 ? void 0 : o ? E(t, a) : t, i = e.length - 1, s; i >= 0; i--)
-    (s = e[i]) && (u = (o ? s(t, a, u) : s(u)) || u);
-  return o && u && T(t, a, u), u;
-}, N = (e, t, a) => t.has(e) || g("Cannot " + a), h = (e, t, a) => (N(e, t, "read from private field"), a ? a.call(e) : t.get(e)), G = (e, t, a) => t.has(e) ? g("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), p;
-let r = class extends $(y) {
+}, n = (e, t, a, o) => {
+  for (var l = o > 1 ? void 0 : o ? A(t, a) : t, i = e.length - 1, r; i >= 0; i--)
+    (r = e[i]) && (l = (o ? r(t, a, l) : r(l)) || l);
+  return o && l && O(t, a, l), l;
+}, $ = (e, t, a) => t.has(e) || w("Cannot " + a), m = (e, t, a) => ($(e, t, "read from private field"), a ? a.call(e) : t.get(e)), v = (e, t, a) => t.has(e) ? w("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), f = (e, t, a) => ($(e, t, "access private method"), a), p, h, _;
+let u = class extends E(T) {
   constructor() {
-    super(...arguments), G(this, p, x(this)), this._activeTab = "groups", this._groups = [], this._types = [], this._foundMember = null, this._result = null, this._loading = !1, this._apiBase = "/umbraco/api/membergroups";
+    super(...arguments), v(this, h), v(this, p, C(this)), this._activeTab = "groups", this._groups = [], this._types = [], this._foundMember = null, this._result = null, this._loading = !1, this._loadError = null, this._apiBase = "/umbraco/api/membergroups";
   }
   connectedCallback() {
     super.connectedCallback(), this._loadGroups(), this._loadTypes();
   }
   async _loadGroups() {
     try {
-      const e = await h(this, p).call(this, `${this._apiBase}/GetMemberGroups`);
-      e.ok && (this._groups = await e.json());
+      const e = await m(this, p).call(this, `${this._apiBase}/GetMemberGroups`);
+      f(this, h, _).call(this, e) && (this._groups = await e.json());
     } catch {
-      this._groups = [];
+      this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), this._groups = [];
     }
   }
   async _loadTypes() {
     try {
-      const e = await h(this, p).call(this, `${this._apiBase}/GetMemberTypes`);
-      e.ok && (this._types = await e.json());
+      const e = await m(this, p).call(this, `${this._apiBase}/GetMemberTypes`);
+      f(this, h, _).call(this, e) && (this._types = await e.json());
     } catch {
-      this._types = [];
+      this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), this._types = [];
     }
   }
   async _post(e, t) {
     this._loading = !0, this._result = null;
     try {
-      const a = typeof t == "string" ? `${this._apiBase}/${e}?${t}` : `${this._apiBase}/${e}`, o = await h(this, p).call(this, a, {
+      const a = typeof t == "string" ? `${this._apiBase}/${e}?${t}` : `${this._apiBase}/${e}`, o = await m(this, p).call(this, a, {
         method: "POST",
         headers: typeof t == "object" ? { "Content-Type": "application/json" } : {},
         body: typeof t == "object" ? JSON.stringify(t) : void 0
-      }), u = await o.json();
-      this._result = { success: o.ok, message: u.message ?? (o.ok ? "Success" : "Failed") };
+      }), l = await o.json();
+      this._result = { success: o.ok, message: l.message ?? (o.ok ? "Success" : "Failed") };
     } catch {
-      this._result = { success: !1, message: "Network error." };
+      this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), this._result = { success: !1, message: "Network error." };
     } finally {
       this._loading = !1;
     }
@@ -77,24 +77,24 @@ let r = class extends $(y) {
   async _lookupMember(e) {
     this._loading = !0, this._foundMember = null, this._result = null;
     try {
-      const t = await h(this, p).call(this, `${this._apiBase}/GetMemberByEmail?email=${encodeURIComponent(e)}`);
-      t.ok ? this._foundMember = await t.json() : this._result = { success: !1, message: "Member not found." };
+      const t = await m(this, p).call(this, `${this._apiBase}/GetMemberByEmail?email=${encodeURIComponent(e)}`);
+      f(this, h, _).call(this, t) ? this._foundMember = await t.json() : this._result = { success: !1, message: "Member not found." };
     } catch {
-      this._result = { success: !1, message: "Network error." };
+      this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), this._result = { success: !1, message: "Network error." };
     } finally {
       this._loading = !1;
     }
   }
   _renderGroups() {
-    return l`
+    return s`
       <uui-box headline="Member Groups (${this._groups.length})">
-        ${this._groups.length === 0 ? l`<p style="color:var(--uui-color-text-alt,#6b7280)">No member groups found.</p>` : l`
+        ${this._groups.length === 0 ? s`<p style="color:var(--uui-color-text-alt,#6b7280)">No member groups found.</p>` : s`
               <uui-table>
                 <uui-table-head>
                   <uui-table-head-cell>ID</uui-table-head-cell>
                   <uui-table-head-cell>Name</uui-table-head-cell>
                 </uui-table-head>
-                ${this._groups.map((e) => l`
+                ${this._groups.map((e) => s`
                   <uui-table-row>
                     <uui-table-cell>${e.id}</uui-table-cell>
                     <uui-table-cell><strong>${e.name}</strong></uui-table-cell>
@@ -106,15 +106,15 @@ let r = class extends $(y) {
     `;
   }
   _renderTypes() {
-    return l`
+    return s`
       <uui-box headline="Member Types">
-        ${this._types.length === 0 ? l`<p style="color:var(--uui-color-text-alt,#6b7280)">No member types found.</p>` : l`
+        ${this._types.length === 0 ? s`<p style="color:var(--uui-color-text-alt,#6b7280)">No member types found.</p>` : s`
               <uui-table>
                 <uui-table-head>
                   <uui-table-head-cell>Name</uui-table-head-cell>
                   <uui-table-head-cell>Alias</uui-table-head-cell>
                 </uui-table-head>
-                ${this._types.map((e) => l`
+                ${this._types.map((e) => s`
                   <uui-table-row>
                     <uui-table-cell><strong>${e.name}</strong></uui-table-cell>
                     <uui-table-cell><code>${e.alias}</code></uui-table-cell>
@@ -126,7 +126,7 @@ let r = class extends $(y) {
     `;
   }
   _renderLookup() {
-    return l`
+    return s`
       <uui-box headline="Lookup Member by Email">
         <div class="form-row">
           <label>Email Address</label>
@@ -143,7 +143,7 @@ let r = class extends $(y) {
     }}
         >Lookup</uui-button>
 
-        ${this._foundMember ? l`
+        ${this._foundMember ? s`
           <uui-box style="margin-top:16px">
             <uui-table>
               <uui-table-row><uui-table-cell><strong>ID</strong></uui-table-cell><uui-table-cell>${this._foundMember.id}</uui-table-cell></uui-table-row>
@@ -155,12 +155,13 @@ let r = class extends $(y) {
             </uui-table>
           </uui-box>
         ` : ""}
-        ${this._result && !this._foundMember ? l`<div class="result ${this._result.success ? "success" : "error"}">${this._result.message}</div>` : ""}
+        ${this._result && !this._foundMember ? s`<div class="result ${this._result.success ? "success" : "error"}">${this._result.message}</div>` : ""}
       </uui-box>
     `;
   }
   render() {
-    return l`
+    return s`
+      ${this._loadError ? s`<div class="splatdev-load-error" role="alert">${this._loadError}</div>` : ""}
       <h1>Member Groups Manager</h1>
       <p class="description">Manage Umbraco member groups, member types, and user access.</p>
 
@@ -181,7 +182,11 @@ let r = class extends $(y) {
   }
 };
 p = /* @__PURE__ */ new WeakMap();
-r.styles = v`
+h = /* @__PURE__ */ new WeakSet();
+_ = function(e) {
+  return e.ok ? (this._loadError = null, !0) : (this._loadError = e.status === 401 || e.status === 403 ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete." : `The request did not succeed — the server returned ${e.status}${e.statusText ? ` ${e.statusText}` : ""}.`, !1);
+};
+u.styles = k`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -198,30 +203,46 @@ r.styles = v`
     .result.error { background: #fde8e8; color: #c81e1e; }
     .btn-row { display: flex; gap: 8px; }
     code { background: #f3f4f6; padding: 1px 6px; border-radius: 4px; font-size: 0.8rem; }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
   `;
-c([
+n([
   d()
-], r.prototype, "_activeTab", 2);
-c([
+], u.prototype, "_activeTab", 2);
+n([
   d()
-], r.prototype, "_groups", 2);
-c([
+], u.prototype, "_groups", 2);
+n([
   d()
-], r.prototype, "_types", 2);
-c([
+], u.prototype, "_types", 2);
+n([
   d()
-], r.prototype, "_foundMember", 2);
-c([
+], u.prototype, "_foundMember", 2);
+n([
   d()
-], r.prototype, "_result", 2);
-c([
+], u.prototype, "_result", 2);
+n([
   d()
-], r.prototype, "_loading", 2);
-r = c([
-  w("membergroups-dashboard")
-], r);
-const L = r;
+], u.prototype, "_loading", 2);
+n([
+  d()
+], u.prototype, "_loadError", 2);
+u = n([
+  M("membergroups-dashboard")
+], u);
+const z = u;
 export {
-  r as MemberGroupsDashboardElement,
-  L as default
+  u as MemberGroupsDashboardElement,
+  z as default
 };

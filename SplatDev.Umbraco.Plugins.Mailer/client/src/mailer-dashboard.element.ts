@@ -78,6 +78,19 @@ export class MailerDashboardElement extends UmbElementMixin(LitElement) {
     .info-box-content strong {
       color: var(--uui-color-text);
     }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
   `;
 
   @state()
@@ -88,6 +101,9 @@ export class MailerDashboardElement extends UmbElementMixin(LitElement) {
 
   @state()
   private _message = "";
+
+
+  @state() private _loadError: string | null = null;
 
   private _handleEmailInput(e: Event): void {
     const input = e.target as HTMLInputElement;
@@ -115,7 +131,7 @@ export class MailerDashboardElement extends UmbElementMixin(LitElement) {
         }
       );
 
-      if (response.ok) {
+      if (this.#responseOk(response)) {
         this._sendState = "success";
         this._message = `Test email sent successfully to ${this._email}.`;
       } else {
@@ -129,8 +145,32 @@ export class MailerDashboardElement extends UmbElementMixin(LitElement) {
     }
   }
 
+  /**
+   * Guards a response and records why it failed.
+   *
+   * This used to be a bare `response.ok` check with no else branch, so a failed request
+   * left the previous (usually empty) state on screen and read as "there is no data"
+   * rather than "the request did not succeed".
+   */
+  #responseOk(response: Response): boolean {
+    if (response.ok) {
+      this._loadError = null;
+      return true;
+    }
+
+    this._loadError =
+      response.status === 401 || response.status === 403
+        ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete."
+        : `The request did not succeed — the server returned ${response.status}${response.statusText ? ` ${response.statusText}` : ""}.`;
+    return false;
+  }
+
+
   override render() {
     return html`
+      ${this._loadError
+        ? html`<div class="splatdev-load-error" role="alert">${this._loadError}</div>`
+        : ""}
       <div class="dashboard-header">
         <h1>Mailer Dashboard</h1>
         <p>

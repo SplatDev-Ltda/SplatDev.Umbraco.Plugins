@@ -1,44 +1,44 @@
-import { LitElement as w, html as n, nothing as _, css as y, state as b, customElement as $ } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as E } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as k } from "@umbraco-cms/backoffice/auth";
-import { UMB_NOTIFICATION_CONTEXT as x } from "@umbraco-cms/backoffice/notification";
-function F(e) {
+import { LitElement as x, html as s, nothing as g, css as k, state as b, customElement as T } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as F } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as A } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as D } from "@umbraco-cms/backoffice/notification";
+function O(e) {
   let t = null, a = null;
-  const r = e.consumeContext.bind(e), o = new Promise((i) => {
-    r(k, async (l) => {
-      var d;
+  const u = e.consumeContext.bind(e), r = new Promise((i) => {
+    u(A, async (l) => {
+      var c;
       try {
-        t = await ((d = l == null ? void 0 : l.getLatestToken) == null ? void 0 : d.call(l)) ?? null;
+        t = await ((c = l == null ? void 0 : l.getLatestToken) == null ? void 0 : c.call(l)) ?? null;
       } catch {
         t = null;
       }
       i();
     }), setTimeout(i, 3e3);
   });
-  return r(x, (i) => {
+  return u(D, (i) => {
     a = i;
   }), async (i, l = {}) => {
-    await o;
-    const d = new Headers(l.headers);
-    t && !d.has("Authorization") && d.set("Authorization", `Bearer ${t}`);
-    const u = await fetch(i, { ...l, credentials: "same-origin", headers: d });
-    if (!u.ok) {
-      const m = u.status === 401 || u.status === 403, v = m ? "Not authorised" : "Could not load data", f = m ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${u.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${u.status}. Anything shown below may be incomplete.`;
-      console.error(`[SplatDev] ${u.status} from ${String(i)} — ${f}`), a == null || a.peek("danger", { data: { headline: v, message: f } });
+    await r;
+    const c = new Headers(l.headers);
+    t && !c.has("Authorization") && c.set("Authorization", `Bearer ${t}`);
+    const n = await fetch(i, { ...l, credentials: "same-origin", headers: c });
+    if (!n.ok) {
+      const f = n.status === 401 || n.status === 403, E = f ? "Not authorised" : "Could not load data", _ = f ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${n.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${n.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${n.status} from ${String(i)} — ${_}`), a == null || a.peek("danger", { data: { headline: E, message: _ } });
     }
-    return u;
+    return n;
   };
 }
-var A = Object.defineProperty, D = Object.getOwnPropertyDescriptor, g = (e) => {
+var C = Object.defineProperty, S = Object.getOwnPropertyDescriptor, w = (e) => {
   throw TypeError(e);
-}, h = (e, t, a, r) => {
-  for (var o = r > 1 ? void 0 : r ? D(t, a) : t, i = e.length - 1, l; i >= 0; i--)
-    (l = e[i]) && (o = (r ? l(t, a, o) : l(o)) || o);
-  return r && o && A(t, a, o), o;
-}, T = (e, t, a) => t.has(e) || g("Cannot " + a), p = (e, t, a) => (T(e, t, "read from private field"), a ? a.call(e) : t.get(e)), C = (e, t, a) => t.has(e) ? g("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), c;
-let s = class extends E(w) {
+}, d = (e, t, a, u) => {
+  for (var r = u > 1 ? void 0 : u ? S(t, a) : t, i = e.length - 1, l; i >= 0; i--)
+    (l = e[i]) && (r = (u ? l(t, a, r) : l(r)) || r);
+  return u && r && C(t, a, r), r;
+}, $ = (e, t, a) => t.has(e) || w("Cannot " + a), p = (e, t, a) => ($(e, t, "read from private field"), a ? a.call(e) : t.get(e)), v = (e, t, a) => t.has(e) ? w("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), N = (e, t, a) => ($(e, t, "access private method"), a), h, m, y;
+let o = class extends F(x) {
   constructor() {
-    super(...arguments), C(this, c, F(this)), this._features = [], this._loading = !1, this._showForm = !1, this._saving = !1, this._form = this._emptyForm(), this._api = "/umbraco/api/onoff";
+    super(...arguments), v(this, m), v(this, h, O(this)), this._features = [], this._loading = !1, this._showForm = !1, this._saving = !1, this._form = this._emptyForm(), this._loadError = null, this._api = "/umbraco/api/onoff";
   }
   _emptyForm() {
     return { name: "", alias: "", description: "", isEnabled: !1, scheduledEnableAt: null, scheduledDisableAt: null };
@@ -49,20 +49,20 @@ let s = class extends E(w) {
   async _load() {
     this._loading = !0;
     try {
-      const e = await p(this, c).call(this, `${this._api}/GetAll`);
-      e.ok && (this._features = await e.json());
+      const e = await p(this, h).call(this, `${this._api}/GetAll`);
+      N(this, m, y).call(this, e) && (this._features = await e.json());
     } catch {
-      this._features = [];
+      this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), this._features = [];
     } finally {
       this._loading = !1;
     }
   }
   async _toggle(e) {
     const t = e.isEnabled ? "Disable" : "Enable";
-    await p(this, c).call(this, `${this._api}/${t}?alias=${encodeURIComponent(e.alias)}`, { method: "POST" }), await this._load();
+    await p(this, h).call(this, `${this._api}/${t}?alias=${encodeURIComponent(e.alias)}`, { method: "POST" }), await this._load();
   }
   async _delete(e) {
-    confirm(`Delete feature '${e.name}'?`) && (await p(this, c).call(this, `${this._api}/Delete?id=${e.id}`, { method: "DELETE" }), await this._load());
+    confirm(`Delete feature '${e.name}'?`) && (await p(this, h).call(this, `${this._api}/Delete?id=${e.id}`, { method: "DELETE" }), await this._load());
   }
   _edit(e) {
     this._form = { ...e }, this._showForm = !0;
@@ -73,7 +73,7 @@ let s = class extends E(w) {
   async _save() {
     this._saving = !0;
     try {
-      await p(this, c).call(this, `${this._api}/UpsertFeature`, {
+      await p(this, h).call(this, `${this._api}/UpsertFeature`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(this._form)
@@ -86,7 +86,7 @@ let s = class extends E(w) {
     return e ? new Date(e).toLocaleString("en-US", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }) : "—";
   }
   _renderForm() {
-    return n`
+    return s`
       <div class="form-card">
         <h3>${this._form.id ? "Edit" : "New"} Feature Toggle</h3>
         <div class="form-row">
@@ -120,7 +120,8 @@ let s = class extends E(w) {
     `;
   }
   render() {
-    return n`
+    return s`
+      ${this._loadError ? s`<div class="splatdev-load-error" role="alert">${this._loadError}</div>` : ""}
       <h1>Feature Toggles</h1>
       <p class="description">Enable, disable and schedule site features from the Umbraco backoffice.</p>
 
@@ -128,9 +129,9 @@ let s = class extends E(w) {
         <uui-button look="primary" label="Add Feature Toggle" @click=${this._newFeature}>Add Feature Toggle</uui-button>
       </div>
 
-      ${this._showForm ? this._renderForm() : _}
+      ${this._showForm ? this._renderForm() : g}
 
-      ${this._loading ? n`<p>Loading feature toggles...</p>` : this._features.length === 0 ? n`<p class="empty">No feature toggles found. Click "Add Feature Toggle" to create one.</p>` : n`
+      ${this._loading ? s`<p>Loading feature toggles...</p>` : this._features.length === 0 ? s`<p class="empty">No feature toggles found. Click "Add Feature Toggle" to create one.</p>` : s`
           <uui-box headline="Feature Toggles (${this._features.length})">
             <uui-table>
               <uui-table-head>
@@ -142,11 +143,11 @@ let s = class extends E(w) {
                 <uui-table-head-cell>Updated</uui-table-head-cell>
                 <uui-table-head-cell>Actions</uui-table-head-cell>
               </uui-table-head>
-              ${this._features.map((e) => n`
+              ${this._features.map((e) => s`
                 <uui-table-row>
                   <uui-table-cell>
                     <strong>${e.name}</strong>
-                    ${e.description ? n`<br/><small style="color:#6b7280">${e.description}</small>` : _}
+                    ${e.description ? s`<br/><small style="color:#6b7280">${e.description}</small>` : g}
                   </uui-table-cell>
                   <uui-table-cell><code>${e.alias}</code></uui-table-cell>
                   <uui-table-cell><span class="badge ${e.isEnabled ? "on" : "off"}">${e.isEnabled ? "ON" : "OFF"}</span></uui-table-cell>
@@ -168,8 +169,12 @@ let s = class extends E(w) {
     `;
   }
 };
-c = /* @__PURE__ */ new WeakMap();
-s.styles = y`
+h = /* @__PURE__ */ new WeakMap();
+m = /* @__PURE__ */ new WeakSet();
+y = function(e) {
+  return e.ok ? (this._loadError = null, !0) : (this._loadError = e.status === 401 || e.status === 403 ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete." : `The request did not succeed — the server returned ${e.status}${e.statusText ? ` ${e.statusText}` : ""}.`, !1);
+};
+o.styles = k`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
     p.description { color: var(--uui-color-text-alt, #6b7280); margin: 0 0 24px; }
@@ -186,27 +191,43 @@ s.styles = y`
     .empty { color: var(--uui-color-text-alt, #6b7280); padding: 24px 0; }
     uui-table { width: 100%; }
     code { background: #f3f4f6; padding: 1px 6px; border-radius: 4px; font-size: 0.8rem; }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
   `;
-h([
+d([
   b()
-], s.prototype, "_features", 2);
-h([
+], o.prototype, "_features", 2);
+d([
   b()
-], s.prototype, "_loading", 2);
-h([
+], o.prototype, "_loading", 2);
+d([
   b()
-], s.prototype, "_showForm", 2);
-h([
+], o.prototype, "_showForm", 2);
+d([
   b()
-], s.prototype, "_saving", 2);
-h([
+], o.prototype, "_saving", 2);
+d([
   b()
-], s.prototype, "_form", 2);
-s = h([
-  $("onoff-dashboard")
-], s);
-const z = s;
+], o.prototype, "_form", 2);
+d([
+  b()
+], o.prototype, "_loadError", 2);
+o = d([
+  T("onoff-dashboard")
+], o);
+const q = o;
 export {
-  s as OnOffDashboardElement,
-  z as default
+  o as OnOffDashboardElement,
+  q as default
 };

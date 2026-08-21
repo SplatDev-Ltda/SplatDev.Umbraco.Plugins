@@ -1,45 +1,45 @@
-import { LitElement as g, html as r, css as w, state as o, customElement as T } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as $ } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as x } from "@umbraco-cms/backoffice/auth";
-import { UMB_NOTIFICATION_CONTEXT as C } from "@umbraco-cms/backoffice/notification";
-function k(e) {
+import { LitElement as x, html as s, css as k, state as r, customElement as C } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as F } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as z } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as E } from "@umbraco-cms/backoffice/notification";
+function S(e) {
   let t = null, a = null;
-  const s = e.consumeContext.bind(e), d = new Promise((u) => {
-    s(x, async (n) => {
+  const o = e.consumeContext.bind(e), n = new Promise((u) => {
+    o(z, async (d) => {
       var c;
       try {
-        t = await ((c = n == null ? void 0 : n.getLatestToken) == null ? void 0 : c.call(n)) ?? null;
+        t = await ((c = d == null ? void 0 : d.getLatestToken) == null ? void 0 : c.call(d)) ?? null;
       } catch {
         t = null;
       }
       u();
     }), setTimeout(u, 3e3);
   });
-  return s(C, (u) => {
+  return o(E, (u) => {
     a = u;
-  }), async (u, n = {}) => {
-    await d;
-    const c = new Headers(n.headers);
+  }), async (u, d = {}) => {
+    await n;
+    const c = new Headers(d.headers);
     t && !c.has("Authorization") && c.set("Authorization", `Bearer ${t}`);
-    const m = await fetch(u, { ...n, credentials: "same-origin", headers: c });
+    const m = await fetch(u, { ...d, credentials: "same-origin", headers: c });
     if (!m.ok) {
-      const v = m.status === 401 || m.status === 403, _ = v ? "Not authorised" : "Could not load data", b = v ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${m.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${m.status}. Anything shown below may be incomplete.`;
-      console.error(`[SplatDev] ${m.status} from ${String(u)} — ${b}`), a == null || a.peek("danger", { data: { headline: _, message: b } });
+      const b = m.status === 401 || m.status === 403, $ = b ? "Not authorised" : "Could not load data", f = b ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${m.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${m.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${m.status} from ${String(u)} — ${f}`), a == null || a.peek("danger", { data: { headline: $, message: f } });
     }
     return m;
   };
 }
-var F = Object.defineProperty, z = Object.getOwnPropertyDescriptor, f = (e) => {
+var M = Object.defineProperty, N = Object.getOwnPropertyDescriptor, g = (e) => {
   throw TypeError(e);
-}, l = (e, t, a, s) => {
-  for (var d = s > 1 ? void 0 : s ? z(t, a) : t, u = e.length - 1, n; u >= 0; u--)
-    (n = e[u]) && (d = (s ? n(t, a, d) : n(d)) || d);
-  return s && d && F(t, a, d), d;
-}, N = (e, t, a) => t.has(e) || f("Cannot " + a), S = (e, t, a) => (N(e, t, "read from private field"), a ? a.call(e) : t.get(e)), H = (e, t, a) => t.has(e) ? f("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), h;
-const p = "/umbraco/management/api/v1/email-templates", y = "/umbraco/management/api/v1/email-style";
-let i = class extends $(g) {
+}, l = (e, t, a, o) => {
+  for (var n = o > 1 ? void 0 : o ? N(t, a) : t, u = e.length - 1, d; u >= 0; u--)
+    (d = e[u]) && (n = (o ? d(t, a, n) : d(n)) || n);
+  return o && n && M(t, a, n), n;
+}, w = (e, t, a) => t.has(e) || g("Cannot " + a), H = (e, t, a) => (w(e, t, "read from private field"), a ? a.call(e) : t.get(e)), y = (e, t, a) => t.has(e) ? g("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), P = (e, t, a) => (w(e, t, "access private method"), a), h, v, T;
+const p = "/umbraco/management/api/v1/email-templates", _ = "/umbraco/management/api/v1/email-style";
+let i = class extends F(x) {
   constructor() {
-    super(...arguments), H(this, h, k(this)), this._templates = [], this._style = null, this._loading = !1, this._message = "", this._messageType = "", this._activeTab = "templates", this._showForm = !1, this._editingTemplate = null, this._form = {
+    super(...arguments), y(this, v), y(this, h, S(this)), this._templates = [], this._style = null, this._loading = !1, this._message = "", this._messageType = "", this._activeTab = "templates", this._showForm = !1, this._editingTemplate = null, this._form = {
       name: "",
       subject: "",
       htmlBody: "",
@@ -53,7 +53,7 @@ let i = class extends $(g) {
       headerHtml: "",
       footerHtml: "",
       globalCss: ""
-    };
+    }, this._loadError = null;
   }
   connectedCallback() {
     super.connectedCallback(), this._loadTemplates(), this._loadStyle();
@@ -65,18 +65,18 @@ let i = class extends $(g) {
   }
   async _api(e, t, a) {
     try {
-      const s = await S(this, h).call(this, `${e}${t}`, {
+      const o = await H(this, h).call(this, `${e}${t}`, {
         headers: { "Content-Type": "application/json", ...a == null ? void 0 : a.headers },
         ...a
       });
-      if (s.status === 204) return null;
-      if ((s.headers.get("content-type") || "").includes("text/html"))
-        return await s.text();
-      if (s.ok) return s.json();
-      const u = await s.text();
-      return this._showMessage(u || `Request failed (${s.status})`, "error"), null;
+      if (o.status === 204) return null;
+      if ((o.headers.get("content-type") || "").includes("text/html"))
+        return await o.text();
+      if (P(this, v, T).call(this, o)) return o.json();
+      const u = await o.text();
+      return this._showMessage(u || `Request failed (${o.status})`, "error"), null;
     } catch {
-      return this._showMessage("Network error", "error"), null;
+      return this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), this._showMessage("Network error", "error"), null;
     }
   }
   async _loadTemplates() {
@@ -85,7 +85,7 @@ let i = class extends $(g) {
     e && (this._templates = e), this._loading = !1;
   }
   async _loadStyle() {
-    const e = await this._api(y, "");
+    const e = await this._api(_, "");
     e && (this._style = e, this._styleForm = {
       logoUrl: e.logoUrl ?? "",
       primaryColor: e.primaryColor ?? "",
@@ -170,7 +170,7 @@ let i = class extends $(g) {
       footerHtml: this._styleForm.footerHtml.trim() || null,
       globalCss: this._styleForm.globalCss.trim() || null,
       updatedAt: null
-    }, t = await this._api(y, "", {
+    }, t = await this._api(_, "", {
       method: "PUT",
       body: JSON.stringify(e)
     });
@@ -184,13 +184,13 @@ let i = class extends $(g) {
     }) : "-";
   }
   _renderMessage() {
-    return this._message ? r`
+    return this._message ? s`
       <div class="message ${this._messageType}">${this._message}</div>
     ` : "";
   }
   // ── Templates tab ───────────────────────────────────────────────────────
   _renderTemplatesTable() {
-    return this._loading ? r`<div class="loading">Loading...</div>` : this._templates.length === 0 ? r`
+    return this._loading ? s`<div class="loading">Loading...</div>` : this._templates.length === 0 ? s`
         <div class="empty">
           <p>No email templates yet.</p>
           <uui-button
@@ -202,7 +202,7 @@ let i = class extends $(g) {
             Create your first template
           </uui-button>
         </div>
-      ` : r`
+      ` : s`
       <uui-table>
         <uui-table-head>
           <uui-table-head-cell>Name</uui-table-head-cell>
@@ -212,7 +212,7 @@ let i = class extends $(g) {
           <uui-table-head-cell></uui-table-head-cell>
         </uui-table-head>
         ${this._templates.map(
-      (e) => r`
+      (e) => s`
             <uui-table-row>
               <uui-table-cell>${e.name}</uui-table-cell>
               <uui-table-cell>${e.subject}</uui-table-cell>
@@ -263,7 +263,7 @@ let i = class extends $(g) {
     `;
   }
   _renderTemplateForm() {
-    return r`
+    return s`
       <uui-box
         headline=${this._editingTemplate ? "Edit Template" : "New Template"}
       >
@@ -365,7 +365,7 @@ let i = class extends $(g) {
     `;
   }
   _renderPreviewModal() {
-    return this._showPreview ? r`
+    return this._showPreview ? s`
       <div class="modal-overlay" @click=${() => this._showPreview = !1}>
         <div class="modal" @click=${(e) => e.stopPropagation()}>
           <div class="modal-header">
@@ -403,7 +403,7 @@ let i = class extends $(g) {
     ` : "";
   }
   _renderVariablesModal() {
-    return this._showVariables ? r`
+    return this._showVariables ? s`
       <div class="modal-overlay" @click=${() => this._showVariables = !1}>
         <div class="modal modal-sm" @click=${(e) => e.stopPropagation()}>
           <div class="modal-header">
@@ -417,10 +417,10 @@ let i = class extends $(g) {
             </uui-button>
           </div>
           <div class="modal-body">
-            ${this._variableList.length === 0 ? r`<p>No variables found in this template.</p>` : r`
+            ${this._variableList.length === 0 ? s`<p>No variables found in this template.</p>` : s`
                   <div class="variable-list">
                     ${this._variableList.map(
-      (e) => r`<uui-tag look="primary">{{${e}}}</uui-tag>`
+      (e) => s`<uui-tag look="primary">{{${e}}}</uui-tag>`
     )}
                   </div>
                 `}
@@ -430,7 +430,7 @@ let i = class extends $(g) {
     ` : "";
   }
   _renderTemplatesTab() {
-    return r`
+    return s`
       <uui-box headline="Email Templates">
         <div class="toolbar" slot="header-actions">
           <uui-button
@@ -452,7 +452,7 @@ let i = class extends $(g) {
   }
   // ── Style settings tab ──────────────────────────────────────────────────
   _renderStyleTab() {
-    return r`
+    return s`
       <uui-box headline="Global Email Style">
         <p class="description">
           These settings apply to all email previews. Header and footer HTML
@@ -486,7 +486,7 @@ let i = class extends $(g) {
               placeholder="#333333"
               @input=${(e) => this._styleForm.primaryColor = e.target.value}
             ></uui-input>
-            ${this._styleForm.primaryColor ? r`
+            ${this._styleForm.primaryColor ? s`
                   <span
                     class="color-swatch"
                     style="background:${this._styleForm.primaryColor}"
@@ -543,9 +543,9 @@ let i = class extends $(g) {
       </uui-box>
     `;
   }
-  // ── Main render ─────────────────────────────────────────────────────────
   render() {
-    return r`
+    return s`
+      ${this._loadError ? s`<div class="splatdev-load-error" role="alert">${this._loadError}</div>` : ""}
       <div class="dashboard">
         ${this._renderMessage()}
 
@@ -575,7 +575,11 @@ let i = class extends $(g) {
   }
 };
 h = /* @__PURE__ */ new WeakMap();
-i.styles = w`
+v = /* @__PURE__ */ new WeakSet();
+T = function(e) {
+  return e.ok ? (this._loadError = null, !0) : (this._loadError = e.status === 401 || e.status === 403 ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete." : `The request did not succeed — the server returned ${e.status}${e.statusText ? ` ${e.statusText}` : ""}.`, !1);
+};
+i.styles = k`
     :host {
       display: block;
       padding: var(--uui-size-layout-1);
@@ -751,54 +755,70 @@ i.styles = w`
       gap: var(--uui-size-space-2);
       padding: var(--uui-size-space-4) 0;
     }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
   `;
 l([
-  o()
+  r()
 ], i.prototype, "_templates", 2);
 l([
-  o()
+  r()
 ], i.prototype, "_style", 2);
 l([
-  o()
+  r()
 ], i.prototype, "_loading", 2);
 l([
-  o()
+  r()
 ], i.prototype, "_message", 2);
 l([
-  o()
+  r()
 ], i.prototype, "_messageType", 2);
 l([
-  o()
+  r()
 ], i.prototype, "_activeTab", 2);
 l([
-  o()
+  r()
 ], i.prototype, "_showForm", 2);
 l([
-  o()
+  r()
 ], i.prototype, "_editingTemplate", 2);
 l([
-  o()
+  r()
 ], i.prototype, "_form", 2);
 l([
-  o()
+  r()
 ], i.prototype, "_showPreview", 2);
 l([
-  o()
+  r()
 ], i.prototype, "_previewHtml", 2);
 l([
-  o()
+  r()
 ], i.prototype, "_previewVariables", 2);
 l([
-  o()
+  r()
 ], i.prototype, "_showVariables", 2);
 l([
-  o()
+  r()
 ], i.prototype, "_variableList", 2);
 l([
-  o()
+  r()
 ], i.prototype, "_styleForm", 2);
+l([
+  r()
+], i.prototype, "_loadError", 2);
 i = l([
-  T("email-templates-dashboard")
+  C("email-templates-dashboard")
 ], i);
 export {
   i as EmailTemplatesDashboardElement

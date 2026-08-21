@@ -1,50 +1,50 @@
-import { LitElement as y, html as d, css as v, state as c, customElement as $ } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as w } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as k } from "@umbraco-cms/backoffice/auth";
-import { UMB_NOTIFICATION_CONTEXT as I } from "@umbraco-cms/backoffice/notification";
-function T(e) {
+import { LitElement as T, html as d, css as k, state as c, customElement as x } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as D } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as I } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as M } from "@umbraco-cms/backoffice/notification";
+function E(e) {
   let t = null, a = null;
-  const i = e.consumeContext.bind(e), s = new Promise((r) => {
-    i(k, async (o) => {
+  const i = e.consumeContext.bind(e), s = new Promise((o) => {
+    i(I, async (r) => {
       var u;
       try {
-        t = await ((u = o == null ? void 0 : o.getLatestToken) == null ? void 0 : u.call(o)) ?? null;
+        t = await ((u = r == null ? void 0 : r.getLatestToken) == null ? void 0 : u.call(r)) ?? null;
       } catch {
         t = null;
       }
-      r();
-    }), setTimeout(r, 3e3);
+      o();
+    }), setTimeout(o, 3e3);
   });
-  return i(I, (r) => {
-    a = r;
-  }), async (r, o = {}) => {
+  return i(M, (o) => {
+    a = o;
+  }), async (o, r = {}) => {
     await s;
-    const u = new Headers(o.headers);
+    const u = new Headers(r.headers);
     t && !u.has("Authorization") && u.set("Authorization", `Bearer ${t}`);
-    const n = await fetch(r, { ...o, credentials: "same-origin", headers: u });
+    const n = await fetch(o, { ...r, credentials: "same-origin", headers: u });
     if (!n.ok) {
-      const g = n.status === 401 || n.status === 403, b = g ? "Not authorised" : "Could not load data", f = g ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${n.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${n.status}. Anything shown below may be incomplete.`;
-      console.error(`[SplatDev] ${n.status} from ${String(r)} — ${f}`), a == null || a.peek("danger", { data: { headline: b, message: f } });
+      const g = n.status === 401 || n.status === 403, w = g ? "Not authorised" : "Could not load data", m = g ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${n.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${n.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${n.status} from ${String(o)} — ${m}`), a == null || a.peek("danger", { data: { headline: w, message: m } });
     }
     return n;
   };
 }
-var D = Object.defineProperty, M = Object.getOwnPropertyDescriptor, _ = (e) => {
+var q = Object.defineProperty, A = Object.getOwnPropertyDescriptor, v = (e) => {
   throw TypeError(e);
-}, h = (e, t, a, i) => {
-  for (var s = i > 1 ? void 0 : i ? M(t, a) : t, r = e.length - 1, o; r >= 0; r--)
-    (o = e[r]) && (s = (i ? o(t, a, s) : o(s)) || s);
-  return i && s && D(t, a, s), s;
-}, A = (e, t, a) => t.has(e) || _("Cannot " + a), m = (e, t, a) => (A(e, t, "read from private field"), a ? a.call(e) : t.get(e)), U = (e, t, a) => t.has(e) ? _("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), p;
-let l = class extends w(y) {
+}, p = (e, t, a, i) => {
+  for (var s = i > 1 ? void 0 : i ? A(t, a) : t, o = e.length - 1, r; o >= 0; o--)
+    (r = e[o]) && (s = (i ? r(t, a, s) : r(s)) || s);
+  return i && s && q(t, a, s), s;
+}, y = (e, t, a) => t.has(e) || v("Cannot " + a), f = (e, t, a) => (y(e, t, "read from private field"), a ? a.call(e) : t.get(e)), b = (e, t, a) => t.has(e) ? v("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), U = (e, t, a) => (y(e, t, "access private method"), a), h, _, $;
+let l = class extends D(T) {
   constructor() {
-    super(...arguments), U(this, p, T(this)), this._queue = [], this._mediaItems = [], this._parentMediaId = "", this._dragging = !1;
+    super(...arguments), b(this, _), b(this, h, E(this)), this._queue = [], this._mediaItems = [], this._parentMediaId = "", this._dragging = !1, this._loadError = null;
   }
   connectedCallback() {
     super.connectedCallback(), this._loadMedia();
   }
   async _loadMedia() {
-    const e = await m(this, p).call(this, "/umbraco/api/dropzone/GetMedia");
+    const e = await f(this, h).call(this, "/umbraco/api/dropzone/GetMedia");
     this._mediaItems = await e.json();
   }
   _onDrop(e) {
@@ -65,25 +65,26 @@ let l = class extends w(y) {
       const t = new FormData();
       t.append("file", e.file), this._parentMediaId && t.append("parentMediaId", this._parentMediaId);
       try {
-        const a = await m(this, p).call(this, "/umbraco/api/dropzone/Upload", { method: "POST", body: t });
-        if (a.ok)
+        const a = await f(this, h).call(this, "/umbraco/api/dropzone/Upload", { method: "POST", body: t });
+        if (U(this, _, $).call(this, a))
           e.done = !0;
         else {
           const i = await a.json();
           e.error = i.error || "Failed";
         }
       } catch {
-        e.error = "Upload error";
+        this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), e.error = "Upload error";
       }
       e.uploading = !1, this.requestUpdate();
     }
     await this._loadMedia();
   }
   async _delete(e) {
-    await m(this, p).call(this, `/umbraco/api/dropzone/Delete?mediaKey=${e}`, { method: "DELETE" }), await this._loadMedia();
+    await f(this, h).call(this, `/umbraco/api/dropzone/Delete?mediaKey=${e}`, { method: "DELETE" }), await this._loadMedia();
   }
   render() {
     return d`
+      ${this._loadError ? d`<div class="splatdev-load-error" role="alert">${this._loadError}</div>` : ""}
             <uui-box headline="Dropzone — File Upload">
                 <div
                     class="drop-area ${this._dragging ? "active" : ""}"
@@ -132,8 +133,12 @@ let l = class extends w(y) {
             </uui-box>`;
   }
 };
-p = /* @__PURE__ */ new WeakMap();
-l.styles = v`
+h = /* @__PURE__ */ new WeakMap();
+_ = /* @__PURE__ */ new WeakSet();
+$ = function(e) {
+  return e.ok ? (this._loadError = null, !0) : (this._loadError = e.status === 401 || e.status === 403 ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete." : `The request did not succeed — the server returned ${e.status}${e.statusText ? ` ${e.statusText}` : ""}.`, !1);
+};
+l.styles = k`
         :host { display: block; padding: 20px; }
         .drop-area {
             border: 2px dashed var(--uui-color-border);
@@ -148,25 +153,41 @@ l.styles = v`
         table { width: 100%; border-collapse: collapse; margin-top: 16px; }
         th, td { border: 1px solid var(--uui-color-border); padding: 8px 12px; }
         th { background: var(--uui-color-surface-emphasis); }
-    `;
-h([
+    
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
+  `;
+p([
   c()
 ], l.prototype, "_queue", 2);
-h([
+p([
   c()
 ], l.prototype, "_mediaItems", 2);
-h([
+p([
   c()
 ], l.prototype, "_parentMediaId", 2);
-h([
+p([
   c()
 ], l.prototype, "_dragging", 2);
-l = h([
-  $("dropzone-dashboard")
+p([
+  c()
+], l.prototype, "_loadError", 2);
+l = p([
+  x("dropzone-dashboard")
 ], l);
-const z = l;
+const P = l;
 export {
   l as DropzoneDashboard,
-  z as default
+  P as default
 };
 //# sourceMappingURL=dropzone-dashboard.js.map

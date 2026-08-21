@@ -1,58 +1,58 @@
-import { LitElement as v, html as c, css as _, state as p, customElement as y } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as w } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as x } from "@umbraco-cms/backoffice/auth";
-import { UMB_NOTIFICATION_CONTEXT as z } from "@umbraco-cms/backoffice/notification";
-function $(t) {
-  let e = null, a = null;
-  const u = t.consumeContext.bind(t), s = new Promise((l) => {
-    u(x, async (i) => {
-      var r;
+import { LitElement as x, html as d, css as $, state as h, customElement as E } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as z } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as T } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as C } from "@umbraco-cms/backoffice/notification";
+function k(e) {
+  let t = null, a = null;
+  const o = e.consumeContext.bind(e), s = new Promise((l) => {
+    o(T, async (i) => {
+      var n;
       try {
-        e = await ((r = i == null ? void 0 : i.getLatestToken) == null ? void 0 : r.call(i)) ?? null;
+        t = await ((n = i == null ? void 0 : i.getLatestToken) == null ? void 0 : n.call(i)) ?? null;
       } catch {
-        e = null;
+        t = null;
       }
       l();
     }), setTimeout(l, 3e3);
   });
-  return u(z, (l) => {
+  return o(C, (l) => {
     a = l;
   }), async (l, i = {}) => {
     await s;
-    const r = new Headers(i.headers);
-    e && !r.has("Authorization") && r.set("Authorization", `Bearer ${e}`);
-    const o = await fetch(l, { ...i, credentials: "same-origin", headers: r });
-    if (!o.ok) {
-      const b = o.status === 401 || o.status === 403, m = b ? "Not authorised" : "Could not load data", f = b ? `The backoffice token was ${e ? "sent but rejected" : "not available"} (${o.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${o.status}. Anything shown below may be incomplete.`;
-      console.error(`[SplatDev] ${o.status} from ${String(l)} — ${f}`), a == null || a.peek("danger", { data: { headline: m, message: f } });
+    const n = new Headers(i.headers);
+    t && !n.has("Authorization") && n.set("Authorization", `Bearer ${t}`);
+    const u = await fetch(l, { ...i, credentials: "same-origin", headers: n });
+    if (!u.ok) {
+      const f = u.status === 401 || u.status === 403, w = f ? "Not authorised" : "Could not load data", g = f ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${u.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${u.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${u.status} from ${String(l)} — ${g}`), a == null || a.peek("danger", { data: { headline: w, message: g } });
     }
-    return o;
+    return u;
   };
 }
-var C = Object.defineProperty, E = Object.getOwnPropertyDescriptor, g = (t) => {
-  throw TypeError(t);
-}, d = (t, e, a, u) => {
-  for (var s = u > 1 ? void 0 : u ? E(e, a) : e, l = t.length - 1, i; l >= 0; l--)
-    (i = t[l]) && (s = (u ? i(e, a, s) : i(s)) || s);
-  return u && s && C(e, a, s), s;
-}, T = (t, e, a) => e.has(t) || g("Cannot " + a), A = (t, e, a) => (T(t, e, "read from private field"), a ? a.call(t) : e.get(t)), I = (t, e, a) => e.has(t) ? g("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, a), h;
-let n = class extends w(v) {
+var A = Object.defineProperty, I = Object.getOwnPropertyDescriptor, v = (e) => {
+  throw TypeError(e);
+}, c = (e, t, a, o) => {
+  for (var s = o > 1 ? void 0 : o ? I(t, a) : t, l = e.length - 1, i; l >= 0; l--)
+    (i = e[l]) && (s = (o ? i(t, a, s) : i(s)) || s);
+  return o && s && A(t, a, s), s;
+}, _ = (e, t, a) => t.has(e) || v("Cannot " + a), M = (e, t, a) => (_(e, t, "read from private field"), a ? a.call(e) : t.get(e)), m = (e, t, a) => t.has(e) ? v("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), P = (e, t, a) => (_(e, t, "access private method"), a), p, b, y;
+let r = class extends z(x) {
   constructor() {
-    super(...arguments), I(this, h, $(this)), this._filter = "", this._loading = !1, this._exceptions = [], this._apiAvailable = !1, this._apiBase = "/umbraco/management/api/v1/exception-manager";
+    super(...arguments), m(this, b), m(this, p, k(this)), this._filter = "", this._loading = !1, this._exceptions = [], this._loadError = null, this._apiAvailable = !1, this._apiBase = "/umbraco/management/api/v1/exception-manager";
   }
-  _handleFilterInput(t) {
-    const e = t.target;
-    this._filter = e.value;
+  _handleFilterInput(e) {
+    const t = e.target;
+    this._filter = t.value;
   }
   async _refresh() {
     if (this._apiAvailable) {
       this._loading = !0;
       try {
-        const t = this._filter ? `${this._apiBase}?filter=${encodeURIComponent(this._filter)}` : this._apiBase, e = await A(this, h).call(this, t, {
+        const e = this._filter ? `${this._apiBase}?filter=${encodeURIComponent(this._filter)}` : this._apiBase, t = await M(this, p).call(this, e, {
           headers: { "Content-Type": "application/json" }
         });
-        if (e.ok) {
-          const a = await e.json();
+        if (P(this, b, y).call(this, t)) {
+          const a = await t.json();
           this._exceptions = a;
         }
       } catch {
@@ -63,14 +63,15 @@ let n = class extends w(v) {
   }
   get _filteredExceptions() {
     if (!this._filter.trim()) return this._exceptions;
-    const t = this._filter.toLowerCase();
+    const e = this._filter.toLowerCase();
     return this._exceptions.filter(
-      (e) => e.url.toLowerCase().includes(t) || e.ip.includes(t) || e.message.toLowerCase().includes(t) || String(e.statusCode).includes(t)
+      (t) => t.url.toLowerCase().includes(e) || t.ip.includes(e) || t.message.toLowerCase().includes(e) || String(t.statusCode).includes(e)
     );
   }
   render() {
-    const t = this._filteredExceptions;
-    return c`
+    const e = this._filteredExceptions;
+    return d`
+      ${this._loadError ? d`<div class="splatdev-load-error" role="alert">${this._loadError}</div>` : ""}
       <div class="dashboard-header">
         <h1>Exception Manager</h1>
         <p>
@@ -114,7 +115,7 @@ let n = class extends w(v) {
             </uui-button>
           </div>
 
-          ${t.length > 0 ? c`
+          ${e.length > 0 ? d`
                 <uui-table>
                   <uui-table-head>
                     <uui-table-head-cell>URL</uui-table-head-cell>
@@ -123,19 +124,19 @@ let n = class extends w(v) {
                     <uui-table-head-cell>Date</uui-table-head-cell>
                     <uui-table-head-cell>Message</uui-table-head-cell>
                   </uui-table-head>
-                  ${t.map(
-      (e) => c`
+                  ${e.map(
+      (t) => d`
                       <uui-table-row>
-                        <uui-table-cell>${e.url}</uui-table-cell>
-                        <uui-table-cell>${e.ip}</uui-table-cell>
-                        <uui-table-cell>${e.statusCode}</uui-table-cell>
-                        <uui-table-cell>${e.date}</uui-table-cell>
-                        <uui-table-cell>${e.message}</uui-table-cell>
+                        <uui-table-cell>${t.url}</uui-table-cell>
+                        <uui-table-cell>${t.ip}</uui-table-cell>
+                        <uui-table-cell>${t.statusCode}</uui-table-cell>
+                        <uui-table-cell>${t.date}</uui-table-cell>
+                        <uui-table-cell>${t.message}</uui-table-cell>
                       </uui-table-row>
                     `
     )}
                 </uui-table>
-              ` : c`
+              ` : d`
                 <uui-table>
                   <uui-table-head>
                     <uui-table-head-cell>URL</uui-table-head-cell>
@@ -155,8 +156,12 @@ let n = class extends w(v) {
     `;
   }
 };
-h = /* @__PURE__ */ new WeakMap();
-n.styles = _`
+p = /* @__PURE__ */ new WeakMap();
+b = /* @__PURE__ */ new WeakSet();
+y = function(e) {
+  return e.ok ? (this._loadError = null, !0) : (this._loadError = e.status === 401 || e.status === 403 ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete." : `The request did not succeed — the server returned ${e.status}${e.statusText ? ` ${e.statusText}` : ""}.`, !1);
+};
+r.styles = $`
     :host {
       display: block;
       padding: var(--uui-size-layout-1);
@@ -237,21 +242,37 @@ n.styles = _`
       flex-shrink: 0;
       margin-top: 2px;
     }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
   `;
-d([
-  p()
-], n.prototype, "_filter", 2);
-d([
-  p()
-], n.prototype, "_loading", 2);
-d([
-  p()
-], n.prototype, "_exceptions", 2);
-n = d([
-  y("exception-manager-dashboard")
-], n);
-const D = n;
+c([
+  h()
+], r.prototype, "_filter", 2);
+c([
+  h()
+], r.prototype, "_loading", 2);
+c([
+  h()
+], r.prototype, "_exceptions", 2);
+c([
+  h()
+], r.prototype, "_loadError", 2);
+r = c([
+  E("exception-manager-dashboard")
+], r);
+const U = r;
 export {
-  n as ExceptionManagerDashboardElement,
-  D as default
+  r as ExceptionManagerDashboardElement,
+  U as default
 };

@@ -20,11 +20,10 @@ Member registration plugin for Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
 Uses EF Core with a dedicated schema `memberreg`. Table: `RegistrationTokens`.
 
-Run migrations or use EF Core tooling to create the schema:
-```bash
-dotnet ef migrations add InitialCreate
-dotnet ef database update
-```
+The tables are created for you the first time the site starts: the plugin runs its own
+Umbraco migration against the database Umbraco is already using, on whichever provider
+it is configured with — SQL Server or SQLite. There is nothing to scaffold and nothing
+to run by hand.
 
 ## API Endpoints
 
@@ -42,6 +41,10 @@ dotnet ef database update
 ```
 
 ## Changelog
+
+### 2.2.3 — 2026-08-21
+- A failed request now says so in the dashboard. Previously the dashboard kept its previous (usually empty) state, so a refused or failed call looked identical to having no data.
+- README no longer tells you to scaffold EF Core migrations by hand — the plugin creates its own tables on first start, on SQL Server or SQLite.
 
 ### 2.2.2 — 2026-08-21
 - Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.

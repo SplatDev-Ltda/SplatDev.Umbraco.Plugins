@@ -1,45 +1,45 @@
-import { LitElement as $, html as p, css as w, state as s, customElement as C } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as k } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as E } from "@umbraco-cms/backoffice/auth";
-import { UMB_NOTIFICATION_CONTEXT as S } from "@umbraco-cms/backoffice/notification";
-function T(t) {
-  let o = null, e = null;
-  const d = t.consumeContext.bind(t), c = new Promise((n) => {
-    d(E, async (i) => {
-      var u;
+import { LitElement as S, html as u, css as T, state as s, customElement as O } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as L } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as R } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as P } from "@umbraco-cms/backoffice/notification";
+function A(t) {
+  let e = null, o = null;
+  const l = t.consumeContext.bind(t), d = new Promise((n) => {
+    l(R, async (i) => {
+      var p;
       try {
-        o = await ((u = i == null ? void 0 : i.getLatestToken) == null ? void 0 : u.call(i)) ?? null;
+        e = await ((p = i == null ? void 0 : i.getLatestToken) == null ? void 0 : p.call(i)) ?? null;
       } catch {
-        o = null;
+        e = null;
       }
       n();
     }), setTimeout(n, 3e3);
   });
-  return d(S, (n) => {
-    e = n;
+  return l(P, (n) => {
+    o = n;
   }), async (n, i = {}) => {
-    await c;
-    const u = new Headers(i.headers);
-    o && !u.has("Authorization") && u.set("Authorization", `Bearer ${o}`);
-    const l = await fetch(n, { ...i, credentials: "same-origin", headers: u });
-    if (!l.ok) {
-      const x = l.status === 401 || l.status === 403, y = x ? "Not authorised" : "Could not load data", v = x ? `The backoffice token was ${o ? "sent but rejected" : "not available"} (${l.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${l.status}. Anything shown below may be incomplete.`;
-      console.error(`[SplatDev] ${l.status} from ${String(n)} — ${v}`), e == null || e.peek("danger", { data: { headline: y, message: v } });
+    await d;
+    const p = new Headers(i.headers);
+    e && !p.has("Authorization") && p.set("Authorization", `Bearer ${e}`);
+    const c = await fetch(n, { ...i, credentials: "same-origin", headers: p });
+    if (!c.ok) {
+      const y = c.status === 401 || c.status === 403, E = y ? "Not authorised" : "Could not load data", $ = y ? `The backoffice token was ${e ? "sent but rejected" : "not available"} (${c.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${c.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${c.status} from ${String(n)} — ${$}`), o == null || o.peek("danger", { data: { headline: E, message: $ } });
     }
-    return l;
+    return c;
   };
 }
-var L = Object.defineProperty, O = Object.getOwnPropertyDescriptor, m = (t) => {
+var z = Object.defineProperty, D = Object.getOwnPropertyDescriptor, k = (t) => {
   throw TypeError(t);
-}, r = (t, o, e, d) => {
-  for (var c = d > 1 ? void 0 : d ? O(o, e) : o, n = t.length - 1, i; n >= 0; n--)
-    (i = t[n]) && (c = (d ? i(o, e, c) : i(c)) || c);
-  return d && c && L(o, e, c), c;
-}, R = (t, o, e) => o.has(t) || m("Cannot " + e), b = (t, o, e) => (R(t, o, "read from private field"), e ? e.call(t) : o.get(t)), A = (t, o, e) => o.has(t) ? m("Cannot add the same private member more than once") : o instanceof WeakSet ? o.add(t) : o.set(t, e), h;
-const _ = "/umbraco/api/pagseguro", f = "#00B1EB", g = "#0ECC8B";
-let a = class extends k($) {
+}, a = (t, e, o, l) => {
+  for (var d = l > 1 ? void 0 : l ? D(e, o) : e, n = t.length - 1, i; n >= 0; n--)
+    (i = t[n]) && (d = (l ? i(e, o, d) : i(d)) || d);
+  return l && d && z(e, o, d), d;
+}, C = (t, e, o) => e.has(t) || k("Cannot " + o), x = (t, e, o) => (C(t, e, "read from private field"), o ? o.call(t) : e.get(t)), w = (t, e, o) => e.has(t) ? k("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, o), v = (t, e, o) => (C(t, e, "access private method"), o), h, g, _;
+const m = "/umbraco/api/pagseguro", f = "#00B1EB", b = "#0ECC8B";
+let r = class extends L(S) {
   constructor() {
-    super(...arguments), A(this, h, T(this)), this._connStatus = "unknown", this._config = null, this._configError = "", this._txOrderRef = "", this._txAmount = "10.00", this._txDescription = "", this._txLoading = !1, this._txCheckoutUrl = "", this._txError = "", this._stCode = "", this._stLoading = !1, this._stStatus = "", this._stError = "";
+    super(...arguments), w(this, g), w(this, h, A(this)), this._connStatus = "unknown", this._config = null, this._configError = "", this._txOrderRef = "", this._txAmount = "10.00", this._txDescription = "", this._txLoading = !1, this._txCheckoutUrl = "", this._txError = "", this._stCode = "", this._stLoading = !1, this._stStatus = "", this._stError = "", this._loadError = null;
   }
   // ── Lifecycle ──
   connectedCallback() {
@@ -49,8 +49,8 @@ let a = class extends k($) {
   async _loadConfig() {
     this._connStatus = "checking", this._configError = "";
     try {
-      const t = await b(this, h).call(this, `${_}/GetConfig`);
-      t.ok ? (this._config = await t.json(), this._connStatus = "connected") : (this._connStatus = "error", this._configError = `HTTP ${t.status}: ${t.statusText}`);
+      const t = await x(this, h).call(this, `${m}/GetConfig`);
+      v(this, g, _).call(this, t) ? (this._config = await t.json(), this._connStatus = "connected") : (this._connStatus = "error", this._configError = `HTTP ${t.status}: ${t.statusText}`);
     } catch (t) {
       this._connStatus = "error", this._configError = t instanceof Error ? t.message : String(t);
     }
@@ -61,7 +61,7 @@ let a = class extends k($) {
     if (!(isNaN(t) || t <= 0)) {
       this._txLoading = !0, this._txCheckoutUrl = "", this._txError = "";
       try {
-        const o = await b(this, h).call(this, `${_}/CreateTransaction`, {
+        const e = await x(this, h).call(this, `${m}/CreateTransaction`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -70,15 +70,15 @@ let a = class extends k($) {
             description: this._txDescription.trim() || void 0
           })
         });
-        if (o.ok) {
-          const e = await o.json();
-          this._txCheckoutUrl = e.checkoutUrl ?? "";
+        if (v(this, g, _).call(this, e)) {
+          const o = await e.json();
+          this._txCheckoutUrl = o.checkoutUrl ?? "";
         } else {
-          const e = await o.text();
-          this._txError = `HTTP ${o.status}: ${e || o.statusText}`;
+          const o = await e.text();
+          this._txError = `HTTP ${e.status}: ${o || e.statusText}`;
         }
-      } catch (o) {
-        this._txError = o instanceof Error ? o.message : String(o);
+      } catch (e) {
+        this._txError = e instanceof Error ? e.message : String(e);
       } finally {
         this._txLoading = !1;
       }
@@ -88,13 +88,13 @@ let a = class extends k($) {
     if (this._stCode.trim()) {
       this._stLoading = !0, this._stStatus = "", this._stError = "";
       try {
-        const t = await b(this, h).call(this, `${_}/GetTransactionStatus?code=${encodeURIComponent(this._stCode.trim())}`);
-        if (t.ok) {
-          const o = await t.json();
-          this._stStatus = o.status ?? "(sem status)";
+        const t = await x(this, h).call(this, `${m}/GetTransactionStatus?code=${encodeURIComponent(this._stCode.trim())}`);
+        if (v(this, g, _).call(this, t)) {
+          const e = await t.json();
+          this._stStatus = e.status ?? "(sem status)";
         } else {
-          const o = await t.text();
-          this._stError = `HTTP ${t.status}: ${o || t.statusText}`;
+          const e = await t.text();
+          this._stError = `HTTP ${t.status}: ${e || t.statusText}`;
         }
       } catch (t) {
         this._stError = t instanceof Error ? t.message : String(t);
@@ -116,10 +116,10 @@ let a = class extends k($) {
         return "Desconhecido";
     }
   }
-  // ── Render ──
   render() {
     var t;
-    return p`
+    return u`
+      ${this._loadError ? u`<div class="splatdev-load-error" role="alert">${this._loadError}</div>` : ""}
       <!-- Header -->
       <div class="dashboard-header">
         <div class="brand-logo"><span>PS</span></div>
@@ -134,7 +134,7 @@ let a = class extends k($) {
       </div>
 
       <!-- Config error notice -->
-      ${this._configError ? p`<div class="notice notice--error">
+      ${this._configError ? u`<div class="notice notice--error">
             <strong>Erro ao carregar configuração:</strong> ${this._configError}.
             Verifique as credenciais em <code>appsettings.json</code> (seção
             <code>PagSeguro</code>).
@@ -177,7 +177,7 @@ let a = class extends k($) {
               type="text"
               placeholder="ex.: ORDER-001"
               .value=${this._txOrderRef}
-              @input=${(o) => this._txOrderRef = o.target.value}
+              @input=${(e) => this._txOrderRef = e.target.value}
             />
           </div>
           <div class="form-col">
@@ -188,7 +188,7 @@ let a = class extends k($) {
               step="0.01"
               min="0.01"
               .value=${this._txAmount}
-              @input=${(o) => this._txAmount = o.target.value}
+              @input=${(e) => this._txAmount = e.target.value}
             />
           </div>
           <div class="form-col">
@@ -198,7 +198,7 @@ let a = class extends k($) {
               type="text"
               placeholder="Descrição opcional"
               .value=${this._txDescription}
-              @input=${(o) => this._txDescription = o.target.value}
+              @input=${(e) => this._txDescription = e.target.value}
             />
           </div>
         </div>
@@ -210,17 +210,17 @@ let a = class extends k($) {
             label="Criar transação"
             ?disabled=${this._txLoading || !this._txOrderRef.trim()}
             @click=${this._createTransaction}
-            style="--uui-button-background-color:${f};--uui-button-background-color-hover:${g};--uui-button-contrast:#fff;--uui-button-contrast-hover:#fff"
+            style="--uui-button-background-color:${f};--uui-button-background-color-hover:${b};--uui-button-contrast:#fff;--uui-button-contrast-hover:#fff"
           >
             ${this._txLoading ? "Criando…" : "Criar transação"}
           </uui-button>
         </div>
 
-        ${this._txError ? p`<div class="notice notice--error" style="margin-top:12px;margin-bottom:0">
+        ${this._txError ? u`<div class="notice notice--error" style="margin-top:12px;margin-bottom:0">
               ${this._txError}
             </div>` : ""}
 
-        ${this._txCheckoutUrl ? p`
+        ${this._txCheckoutUrl ? u`
             <div class="result-box">
               <div class="result-label">URL de checkout</div>
               <a href="${this._txCheckoutUrl}" target="_blank" rel="noopener noreferrer">
@@ -239,7 +239,7 @@ let a = class extends k($) {
               type="text"
               placeholder="ex.: 9E884542-81B3-4419-9A75-BCC6FB495EF1"
               .value=${this._stCode}
-              @input=${(o) => this._stCode = o.target.value}
+              @input=${(e) => this._stCode = e.target.value}
             />
           </div>
         </div>
@@ -255,11 +255,11 @@ let a = class extends k($) {
           </uui-button>
         </div>
 
-        ${this._stError ? p`<div class="notice notice--error" style="margin-top:12px;margin-bottom:0">
+        ${this._stError ? u`<div class="notice notice--error" style="margin-top:12px;margin-bottom:0">
               ${this._stError}
             </div>` : ""}
 
-        ${this._stStatus ? p`
+        ${this._stStatus ? u`
             <div class="result-box">
               <div class="result-label">Status</div>
               <span class="tx-status-badge">${this._stStatus}</span>
@@ -292,7 +292,11 @@ let a = class extends k($) {
   }
 };
 h = /* @__PURE__ */ new WeakMap();
-a.styles = w`
+g = /* @__PURE__ */ new WeakSet();
+_ = function(t) {
+  return t.ok ? (this._loadError = null, !0) : (this._loadError = t.status === 401 || t.status === 403 ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete." : `The request did not succeed — the server returned ${t.status}${t.statusText ? ` ${t.statusText}` : ""}.`, !1);
+};
+r.styles = T`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -311,7 +315,7 @@ a.styles = w`
       width: 44px;
       height: 44px;
       border-radius: 10px;
-      background: linear-gradient(135deg, ${f}, ${g});
+      background: linear-gradient(135deg, ${f}, ${b});
       display: flex;
       align-items: center;
       justify-content: center;
@@ -389,7 +393,7 @@ a.styles = w`
       word-break: break-all;
     }
     .info-card__value--blue  { color: ${f}; }
-    .info-card__value--green { color: ${g}; }
+    .info-card__value--green { color: ${b}; }
     .info-card__value--warn  { color: #d97706; }
 
     /* ── Form rows ── */
@@ -435,7 +439,7 @@ a.styles = w`
       line-height: 1.5;
     }
     .notice--info    { background: #e0f5fd; color: #0c4a6e; border-left: 3px solid ${f}; }
-    .notice--success { background: #d1fae5; color: #064e3b; border-left: 3px solid ${g}; }
+    .notice--success { background: #d1fae5; color: #064e3b; border-left: 3px solid ${b}; }
     .notice--warn    { background: #fffbeb; color: #92400e; border-left: 3px solid #f59e0b; }
     .notice--error   { background: #fef2f2; color: #991b1b; border-left: 3px solid #ef4444; }
 
@@ -454,7 +458,7 @@ a.styles = w`
       word-break: break-all;
     }
     .result-box a:hover {
-      color: ${g};
+      color: ${b};
     }
     .result-label {
       font-size: 0.75rem;
@@ -491,51 +495,67 @@ a.styles = w`
       align-items: center;
       flex-wrap: wrap;
     }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
   `;
-r([
+a([
   s()
-], a.prototype, "_connStatus", 2);
-r([
+], r.prototype, "_connStatus", 2);
+a([
   s()
-], a.prototype, "_config", 2);
-r([
+], r.prototype, "_config", 2);
+a([
   s()
-], a.prototype, "_configError", 2);
-r([
+], r.prototype, "_configError", 2);
+a([
   s()
-], a.prototype, "_txOrderRef", 2);
-r([
+], r.prototype, "_txOrderRef", 2);
+a([
   s()
-], a.prototype, "_txAmount", 2);
-r([
+], r.prototype, "_txAmount", 2);
+a([
   s()
-], a.prototype, "_txDescription", 2);
-r([
+], r.prototype, "_txDescription", 2);
+a([
   s()
-], a.prototype, "_txLoading", 2);
-r([
+], r.prototype, "_txLoading", 2);
+a([
   s()
-], a.prototype, "_txCheckoutUrl", 2);
-r([
+], r.prototype, "_txCheckoutUrl", 2);
+a([
   s()
-], a.prototype, "_txError", 2);
-r([
+], r.prototype, "_txError", 2);
+a([
   s()
-], a.prototype, "_stCode", 2);
-r([
+], r.prototype, "_stCode", 2);
+a([
   s()
-], a.prototype, "_stLoading", 2);
-r([
+], r.prototype, "_stLoading", 2);
+a([
   s()
-], a.prototype, "_stStatus", 2);
-r([
+], r.prototype, "_stStatus", 2);
+a([
   s()
-], a.prototype, "_stError", 2);
-a = r([
-  C("pagseguro-dashboard")
-], a);
-const B = a;
+], r.prototype, "_stError", 2);
+a([
+  s()
+], r.prototype, "_loadError", 2);
+r = a([
+  O("pagseguro-dashboard")
+], r);
+const H = r;
 export {
-  a as PagSeguroDashboardElement,
-  B as default
+  r as PagSeguroDashboardElement,
+  H as default
 };

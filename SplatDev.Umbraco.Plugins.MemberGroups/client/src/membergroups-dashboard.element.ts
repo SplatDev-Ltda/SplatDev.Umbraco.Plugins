@@ -45,6 +45,19 @@ export class MemberGroupsDashboardElement extends UmbElementMixin(LitElement) {
     .result.error { background: #fde8e8; color: #c81e1e; }
     .btn-row { display: flex; gap: 8px; }
     code { background: #f3f4f6; padding: 1px 6px; border-radius: 4px; font-size: 0.8rem; }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
   `;
 
   @state() private _activeTab: string = "groups";
@@ -53,6 +66,8 @@ export class MemberGroupsDashboardElement extends UmbElementMixin(LitElement) {
   @state() private _foundMember: MemberInfo | null = null;
   @state() private _result: { success: boolean; message: string } | null = null;
   @state() private _loading: boolean = false;
+
+  @state() private _loadError: string | null = null;
 
   private _apiBase = "/umbraco/api/membergroups";
 
@@ -65,15 +80,17 @@ export class MemberGroupsDashboardElement extends UmbElementMixin(LitElement) {
   private async _loadGroups(): Promise<void> {
     try {
       const resp = await this.#fetch(`${this._apiBase}/GetMemberGroups`);
-      if (resp.ok) this._groups = await resp.json();
-    } catch { this._groups = []; }
+      if (this.#responseOk(resp)) this._groups = await resp.json();
+    } catch {
+      this._loadError ??= "The request failed. See the browser console for details."; this._groups = []; }
   }
 
   private async _loadTypes(): Promise<void> {
     try {
       const resp = await this.#fetch(`${this._apiBase}/GetMemberTypes`);
-      if (resp.ok) this._types = await resp.json();
-    } catch { this._types = []; }
+      if (this.#responseOk(resp)) this._types = await resp.json();
+    } catch {
+      this._loadError ??= "The request failed. See the browser console for details."; this._types = []; }
   }
 
   private async _post(action: string, body?: object | string): Promise<void> {
@@ -91,6 +108,7 @@ export class MemberGroupsDashboardElement extends UmbElementMixin(LitElement) {
       const data = await resp.json();
       this._result = { success: resp.ok, message: data.message ?? (resp.ok ? "Success" : "Failed") };
     } catch {
+      this._loadError ??= "The request failed. See the browser console for details.";
       this._result = { success: false, message: "Network error." };
     } finally {
       this._loading = false;
@@ -103,12 +121,13 @@ export class MemberGroupsDashboardElement extends UmbElementMixin(LitElement) {
     this._result = null;
     try {
       const resp = await this.#fetch(`${this._apiBase}/GetMemberByEmail?email=${encodeURIComponent(email)}`);
-      if (resp.ok) {
+      if (this.#responseOk(resp)) {
         this._foundMember = await resp.json();
       } else {
         this._result = { success: false, message: "Member not found." };
       }
     } catch {
+      this._loadError ??= "The request failed. See the browser console for details.";
       this._result = { success: false, message: "Network error." };
     } finally {
       this._loading = false;
@@ -197,8 +216,32 @@ export class MemberGroupsDashboardElement extends UmbElementMixin(LitElement) {
     `;
   }
 
+  /**
+   * Guards a response and records why it failed.
+   *
+   * This used to be a bare `response.ok` check with no else branch, so a failed request
+   * left the previous (usually empty) state on screen and read as "there is no data"
+   * rather than "the request did not succeed".
+   */
+  #responseOk(response: Response): boolean {
+    if (response.ok) {
+      this._loadError = null;
+      return true;
+    }
+
+    this._loadError =
+      response.status === 401 || response.status === 403
+        ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete."
+        : `The request did not succeed — the server returned ${response.status}${response.statusText ? ` ${response.statusText}` : ""}.`;
+    return false;
+  }
+
+
   override render() {
     return html`
+      ${this._loadError
+        ? html`<div class="splatdev-load-error" role="alert">${this._loadError}</div>`
+        : ""}
       <h1>Member Groups Manager</h1>
       <p class="description">Manage Umbraco member groups, member types, and user access.</p>
 

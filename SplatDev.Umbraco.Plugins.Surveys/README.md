@@ -18,7 +18,7 @@ A full-featured survey builder plugin for Umbraco 13 and Umbraco 17.
 - U17 backoffice dashboard (Lit 3 web component)
 - U13 backoffice dashboard (AngularJS)
 - Razor view component for embedding surveys in Umbraco templates
-- EF Core with SQL Server (schema: `surveys`)
+- EF Core against Umbraco’s database (schema: `surveys`)
 
 ## Targets
 
@@ -65,12 +65,15 @@ Tables created in the `surveys` schema:
 - `SurveyAnswers` - Per-question answers within a response
 
 Run EF Core migrations to create the tables:
-```bash
-dotnet ef migrations add InitialCreate
-dotnet ef database update
-```
+The tables are created for you the first time the site starts: the plugin runs its own
+Umbraco migration against the database Umbraco is already using, on whichever provider
+it is configured with — SQL Server or SQLite. There is nothing to scaffold and nothing
+to run by hand.
 
 ## Changelog
+
+### 2.2.3 — 2026-08-21
+- README no longer tells you to scaffold EF Core migrations by hand — the plugin creates its own tables on first start, on SQL Server or SQLite.
 
 ### 2.2.2 — 2026-08-21
 - Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.

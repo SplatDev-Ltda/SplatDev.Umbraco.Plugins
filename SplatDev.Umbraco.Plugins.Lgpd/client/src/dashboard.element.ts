@@ -99,6 +99,19 @@ export class LgpdDashboardElement extends UmbElementMixin(LitElement) {
     .empty { color: var(--uui-color-text-alt, #6b7280); padding: 12px 0; }
     .vencida { color: #991b1b; font-weight: 600; }
     uui-table { width: 100%; }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
   `;
 
   @state() private _painel: Painel | null = null;
@@ -110,6 +123,8 @@ export class LgpdDashboardElement extends UmbElementMixin(LitElement) {
   @state() private _loading = true;
   @state() private _busy = false;
   @state() private _msg: { ok: boolean; texto: string } | null = null;
+
+  @state() private _loadError: string | null = null;
 
   private readonly _api = "/umbraco/api/lgpd";
 
@@ -127,10 +142,10 @@ export class LgpdDashboardElement extends UmbElementMixin(LitElement) {
         this.#fetch(`${this._api}/Requisicoes?status=${encodeURIComponent(this._filtro)}`, { credentials: "same-origin" }),
         this.#fetch(`${this._api}/Operacoes`, { credentials: "same-origin" }),
       ]);
-      if (p.ok) this._painel = await p.json();
-      if (v.ok) this._vocab = await v.json();
-      if (r.ok) this._requisicoes = await r.json();
-      if (o.ok) this._operacoes = await o.json();
+      if (this.#responseOk(p)) this._painel = await p.json();
+      if (this.#responseOk(v)) this._vocab = await v.json();
+      if (this.#responseOk(r)) this._requisicoes = await r.json();
+      if (this.#responseOk(o)) this._operacoes = await o.json();
     } finally {
       this._loading = false;
     }
@@ -148,7 +163,7 @@ export class LgpdDashboardElement extends UmbElementMixin(LitElement) {
       });
       const data = await res.json();
       this._msg = { ok: res.ok, texto: data.mensagem ?? (res.ok ? "Feito." : "Falhou.") };
-      if (res.ok) await this.#load();
+      if (this.#responseOk(res)) await this.#load();
       return res.ok;
     } catch (e) {
       this._msg = { ok: false, texto: `A requisição falhou: ${(e as Error).message}` };
@@ -310,9 +325,33 @@ export class LgpdDashboardElement extends UmbElementMixin(LitElement) {
       </uui-box>`;
   }
 
+  /**
+   * Guards a response and records why it failed.
+   *
+   * This used to be a bare `response.ok` check with no else branch, so a failed request
+   * left the previous (usually empty) state on screen and read as "there is no data"
+   * rather than "the request did not succeed".
+   */
+  #responseOk(response: Response): boolean {
+    if (response.ok) {
+      this._loadError = null;
+      return true;
+    }
+
+    this._loadError =
+      response.status === 401 || response.status === 403
+        ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete."
+        : `The request did not succeed — the server returned ${response.status}${response.statusText ? ` ${response.statusText}` : ""}.`;
+    return false;
+  }
+
+
   override render() {
     const p = this._painel;
     return html`
+      ${this._loadError
+        ? html`<div class="splatdev-load-error" role="alert">${this._loadError}</div>`
+        : ""}
       <h1>LGPD</h1>
       <p class="description">
         Consentimento, requisições de titulares e o registro das operações de tratamento,

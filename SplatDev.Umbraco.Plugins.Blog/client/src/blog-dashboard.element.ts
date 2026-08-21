@@ -125,6 +125,19 @@ export class BlogDashboardElement extends UmbElementMixin(LitElement) {
       color: var(--uui-color-text-alt, #6b7280);
       padding: 24px 0;
     }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
   `;
 
   @state() private _activeTab: string = "posts";
@@ -134,6 +147,8 @@ export class BlogDashboardElement extends UmbElementMixin(LitElement) {
   @state() private _totalPosts: number = 0;
   @state() private _page: number = 1;
   @state() private _loading: boolean = false;
+
+  @state() private _loadError: string | null = null;
 
   private readonly _pageSize = 10;
   private readonly _apiBase = "/umbraco/api/blog";
@@ -151,12 +166,13 @@ export class BlogDashboardElement extends UmbElementMixin(LitElement) {
       const response = await this.#fetch(
         `${this._apiBase}/GetPosts?page=${this._page}&pageSize=${this._pageSize}&publishedOnly=false`
       );
-      if (response.ok) {
+      if (this.#responseOk(response)) {
         const data = await response.json();
         this._posts = data.posts ?? [];
         this._totalPosts = data.total ?? 0;
       }
     } catch {
+      this._loadError ??= "The request failed. See the browser console for details.";
       this._posts = [];
     } finally {
       this._loading = false;
@@ -166,8 +182,9 @@ export class BlogDashboardElement extends UmbElementMixin(LitElement) {
   private async _loadCategories(): Promise<void> {
     try {
       const response = await this.#fetch(`${this._apiBase}/GetCategories`);
-      if (response.ok) this._categories = await response.json();
+      if (this.#responseOk(response)) this._categories = await response.json();
     } catch {
+      this._loadError ??= "The request failed. See the browser console for details.";
       this._categories = [];
     }
   }
@@ -175,8 +192,9 @@ export class BlogDashboardElement extends UmbElementMixin(LitElement) {
   private async _loadTags(): Promise<void> {
     try {
       const response = await this.#fetch(`${this._apiBase}/GetTags`);
-      if (response.ok) this._tags = await response.json();
+      if (this.#responseOk(response)) this._tags = await response.json();
     } catch {
+      this._loadError ??= "The request failed. See the browser console for details.";
       this._tags = [];
     }
   }
@@ -320,8 +338,32 @@ export class BlogDashboardElement extends UmbElementMixin(LitElement) {
     `;
   }
 
+  /**
+   * Guards a response and records why it failed.
+   *
+   * This used to be a bare `response.ok` check with no else branch, so a failed request
+   * left the previous (usually empty) state on screen and read as "there is no data"
+   * rather than "the request did not succeed".
+   */
+  #responseOk(response: Response): boolean {
+    if (response.ok) {
+      this._loadError = null;
+      return true;
+    }
+
+    this._loadError =
+      response.status === 401 || response.status === 403
+        ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete."
+        : `The request did not succeed — the server returned ${response.status}${response.statusText ? ` ${response.statusText}` : ""}.`;
+    return false;
+  }
+
+
   override render() {
     return html`
+      ${this._loadError
+        ? html`<div class="splatdev-load-error" role="alert">${this._loadError}</div>`
+        : ""}
       <h1>Blog Manager</h1>
       <p class="description">
         Manage blog posts, categories, tags and comments from the Umbraco backoffice.

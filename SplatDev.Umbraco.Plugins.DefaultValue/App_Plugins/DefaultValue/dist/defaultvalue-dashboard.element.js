@@ -1,44 +1,44 @@
-import { LitElement as g, html as c, nothing as v, css as w, state as p, customElement as $ } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as x } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as A } from "@umbraco-cms/backoffice/auth";
-import { UMB_NOTIFICATION_CONTEXT as k } from "@umbraco-cms/backoffice/notification";
-function T(e) {
+import { LitElement as x, html as d, nothing as E, css as T, state as h, customElement as k } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as A } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as D } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as C } from "@umbraco-cms/backoffice/notification";
+function F(e) {
   let t = null, a = null;
-  const s = e.consumeContext.bind(e), r = new Promise((i) => {
-    s(A, async (l) => {
-      var d;
+  const u = e.consumeContext.bind(e), o = new Promise((i) => {
+    u(D, async (l) => {
+      var c;
       try {
-        t = await ((d = l == null ? void 0 : l.getLatestToken) == null ? void 0 : d.call(l)) ?? null;
+        t = await ((c = l == null ? void 0 : l.getLatestToken) == null ? void 0 : c.call(l)) ?? null;
       } catch {
         t = null;
       }
       i();
     }), setTimeout(i, 3e3);
   });
-  return s(k, (i) => {
+  return u(C, (i) => {
     a = i;
   }), async (i, l = {}) => {
-    await r;
-    const d = new Headers(l.headers);
-    t && !d.has("Authorization") && d.set("Authorization", `Bearer ${t}`);
-    const u = await fetch(i, { ...l, credentials: "same-origin", headers: d });
-    if (!u.ok) {
-      const m = u.status === 401 || u.status === 403, y = m ? "Not authorised" : "Could not load data", b = m ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${u.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${u.status}. Anything shown below may be incomplete.`;
-      console.error(`[SplatDev] ${u.status} from ${String(i)} — ${b}`), a == null || a.peek("danger", { data: { headline: y, message: b } });
+    await o;
+    const c = new Headers(l.headers);
+    t && !c.has("Authorization") && c.set("Authorization", `Bearer ${t}`);
+    const n = await fetch(i, { ...l, credentials: "same-origin", headers: c });
+    if (!n.ok) {
+      const b = n.status === 401 || n.status === 403, $ = b ? "Not authorised" : "Could not load data", _ = b ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${n.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${n.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${n.status} from ${String(i)} — ${_}`), a == null || a.peek("danger", { data: { headline: $, message: _ } });
     }
-    return u;
+    return n;
   };
 }
-var E = Object.defineProperty, C = Object.getOwnPropertyDescriptor, _ = (e) => {
+var V = Object.defineProperty, O = Object.getOwnPropertyDescriptor, y = (e) => {
   throw TypeError(e);
-}, n = (e, t, a, s) => {
-  for (var r = s > 1 ? void 0 : s ? C(t, a) : t, i = e.length - 1, l; i >= 0; i--)
-    (l = e[i]) && (r = (s ? l(t, a, r) : l(r)) || r);
-  return s && r && E(t, a, r), r;
-}, D = (e, t, a) => t.has(e) || _("Cannot " + a), f = (e, t, a) => (D(e, t, "read from private field"), a ? a.call(e) : t.get(e)), F = (e, t, a) => t.has(e) ? _("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), h;
-let o = class extends x(g) {
+}, s = (e, t, a, u) => {
+  for (var o = u > 1 ? void 0 : u ? O(t, a) : t, i = e.length - 1, l; i >= 0; i--)
+    (l = e[i]) && (o = (u ? l(t, a, o) : l(o)) || o);
+  return u && o && V(t, a, o), o;
+}, v = (e, t, a) => t.has(e) || y("Cannot " + a), f = (e, t, a) => (v(e, t, "read from private field"), a ? a.call(e) : t.get(e)), g = (e, t, a) => t.has(e) ? y("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), P = (e, t, a) => (v(e, t, "access private method"), a), p, m, w;
+let r = class extends A(x) {
   constructor() {
-    super(...arguments), F(this, h, T(this)), this._rules = [], this._loading = !1, this._showForm = !1, this._saving = !1, this._filter = "", this._form = this._emptyForm(), this._api = "/umbraco/api/defaultvalue";
+    super(...arguments), g(this, m), g(this, p, F(this)), this._rules = [], this._loading = !1, this._showForm = !1, this._saving = !1, this._filter = "", this._form = this._emptyForm(), this._loadError = null, this._api = "/umbraco/api/defaultvalue";
   }
   _emptyForm() {
     return { documentTypeAlias: "", propertyAlias: "", defaultValue: "", isEnabled: !0, priority: 0 };
@@ -49,10 +49,10 @@ let o = class extends x(g) {
   async _load() {
     this._loading = !0;
     try {
-      const e = await f(this, h).call(this, `${this._api}/GetRules`);
-      e.ok && (this._rules = await e.json());
+      const e = await f(this, p).call(this, `${this._api}/GetRules`);
+      P(this, m, w).call(this, e) && (this._rules = await e.json());
     } catch {
-      this._rules = [];
+      this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), this._rules = [];
     } finally {
       this._loading = !1;
     }
@@ -67,12 +67,12 @@ let o = class extends x(g) {
     this._form = { ...e }, this._showForm = !0;
   }
   async _delete(e) {
-    confirm("Delete this rule?") && (await f(this, h).call(this, `${this._api}/DeleteRule?id=${e.id}`, { method: "DELETE" }), await this._load());
+    confirm("Delete this rule?") && (await f(this, p).call(this, `${this._api}/DeleteRule?id=${e.id}`, { method: "DELETE" }), await this._load());
   }
   async _save() {
     this._saving = !0;
     try {
-      await f(this, h).call(this, `${this._api}/SaveRule`, {
+      await f(this, p).call(this, `${this._api}/SaveRule`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(this._form)
@@ -82,7 +82,7 @@ let o = class extends x(g) {
     }
   }
   _renderForm() {
-    return c`
+    return d`
       <div class="form-card">
         <h3>${this._form.id ? "Edit" : "New"} Default Value Rule</h3>
         <div class="form-row">
@@ -112,7 +112,8 @@ let o = class extends x(g) {
     `;
   }
   render() {
-    return c`
+    return d`
+      ${this._loadError ? d`<div class="splatdev-load-error" role="alert">${this._loadError}</div>` : ""}
       <h1>Default Values</h1>
       <p class="description">Configure default property values per document type. Applied automatically when new content nodes are created.</p>
 
@@ -123,9 +124,9 @@ let o = class extends x(g) {
         <uui-input placeholder="Filter by doc type or property..." @input=${(e) => this._filter = e.target.value} style="flex:1;max-width:300px;"></uui-input>
       </div>
 
-      ${this._showForm ? this._renderForm() : v}
+      ${this._showForm ? this._renderForm() : E}
 
-      ${this._loading ? c`<p>Loading rules...</p>` : this._filtered.length === 0 ? c`<p class="empty">No rules found. Click "Add Rule" to create one.</p>` : c`
+      ${this._loading ? d`<p>Loading rules...</p>` : this._filtered.length === 0 ? d`<p class="empty">No rules found. Click "Add Rule" to create one.</p>` : d`
           <uui-box headline="Default Value Rules (${this._filtered.length})">
             <uui-table>
               <uui-table-head>
@@ -136,7 +137,7 @@ let o = class extends x(g) {
                 <uui-table-head-cell>Enabled</uui-table-head-cell>
                 <uui-table-head-cell>Actions</uui-table-head-cell>
               </uui-table-head>
-              ${this._filtered.map((e) => c`
+              ${this._filtered.map((e) => d`
                 <uui-table-row>
                   <uui-table-cell><code>${e.documentTypeAlias}</code></uui-table-cell>
                   <uui-table-cell><code>${e.propertyAlias}</code></uui-table-cell>
@@ -157,8 +158,12 @@ let o = class extends x(g) {
     `;
   }
 };
-h = /* @__PURE__ */ new WeakMap();
-o.styles = w`
+p = /* @__PURE__ */ new WeakMap();
+m = /* @__PURE__ */ new WeakSet();
+w = function(e) {
+  return e.ok ? (this._loadError = null, !0) : (this._loadError = e.status === 401 || e.status === 403 ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete." : `The request did not succeed — the server returned ${e.status}${e.statusText ? ` ${e.statusText}` : ""}.`, !1);
+};
+r.styles = T`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
     p.description { color: var(--uui-color-text-alt, #6b7280); margin: 0 0 24px; }
@@ -174,30 +179,46 @@ o.styles = w`
     .empty { color: var(--uui-color-text-alt, #6b7280); padding: 24px 0; }
     uui-table { width: 100%; }
     code { background: #f3f4f6; padding: 1px 6px; border-radius: 4px; font-size: 0.8rem; }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
   `;
-n([
-  p()
-], o.prototype, "_rules", 2);
-n([
-  p()
-], o.prototype, "_loading", 2);
-n([
-  p()
-], o.prototype, "_showForm", 2);
-n([
-  p()
-], o.prototype, "_saving", 2);
-n([
-  p()
-], o.prototype, "_filter", 2);
-n([
-  p()
-], o.prototype, "_form", 2);
-o = n([
-  $("defaultvalue-dashboard")
-], o);
-const S = o;
+s([
+  h()
+], r.prototype, "_rules", 2);
+s([
+  h()
+], r.prototype, "_loading", 2);
+s([
+  h()
+], r.prototype, "_showForm", 2);
+s([
+  h()
+], r.prototype, "_saving", 2);
+s([
+  h()
+], r.prototype, "_filter", 2);
+s([
+  h()
+], r.prototype, "_form", 2);
+s([
+  h()
+], r.prototype, "_loadError", 2);
+r = s([
+  k("defaultvalue-dashboard")
+], r);
+const L = r;
 export {
-  o as DefaultValueDashboardElement,
-  S as default
+  r as DefaultValueDashboardElement,
+  L as default
 };

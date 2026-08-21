@@ -1,44 +1,44 @@
-import { LitElement as b, html as i, css as _, state as p, customElement as x } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as y } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as $ } from "@umbraco-cms/backoffice/auth";
-import { UMB_NOTIFICATION_CONTEXT as C } from "@umbraco-cms/backoffice/notification";
-function T(e) {
+import { LitElement as $, html as i, css as T, state as u, customElement as k } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as C } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as z } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as A } from "@umbraco-cms/backoffice/notification";
+function E(e) {
   let t = null, a = null;
-  const n = e.consumeContext.bind(e), o = new Promise((r) => {
-    n($, async (s) => {
-      var d;
+  const n = e.consumeContext.bind(e), o = new Promise((s) => {
+    n(z, async (r) => {
+      var c;
       try {
-        t = await ((d = s == null ? void 0 : s.getLatestToken) == null ? void 0 : d.call(s)) ?? null;
+        t = await ((c = r == null ? void 0 : r.getLatestToken) == null ? void 0 : c.call(r)) ?? null;
       } catch {
         t = null;
       }
-      r();
-    }), setTimeout(r, 3e3);
+      s();
+    }), setTimeout(s, 3e3);
   });
-  return n(C, (r) => {
-    a = r;
-  }), async (r, s = {}) => {
+  return n(A, (s) => {
+    a = s;
+  }), async (s, r = {}) => {
     await o;
-    const d = new Headers(s.headers);
-    t && !d.has("Authorization") && d.set("Authorization", `Bearer ${t}`);
-    const l = await fetch(r, { ...s, credentials: "same-origin", headers: d });
-    if (!l.ok) {
-      const f = l.status === 401 || l.status === 403, v = f ? "Not authorised" : "Could not load data", g = f ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${l.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${l.status}. Anything shown below may be incomplete.`;
-      console.error(`[SplatDev] ${l.status} from ${String(r)} — ${g}`), a == null || a.peek("danger", { data: { headline: v, message: g } });
+    const c = new Headers(r.headers);
+    t && !c.has("Authorization") && c.set("Authorization", `Bearer ${t}`);
+    const d = await fetch(s, { ...r, credentials: "same-origin", headers: c });
+    if (!d.ok) {
+      const g = d.status === 401 || d.status === 403, y = g ? "Not authorised" : "Could not load data", m = g ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${d.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${d.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${d.status} from ${String(s)} — ${m}`), a == null || a.peek("danger", { data: { headline: y, message: m } });
     }
-    return l;
+    return d;
   };
 }
-var k = Object.defineProperty, z = Object.getOwnPropertyDescriptor, m = (e) => {
+var R = Object.defineProperty, H = Object.getOwnPropertyDescriptor, _ = (e) => {
   throw TypeError(e);
 }, h = (e, t, a, n) => {
-  for (var o = n > 1 ? void 0 : n ? z(t, a) : t, r = e.length - 1, s; r >= 0; r--)
-    (s = e[r]) && (o = (n ? s(t, a, o) : s(o)) || o);
-  return n && o && k(t, a, o), o;
-}, A = (e, t, a) => t.has(e) || m("Cannot " + a), w = (e, t, a) => (A(e, t, "read from private field"), a ? a.call(e) : t.get(e)), R = (e, t, a) => t.has(e) ? m("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), u;
-let c = class extends y(b) {
+  for (var o = n > 1 ? void 0 : n ? H(t, a) : t, s = e.length - 1, r; s >= 0; s--)
+    (r = e[s]) && (o = (n ? r(t, a, o) : r(o)) || o);
+  return n && o && R(t, a, o), o;
+}, b = (e, t, a) => t.has(e) || _("Cannot " + a), w = (e, t, a) => (b(e, t, "read from private field"), a ? a.call(e) : t.get(e)), v = (e, t, a) => t.has(e) ? _("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), P = (e, t, a) => (b(e, t, "access private method"), a), p, f, x;
+let l = class extends C($) {
   constructor() {
-    super(...arguments), R(this, u, T(this)), this._tweets = [], this._loading = !1, this._refreshing = !1, this._lastRefresh = null, this._apiBase = "/umbraco/api/tweets";
+    super(...arguments), v(this, f), v(this, p, E(this)), this._tweets = [], this._loading = !1, this._refreshing = !1, this._lastRefresh = null, this._loadError = null, this._apiBase = "/umbraco/api/tweets";
   }
   connectedCallback() {
     super.connectedCallback(), this._loadTweets();
@@ -46,8 +46,8 @@ let c = class extends y(b) {
   async _loadTweets() {
     this._loading = !0;
     try {
-      const e = await w(this, u).call(this, `${this._apiBase}/feed`);
-      e.ok && (this._tweets = await e.json(), this._tweets.length > 0 && (this._lastRefresh = this._tweets[0].cachedAt));
+      const e = await w(this, p).call(this, `${this._apiBase}/feed`);
+      P(this, f, x).call(this, e) && (this._tweets = await e.json(), this._tweets.length > 0 && (this._lastRefresh = this._tweets[0].cachedAt));
     } finally {
       this._loading = !1;
     }
@@ -55,7 +55,7 @@ let c = class extends y(b) {
   async _refreshCache() {
     this._refreshing = !0;
     try {
-      (await (await w(this, u).call(this, `${this._apiBase}/refresh`, { method: "POST" })).json()).success && await this._loadTweets();
+      (await (await w(this, p).call(this, `${this._apiBase}/refresh`, { method: "POST" })).json()).success && await this._loadTweets();
     } finally {
       this._refreshing = !1;
     }
@@ -109,6 +109,7 @@ let c = class extends y(b) {
   }
   render() {
     return i`
+      ${this._loadError ? i`<div class="splatdev-load-error" role="alert">${this._loadError}</div>` : ""}
       <h1>Tweets</h1>
       <p class="description">
         Preview and manage the locally cached Twitter/X feed displayed on your site.
@@ -155,8 +156,12 @@ let c = class extends y(b) {
     `;
   }
 };
-u = /* @__PURE__ */ new WeakMap();
-c.styles = _`
+p = /* @__PURE__ */ new WeakMap();
+f = /* @__PURE__ */ new WeakSet();
+x = function(e) {
+  return e.ok ? (this._loadError = null, !0) : (this._loadError = e.status === 401 || e.status === 403 ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete." : `The request did not succeed — the server returned ${e.status}${e.statusText ? ` ${e.statusText}` : ""}.`, !1);
+};
+l.styles = T`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -284,22 +289,38 @@ c.styles = _`
       border-radius: 3px;
       font-size: 0.8rem;
     }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
   `;
 h([
-  p()
-], c.prototype, "_tweets", 2);
+  u()
+], l.prototype, "_tweets", 2);
 h([
-  p()
-], c.prototype, "_loading", 2);
+  u()
+], l.prototype, "_loading", 2);
 h([
-  p()
-], c.prototype, "_refreshing", 2);
+  u()
+], l.prototype, "_refreshing", 2);
 h([
-  p()
-], c.prototype, "_lastRefresh", 2);
-c = h([
-  x("tweets-dashboard")
-], c);
+  u()
+], l.prototype, "_lastRefresh", 2);
+h([
+  u()
+], l.prototype, "_loadError", 2);
+l = h([
+  k("tweets-dashboard")
+], l);
 export {
-  c as TweetsDashboardElement
+  l as TweetsDashboardElement
 };

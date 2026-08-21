@@ -31,6 +31,8 @@ export class RedirectManagerDashboardElement extends UmbElementMixin(LitElement)
   @state() private _formRedirectTo = "";
   @state() private _filter = "";
 
+  @state() private _loadError: string | null = null;
+
   connectedCallback() {
     super.connectedCallback();
     this._load();
@@ -40,8 +42,9 @@ export class RedirectManagerDashboardElement extends UmbElementMixin(LitElement)
     this._loading = true;
     try {
       const r = await this.#fetch(`${API_BASE}/GetAll`);
-      if (r.ok) this._redirects = await r.json();
+      if (this.#responseOk(r)) this._redirects = await r.json();
     } catch {
+      this._loadError ??= "The request failed. See the browser console for details.";
       this._redirects = [];
     }
     this._loading = false;
@@ -100,6 +103,7 @@ export class RedirectManagerDashboardElement extends UmbElementMixin(LitElement)
       this._editItem = null;
       await this._load();
     } catch {
+      this._loadError ??= "The request failed. See the browser console for details.";
       this._message = "Error saving redirect.";
     }
   }
@@ -111,6 +115,7 @@ export class RedirectManagerDashboardElement extends UmbElementMixin(LitElement)
       await this._load();
       this._message = "Redirect deleted.";
     } catch {
+      this._loadError ??= "The request failed. See the browser console for details.";
       this._message = "Error deleting redirect.";
     }
   }
@@ -155,8 +160,32 @@ export class RedirectManagerDashboardElement extends UmbElementMixin(LitElement)
     `;
   }
 
+  /**
+   * Guards a response and records why it failed.
+   *
+   * This used to be a bare `response.ok` check with no else branch, so a failed request
+   * left the previous (usually empty) state on screen and read as "there is no data"
+   * rather than "the request did not succeed".
+   */
+  #responseOk(response: Response): boolean {
+    if (response.ok) {
+      this._loadError = null;
+      return true;
+    }
+
+    this._loadError =
+      response.status === 401 || response.status === 403
+        ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete."
+        : `The request did not succeed — the server returned ${response.status}${response.statusText ? ` ${response.statusText}` : ""}.`;
+    return false;
+  }
+
+
   override render() {
     return html`
+      ${this._loadError
+        ? html`<div class="splatdev-load-error" role="alert">${this._loadError}</div>`
+        : ""}
       <div class="dashboard">
         <div class="header">
           <div>
@@ -302,6 +331,19 @@ export class RedirectManagerDashboardElement extends UmbElementMixin(LitElement)
     }
     uui-table {
       width: 100%;
+    }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
     }
   `;
 }

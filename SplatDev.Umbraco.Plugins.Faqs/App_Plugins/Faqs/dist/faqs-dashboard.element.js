@@ -1,44 +1,44 @@
-import { LitElement as y, html as s, nothing as _, css as $, state as d, customElement as w } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as x } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as I } from "@umbraco-cms/backoffice/auth";
-import { UMB_NOTIFICATION_CONTEXT as T } from "@umbraco-cms/backoffice/notification";
-function k(e) {
+import { LitElement as I, html as s, nothing as y, css as k, state as h, customElement as q } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as C } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as P } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as A } from "@umbraco-cms/backoffice/notification";
+function E(e) {
   let t = null, a = null;
-  const h = e.consumeContext.bind(e), r = new Promise((l) => {
-    h(I, async (i) => {
+  const n = e.consumeContext.bind(e), u = new Promise((r) => {
+    n(P, async (i) => {
       var b;
       try {
         t = await ((b = i == null ? void 0 : i.getLatestToken) == null ? void 0 : b.call(i)) ?? null;
       } catch {
         t = null;
       }
-      l();
-    }), setTimeout(l, 3e3);
+      r();
+    }), setTimeout(r, 3e3);
   });
-  return h(T, (l) => {
-    a = l;
-  }), async (l, i = {}) => {
-    await r;
+  return n(A, (r) => {
+    a = r;
+  }), async (r, i = {}) => {
+    await u;
     const b = new Headers(i.headers);
     t && !b.has("Authorization") && b.set("Authorization", `Bearer ${t}`);
-    const n = await fetch(l, { ...i, credentials: "same-origin", headers: b });
-    if (!n.ok) {
-      const g = n.status === 401 || n.status === 403, v = g ? "Not authorised" : "Could not load data", m = g ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${n.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${n.status}. Anything shown below may be incomplete.`;
-      console.error(`[SplatDev] ${n.status} from ${String(l)} — ${m}`), a == null || a.peek("danger", { data: { headline: v, message: m } });
+    const d = await fetch(r, { ...i, credentials: "same-origin", headers: b });
+    if (!d.ok) {
+      const f = d.status === 401 || d.status === 403, T = f ? "Not authorised" : "Could not load data", v = f ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${d.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${d.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${d.status} from ${String(r)} — ${v}`), a == null || a.peek("danger", { data: { headline: T, message: v } });
     }
-    return n;
+    return d;
   };
 }
-var q = Object.defineProperty, C = Object.getOwnPropertyDescriptor, f = (e) => {
+var S = Object.defineProperty, O = Object.getOwnPropertyDescriptor, w = (e) => {
   throw TypeError(e);
-}, c = (e, t, a, h) => {
-  for (var r = h > 1 ? void 0 : h ? C(t, a) : t, l = e.length - 1, i; l >= 0; l--)
-    (i = e[l]) && (r = (h ? i(t, a, r) : i(r)) || r);
-  return h && r && q(t, a, r), r;
-}, P = (e, t, a) => t.has(e) || f("Cannot " + a), p = (e, t, a) => (P(e, t, "read from private field"), a ? a.call(e) : t.get(e)), A = (e, t, a) => t.has(e) ? f("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), o;
-let u = class extends x(y) {
+}, o = (e, t, a, n) => {
+  for (var u = n > 1 ? void 0 : n ? O(t, a) : t, r = e.length - 1, i; r >= 0; r--)
+    (i = e[r]) && (u = (n ? i(t, a, u) : i(u)) || u);
+  return n && u && S(t, a, u), u;
+}, x = (e, t, a) => t.has(e) || w("Cannot " + a), p = (e, t, a) => (x(e, t, "read from private field"), a ? a.call(e) : t.get(e)), $ = (e, t, a) => t.has(e) ? w("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), _ = (e, t, a) => (x(e, t, "access private method"), a), c, g, m;
+let l = class extends C(I) {
   constructor() {
-    super(...arguments), A(this, o, k(this)), this._activeTab = "overview", this._categories = [], this._allItems = [], this._totalItems = 0, this._searchQuery = "", this._searchResults = [], this._loading = !1, this._apiBase = "/umbraco/api/faqs";
+    super(...arguments), $(this, g), $(this, c, E(this)), this._activeTab = "overview", this._categories = [], this._allItems = [], this._totalItems = 0, this._searchQuery = "", this._searchResults = [], this._loading = !1, this._loadError = null, this._apiBase = "/umbraco/api/faqs";
   }
   connectedCallback() {
     super.connectedCallback(), this._loadData();
@@ -47,15 +47,15 @@ let u = class extends x(y) {
     this._loading = !0;
     try {
       const [e, t] = await Promise.all([
-        p(this, o).call(this, `${this._apiBase}/GetCategories?publishedOnly=false`),
-        p(this, o).call(this, `${this._apiBase}/GetItems?publishedOnly=false`)
+        p(this, c).call(this, `${this._apiBase}/GetCategories?publishedOnly=false`),
+        p(this, c).call(this, `${this._apiBase}/GetItems?publishedOnly=false`)
       ]);
-      if (e.ok && (this._categories = await e.json()), t.ok) {
+      if (_(this, g, m).call(this, e) && (this._categories = await e.json()), _(this, g, m).call(this, t)) {
         const a = await t.json();
         this._allItems = a.items ?? [], this._totalItems = a.total ?? 0;
       }
     } catch {
-      this._categories = [], this._allItems = [];
+      this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), this._categories = [], this._allItems = [];
     } finally {
       this._loading = !1;
     }
@@ -66,22 +66,22 @@ let u = class extends x(y) {
       return;
     }
     try {
-      const e = await p(this, o).call(this, `${this._apiBase}/Search?q=${encodeURIComponent(this._searchQuery)}&publishedOnly=false`);
-      e.ok && (this._searchResults = await e.json(), this._activeTab = "search");
+      const e = await p(this, c).call(this, `${this._apiBase}/Search?q=${encodeURIComponent(this._searchQuery)}&publishedOnly=false`);
+      _(this, g, m).call(this, e) && (this._searchResults = await e.json(), this._activeTab = "search");
     } catch {
-      this._searchResults = [];
+      this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), this._searchResults = [];
     }
   }
   async _togglePublish(e) {
-    await p(this, o).call(this, `${this._apiBase}/PublishItem?id=${e.id}&publish=${!e.isPublished}`, {
+    await p(this, c).call(this, `${this._apiBase}/PublishItem?id=${e.id}&publish=${!e.isPublished}`, {
       method: "POST"
     }), e.isPublished = !e.isPublished, this.requestUpdate();
   }
   async _deleteItem(e) {
-    confirm("Delete this FAQ item?") && (await p(this, o).call(this, `${this._apiBase}/DeleteItem?id=${e}`, { method: "DELETE" }), this._allItems = this._allItems.filter((t) => t.id !== e), this._totalItems--, this.requestUpdate());
+    confirm("Delete this FAQ item?") && (await p(this, c).call(this, `${this._apiBase}/DeleteItem?id=${e}`, { method: "DELETE" }), this._allItems = this._allItems.filter((t) => t.id !== e), this._totalItems--, this.requestUpdate());
   }
   async _deleteCategory(e) {
-    confirm("Delete this category and all its FAQ items?") && (await p(this, o).call(this, `${this._apiBase}/DeleteCategory?categoryId=${e}`, { method: "DELETE" }), await this._loadData());
+    confirm("Delete this category and all its FAQ items?") && (await p(this, c).call(this, `${this._apiBase}/DeleteCategory?categoryId=${e}`, { method: "DELETE" }), await this._loadData());
   }
   _getCategoryName(e) {
     var t;
@@ -118,7 +118,7 @@ let u = class extends x(y) {
       <uui-box headline="FAQ Preview (accordion)">
         ${this._categories.length === 0 ? s`<p class="empty">No categories or FAQs yet.</p>` : this._categories.map((e) => {
       const t = this._allItems.filter((a) => a.categoryId === e.id && a.isPublished);
-      return t.length === 0 ? _ : s`
+      return t.length === 0 ? y : s`
                 <div class="accordion-section">
                   <h3>${e.name}</h3>
                   ${t.map(
@@ -252,6 +252,7 @@ let u = class extends x(y) {
   }
   render() {
     return s`
+      ${this._loadError ? s`<div class="splatdev-load-error" role="alert">${this._loadError}</div>` : ""}
       <h1>FAQs Manager</h1>
       <p class="description">
         Manage frequently asked questions, categories and accordion display from the Umbraco backoffice.
@@ -291,7 +292,7 @@ let u = class extends x(y) {
                 ?active=${this._activeTab === "search"}
                 @click=${() => this._activeTab = "search"}
               >Search Results</uui-tab>
-            ` : _}
+            ` : y}
       </uui-tab-group>
 
       <div class="tab-content">
@@ -300,8 +301,12 @@ let u = class extends x(y) {
     `;
   }
 };
-o = /* @__PURE__ */ new WeakMap();
-u.styles = $`
+c = /* @__PURE__ */ new WeakMap();
+g = /* @__PURE__ */ new WeakSet();
+m = function(e) {
+  return e.ok ? (this._loadError = null, !0) : (this._loadError = e.status === 401 || e.status === 403 ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete." : `The request did not succeed — the server returned ${e.status}${e.statusText ? ` ${e.statusText}` : ""}.`, !1);
+};
+l.styles = k`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -431,33 +436,49 @@ u.styles = $`
       color: var(--uui-color-text-alt, #6b7280);
       margin-bottom: 12px;
     }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
   `;
-c([
-  d()
-], u.prototype, "_activeTab", 2);
-c([
-  d()
-], u.prototype, "_categories", 2);
-c([
-  d()
-], u.prototype, "_allItems", 2);
-c([
-  d()
-], u.prototype, "_totalItems", 2);
-c([
-  d()
-], u.prototype, "_searchQuery", 2);
-c([
-  d()
-], u.prototype, "_searchResults", 2);
-c([
-  d()
-], u.prototype, "_loading", 2);
-u = c([
-  w("faqs-dashboard")
-], u);
-const z = u;
+o([
+  h()
+], l.prototype, "_activeTab", 2);
+o([
+  h()
+], l.prototype, "_categories", 2);
+o([
+  h()
+], l.prototype, "_allItems", 2);
+o([
+  h()
+], l.prototype, "_totalItems", 2);
+o([
+  h()
+], l.prototype, "_searchQuery", 2);
+o([
+  h()
+], l.prototype, "_searchResults", 2);
+o([
+  h()
+], l.prototype, "_loading", 2);
+o([
+  h()
+], l.prototype, "_loadError", 2);
+l = o([
+  q("faqs-dashboard")
+], l);
+const R = l;
 export {
-  u as FaqsDashboardElement,
-  z as default
+  l as FaqsDashboardElement,
+  R as default
 };

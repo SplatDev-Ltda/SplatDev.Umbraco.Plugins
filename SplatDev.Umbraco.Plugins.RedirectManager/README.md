@@ -130,6 +130,9 @@ The `RegexRedirectComposer` + `PatternUrlRedirector` handle bulk redirects via r
 
 ## Changelog
 
+### 2.1.7 — 2026-08-21
+- A failed request now says so in the dashboard. Previously the dashboard kept its previous (usually empty) state, so a refused or failed call looked identical to having no data.
+
 ### 2.1.6 — 2026-08-21
 - Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.
 - A failed request now raises a notification instead of leaving the dashboard looking like there is simply no data.

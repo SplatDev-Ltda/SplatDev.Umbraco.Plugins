@@ -21,11 +21,11 @@ Most-viewed content tracking plugin for Umbraco 13 (net8.0) and Umbraco 17 (net1
 ### 1. Register the plugin
 The `MostViewedComposer` is auto-discovered. It registers the DbContext, service, and middleware.
 
-### 2. Run EF Core migrations
-```bash
-dotnet ef migrations add InitialCreate --context MostViewedDbContext
-dotnet ef database update --context MostViewedDbContext
-```
+### 2. Database schema
+The tables are created for you the first time the site starts: the plugin runs its own
+Umbraco migration against the database Umbraco is already using, on whichever provider
+it is configured with — SQL Server or SQLite. There is nothing to scaffold and nothing
+to run by hand.
 
 ### 3. Use the view component in a Razor template
 ```cshtml
@@ -48,6 +48,9 @@ npm run build
 ```
 
 ## Changelog
+
+### 2.1.6 — 2026-08-21
+- README no longer tells you to scaffold EF Core migrations by hand — the plugin creates its own tables on first start, on SQL Server or SQLite.
 
 ### 2.1.5 — 2026-08-21
 - Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.
