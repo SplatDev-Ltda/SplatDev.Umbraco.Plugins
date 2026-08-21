@@ -47,4 +47,9 @@ builder.CreateUmbracoBuilder()
 
 ## License
 
-MIT © [SplatDev](https://github.com/SplatDev-Ltda)
+MIT © [SplatDev](https://github.com/SplatDev-Ltda)\n\n## Changelog\n\n### 1.2.4 — 2026-08-21
+- Uploads now actually store the file. The upload wrote the *filename* into the media item and never the bytes, so every upload produced a media item pointing at nothing.
+- Files are filed under the media type that matches them — Image, Video, Audio, Vector Graphics or File — instead of everything becoming an Image.
+- The destination is a folder picker in both backoffices, rather than a box asking for a numeric media id the backoffice never shows you.
+- Added limits you can set in configuration under `Dropzone`: allowed extensions, a maximum file size, and whether a name already in use is given a suffix instead of duplicated. The dashboard shows the rules and rejects a file before spending the upload on it; the server enforces them regardless.
+- A failed load or upload now says what went wrong instead of leaving an empty list.

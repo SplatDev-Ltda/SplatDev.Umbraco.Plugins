@@ -27,9 +27,35 @@ public class DropzoneApiController : ControllerBase
         _service = service;
     }
 
+    /// <summary>The upload limits, so the dashboard can state them and check before posting.</summary>
+    [HttpGet]
+    public IActionResult GetOptions()
+    {
+        var o = _service.GetOptions();
+        return Ok(new
+        {
+            allowedExtensions = o.AllowedExtensions,
+            maxFileSizeMb = o.MaxFileSizeMb,
+            maxFileSizeBytes = o.MaxFileSizeBytes,
+            renameOnCollision = o.RenameOnCollision
+        });
+    }
+
+    /// <summary>Media folders, so a destination can be picked rather than typed.</summary>
+    [HttpGet]
+    public async Task<IActionResult> GetFolders()
+    {
+        var folders = await _service.GetFoldersAsync();
+        return Ok(folders.Select(f => new { id = f.Id, key = f.Key, name = f.Name }));
+    }
+
     [HttpPost]
     [DisableRequestSizeLimit]
-    public async Task<IActionResult> Upload([FromForm] IFormFile file, [FromForm] string? folderName, [FromForm] int? parentMediaId)
+    public async Task<IActionResult> Upload(
+        [FromForm] IFormFile file,
+        [FromForm] string? folderName,
+        [FromForm] int? parentMediaId,
+        [FromForm] Guid? parentMediaKey)
     {
         if (file == null || file.Length == 0)
             return BadRequest("No file provided.");
@@ -37,7 +63,8 @@ public class DropzoneApiController : ControllerBase
         var request = new UploadRequest
         {
             FolderName = folderName ?? "",
-            ParentMediaId = parentMediaId
+            ParentMediaId = parentMediaId,
+            ParentMediaKey = parentMediaKey
         };
 
         var result = await _service.UploadFileAsync(file, request);
