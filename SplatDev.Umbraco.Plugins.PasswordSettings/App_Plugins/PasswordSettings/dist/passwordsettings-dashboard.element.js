@@ -1,39 +1,44 @@
-import { LitElement as _, html as n, nothing as h, css as y, state as u, customElement as v } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as m } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as f } from "@umbraco-cms/backoffice/auth";
-function w(t) {
-  let e = null;
-  const s = new Promise((a) => {
-    t.consumeContext(f, async (i) => {
-      var l;
+import { LitElement as w, html as r, nothing as v, css as b, state as c, customElement as $ } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as P } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as k } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as x } from "@umbraco-cms/backoffice/notification";
+function S(t) {
+  let e = null, i = null;
+  const n = t.consumeContext.bind(t), l = new Promise((a) => {
+    n(k, async (s) => {
+      var d;
       try {
-        e = await ((l = i == null ? void 0 : i.getLatestToken) == null ? void 0 : l.call(i)) ?? null;
+        e = await ((d = s == null ? void 0 : s.getLatestToken) == null ? void 0 : d.call(s)) ?? null;
       } catch {
         e = null;
       }
       a();
     }), setTimeout(a, 3e3);
   });
-  return async (a, i = {}) => {
-    await s;
-    const l = new Headers(i.headers);
-    e && !l.has("Authorization") && l.set("Authorization", `Bearer ${e}`);
-    const r = await fetch(a, { ...i, credentials: "same-origin", headers: l });
-    return (r.status === 401 || r.status === 403) && console.error(
-      `[SplatDev] ${r.status} from ${String(a)} — the backoffice token was ${e ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), r;
+  return n(x, (a) => {
+    i = a;
+  }), async (a, s = {}) => {
+    await l;
+    const d = new Headers(s.headers);
+    e && !d.has("Authorization") && d.set("Authorization", `Bearer ${e}`);
+    const u = await fetch(a, { ...s, credentials: "same-origin", headers: d });
+    if (!u.ok) {
+      const _ = u.status === 401 || u.status === 403, f = _ ? "Not authorised" : "Could not load data", y = _ ? `The backoffice token was ${e ? "sent but rejected" : "not available"} (${u.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${u.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${u.status} from ${String(a)} — ${y}`), i == null || i.peek("danger", { data: { headline: f, message: y } });
+    }
+    return u;
   };
 }
-var b = Object.defineProperty, P = Object.getOwnPropertyDescriptor, g = (t) => {
+var C = Object.defineProperty, T = Object.getOwnPropertyDescriptor, m = (t) => {
   throw TypeError(t);
-}, p = (t, e, s, a) => {
-  for (var i = a > 1 ? void 0 : a ? P(e, s) : e, l = t.length - 1, r; l >= 0; l--)
-    (r = t[l]) && (i = (a ? r(e, s, i) : r(i)) || i);
-  return a && i && b(e, s, i), i;
-}, $ = (t, e, s) => e.has(t) || g("Cannot " + s), c = (t, e, s) => ($(t, e, "read from private field"), s ? s.call(t) : e.get(t)), x = (t, e, s) => e.has(t) ? g("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, s), d;
-let o = class extends m(_) {
+}, p = (t, e, i, n) => {
+  for (var l = n > 1 ? void 0 : n ? T(e, i) : e, a = t.length - 1, s; a >= 0; a--)
+    (s = t[a]) && (l = (n ? s(e, i, l) : s(l)) || l);
+  return n && l && C(e, i, l), l;
+}, q = (t, e, i) => e.has(t) || m("Cannot " + i), g = (t, e, i) => (q(t, e, "read from private field"), i ? i.call(t) : e.get(t)), O = (t, e, i) => e.has(t) ? m("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, i), h;
+let o = class extends P(w) {
   constructor() {
-    super(...arguments), x(this, d, w(this)), this._policy = null, this._loading = !1, this._saving = !1, this._testPassword = "", this._validationResult = null, this._statusMsg = "", this._apiBase = "/umbraco/api/passwordsettings";
+    super(...arguments), O(this, h, S(this)), this._policy = null, this._loading = !1, this._saving = !1, this._testPassword = "", this._validationResult = null, this._statusMsg = "", this._apiBase = "/umbraco/api/passwordsettings";
   }
   connectedCallback() {
     super.connectedCallback(), this._loadPolicy();
@@ -41,7 +46,7 @@ let o = class extends m(_) {
   async _loadPolicy() {
     this._loading = !0;
     try {
-      const t = await c(this, d).call(this, `${this._apiBase}/GetPolicy`);
+      const t = await g(this, h).call(this, `${this._apiBase}/GetPolicy`);
       t.ok && (this._policy = await t.json());
     } finally {
       this._loading = !1;
@@ -51,7 +56,7 @@ let o = class extends m(_) {
     if (this._policy) {
       this._saving = !0, this._statusMsg = "";
       try {
-        const t = await c(this, d).call(this, `${this._apiBase}/SavePolicy`, {
+        const t = await g(this, h).call(this, `${this._apiBase}/SavePolicy`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(this._policy)
@@ -64,7 +69,7 @@ let o = class extends m(_) {
   }
   async _validatePassword() {
     if (!this._testPassword) return;
-    const t = await c(this, d).call(this, `${this._apiBase}/ValidatePassword`, {
+    const t = await g(this, h).call(this, `${this._apiBase}/ValidatePassword`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ password: this._testPassword })
@@ -75,11 +80,11 @@ let o = class extends m(_) {
     this._policy && (this._policy = { ...this._policy, [t]: e });
   }
   render() {
-    return n`
+    return r`
       <h1>Password Settings</h1>
       <p class="description">Configure complexity rules, expiration and reuse prevention for member passwords.</p>
 
-      ${this._loading ? n`<p>Loading...</p>` : this._policy ? n`
+      ${this._loading ? r`<p>Loading...</p>` : this._policy ? r`
             <uui-box headline="Password Policy">
               <div class="form-grid">
                 <div class="field">
@@ -135,7 +140,7 @@ let o = class extends m(_) {
                   ?disabled=${this._saving}
                   @click=${this._savePolicy}
                 >${this._saving ? "Saving..." : "Save Policy"}</uui-button>
-                ${this._statusMsg ? n`<span class="status">${this._statusMsg}</span>` : h}
+                ${this._statusMsg ? r`<span class="status">${this._statusMsg}</span>` : v}
               </div>
             </uui-box>
 
@@ -148,15 +153,15 @@ let o = class extends m(_) {
                   style="width:100%;margin-bottom:10px"
                 ></uui-input>
                 <uui-button look="secondary" label="Validate" @click=${this._validatePassword}>Validate</uui-button>
-                ${this._validationResult ? this._validationResult.valid ? n`<p class="valid-msg">Password meets all requirements.</p>` : n`<ul class="error-list">${this._validationResult.errors.map((t) => n`<li>${t}</li>`)}</ul>` : h}
+                ${this._validationResult ? this._validationResult.valid ? r`<p class="valid-msg">Password meets all requirements.</p>` : r`<ul class="error-list">${this._validationResult.errors.map((t) => r`<li>${t}</li>`)}</ul>` : v}
               </div>
             </uui-box>
-          ` : n`<p>No policy found.</p>`}
+          ` : r`<p>No policy found.</p>`}
     `;
   }
 };
-d = /* @__PURE__ */ new WeakMap();
-o.styles = y`
+h = /* @__PURE__ */ new WeakMap();
+o.styles = b`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
     p.description { color: var(--uui-color-text-alt, #6b7280); margin: 0 0 24px; }
@@ -171,28 +176,28 @@ o.styles = y`
     .status { font-size: 0.875rem; color: #065f46; }
   `;
 p([
-  u()
+  c()
 ], o.prototype, "_policy", 2);
 p([
-  u()
+  c()
 ], o.prototype, "_loading", 2);
 p([
-  u()
+  c()
 ], o.prototype, "_saving", 2);
 p([
-  u()
+  c()
 ], o.prototype, "_testPassword", 2);
 p([
-  u()
+  c()
 ], o.prototype, "_validationResult", 2);
 p([
-  u()
+  c()
 ], o.prototype, "_statusMsg", 2);
 o = p([
-  v("passwordsettings-dashboard")
+  $("passwordsettings-dashboard")
 ], o);
-const T = o;
+const R = o;
 export {
   o as PasswordSettingsDashboardElement,
-  T as default
+  R as default
 };

@@ -1,41 +1,45 @@
-import { LitElement as m, nothing as d, html as a, css as h, state as u, customElement as f } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as g } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as _ } from "@umbraco-cms/backoffice/auth";
-import { UMB_NOTIFICATION_CONTEXT as v } from "@umbraco-cms/backoffice/notification";
-function w(e) {
-  let i = null;
-  const t = new Promise((o) => {
-    e.consumeContext(_, async (r) => {
-      var n;
+import { LitElement as w, nothing as p, html as a, css as y, state as u, customElement as x } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as $ } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as C } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as g } from "@umbraco-cms/backoffice/notification";
+function I(e) {
+  let i = null, t = null;
+  const c = e.consumeContext.bind(e), o = new Promise((n) => {
+    c(C, async (r) => {
+      var b;
       try {
-        i = await ((n = r == null ? void 0 : r.getLatestToken) == null ? void 0 : n.call(r)) ?? null;
+        i = await ((b = r == null ? void 0 : r.getLatestToken) == null ? void 0 : b.call(r)) ?? null;
       } catch {
         i = null;
       }
-      o();
-    }), setTimeout(o, 3e3);
+      n();
+    }), setTimeout(n, 3e3);
   });
-  return async (o, r = {}) => {
-    await t;
-    const n = new Headers(r.headers);
-    i && !n.has("Authorization") && n.set("Authorization", `Bearer ${i}`);
-    const c = await fetch(o, { ...r, credentials: "same-origin", headers: n });
-    return (c.status === 401 || c.status === 403) && console.error(
-      `[SplatDev] ${c.status} from ${String(o)} — the backoffice token was ${i ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), c;
+  return c(g, (n) => {
+    t = n;
+  }), async (n, r = {}) => {
+    await o;
+    const b = new Headers(r.headers);
+    i && !b.has("Authorization") && b.set("Authorization", `Bearer ${i}`);
+    const d = await fetch(n, { ...r, credentials: "same-origin", headers: b });
+    if (!d.ok) {
+      const h = d.status === 401 || d.status === 403, v = h ? "Not authorised" : "Could not load data", f = h ? `The backoffice token was ${i ? "sent but rejected" : "not available"} (${d.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${d.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${d.status} from ${String(n)} — ${f}`), t == null || t.peek("danger", { data: { headline: v, message: f } });
+    }
+    return d;
   };
 }
-var y = Object.defineProperty, x = Object.getOwnPropertyDescriptor, p = (e) => {
+var S = Object.defineProperty, k = Object.getOwnPropertyDescriptor, _ = (e) => {
   throw TypeError(e);
-}, l = (e, i, t, o) => {
-  for (var r = o > 1 ? void 0 : o ? x(i, t) : i, n = e.length - 1, c; n >= 0; n--)
-    (c = e[n]) && (r = (o ? c(i, t, r) : c(r)) || r);
-  return o && r && y(i, t, r), r;
-}, $ = (e, i, t) => i.has(e) || p("Cannot " + t), C = (e, i, t) => ($(e, i, "read from private field"), t ? t.call(e) : i.get(e)), I = (e, i, t) => i.has(e) ? p("Cannot add the same private member more than once") : i instanceof WeakSet ? i.add(e) : i.set(e, t), b;
-const S = "/umbraco/api";
-let s = class extends g(m) {
+}, l = (e, i, t, c) => {
+  for (var o = c > 1 ? void 0 : c ? k(i, t) : i, n = e.length - 1, r; n >= 0; n--)
+    (r = e[n]) && (o = (c ? r(i, t, o) : r(o)) || o);
+  return c && o && S(i, t, o), o;
+}, T = (e, i, t) => i.has(e) || _("Cannot " + t), N = (e, i, t) => (T(e, i, "read from private field"), t ? t.call(e) : i.get(e)), z = (e, i, t) => i.has(e) ? _("Cannot add the same private member more than once") : i instanceof WeakSet ? i.add(e) : i.set(e, t), m;
+const E = "/umbraco/api";
+let s = class extends $(w) {
   constructor() {
-    super(), I(this, b, w(this)), this._activeTab = "notifications", this._loading = !1, this._notifications = [], this._notificationMemberId = "", this._newNotificationType = "System", this._newNotificationMessage = "", this._subscribers = [], this._subscriberListId = "", this._subscribeEmail = "", this._subscribeFirstName = "", this._subscribeLastName = "", this._unsubscribeEmail = "", this._campaigns = [], this._newCampaignSubject = "", this._newCampaignTemplateId = "", this._newCampaignListId = "", this._statsCampaignId = null, this._campaignStats = null, this._templates = [], this._previewTemplateId = null, this._previewHtml = "", this.consumeContext(v, (e) => {
+    super(), z(this, m, I(this)), this._activeTab = "notifications", this._loading = !1, this._notifications = [], this._notificationMemberId = "", this._newNotificationType = "System", this._newNotificationMessage = "", this._subscribers = [], this._subscriberListId = "", this._subscribeEmail = "", this._subscribeFirstName = "", this._subscribeLastName = "", this._unsubscribeEmail = "", this._campaigns = [], this._newCampaignSubject = "", this._newCampaignTemplateId = "", this._newCampaignListId = "", this._statsCampaignId = null, this._campaignStats = null, this._templates = [], this._previewTemplateId = null, this._previewHtml = "", this.consumeContext(g, (e) => {
       this._notificationContext = e;
     });
   }
@@ -47,14 +51,14 @@ let s = class extends g(m) {
   }
   async _api(e, i) {
     try {
-      const t = await C(this, b).call(this, `${S}${e}`, {
+      const t = await N(this, m).call(this, `${E}${e}`, {
         headers: { "Content-Type": "application/json", ...i == null ? void 0 : i.headers },
         ...i
       });
       if (t.status === 204) return null;
       if (!t.ok) {
-        const r = await t.text();
-        throw new Error(r || `HTTP ${t.status}`);
+        const o = await t.text();
+        throw new Error(o || `HTTP ${t.status}`);
       }
       return (t.headers.get("content-type") || "").includes("text/html") ? await t.text() : await t.json();
     } catch (t) {
@@ -240,7 +244,7 @@ let s = class extends g(m) {
                       </uui-table-cell>
                       <uui-table-cell>
                         <div class="actions">
-                          ${e.isRead ? d : a`
+                          ${e.isRead ? p : a`
                                 <uui-button
                                   size="s"
                                   look="outline"
@@ -451,7 +455,7 @@ let s = class extends g(m) {
                                 >
                                   Send
                                 </uui-button>
-                              ` : d}
+                              ` : p}
                           ${e.status === "Sent" || e.status === "Sending" ? a`
                                 <uui-button
                                   size="s"
@@ -461,7 +465,7 @@ let s = class extends g(m) {
                                 >
                                   Stats
                                 </uui-button>
-                              ` : d}
+                              ` : p}
                         </div>
                       </uui-table-cell>
                     </uui-table-row>
@@ -538,7 +542,7 @@ let s = class extends g(m) {
     )}
               </div>
             </uui-box>
-          ` : d}
+          ` : p}
     `;
   }
   _renderTemplates() {
@@ -611,7 +615,7 @@ let s = class extends g(m) {
                 sandbox="allow-same-origin"
               ></iframe>
             </uui-box>
-          ` : d}
+          ` : p}
     `;
   }
   render() {
@@ -645,12 +649,12 @@ let s = class extends g(m) {
         ${this._activeTab === "notifications" ? this._renderNotifications() : this._activeTab === "subscribers" ? this._renderSubscribers() : this._activeTab === "campaigns" ? this._renderCampaigns() : this._renderTemplates()}
       </div>
 
-      ${this._loading ? a`<uui-loader-bar style="margin-top:var(--uui-size-space-4,12px);"></uui-loader-bar>` : d}
+      ${this._loading ? a`<uui-loader-bar style="margin-top:var(--uui-size-space-4,12px);"></uui-loader-bar>` : p}
     `;
   }
 };
-b = /* @__PURE__ */ new WeakMap();
-s.styles = h`
+m = /* @__PURE__ */ new WeakMap();
+s.styles = y`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -932,10 +936,10 @@ l([
   u()
 ], s.prototype, "_previewHtml", 2);
 s = l([
-  f("email-notifications-dashboard")
+  x("email-notifications-dashboard")
 ], s);
-const E = s;
+const P = s;
 export {
   s as EmailNotificationsDashboardElement,
-  E as default
+  P as default
 };

@@ -2,6 +2,13 @@
 
 Video thumbnail preview for Umbraco — extract video metadata and auto-generate thumbnail URLs from YouTube, Vimeo, and Dailymotion video URLs.
 
+
+<!-- screenshot:start -->
+
+![VideoPreview dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.VideoPreview/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.VideoPreview.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.VideoPreview)
 
 ## Compatibility

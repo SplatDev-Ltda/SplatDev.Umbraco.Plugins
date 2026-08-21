@@ -1,39 +1,44 @@
-import { LitElement as d, html as u, css as m, state as c, customElement as b } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as y } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as _ } from "@umbraco-cms/backoffice/auth";
-function f(e) {
-  let t = null;
-  const l = new Promise((s) => {
-    e.consumeContext(_, async (a) => {
-      var r;
+import { LitElement as f, html as c, css as g, state as b, customElement as w } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as T } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as v } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as $ } from "@umbraco-cms/backoffice/notification";
+function C(e) {
+  let t = null, a = null;
+  const i = e.consumeContext.bind(e), r = new Promise((l) => {
+    i(v, async (s) => {
+      var n;
       try {
-        t = await ((r = a == null ? void 0 : a.getLatestToken) == null ? void 0 : r.call(a)) ?? null;
+        t = await ((n = s == null ? void 0 : s.getLatestToken) == null ? void 0 : n.call(s)) ?? null;
       } catch {
         t = null;
       }
-      s();
-    }), setTimeout(s, 3e3);
+      l();
+    }), setTimeout(l, 3e3);
   });
-  return async (s, a = {}) => {
-    await l;
-    const r = new Headers(a.headers);
-    t && !r.has("Authorization") && r.set("Authorization", `Bearer ${t}`);
-    const i = await fetch(s, { ...a, credentials: "same-origin", headers: r });
-    return (i.status === 401 || i.status === 403) && console.error(
-      `[SplatDev] ${i.status} from ${String(s)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), i;
+  return i($, (l) => {
+    a = l;
+  }), async (l, s = {}) => {
+    await r;
+    const n = new Headers(s.headers);
+    t && !n.has("Authorization") && n.set("Authorization", `Bearer ${t}`);
+    const o = await fetch(l, { ...s, credentials: "same-origin", headers: n });
+    if (!o.ok) {
+      const d = o.status === 401 || o.status === 403, _ = d ? "Not authorised" : "Could not load data", m = d ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${o.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${o.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${o.status} from ${String(l)} — ${m}`), a == null || a.peek("danger", { data: { headline: _, message: m } });
+    }
+    return o;
   };
 }
-var g = Object.defineProperty, v = Object.getOwnPropertyDescriptor, h = (e) => {
+var A = Object.defineProperty, E = Object.getOwnPropertyDescriptor, y = (e) => {
   throw TypeError(e);
-}, p = (e, t, l, s) => {
-  for (var a = s > 1 ? void 0 : s ? v(t, l) : t, r = e.length - 1, i; r >= 0; r--)
-    (i = e[r]) && (a = (s ? i(t, l, a) : i(a)) || a);
-  return s && a && g(t, l, a), a;
-}, T = (e, t, l) => t.has(e) || h("Cannot " + l), w = (e, t, l) => (T(e, t, "read from private field"), l ? l.call(e) : t.get(e)), $ = (e, t, l) => t.has(e) ? h("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, l), n;
-let o = class extends y(d) {
+}, h = (e, t, a, i) => {
+  for (var r = i > 1 ? void 0 : i ? E(t, a) : t, l = e.length - 1, s; l >= 0; l--)
+    (s = e[l]) && (r = (i ? s(t, a, r) : s(r)) || r);
+  return i && r && A(t, a, r), r;
+}, M = (e, t, a) => t.has(e) || y("Cannot " + a), k = (e, t, a) => (M(e, t, "read from private field"), a ? a.call(e) : t.get(e)), O = (e, t, a) => t.has(e) ? y("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), p;
+let u = class extends T(f) {
   constructor() {
-    super(...arguments), $(this, n, f(this)), this._memberTypes = [], this._loading = !1, this._apiBase = "/umbraco/api/membertypes";
+    super(...arguments), O(this, p, C(this)), this._memberTypes = [], this._loading = !1, this._apiBase = "/umbraco/api/membertypes";
   }
   connectedCallback() {
     super.connectedCallback(), this._load();
@@ -41,7 +46,7 @@ let o = class extends y(d) {
   async _load() {
     this._loading = !0;
     try {
-      const e = await w(this, n).call(this, `${this._apiBase}/GetAll`);
+      const e = await k(this, p).call(this, `${this._apiBase}/GetAll`);
       e.ok && (this._memberTypes = await e.json());
     } catch {
       this._memberTypes = [];
@@ -50,12 +55,12 @@ let o = class extends y(d) {
     }
   }
   render() {
-    return u`
+    return c`
       <h1>Member Types</h1>
       <p class="description">Manage custom member types and their properties.</p>
 
       <uui-box headline="Member Types (${this._memberTypes.length})">
-        ${this._loading ? u`<p>Loading...</p>` : this._memberTypes.length === 0 ? u`<p class="empty">No member types found.</p>` : u`
+        ${this._loading ? c`<p>Loading...</p>` : this._memberTypes.length === 0 ? c`<p class="empty">No member types found.</p>` : c`
               <uui-table>
                 <uui-table-head>
                   <uui-table-head-cell>Name</uui-table-head-cell>
@@ -64,7 +69,7 @@ let o = class extends y(d) {
                   <uui-table-head-cell>Properties</uui-table-head-cell>
                 </uui-table-head>
                 ${this._memberTypes.map(
-      (e) => u`
+      (e) => c`
                     <uui-table-row>
                       <uui-table-cell><strong>${e.name}</strong></uui-table-cell>
                       <uui-table-cell><code>${e.alias}</code></uui-table-cell>
@@ -79,25 +84,25 @@ let o = class extends y(d) {
     `;
   }
 };
-n = /* @__PURE__ */ new WeakMap();
-o.styles = m`
+p = /* @__PURE__ */ new WeakMap();
+u.styles = g`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
     p.description { color: var(--uui-color-text-alt, #6b7280); margin: 0 0 24px; }
     .empty { color: var(--uui-color-text-alt, #6b7280); padding: 24px 0; }
     uui-table { width: 100%; }
   `;
-p([
-  c()
-], o.prototype, "_memberTypes", 2);
-p([
-  c()
-], o.prototype, "_loading", 2);
-o = p([
-  b("membertypes-dashboard")
-], o);
-const A = o;
+h([
+  b()
+], u.prototype, "_memberTypes", 2);
+h([
+  b()
+], u.prototype, "_loading", 2);
+u = h([
+  w("membertypes-dashboard")
+], u);
+const x = u;
 export {
-  o as MemberTypesDashboardElement,
-  A as default
+  u as MemberTypesDashboardElement,
+  x as default
 };

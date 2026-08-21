@@ -1,53 +1,58 @@
-import { LitElement as p, html as h, css as _, state as u, customElement as m } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as f } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as v } from "@umbraco-cms/backoffice/auth";
-function y(e) {
-  let t = null;
-  const s = new Promise((i) => {
-    e.consumeContext(v, async (a) => {
-      var o;
+import { LitElement as v, html as c, css as b, state as g, customElement as w } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as S } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as T } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as $ } from "@umbraco-cms/backoffice/notification";
+function L(e) {
+  let t = null, a = null;
+  const r = e.consumeContext.bind(e), i = new Promise((o) => {
+    r(T, async (s) => {
+      var d;
       try {
-        t = await ((o = a == null ? void 0 : a.getLatestToken) == null ? void 0 : o.call(a)) ?? null;
+        t = await ((d = s == null ? void 0 : s.getLatestToken) == null ? void 0 : d.call(s)) ?? null;
       } catch {
         t = null;
       }
-      i();
-    }), setTimeout(i, 3e3);
+      o();
+    }), setTimeout(o, 3e3);
   });
-  return async (i, a = {}) => {
-    await s;
-    const o = new Headers(a.headers);
-    t && !o.has("Authorization") && o.set("Authorization", `Bearer ${t}`);
-    const r = await fetch(i, { ...a, credentials: "same-origin", headers: o });
-    return (r.status === 401 || r.status === 403) && console.error(
-      `[SplatDev] ${r.status} from ${String(i)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), r;
+  return r($, (o) => {
+    a = o;
+  }), async (o, s = {}) => {
+    await i;
+    const d = new Headers(s.headers);
+    t && !d.has("Authorization") && d.set("Authorization", `Bearer ${t}`);
+    const n = await fetch(o, { ...s, credentials: "same-origin", headers: d });
+    if (!n.ok) {
+      const p = n.status === 401 || n.status === 403, y = p ? "Not authorised" : "Could not load data", _ = p ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${n.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${n.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${n.status} from ${String(o)} — ${_}`), a == null || a.peek("danger", { data: { headline: y, message: _ } });
+    }
+    return n;
   };
 }
-var b = Object.defineProperty, w = Object.getOwnPropertyDescriptor, g = (e) => {
+var k = Object.defineProperty, z = Object.getOwnPropertyDescriptor, f = (e) => {
   throw TypeError(e);
-}, d = (e, t, s, i) => {
-  for (var a = i > 1 ? void 0 : i ? w(t, s) : t, o = e.length - 1, r; o >= 0; o--)
-    (r = e[o]) && (a = (i ? r(t, s, a) : r(a)) || a);
-  return i && a && b(t, s, a), a;
-}, S = (e, t, s) => t.has(e) || g("Cannot " + s), c = (e, t, s) => (S(e, t, "read from private field"), s ? s.call(e) : t.get(e)), L = (e, t, s) => t.has(e) ? g("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, s), l;
-let n = class extends f(p) {
+}, h = (e, t, a, r) => {
+  for (var i = r > 1 ? void 0 : r ? z(t, a) : t, o = e.length - 1, s; o >= 0; o--)
+    (s = e[o]) && (i = (r ? s(t, a, i) : s(i)) || i);
+  return r && i && k(t, a, i), i;
+}, C = (e, t, a) => t.has(e) || f("Cannot " + a), m = (e, t, a) => (C(e, t, "read from private field"), a ? a.call(e) : t.get(e)), E = (e, t, a) => t.has(e) ? f("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), u;
+let l = class extends S(v) {
   constructor() {
-    super(...arguments), L(this, l, y(this)), this._settings = { enabled: !0, placeholder: "", lazyLoadIframes: !0 }, this._loading = !0, this._saved = !1;
+    super(...arguments), E(this, u, L(this)), this._settings = { enabled: !0, placeholder: "", lazyLoadIframes: !0 }, this._loading = !0, this._saved = !1;
   }
   connectedCallback() {
     super.connectedCallback(), this._loadSettings();
   }
   async _loadSettings() {
     try {
-      const e = await c(this, l).call(this, "/umbraco/api/lazyload/GetSettings");
+      const e = await m(this, u).call(this, "/umbraco/api/lazyload/GetSettings");
       this._settings = await e.json();
     } finally {
       this._loading = !1;
     }
   }
   async _saveSettings() {
-    await c(this, l).call(this, "/umbraco/api/lazyload/SaveSettings", {
+    await m(this, u).call(this, "/umbraco/api/lazyload/SaveSettings", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(this._settings)
@@ -59,7 +64,7 @@ let n = class extends f(p) {
     this._settings = { ...this._settings, [e]: !this._settings[e] };
   }
   render() {
-    return this._loading ? h`<uui-loader></uui-loader>` : h`
+    return this._loading ? c`<uui-loader></uui-loader>` : c`
       <uui-box headline="Lazy Load Settings">
         <div class="form-row">
           <label>Enabled</label>
@@ -75,33 +80,33 @@ let n = class extends f(p) {
             @input=${(e) => this._settings = { ...this._settings, placeholder: e.target.value }} />
         </div>
         <uui-button look="primary" @click=${this._saveSettings}>Save Settings</uui-button>
-        ${this._saved ? h`<uui-tag color="positive" look="secondary">Saved!</uui-tag>` : ""}
+        ${this._saved ? c`<uui-tag color="positive" look="secondary">Saved!</uui-tag>` : ""}
       </uui-box>
     `;
   }
 };
-l = /* @__PURE__ */ new WeakMap();
-n.styles = _`
+u = /* @__PURE__ */ new WeakMap();
+l.styles = b`
     :host { display: block; padding: 1rem; }
     .form-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
     label { min-width: 160px; font-weight: 600; }
     input[type="text"] { flex: 1; padding: 0.4rem; border: 1px solid var(--uui-color-border); border-radius: 4px; }
   `;
-d([
-  u()
-], n.prototype, "_settings", 2);
-d([
-  u()
-], n.prototype, "_loading", 2);
-d([
-  u()
-], n.prototype, "_saved", 2);
-n = d([
-  m("lazyload-dashboard")
-], n);
-const T = n;
+h([
+  g()
+], l.prototype, "_settings", 2);
+h([
+  g()
+], l.prototype, "_loading", 2);
+h([
+  g()
+], l.prototype, "_saved", 2);
+l = h([
+  w("lazyload-dashboard")
+], l);
+const N = l;
 export {
-  n as LazyLoadDashboardElement,
-  T as default
+  l as LazyLoadDashboardElement,
+  N as default
 };
 //# sourceMappingURL=lazyload-dashboard.element.js.map

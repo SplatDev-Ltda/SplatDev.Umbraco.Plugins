@@ -2,6 +2,13 @@
 
 SMTP email configuration UI for Umbraco backoffice — configure, test, and manage SMTP email settings directly from the backoffice dashboard.
 
+
+<!-- screenshot:start -->
+
+![Smtp dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Smtp/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Smtp.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Smtp)
 
 ## Compatibility
@@ -67,6 +74,12 @@ After registration, the Smtp dashboard appears in the Umbraco backoffice. Naviga
 - SMTP credentials are stored in `appsettings.json` — consider using User Secrets or Azure Key Vault in production
 - Single SMTP server configuration only — no support for multiple providers or per-domain SMTP settings
 - No built-in email queue or retry mechanism; email delivery depends on the configured SMTP server
+
+## Changelog
+
+### 2.3.2 — 2026-08-21
+- Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.
+- A failed request now raises a notification instead of leaving the dashboard looking like there is simply no data.
 
 ## License
 

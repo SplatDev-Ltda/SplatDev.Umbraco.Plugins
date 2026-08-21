@@ -53,3 +53,9 @@ Upgraded from Umbraco 8 (net472) to modern SDK-style multi-targeting.
 In Umbraco 13+, direct password hash assignment (`RawPasswordValue`) is not available.
 Password operations must use the Umbraco Users API or `IMemberService.SavePassword()`.
 The `ChangeUserPassword` and `ResetUserPassword` methods log a warning and return guidance.
+
+## Changelog
+
+### 2.2.2 — 2026-08-21
+- Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.
+- A failed request now raises a notification instead of leaving the dashboard looking like there is simply no data.

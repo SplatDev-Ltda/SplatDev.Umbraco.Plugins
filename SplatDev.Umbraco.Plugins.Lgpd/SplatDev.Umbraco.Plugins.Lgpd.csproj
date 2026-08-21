@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>SplatDev.Umbraco.Plugins.Lgpd</PackageId>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <Authors>SplatDev</Authors>
@@ -23,6 +23,7 @@
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.11" />
     <PackageReference Include="Umbraco.Cms.Core" Version="13.12.0" />
     <PackageReference Include="Umbraco.Cms.Infrastructure" Version="13.12.0" />
     <PackageReference Include="Umbraco.Cms.Web.Common" Version="13.12.0" />
@@ -33,6 +34,7 @@
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.0" />
     <PackageReference Include="Umbraco.Cms.Core" Version="17.3.4" />
     <PackageReference Include="Umbraco.Cms.Infrastructure" Version="17.3.4" />
     <PackageReference Include="Umbraco.Cms.Web.Common" Version="17.3.4" />

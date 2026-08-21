@@ -4,6 +4,8 @@ using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 using SplatDev.Umbraco.Plugins.Gdrp.Models;
 using SplatDev.Umbraco.Plugins.Gdrp.Services;
+using SplatDev.Umbraco.Plugins.Gdrp.Components;
+using SplatDev.Umbraco.Plugins.Gdrp.Persistence;
 
 namespace SplatDev.Umbraco.Plugins.Gdrp.Composers;
 
@@ -14,7 +16,8 @@ public class GdrpComposer : IComposer
         builder.Services.AddScoped<IGdrpService, GdrpService>();
 
         builder.Services.AddDbContext<GdrpDbContext>(options =>
-            options.UseSqlServer(
-                builder.Config.GetSection("ConnectionStrings")["umbracoDbDSN"] ?? string.Empty));
+            SplatDevDbContextConfig.UseUmbracoDatabase(options, builder.Config));
+
+        builder.Components().Append<GdrpSchemaComponent>();
     }
 }

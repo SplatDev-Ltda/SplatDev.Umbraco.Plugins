@@ -2,6 +2,13 @@
 
 Umbraco social login integration plugin — configure OAuth providers (Facebook, Google, Twitter/X, Apple) for member sign-in. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
+
+<!-- screenshot:start -->
+
+![SocialMedia.Login dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.SocialMedia.Login/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.SocialMedia.Login.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.SocialMedia.Login)
 
 ## Compatibility

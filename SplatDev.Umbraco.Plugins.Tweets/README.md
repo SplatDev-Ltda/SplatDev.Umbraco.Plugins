@@ -2,6 +2,13 @@
 
 Twitter/X feed display plugin for Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
+
+<!-- screenshot:start -->
+
+![Tweets dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Tweets/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Tweets.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Tweets)
 
 ## Compatibility
@@ -77,6 +84,14 @@ Run migrations or `context.Database.EnsureCreated()` on startup.
 - The free tier allows read access to public tweets for owned accounts.
 - The plugin handles the case where `BearerToken` or `TwitterHandle` is not configured
   by logging a warning and returning the current cache without error.
+
+## Changelog
+
+### 2.2.2 — 2026-08-21
+- Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.
+- A failed request now raises a notification instead of leaving the dashboard looking like there is simply no data.
+- The plugin's tables are created on startup. They were never created before, so anything touching them failed on a fresh install.
+- Runs on SQLite as well as SQL Server. It previously assumed SQL Server and failed with "Keyword not supported: 'cache'" on the database Umbraco's installer offers by default.
 
 ## License
 

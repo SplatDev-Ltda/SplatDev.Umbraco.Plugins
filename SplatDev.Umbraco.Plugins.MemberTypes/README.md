@@ -63,6 +63,12 @@ npm run build
 - No validation to prevent deletion of member types that have existing members
 - Client dashboard requires manual build step after package installation; assets are not pre-built in the NuGet package
 
+## Changelog
+
+### 2.2.2 — 2026-08-21
+- Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.
+- A failed request now raises a notification instead of leaving the dashboard looking like there is simply no data.
+
 ## License
 
 MIT © [SplatDev](https://github.com/SplatDev-Ltda)

@@ -1,37 +1,42 @@
-import { LitElement as D, nothing as d, html as l, css as E, state as h, customElement as S } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as T } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as N } from "@umbraco-cms/backoffice/auth";
-function C(e) {
-  let t = null;
-  const i = new Promise((a) => {
-    e.consumeContext(N, async (s) => {
-      var u;
+import { LitElement as C, nothing as c, html as s, css as O, state as g, customElement as A } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as G } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as z } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as I } from "@umbraco-cms/backoffice/notification";
+function P(e) {
+  let t = null, i = null;
+  const a = e.consumeContext.bind(e), l = new Promise((r) => {
+    a(z, async (n) => {
+      var b;
       try {
-        t = await ((u = s == null ? void 0 : s.getLatestToken) == null ? void 0 : u.call(s)) ?? null;
+        t = await ((b = n == null ? void 0 : n.getLatestToken) == null ? void 0 : b.call(n)) ?? null;
       } catch {
         t = null;
       }
-      a();
-    }), setTimeout(a, 3e3);
+      r();
+    }), setTimeout(r, 3e3);
   });
-  return async (a, s = {}) => {
-    await i;
-    const u = new Headers(s.headers);
-    t && !u.has("Authorization") && u.set("Authorization", `Bearer ${t}`);
-    const c = await fetch(a, { ...s, credentials: "same-origin", headers: u });
-    return (c.status === 401 || c.status === 403) && console.error(
-      `[SplatDev] ${c.status} from ${String(a)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), c;
+  return a(I, (r) => {
+    i = r;
+  }), async (r, n = {}) => {
+    await l;
+    const b = new Headers(n.headers);
+    t && !b.has("Authorization") && b.set("Authorization", `Bearer ${t}`);
+    const h = await fetch(r, { ...n, credentials: "same-origin", headers: b });
+    if (!h.ok) {
+      const $ = h.status === 401 || h.status === 403, N = $ ? "Not authorised" : "Could not load data", w = $ ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${h.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${h.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${h.status} from ${String(r)} — ${w}`), i == null || i.peek("danger", { data: { headline: N, message: w } });
+    }
+    return h;
   };
 }
-var O = Object.defineProperty, G = Object.getOwnPropertyDescriptor, _ = (e) => {
+var U = Object.defineProperty, V = Object.getOwnPropertyDescriptor, k = (e) => {
   throw TypeError(e);
 }, p = (e, t, i, a) => {
-  for (var s = a > 1 ? void 0 : a ? G(t, i) : t, u = e.length - 1, c; u >= 0; u--)
-    (c = e[u]) && (s = (a ? c(t, i, s) : c(s)) || s);
-  return a && s && O(t, i, s), s;
-}, $ = (e, t, i) => t.has(e) || _("Cannot " + i), b = (e, t, i) => ($(e, t, "read from private field"), i ? i.call(e) : t.get(e)), y = (e, t, i) => t.has(e) ? _("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, i), n = (e, t, i) => ($(e, t, "access private method"), i), g, o, m, f, w, x, k, v;
-const z = {
+  for (var l = a > 1 ? void 0 : a ? V(t, i) : t, r = e.length - 1, n; r >= 0; r--)
+    (n = e[r]) && (l = (a ? n(t, i, l) : n(l)) || l);
+  return a && l && U(t, i, l), l;
+}, D = (e, t, i) => t.has(e) || k("Cannot " + i), m = (e, t, i) => (D(e, t, "read from private field"), i ? i.call(e) : t.get(e)), x = (e, t, i) => t.has(e) ? k("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, i), u = (e, t, i) => (D(e, t, "access private method"), i), f, o, _, v, E, S, T, y;
+const j = {
   id: 0,
   groupId: 0,
   key: "",
@@ -39,15 +44,15 @@ const z = {
   type: "text",
   description: null
 };
-let r = class extends T(D) {
+let d = class extends G(C) {
   constructor() {
-    super(...arguments), y(this, o), y(this, g, C(this)), this._groups = [], this._settings = [], this._loading = !0, this._busy = !1, this._msg = null, this._draft = null, this._groupDraft = null, this._api = "/umbraco/api/SettingsApi";
+    super(...arguments), x(this, o), x(this, f, P(this)), this._groups = [], this._settings = [], this._loading = !0, this._busy = !1, this._msg = null, this._draft = null, this._groupDraft = null, this._api = "/umbraco/api/SettingsApi";
   }
   connectedCallback() {
-    super.connectedCallback(), n(this, o, m).call(this);
+    super.connectedCallback(), u(this, o, _).call(this);
   }
   render() {
-    return l`
+    return s`
       <h1>Site settings</h1>
       <p class="description">
         Key/value settings for the site, organised into groups. Each setting declares a type,
@@ -56,61 +61,61 @@ let r = class extends T(D) {
 
       <div class="row">
         <uui-button look="primary" ?disabled=${this._busy}
-          @click=${() => this._draft = { ...z }}>New setting</uui-button>
+          @click=${() => this._draft = { ...j }}>New setting</uui-button>
         <uui-button look="secondary" ?disabled=${this._busy}
           @click=${() => this._groupDraft = { id: 0, name: "", alias: "", description: null, sortOrder: 0 }}>New group</uui-button>
       </div>
 
-      ${this._msg ? l`<div class="msg ${this._msg.ok ? "success" : "error"}">${this._msg.text}</div>` : d}
+      ${this._msg ? s`<div class="msg ${this._msg.ok ? "success" : "error"}">${this._msg.text}</div>` : c}
 
-      ${n(this, o, x).call(this)}
-      ${n(this, o, k).call(this)}
+      ${u(this, o, S).call(this)}
+      ${u(this, o, T).call(this)}
 
-      ${this._loading ? l`<uui-loader style="margin-top:16px;"></uui-loader>` : l`
-            ${this._groups.map((e) => n(this, o, v).call(this, e))}
-            ${n(this, o, v).call(this, null)}
-            ${this._groups.length === 0 && this._settings.length === 0 ? l`<p class="empty" style="margin-top:16px;">
+      ${this._loading ? s`<uui-loader style="margin-top:16px;"></uui-loader>` : s`
+            ${this._groups.map((e) => u(this, o, y).call(this, e))}
+            ${u(this, o, y).call(this, null)}
+            ${this._groups.length === 0 && this._settings.length === 0 ? s`<p class="empty" style="margin-top:16px;">
                        No settings yet. Create a group, then add settings to it.
-                     </p>` : d}
+                     </p>` : c}
           `}
     `;
   }
 };
-g = /* @__PURE__ */ new WeakMap();
+f = /* @__PURE__ */ new WeakMap();
 o = /* @__PURE__ */ new WeakSet();
-m = async function() {
+_ = async function() {
   this._loading = !0;
   try {
     const [e, t] = await Promise.all([
-      b(this, g).call(this, `${this._api}/GetGroups`, { credentials: "same-origin" }),
-      b(this, g).call(this, `${this._api}/GetAll`, { credentials: "same-origin" })
+      m(this, f).call(this, `${this._api}/GetGroups`, { credentials: "same-origin" }),
+      m(this, f).call(this, `${this._api}/GetAll`, { credentials: "same-origin" })
     ]);
     e.ok && (this._groups = await e.json()), t.ok && (this._settings = await t.json());
   } finally {
     this._loading = !1;
   }
 };
-f = async function(e, t, i) {
+v = async function(e, t, i) {
   this._busy = !0, this._msg = null;
   try {
-    const a = await b(this, g).call(this, `${this._api}/${e}`, {
+    const a = await m(this, f).call(this, `${this._api}/${e}`, {
       method: t,
       credentials: "same-origin",
       headers: i ? { "Content-Type": "application/json" } : void 0,
       body: i ? JSON.stringify(i) : void 0
-    }), s = a.status === 204 ? { success: !0, message: "Deleted.", value: null } : await a.json();
-    return this._msg = { ok: s.success, text: s.message }, s.success && await n(this, o, m).call(this), s;
+    }), l = a.status === 204 ? { success: !0, message: "Deleted.", value: null } : await a.json();
+    return this._msg = { ok: l.success, text: l.message }, l.success && await u(this, o, _).call(this), l;
   } catch (a) {
     return this._msg = { ok: !1, text: `The request failed: ${a.message}` }, null;
   } finally {
     this._busy = !1;
   }
 };
-w = function(e) {
+E = function(e) {
   const t = (i) => this._draft = { ...e, value: i };
   switch (e.type) {
     case "boolean":
-      return l`
+      return s`
           <div class="field">
             <label>Value</label>
             <uui-toggle
@@ -118,14 +123,14 @@ w = function(e) {
               @change=${(i) => t(i.target.checked ? "true" : "false")}></uui-toggle>
           </div>`;
     case "number":
-      return l`
+      return s`
           <div class="field">
             <label for="v">Value</label>
             <input id="v" type="number" .value=${e.value ?? ""}
               @input=${(i) => t(i.target.value)} />
           </div>`;
     case "json":
-      return l`
+      return s`
           <div class="field grow">
             <label for="v">Value</label>
             <textarea id="v" spellcheck="false" .value=${e.value ?? ""}
@@ -133,7 +138,7 @@ w = function(e) {
             <span class="hint">Validated as JSON on save.</span>
           </div>`;
     default:
-      return l`
+      return s`
           <div class="field grow">
             <label for="v">Value</label>
             <input id="v" .value=${e.value ?? ""}
@@ -141,9 +146,9 @@ w = function(e) {
           </div>`;
   }
 };
-x = function() {
+S = function() {
   const e = this._draft;
-  return e ? l`
+  return e ? s`
       <uui-box headline=${e.id > 0 ? `Edit ${e.key}` : "New setting"} style="margin-top:16px;">
         <div class="row">
           <div class="field">
@@ -168,13 +173,13 @@ x = function() {
             <select id="gr" .value=${String(e.groupId)}
               @change=${(t) => this._draft = { ...e, groupId: Number(t.target.value) }}>
               <option value="0">Ungrouped</option>
-              ${this._groups.map((t) => l`<option value=${t.id}>${t.name}</option>`)}
+              ${this._groups.map((t) => s`<option value=${t.id}>${t.name}</option>`)}
             </select>
           </div>
         </div>
 
         <div class="row" style="margin-top:12px;">
-          ${n(this, o, w).call(this, e)}
+          ${u(this, o, E).call(this, e)}
           <div class="field grow">
             <label for="ds">Description</label>
             <input id="ds" .value=${e.description ?? ""}
@@ -185,7 +190,7 @@ x = function() {
         <div class="row" style="margin-top:14px;">
           <uui-button look="primary" ?disabled=${this._busy}
             @click=${async () => {
-    const t = await n(this, o, f).call(this, "Save", "POST", this._draft);
+    const t = await u(this, o, v).call(this, "Save", "POST", this._draft);
     t != null && t.success && (this._draft = null);
   }}>
             ${this._busy ? "Saving…" : e.id > 0 ? "Save changes" : "Create setting"}
@@ -193,11 +198,11 @@ x = function() {
           <uui-button look="secondary" @click=${() => this._draft = null}>Cancel</uui-button>
         </div>
       </uui-box>
-    ` : d;
+    ` : c;
 };
-k = function() {
+T = function() {
   const e = this._groupDraft;
-  return e ? l`
+  return e ? s`
       <uui-box headline=${e.id > 0 ? `Edit ${e.name}` : "New group"} style="margin-top:16px;">
         <div class="row">
           <div class="field">
@@ -224,7 +229,7 @@ k = function() {
         <div class="row" style="margin-top:14px;">
           <uui-button look="primary" ?disabled=${this._busy}
             @click=${async () => {
-    const t = await n(this, o, f).call(this, "SaveGroup", "POST", this._groupDraft);
+    const t = await u(this, o, v).call(this, "SaveGroup", "POST", this._groupDraft);
     t != null && t.success && (this._groupDraft = null);
   }}>
             ${this._busy ? "Saving…" : e.id > 0 ? "Save changes" : "Create group"}
@@ -232,29 +237,29 @@ k = function() {
           <uui-button look="secondary" @click=${() => this._groupDraft = null}>Cancel</uui-button>
         </div>
       </uui-box>
-    ` : d;
+    ` : c;
 };
-v = function(e) {
+y = function(e) {
   const t = (e == null ? void 0 : e.id) ?? 0, i = this._settings.filter((a) => a.groupId === t);
-  return !e && i.length === 0 ? d : l`
+  return !e && i.length === 0 ? c : s`
       <uui-box style="margin-top:16px;">
         <div slot="headline" class="group-head">
           <span>${(e == null ? void 0 : e.name) ?? "Ungrouped"}</span>
-          ${e ? l`<span class="alias">${e.alias}</span>` : d}
+          ${e ? s`<span class="alias">${e.alias}</span>` : c}
         </div>
 
-        ${e ? l`
+        ${e ? s`
               <div slot="header-actions">
                 <uui-button look="secondary" compact label="Edit group"
                   @click=${() => this._groupDraft = { ...e }}>Edit</uui-button>
                 <uui-button look="secondary" color="danger" compact label="Delete group"
                   ?disabled=${this._busy}
-                  @click=${() => n(this, o, f).call(this, "DeleteGroup?id=" + e.id, "DELETE")}>Delete</uui-button>
-              </div>` : d}
+                  @click=${() => u(this, o, v).call(this, "DeleteGroup?id=" + e.id, "DELETE")}>Delete</uui-button>
+              </div>` : c}
 
-        ${e != null && e.description ? l`<p class="hint">${e.description}</p>` : d}
+        ${e != null && e.description ? s`<p class="hint">${e.description}</p>` : c}
 
-        ${i.length === 0 ? l`<p class="empty">No settings in this group.</p>` : l`
+        ${i.length === 0 ? s`<p class="empty">No settings in this group.</p>` : s`
               <uui-table>
                 <uui-table-head>
                   <uui-table-head-cell>Key</uui-table-head-cell>
@@ -262,22 +267,22 @@ v = function(e) {
                   <uui-table-head-cell>Value</uui-table-head-cell>
                   <uui-table-head-cell></uui-table-head-cell>
                 </uui-table-head>
-                ${i.map((a) => l`
+                ${i.map((a) => s`
                   <uui-table-row>
                     <uui-table-cell>
                       <span class="key">${a.key}</span>
-                      ${a.description ? l`<div class="hint">${a.description}</div>` : d}
+                      ${a.description ? s`<div class="hint">${a.description}</div>` : c}
                     </uui-table-cell>
                     <uui-table-cell>${a.type}</uui-table-cell>
                     <uui-table-cell class="hint" style="max-width:280px;overflow-wrap:anywhere;">
-                      ${a.value ?? l`<em>not set</em>`}
+                      ${a.value ?? s`<em>not set</em>`}
                     </uui-table-cell>
                     <uui-table-cell style="text-align:right;white-space:nowrap;">
                       <uui-button look="secondary" compact label="Edit"
                         @click=${() => this._draft = { ...a }}>Edit</uui-button>
                       <uui-button look="secondary" color="danger" compact label="Delete"
                         ?disabled=${this._busy}
-                        @click=${() => confirm(`Delete "${a.key}"?`) && n(this, o, f).call(this, "Delete?id=" + a.id, "DELETE")}>Delete</uui-button>
+                        @click=${() => confirm(`Delete "${a.key}"?`) && u(this, o, v).call(this, "Delete?id=" + a.id, "DELETE")}>Delete</uui-button>
                     </uui-table-cell>
                   </uui-table-row>
                 `)}
@@ -285,7 +290,7 @@ v = function(e) {
       </uui-box>
     `;
 };
-r.styles = E`
+d.styles = O`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
     p.description { color: var(--uui-color-text-alt, #6b7280); margin: 0 0 24px; max-width: 62ch; }
@@ -310,31 +315,31 @@ r.styles = E`
     uui-table { width: 100%; }
   `;
 p([
-  h()
-], r.prototype, "_groups", 2);
+  g()
+], d.prototype, "_groups", 2);
 p([
-  h()
-], r.prototype, "_settings", 2);
+  g()
+], d.prototype, "_settings", 2);
 p([
-  h()
-], r.prototype, "_loading", 2);
+  g()
+], d.prototype, "_loading", 2);
 p([
-  h()
-], r.prototype, "_busy", 2);
+  g()
+], d.prototype, "_busy", 2);
 p([
-  h()
-], r.prototype, "_msg", 2);
+  g()
+], d.prototype, "_msg", 2);
 p([
-  h()
-], r.prototype, "_draft", 2);
+  g()
+], d.prototype, "_draft", 2);
 p([
-  h()
-], r.prototype, "_groupDraft", 2);
-r = p([
-  S("settings-dashboard")
-], r);
-const j = r;
+  g()
+], d.prototype, "_groupDraft", 2);
+d = p([
+  A("settings-dashboard")
+], d);
+const W = d;
 export {
-  r as SettingsDashboardElement,
-  j as default
+  d as SettingsDashboardElement,
+  W as default
 };

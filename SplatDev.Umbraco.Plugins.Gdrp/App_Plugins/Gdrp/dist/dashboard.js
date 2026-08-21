@@ -1,42 +1,47 @@
-import { LitElement as k, nothing as b, html as a, css as D, state as d, customElement as C } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as S } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as T } from "@umbraco-cms/backoffice/auth";
-function q(t) {
-  let e = null;
-  const s = new Promise((r) => {
-    t.consumeContext(T, async (i) => {
-      var u;
+import { LitElement as S, nothing as g, html as a, css as A, state as d, customElement as P } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as E } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as O } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as z } from "@umbraco-cms/backoffice/notification";
+function N(t) {
+  let e = null, s = null;
+  const h = t.consumeContext.bind(t), c = new Promise((r) => {
+    h(O, async (o) => {
+      var b;
       try {
-        e = await ((u = i == null ? void 0 : i.getLatestToken) == null ? void 0 : u.call(i)) ?? null;
+        e = await ((b = o == null ? void 0 : o.getLatestToken) == null ? void 0 : b.call(o)) ?? null;
       } catch {
         e = null;
       }
       r();
     }), setTimeout(r, 3e3);
   });
-  return async (r, i = {}) => {
-    await s;
-    const u = new Headers(i.headers);
-    e && !u.has("Authorization") && u.set("Authorization", `Bearer ${e}`);
-    const h = await fetch(r, { ...i, credentials: "same-origin", headers: u });
-    return (h.status === 401 || h.status === 403) && console.error(
-      `[SplatDev] ${h.status} from ${String(r)} — the backoffice token was ${e ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), h;
+  return h(z, (r) => {
+    s = r;
+  }), async (r, o = {}) => {
+    await c;
+    const b = new Headers(o.headers);
+    e && !b.has("Authorization") && b.set("Authorization", `Bearer ${e}`);
+    const p = await fetch(r, { ...o, credentials: "same-origin", headers: b });
+    if (!p.ok) {
+      const $ = p.status === 401 || p.status === 403, q = $ ? "Not authorised" : "Could not load data", w = $ ? `The backoffice token was ${e ? "sent but rejected" : "not available"} (${p.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${p.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${p.status} from ${String(r)} — ${w}`), s == null || s.peek("danger", { data: { headline: q, message: w } });
+    }
+    return p;
   };
 }
-var P = Object.defineProperty, E = Object.getOwnPropertyDescriptor, f = (t) => {
+var R = Object.defineProperty, U = Object.getOwnPropertyDescriptor, x = (t) => {
   throw TypeError(t);
-}, c = (t, e, s, r) => {
-  for (var i = r > 1 ? void 0 : r ? E(e, s) : e, u = t.length - 1, h; u >= 0; u--)
-    (h = t[u]) && (i = (r ? h(e, s, i) : h(i)) || i);
-  return r && i && P(e, s, i), i;
-}, $ = (t, e, s) => e.has(t) || f("Cannot " + s), y = (t, e, s) => ($(t, e, "read from private field"), s ? s.call(t) : e.get(t)), _ = (t, e, s) => e.has(t) ? f("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, s), n = (t, e, s) => ($(t, e, "access private method"), s), p, l, g, v, w, x, m;
-let o = class extends S(k) {
+}, u = (t, e, s, h) => {
+  for (var c = h > 1 ? void 0 : h ? U(e, s) : e, r = t.length - 1, o; r >= 0; r--)
+    (o = t[r]) && (c = (h ? o(e, s, c) : o(c)) || c);
+  return h && c && R(e, s, c), c;
+}, k = (t, e, s) => e.has(t) || x("Cannot " + s), _ = (t, e, s) => (k(t, e, "read from private field"), s ? s.call(t) : e.get(t)), v = (t, e, s) => e.has(t) ? x("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, s), n = (t, e, s) => (k(t, e, "access private method"), s), m, i, f, D, T, C, y;
+let l = class extends E(S) {
   constructor() {
-    super(...arguments), _(this, l), _(this, p, q(this)), this._summary = null, this._requests = [], this._statusFilter = "pending", this._lookup = "", this._history = null, this._retentionDays = 365, this._loading = !0, this._busy = !1, this._msg = null, this._api = "/umbraco/api/gdrp";
+    super(...arguments), v(this, i), v(this, m, N(this)), this._summary = null, this._requests = [], this._statusFilter = "pending", this._lookup = "", this._history = null, this._retentionDays = 365, this._loading = !0, this._busy = !1, this._msg = null, this._api = "/umbraco/api/gdrp";
   }
   connectedCallback() {
-    super.connectedCallback(), n(this, l, g).call(this);
+    super.connectedCallback(), n(this, i, f).call(this);
   }
   render() {
     const t = this._summary;
@@ -48,24 +53,24 @@ let o = class extends S(k) {
         latest state.
       </p>
 
-      ${this._loading ? a`<uui-loader></uui-loader>` : b}
+      ${this._loading ? a`<uui-loader></uui-loader>` : g}
 
       ${t ? a`
             <uui-box headline="Consent now">
               <div class="stats">
-                ${n(this, l, m).call(this, t.sessions, "sessions")}
-                ${n(this, l, m).call(this, t.all, "accepted all")}
-                ${n(this, l, m).call(this, t.essential, "essential only")}
-                ${n(this, l, m).call(this, t.none, "declined")}
-                ${n(this, l, m).call(this, t.pendingRequests, "requests pending")}
+                ${n(this, i, y).call(this, t.sessions, "sessions")}
+                ${n(this, i, y).call(this, t.all, "accepted all")}
+                ${n(this, i, y).call(this, t.essential, "essential only")}
+                ${n(this, i, y).call(this, t.none, "declined")}
+                ${n(this, i, y).call(this, t.pendingRequests, "requests pending")}
               </div>
               <p class="hint" style="margin-top:12px;">
-                ${t.recordsHeld} record(s) held${t.oldestRecordUtc ? a`, oldest ${new Date(t.oldestRecordUtc).toLocaleDateString()}` : b}.
+                ${t.recordsHeld} record(s) held${t.oldestRecordUtc ? a`, oldest ${new Date(t.oldestRecordUtc).toLocaleDateString()}` : g}.
                 Each session counts once, by its most recent decision.
               </p>
-            </uui-box>` : b}
+            </uui-box>` : g}
 
-      ${this._msg ? a`<div class="msg ${this._msg.ok ? "success" : "error"}">${this._msg.text}</div>` : b}
+      ${this._msg ? a`<div class="msg ${this._msg.ok ? "success" : "error"}">${this._msg.text}</div>` : g}
 
       <uui-box headline="Look up a session" style="margin-top:16px;">
         <div class="row">
@@ -75,7 +80,7 @@ let o = class extends S(k) {
               @input=${(e) => this._lookup = e.target.value} />
           </div>
           <uui-button look="secondary" ?disabled=${this._busy || !this._lookup.trim()}
-            @click=${n(this, l, v)}>Show history</uui-button>
+            @click=${n(this, i, D)}>Show history</uui-button>
         </div>
 
         ${this._history && this._history.length > 0 ? a`
@@ -95,7 +100,7 @@ let o = class extends S(k) {
                       ${e.userAgent ?? "—"}
                     </uui-table-cell>
                   </uui-table-row>`)}
-              </uui-table>` : b}
+              </uui-table>` : g}
       </uui-box>
 
       <uui-box headline="Data subject requests" style="margin-top:16px;">
@@ -105,7 +110,7 @@ let o = class extends S(k) {
               look=${this._statusFilter === e ? "primary" : "secondary"}
               compact
               @click=${async () => {
-      this._statusFilter = e, await n(this, l, g).call(this);
+      this._statusFilter = e, await n(this, i, f).call(this);
     }}>
               ${e === "" ? "All" : e}
             </uui-button>`)}
@@ -134,7 +139,7 @@ let o = class extends S(k) {
                     </uui-table-cell>
                     <uui-table-cell style="text-align:right;">
                       ${e.status === "pending" ? a`<uui-button look="secondary" compact ?disabled=${this._busy}
-                                 @click=${() => n(this, l, w).call(this, e)}>Mark complete</uui-button>` : a`<span class="hint">
+                                 @click=${() => n(this, i, T).call(this, e)}>Mark complete</uui-button>` : a`<span class="hint">
                                  ${e.completedAt ? new Date(e.completedAt).toLocaleDateString() : ""}
                                </span>`}
                     </uui-table-cell>
@@ -156,31 +161,31 @@ let o = class extends S(k) {
               @input=${(e) => this._retentionDays = Number(e.target.value)} />
           </div>
           <uui-button look="secondary" color="danger" ?disabled=${this._busy || this._retentionDays < 1}
-            @click=${n(this, l, x)}>Purge</uui-button>
+            @click=${n(this, i, C)}>Purge</uui-button>
         </div>
       </uui-box>
     `;
   }
 };
-p = /* @__PURE__ */ new WeakMap();
-l = /* @__PURE__ */ new WeakSet();
-g = async function() {
+m = /* @__PURE__ */ new WeakMap();
+i = /* @__PURE__ */ new WeakSet();
+f = async function() {
   this._loading = !0;
   try {
     const [t, e] = await Promise.all([
-      y(this, p).call(this, `${this._api}/GetSummary`, { credentials: "same-origin" }),
-      y(this, p).call(this, `${this._api}/GetRequests?status=${encodeURIComponent(this._statusFilter)}`, { credentials: "same-origin" })
+      _(this, m).call(this, `${this._api}/GetSummary`, { credentials: "same-origin" }),
+      _(this, m).call(this, `${this._api}/GetRequests?status=${encodeURIComponent(this._statusFilter)}`, { credentials: "same-origin" })
     ]);
     t.ok && (this._summary = await t.json()), e.ok && (this._requests = await e.json());
   } finally {
     this._loading = !1;
   }
 };
-v = async function() {
+D = async function() {
   if (this._lookup.trim()) {
     this._busy = !0, this._msg = null;
     try {
-      const t = await y(this, p).call(this, `${this._api}/GetConsentHistory?sessionId=${encodeURIComponent(this._lookup.trim())}`, { credentials: "same-origin" });
+      const t = await _(this, m).call(this, `${this._api}/GetConsentHistory?sessionId=${encodeURIComponent(this._lookup.trim())}`, { credentials: "same-origin" });
       if (!t.ok) throw new Error(String(t.status));
       this._history = await t.json(), this._history.length === 0 && (this._msg = { ok: !1, text: "No consent recorded for that session." });
     } catch (t) {
@@ -190,17 +195,17 @@ v = async function() {
     }
   }
 };
-w = async function(t) {
+T = async function(t) {
   if (confirm(`Mark the ${t.requestType} request for ${t.email} as complete?`)) {
     this._busy = !0, this._msg = null;
     try {
-      const s = await (await y(this, p).call(this, `${this._api}/CompleteRequest`, {
+      const s = await (await _(this, m).call(this, `${this._api}/CompleteRequest`, {
         method: "POST",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: t.id })
       })).json();
-      this._msg = { ok: s.success, text: s.message }, await n(this, l, g).call(this);
+      this._msg = { ok: s.success, text: s.message }, await n(this, i, f).call(this);
     } catch (e) {
       this._msg = { ok: !1, text: `The request failed (${e.message}).` };
     } finally {
@@ -208,17 +213,17 @@ w = async function(t) {
     }
   }
 };
-x = async function() {
+C = async function() {
   if (confirm(
     `Delete consent records older than ${this._retentionDays} days? This removes the evidence of those decisions permanently.`
   )) {
     this._busy = !0, this._msg = null;
     try {
-      const t = await y(this, p).call(this, `${this._api}/PurgeConsent?olderThanDays=${this._retentionDays}`, {
+      const t = await _(this, m).call(this, `${this._api}/PurgeConsent?olderThanDays=${this._retentionDays}`, {
         method: "POST",
         credentials: "same-origin"
       }), e = await t.json();
-      this._msg = { ok: t.ok, text: e.message }, await n(this, l, g).call(this);
+      this._msg = { ok: t.ok, text: e.message }, await n(this, i, f).call(this);
     } catch (t) {
       this._msg = { ok: !1, text: `Purge failed (${t.message}).` };
     } finally {
@@ -226,10 +231,10 @@ x = async function() {
     }
   }
 };
-m = function(t, e) {
+y = function(t, e) {
   return a`<div class="stat"><div class="n">${t}</div><div class="l">${e}</div></div>`;
 };
-o.styles = D`
+l.styles = A`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
     p.description { color: var(--uui-color-text-alt, #6b7280); margin: 0 0 24px; max-width: 64ch; }
@@ -250,38 +255,38 @@ o.styles = D`
     .empty { color: var(--uui-color-text-alt, #6b7280); padding: 12px 0; }
     uui-table { width: 100%; }
   `;
-c([
+u([
   d()
-], o.prototype, "_summary", 2);
-c([
+], l.prototype, "_summary", 2);
+u([
   d()
-], o.prototype, "_requests", 2);
-c([
+], l.prototype, "_requests", 2);
+u([
   d()
-], o.prototype, "_statusFilter", 2);
-c([
+], l.prototype, "_statusFilter", 2);
+u([
   d()
-], o.prototype, "_lookup", 2);
-c([
+], l.prototype, "_lookup", 2);
+u([
   d()
-], o.prototype, "_history", 2);
-c([
+], l.prototype, "_history", 2);
+u([
   d()
-], o.prototype, "_retentionDays", 2);
-c([
+], l.prototype, "_retentionDays", 2);
+u([
   d()
-], o.prototype, "_loading", 2);
-c([
+], l.prototype, "_loading", 2);
+u([
   d()
-], o.prototype, "_busy", 2);
-c([
+], l.prototype, "_busy", 2);
+u([
   d()
-], o.prototype, "_msg", 2);
-o = c([
-  C("gdrp-dashboard")
-], o);
-const L = o;
+], l.prototype, "_msg", 2);
+l = u([
+  P("gdrp-dashboard")
+], l);
+const G = l;
 export {
-  o as GdrpDashboardElement,
-  L as default
+  l as GdrpDashboardElement,
+  G as default
 };

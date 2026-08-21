@@ -46,6 +46,12 @@ dotnet add package SplatDev.Umbraco.Plugins.Santander
 `BaseUrl`, `TokenPath`, `ClientId`, `ClientSecret`, `CertificatePath`/`CertificateBase64`/`CertificatePassword`,
 `ApiKey`, `WorkspaceId`, `CovenantCode`, `BankId`, `AccountId`, `PixKey`, and per-product path overrides.
 
+## Changelog
+
+### 1.3.2 — 2026-08-21
+- Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.
+- A failed request now raises a notification instead of leaving the dashboard looking like there is simply no data.
+
 ## License
 
 MIT © [SplatDev](https://github.com/SplatDev-Ltda)

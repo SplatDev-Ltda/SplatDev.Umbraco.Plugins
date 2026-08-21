@@ -82,6 +82,8 @@ Above all, **a dashboard that gates on `response.ok` and renders its empty state
 
 **A built bundle nothing loads is invisible.** CharLimit's `umbraco-package.json` pointed at a hand-written `dashboard.js` sitting beside the `charlimit-dashboard.js` that vite actually emits, so every rebuild updated a file the manifest never referenced. Check that each manifest `element` path is a current build output — and if the built module exports a named symbol rather than a default, the manifest also needs `elementName`, or the extension registers and still renders nothing.
 
+**Every plugin README carries a `## Changelog`, and it is updated with the version bump.** One `### <version> — <date>` block per release, plain sentences describing what changed for someone using the plugin — not commit subjects. It sits directly above `## License`. A version bump without a changelog entry is incomplete: `<Version>` is per-`.csproj` and there is no central release note, so the README is the only place a consumer can see what a new version actually did.
+
 **A custom backoffice section is not granted automatically.** Registering a `section` extension in `umbraco-package.json` makes it *available*, not *visible* — Umbraco only shows it once the alias is added to a user group's allowed sections. A freshly installed plugin therefore looks like it did nothing, even to an administrator.
 
 ## Branching

@@ -1,39 +1,44 @@
-import { LitElement as h, html as l, nothing as u, css as g, state as p, customElement as m } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as v } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as b } from "@umbraco-cms/backoffice/auth";
-function w(a) {
-  let e = null;
-  const o = new Promise((r) => {
-    a.consumeContext(b, async (t) => {
-      var i;
+import { LitElement as v, html as c, nothing as w, css as _, state as u, customElement as y } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as x } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as C } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as T } from "@umbraco-cms/backoffice/notification";
+function k(e) {
+  let a = null, t = null;
+  const s = e.consumeContext.bind(e), i = new Promise((r) => {
+    s(C, async (o) => {
+      var l;
       try {
-        e = await ((i = t == null ? void 0 : t.getLatestToken) == null ? void 0 : i.call(t)) ?? null;
+        a = await ((l = o == null ? void 0 : o.getLatestToken) == null ? void 0 : l.call(o)) ?? null;
       } catch {
-        e = null;
+        a = null;
       }
       r();
     }), setTimeout(r, 3e3);
   });
-  return async (r, t = {}) => {
-    await o;
-    const i = new Headers(t.headers);
-    e && !i.has("Authorization") && i.set("Authorization", `Bearer ${e}`);
-    const n = await fetch(r, { ...t, credentials: "same-origin", headers: i });
-    return (n.status === 401 || n.status === 403) && console.error(
-      `[SplatDev] ${n.status} from ${String(r)} — the backoffice token was ${e ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), n;
+  return s(T, (r) => {
+    t = r;
+  }), async (r, o = {}) => {
+    await i;
+    const l = new Headers(o.headers);
+    a && !l.has("Authorization") && l.set("Authorization", `Bearer ${a}`);
+    const n = await fetch(r, { ...o, credentials: "same-origin", headers: l });
+    if (!n.ok) {
+      const h = n.status === 401 || n.status === 403, b = h ? "Not authorised" : "Could not load data", g = h ? `The backoffice token was ${a ? "sent but rejected" : "not available"} (${n.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${n.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${n.status} from ${String(r)} — ${g}`), t == null || t.peek("danger", { data: { headline: b, message: g } });
+    }
+    return n;
   };
 }
-var _ = Object.defineProperty, x = Object.getOwnPropertyDescriptor, f = (a) => {
-  throw TypeError(a);
-}, d = (a, e, o, r) => {
-  for (var t = r > 1 ? void 0 : r ? x(e, o) : e, i = a.length - 1, n; i >= 0; i--)
-    (n = a[i]) && (t = (r ? n(e, o, t) : n(t)) || t);
-  return r && t && _(e, o, t), t;
-}, y = (a, e, o) => e.has(a) || f("Cannot " + o), C = (a, e, o) => (y(a, e, "read from private field"), o ? o.call(a) : e.get(a)), k = (a, e, o) => e.has(a) ? f("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(a) : e.set(a, o), c;
-let s = class extends v(h) {
+var $ = Object.defineProperty, A = Object.getOwnPropertyDescriptor, m = (e) => {
+  throw TypeError(e);
+}, p = (e, a, t, s) => {
+  for (var i = s > 1 ? void 0 : s ? A(a, t) : a, r = e.length - 1, o; r >= 0; r--)
+    (o = e[r]) && (i = (s ? o(a, t, i) : o(i)) || i);
+  return s && i && $(a, t, i), i;
+}, E = (e, a, t) => a.has(e) || m("Cannot " + t), z = (e, a, t) => (E(e, a, "read from private field"), t ? t.call(e) : a.get(e)), D = (e, a, t) => a.has(e) ? m("Cannot add the same private member more than once") : a instanceof WeakSet ? a.add(e) : a.set(e, t), f;
+let d = class extends x(v) {
   constructor() {
-    super(), k(this, c, w(this)), this._config = null, this._loading = !0, this._error = !1;
+    super(), D(this, f, k(this)), this._config = null, this._loading = !0, this._error = !1;
   }
   connectedCallback() {
     super.connectedCallback(), this._loadConfig();
@@ -41,9 +46,9 @@ let s = class extends v(h) {
   async _loadConfig() {
     this._loading = !0, this._error = !1;
     try {
-      const a = await C(this, c).call(this, "/umbraco/api/charlimit/GetConfig");
-      if (!a.ok) throw new Error(`HTTP ${a.status}`);
-      this._config = await a.json();
+      const e = await z(this, f).call(this, "/umbraco/api/charlimit/GetConfig");
+      if (!e.ok) throw new Error(`HTTP ${e.status}`);
+      this._config = await e.json();
     } catch {
       this._error = !0;
     } finally {
@@ -51,15 +56,15 @@ let s = class extends v(h) {
     }
   }
   render() {
-    return this._loading ? l`<uui-loader-circle></uui-loader-circle>` : l`
+    return this._loading ? c`<uui-loader-circle></uui-loader-circle>` : c`
       <h1>Character Limit</h1>
       <p class="subtitle">Enforces a maximum character count on text input properties with an optional countdown display.</p>
 
-      ${this._error ? l`
+      ${this._error ? c`
         <div class="error-state">
           Could not load configuration from the API. Ensure the CharLimit package is installed and the site is running.
         </div>
-      ` : this._config ? l`
+      ` : this._config ? c`
         <div class="card">
           <h2>Configuration</h2>
           <div class="info-row">
@@ -73,7 +78,7 @@ let s = class extends v(h) {
             </span>
           </div>
         </div>
-      ` : u}
+      ` : w}
 
       <div class="card">
         <h2>How to Use</h2>
@@ -93,8 +98,8 @@ let s = class extends v(h) {
     `;
   }
 };
-c = /* @__PURE__ */ new WeakMap();
-s.styles = g`
+f = /* @__PURE__ */ new WeakMap();
+d.styles = _`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -137,19 +142,19 @@ s.styles = g`
       padding: 16px; color: #991b1b; font-size: 14px;
     }
   `;
-d([
-  p()
-], s.prototype, "_config", 2);
-d([
-  p()
-], s.prototype, "_loading", 2);
-d([
-  p()
-], s.prototype, "_error", 2);
-s = d([
-  m("charlimit-dashboard")
-], s);
+p([
+  u()
+], d.prototype, "_config", 2);
+p([
+  u()
+], d.prototype, "_loading", 2);
+p([
+  u()
+], d.prototype, "_error", 2);
+d = p([
+  y("charlimit-dashboard")
+], d);
 export {
-  s as CharLimitDashboard
+  d as CharLimitDashboard
 };
 //# sourceMappingURL=charlimit-dashboard.js.map

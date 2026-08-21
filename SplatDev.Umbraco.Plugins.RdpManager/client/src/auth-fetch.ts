@@ -1,4 +1,5 @@
 import { UMB_AUTH_CONTEXT } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT } from "@umbraco-cms/backoffice/notification";
 import type { UmbControllerHost } from "@umbraco-cms/backoffice/controller-api";
 
 /**
@@ -19,13 +20,20 @@ import type { UmbControllerHost } from "@umbraco-cms/backoffice/controller-api";
  * Umbraco 13 is unaffected — it authenticates the backoffice with a cookie, and uses
  * the AngularJS bundle rather than these elements.
  */
+type NotificationContext = {
+  peek: (colour: string, options: { data: { headline: string; message: string } }) => void;
+};
+
 export function createAuthFetch(host: UmbControllerHost): typeof fetch {
   let token: string | null = null;
+  let notifications: NotificationContext | null = null;
+
+  const consume = (host as unknown as {
+    consumeContext: (token: unknown, cb: (ctx: unknown) => void) => void;
+  }).consumeContext.bind(host);
 
   const ready = new Promise<void>((resolve) => {
-    (host as unknown as {
-      consumeContext: (token: unknown, cb: (ctx: unknown) => void) => void;
-    }).consumeContext(UMB_AUTH_CONTEXT, async (ctx: unknown) => {
+    consume(UMB_AUTH_CONTEXT, async (ctx: unknown) => {
       try {
         token = (await (ctx as { getLatestToken?: () => Promise<string> })?.getLatestToken?.()) ?? null;
       } catch {
@@ -39,6 +47,10 @@ export function createAuthFetch(host: UmbControllerHost): typeof fetch {
     setTimeout(resolve, 3000);
   });
 
+  consume(UMB_NOTIFICATION_CONTEXT, (ctx: unknown) => {
+    notifications = ctx as NotificationContext;
+  });
+
   return async (input: RequestInfo | URL, init: RequestInit = {}): Promise<Response> => {
     await ready;
     const headers = new Headers(init.headers);
@@ -47,14 +59,19 @@ export function createAuthFetch(host: UmbControllerHost): typeof fetch {
     }
     const response = await fetch(input, { ...init, credentials: "same-origin", headers });
 
-    // Many of these dashboards gate on `response.ok` and render their empty state on
-    // anything else, so an auth failure is indistinguishable from "no data" in the UI.
-    // Surface it on the console at least, until those render paths are fixed.
-    if (response.status === 401 || response.status === 403) {
-      console.error(
-        `[SplatDev] ${response.status} from ${String(input)} \u2014 the backoffice token was ` +
-          `${token ? "sent but rejected" : "not available"}. The dashboard may render as empty.`,
-      );
+    // Most of these dashboards gate on `response.ok` and render their empty state on
+    // anything else, so a failed request is indistinguishable from "there is no data".
+    // Raising it here covers every dashboard at once, whatever its own render path does.
+    if (!response.ok) {
+      const refused = response.status === 401 || response.status === 403;
+      const headline = refused ? "Not authorised" : "Could not load data";
+      const message = refused
+        ? `The backoffice token was ${token ? "sent but rejected" : "not available"} (${response.status}). ` +
+          "Anything shown below may be empty because the request was refused, not because there is nothing to show."
+        : `The request failed with ${response.status}. Anything shown below may be incomplete.`;
+
+      console.error(`[SplatDev] ${response.status} from ${String(input)} \u2014 ${message}`);
+      notifications?.peek("danger", { data: { headline, message } });
     }
 
     return response;

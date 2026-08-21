@@ -1,39 +1,44 @@
-import { LitElement as m, html as h, css as f, state as u, customElement as _ } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as b } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as g } from "@umbraco-cms/backoffice/auth";
-function v(e) {
-  let t = null;
-  const i = new Promise((o) => {
-    e.consumeContext(g, async (a) => {
-      var l;
+import { LitElement as v, html as c, css as y, state as u, customElement as U } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as w } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as C } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as S } from "@umbraco-cms/backoffice/notification";
+function $(e) {
+  let t = null, i = null;
+  const n = e.consumeContext.bind(e), l = new Promise((r) => {
+    n(C, async (o) => {
+      var d;
       try {
-        t = await ((l = a == null ? void 0 : a.getLatestToken) == null ? void 0 : l.call(a)) ?? null;
+        t = await ((d = o == null ? void 0 : o.getLatestToken) == null ? void 0 : d.call(o)) ?? null;
       } catch {
         t = null;
       }
-      o();
-    }), setTimeout(o, 3e3);
+      r();
+    }), setTimeout(r, 3e3);
   });
-  return async (o, a = {}) => {
-    await i;
-    const l = new Headers(a.headers);
-    t && !l.has("Authorization") && l.set("Authorization", `Bearer ${t}`);
-    const n = await fetch(o, { ...a, credentials: "same-origin", headers: l });
-    return (n.status === 401 || n.status === 403) && console.error(
-      `[SplatDev] ${n.status} from ${String(o)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), n;
+  return n(S, (r) => {
+    i = r;
+  }), async (r, o = {}) => {
+    await l;
+    const d = new Headers(o.headers);
+    t && !d.has("Authorization") && d.set("Authorization", `Bearer ${t}`);
+    const h = await fetch(r, { ...o, credentials: "same-origin", headers: d });
+    if (!h.ok) {
+      const f = h.status === 401 || h.status === 403, g = f ? "Not authorised" : "Could not load data", _ = f ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${h.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${h.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${h.status} from ${String(r)} — ${_}`), i == null || i.peek("danger", { data: { headline: g, message: _ } });
+    }
+    return h;
   };
 }
-var y = Object.defineProperty, U = Object.getOwnPropertyDescriptor, p = (e) => {
+var T = Object.defineProperty, L = Object.getOwnPropertyDescriptor, b = (e) => {
   throw TypeError(e);
-}, s = (e, t, i, o) => {
-  for (var a = o > 1 ? void 0 : o ? U(t, i) : t, l = e.length - 1, n; l >= 0; l--)
-    (n = e[l]) && (a = (o ? n(t, i, a) : n(a)) || a);
-  return o && a && y(t, i, a), a;
-}, w = (e, t, i) => t.has(e) || p("Cannot " + i), c = (e, t, i) => (w(e, t, "read from private field"), i ? i.call(e) : t.get(e)), S = (e, t, i) => t.has(e) ? p("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, i), d;
-let r = class extends b(m) {
+}, s = (e, t, i, n) => {
+  for (var l = n > 1 ? void 0 : n ? L(t, i) : t, r = e.length - 1, o; r >= 0; r--)
+    (o = e[r]) && (l = (n ? o(t, i, l) : o(l)) || l);
+  return n && l && T(t, i, l), l;
+}, z = (e, t, i) => t.has(e) || b("Cannot " + i), m = (e, t, i) => (z(e, t, "read from private field"), i ? i.call(e) : t.get(e)), k = (e, t, i) => t.has(e) ? b("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, i), p;
+let a = class extends w(v) {
   constructor() {
-    super(...arguments), S(this, d, v(this)), this._apiAvailable = !1, this._apiBase = "/umbraco/management/api/v1/short-urls", this._shortUrls = [], this._filter = "", this._loading = !1, this._showForm = !1, this._formMode = "create", this._editingId = null, this._formShortCode = "", this._formTargetUrl = "", this._formSaving = !1;
+    super(...arguments), k(this, p, $(this)), this._apiAvailable = !1, this._apiBase = "/umbraco/management/api/v1/short-urls", this._shortUrls = [], this._filter = "", this._loading = !1, this._showForm = !1, this._formMode = "create", this._editingId = null, this._formShortCode = "", this._formTargetUrl = "", this._formSaving = !1;
   }
   _handleFilterInput(e) {
     const t = e.target;
@@ -43,7 +48,7 @@ let r = class extends b(m) {
     if (this._apiAvailable) {
       this._loading = !0;
       try {
-        const e = await c(this, d).call(this, this._apiBase, {
+        const e = await m(this, p).call(this, this._apiBase, {
           headers: { "Content-Type": "application/json" }
         });
         if (e.ok) {
@@ -77,7 +82,7 @@ let r = class extends b(m) {
           shortCode: this._formShortCode.trim(),
           targetUrl: this._formTargetUrl.trim()
         }, t = this._formMode === "edit" && this._editingId ? `${this._apiBase}/${this._editingId}` : this._apiBase, i = this._formMode === "edit" ? "PUT" : "POST";
-        (await c(this, d).call(this, t, {
+        (await m(this, p).call(this, t, {
           method: i,
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(e)
@@ -91,7 +96,7 @@ let r = class extends b(m) {
   async _delete(e) {
     if (this._apiAvailable)
       try {
-        (await c(this, d).call(this, `${this._apiBase}/${e}`, {
+        (await m(this, p).call(this, `${this._apiBase}/${e}`, {
           method: "DELETE"
         })).ok && (this._shortUrls = this._shortUrls.filter((i) => i.id !== e));
       } catch {
@@ -105,7 +110,7 @@ let r = class extends b(m) {
     );
   }
   _renderForm() {
-    return h`
+    return c`
       <div class="section">
         <uui-box
           headline=${this._formMode === "create" ? "Create Short URL" : "Edit Short URL"}
@@ -169,7 +174,7 @@ let r = class extends b(m) {
   }
   render() {
     const e = this._filteredShortUrls;
-    return h`
+    return c`
       <div class="dashboard-header">
         <h1>Short URLs</h1>
         <p>
@@ -224,7 +229,7 @@ let r = class extends b(m) {
             </uui-button>
           </div>
 
-          ${e.length > 0 ? h`
+          ${e.length > 0 ? c`
                 <uui-table>
                   <uui-table-head>
                     <uui-table-head-cell>Short URL</uui-table-head-cell>
@@ -233,7 +238,7 @@ let r = class extends b(m) {
                     <uui-table-head-cell>Actions</uui-table-head-cell>
                   </uui-table-head>
                   ${e.map(
-      (t) => h`
+      (t) => c`
                       <uui-table-row>
                         <uui-table-cell>
                           <span class="short-url-chip"
@@ -265,7 +270,7 @@ let r = class extends b(m) {
                     `
     )}
                 </uui-table>
-              ` : h`
+              ` : c`
                 <uui-table>
                   <uui-table-head>
                     <uui-table-head-cell>Short URL</uui-table-head-cell>
@@ -284,8 +289,8 @@ let r = class extends b(m) {
     `;
   }
 };
-d = /* @__PURE__ */ new WeakMap();
-r.styles = f`
+p = /* @__PURE__ */ new WeakMap();
+a.styles = y`
     :host {
       display: block;
       padding: var(--uui-size-layout-1);
@@ -401,36 +406,36 @@ r.styles = f`
   `;
 s([
   u()
-], r.prototype, "_shortUrls", 2);
+], a.prototype, "_shortUrls", 2);
 s([
   u()
-], r.prototype, "_filter", 2);
+], a.prototype, "_filter", 2);
 s([
   u()
-], r.prototype, "_loading", 2);
+], a.prototype, "_loading", 2);
 s([
   u()
-], r.prototype, "_showForm", 2);
+], a.prototype, "_showForm", 2);
 s([
   u()
-], r.prototype, "_formMode", 2);
+], a.prototype, "_formMode", 2);
 s([
   u()
-], r.prototype, "_editingId", 2);
+], a.prototype, "_editingId", 2);
 s([
   u()
-], r.prototype, "_formShortCode", 2);
+], a.prototype, "_formShortCode", 2);
 s([
   u()
-], r.prototype, "_formTargetUrl", 2);
+], a.prototype, "_formTargetUrl", 2);
 s([
   u()
-], r.prototype, "_formSaving", 2);
-r = s([
-  _("short-urls-dashboard")
-], r);
-const T = r;
+], a.prototype, "_formSaving", 2);
+a = s([
+  U("short-urls-dashboard")
+], a);
+const A = a;
 export {
-  r as ShortUrlsDashboardElement,
-  T as default
+  a as ShortUrlsDashboardElement,
+  A as default
 };

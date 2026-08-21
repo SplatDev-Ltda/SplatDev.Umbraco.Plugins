@@ -1,40 +1,45 @@
-import { LitElement as v, html as o, css as b, state as u, customElement as y } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as _ } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as f } from "@umbraco-cms/backoffice/auth";
-function g(e) {
-  let t = null;
-  const a = new Promise((i) => {
-    e.consumeContext(f, async (s) => {
-      var d;
+import { LitElement as g, html as r, css as w, state as o, customElement as T } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as $ } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as x } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as C } from "@umbraco-cms/backoffice/notification";
+function k(e) {
+  let t = null, a = null;
+  const s = e.consumeContext.bind(e), d = new Promise((u) => {
+    s(x, async (n) => {
+      var c;
       try {
-        t = await ((d = s == null ? void 0 : s.getLatestToken) == null ? void 0 : d.call(s)) ?? null;
+        t = await ((c = n == null ? void 0 : n.getLatestToken) == null ? void 0 : c.call(n)) ?? null;
       } catch {
         t = null;
       }
-      i();
-    }), setTimeout(i, 3e3);
+      u();
+    }), setTimeout(u, 3e3);
   });
-  return async (i, s = {}) => {
-    await a;
-    const d = new Headers(s.headers);
-    t && !d.has("Authorization") && d.set("Authorization", `Bearer ${t}`);
-    const m = await fetch(i, { ...s, credentials: "same-origin", headers: d });
-    return (m.status === 401 || m.status === 403) && console.error(
-      `[SplatDev] ${m.status} from ${String(i)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), m;
+  return s(C, (u) => {
+    a = u;
+  }), async (u, n = {}) => {
+    await d;
+    const c = new Headers(n.headers);
+    t && !c.has("Authorization") && c.set("Authorization", `Bearer ${t}`);
+    const m = await fetch(u, { ...n, credentials: "same-origin", headers: c });
+    if (!m.ok) {
+      const v = m.status === 401 || m.status === 403, _ = v ? "Not authorised" : "Could not load data", b = v ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${m.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${m.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${m.status} from ${String(u)} — ${b}`), a == null || a.peek("danger", { data: { headline: _, message: b } });
+    }
+    return m;
   };
 }
-var w = Object.defineProperty, T = Object.getOwnPropertyDescriptor, h = (e) => {
+var F = Object.defineProperty, z = Object.getOwnPropertyDescriptor, f = (e) => {
   throw TypeError(e);
-}, r = (e, t, a, i) => {
-  for (var s = i > 1 ? void 0 : i ? T(t, a) : t, d = e.length - 1, m; d >= 0; d--)
-    (m = e[d]) && (s = (i ? m(t, a, s) : m(s)) || s);
-  return i && s && w(t, a, s), s;
-}, $ = (e, t, a) => t.has(e) || h("Cannot " + a), x = (e, t, a) => ($(e, t, "read from private field"), a ? a.call(e) : t.get(e)), k = (e, t, a) => t.has(e) ? h("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), c;
-const n = "/umbraco/management/api/v1/email-templates", p = "/umbraco/management/api/v1/email-style";
-let l = class extends _(v) {
+}, l = (e, t, a, s) => {
+  for (var d = s > 1 ? void 0 : s ? z(t, a) : t, u = e.length - 1, n; u >= 0; u--)
+    (n = e[u]) && (d = (s ? n(t, a, d) : n(d)) || d);
+  return s && d && F(t, a, d), d;
+}, N = (e, t, a) => t.has(e) || f("Cannot " + a), S = (e, t, a) => (N(e, t, "read from private field"), a ? a.call(e) : t.get(e)), H = (e, t, a) => t.has(e) ? f("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), h;
+const p = "/umbraco/management/api/v1/email-templates", y = "/umbraco/management/api/v1/email-style";
+let i = class extends $(g) {
   constructor() {
-    super(...arguments), k(this, c, g(this)), this._templates = [], this._style = null, this._loading = !1, this._message = "", this._messageType = "", this._activeTab = "templates", this._showForm = !1, this._editingTemplate = null, this._form = {
+    super(...arguments), H(this, h, k(this)), this._templates = [], this._style = null, this._loading = !1, this._message = "", this._messageType = "", this._activeTab = "templates", this._showForm = !1, this._editingTemplate = null, this._form = {
       name: "",
       subject: "",
       htmlBody: "",
@@ -60,27 +65,27 @@ let l = class extends _(v) {
   }
   async _api(e, t, a) {
     try {
-      const i = await x(this, c).call(this, `${e}${t}`, {
+      const s = await S(this, h).call(this, `${e}${t}`, {
         headers: { "Content-Type": "application/json", ...a == null ? void 0 : a.headers },
         ...a
       });
-      if (i.status === 204) return null;
-      if ((i.headers.get("content-type") || "").includes("text/html"))
-        return await i.text();
-      if (i.ok) return i.json();
-      const d = await i.text();
-      return this._showMessage(d || `Request failed (${i.status})`, "error"), null;
+      if (s.status === 204) return null;
+      if ((s.headers.get("content-type") || "").includes("text/html"))
+        return await s.text();
+      if (s.ok) return s.json();
+      const u = await s.text();
+      return this._showMessage(u || `Request failed (${s.status})`, "error"), null;
     } catch {
       return this._showMessage("Network error", "error"), null;
     }
   }
   async _loadTemplates() {
     this._loading = !0;
-    const e = await this._api(n, "");
+    const e = await this._api(p, "");
     e && (this._templates = e), this._loading = !1;
   }
   async _loadStyle() {
-    const e = await this._api(p, "");
+    const e = await this._api(y, "");
     e && (this._style = e, this._styleForm = {
       logoUrl: e.logoUrl ?? "",
       primaryColor: e.primaryColor ?? "",
@@ -127,22 +132,22 @@ let l = class extends _(v) {
       return;
     }
     this._editingTemplate ? await this._api(
-      n,
+      p,
       `/${this._editingTemplate.id}`,
       { method: "PUT", body: JSON.stringify(e) }
     ) && (this._closeForm(), await this._loadTemplates(), this._showMessage(`Template "${e.name}" updated.`)) : await this._api(
-      n,
+      p,
       "/create",
       { method: "POST", body: JSON.stringify(e) }
     ) && (this._closeForm(), await this._loadTemplates(), this._showMessage(`Template "${e.name}" created.`));
   }
   async _deleteTemplate(e) {
-    this._loading = !0, await this._api(n, `/${e}`, { method: "DELETE" }), await this._loadTemplates(), this._loading = !1, this._showMessage("Template deleted.");
+    this._loading = !0, await this._api(p, `/${e}`, { method: "DELETE" }), await this._loadTemplates(), this._loading = !1, this._showMessage("Template deleted.");
   }
   async _previewTemplate(e) {
     this._showPreview = !0, this._previewHtml = "";
     const t = this._previewVariables.trim() ? `?variables=${encodeURIComponent(this._previewVariables.trim())}` : "", a = await this._api(
-      n,
+      p,
       `/${e.id}/preview${t}`
     );
     this._previewHtml = a ?? "";
@@ -150,7 +155,7 @@ let l = class extends _(v) {
   async _showTemplateVariables(e) {
     this._showVariables = !0, this._variableList = [];
     const t = await this._api(
-      n,
+      p,
       `/${e.id}/variables`
     );
     this._variableList = t ?? [];
@@ -165,7 +170,7 @@ let l = class extends _(v) {
       footerHtml: this._styleForm.footerHtml.trim() || null,
       globalCss: this._styleForm.globalCss.trim() || null,
       updatedAt: null
-    }, t = await this._api(p, "", {
+    }, t = await this._api(y, "", {
       method: "PUT",
       body: JSON.stringify(e)
     });
@@ -179,13 +184,13 @@ let l = class extends _(v) {
     }) : "-";
   }
   _renderMessage() {
-    return this._message ? o`
+    return this._message ? r`
       <div class="message ${this._messageType}">${this._message}</div>
     ` : "";
   }
   // ── Templates tab ───────────────────────────────────────────────────────
   _renderTemplatesTable() {
-    return this._loading ? o`<div class="loading">Loading...</div>` : this._templates.length === 0 ? o`
+    return this._loading ? r`<div class="loading">Loading...</div>` : this._templates.length === 0 ? r`
         <div class="empty">
           <p>No email templates yet.</p>
           <uui-button
@@ -197,7 +202,7 @@ let l = class extends _(v) {
             Create your first template
           </uui-button>
         </div>
-      ` : o`
+      ` : r`
       <uui-table>
         <uui-table-head>
           <uui-table-head-cell>Name</uui-table-head-cell>
@@ -207,7 +212,7 @@ let l = class extends _(v) {
           <uui-table-head-cell></uui-table-head-cell>
         </uui-table-head>
         ${this._templates.map(
-      (e) => o`
+      (e) => r`
             <uui-table-row>
               <uui-table-cell>${e.name}</uui-table-cell>
               <uui-table-cell>${e.subject}</uui-table-cell>
@@ -258,7 +263,7 @@ let l = class extends _(v) {
     `;
   }
   _renderTemplateForm() {
-    return o`
+    return r`
       <uui-box
         headline=${this._editingTemplate ? "Edit Template" : "New Template"}
       >
@@ -360,7 +365,7 @@ let l = class extends _(v) {
     `;
   }
   _renderPreviewModal() {
-    return this._showPreview ? o`
+    return this._showPreview ? r`
       <div class="modal-overlay" @click=${() => this._showPreview = !1}>
         <div class="modal" @click=${(e) => e.stopPropagation()}>
           <div class="modal-header">
@@ -398,7 +403,7 @@ let l = class extends _(v) {
     ` : "";
   }
   _renderVariablesModal() {
-    return this._showVariables ? o`
+    return this._showVariables ? r`
       <div class="modal-overlay" @click=${() => this._showVariables = !1}>
         <div class="modal modal-sm" @click=${(e) => e.stopPropagation()}>
           <div class="modal-header">
@@ -412,10 +417,10 @@ let l = class extends _(v) {
             </uui-button>
           </div>
           <div class="modal-body">
-            ${this._variableList.length === 0 ? o`<p>No variables found in this template.</p>` : o`
+            ${this._variableList.length === 0 ? r`<p>No variables found in this template.</p>` : r`
                   <div class="variable-list">
                     ${this._variableList.map(
-      (e) => o`<uui-tag look="primary">{{${e}}}</uui-tag>`
+      (e) => r`<uui-tag look="primary">{{${e}}}</uui-tag>`
     )}
                   </div>
                 `}
@@ -425,7 +430,7 @@ let l = class extends _(v) {
     ` : "";
   }
   _renderTemplatesTab() {
-    return o`
+    return r`
       <uui-box headline="Email Templates">
         <div class="toolbar" slot="header-actions">
           <uui-button
@@ -447,7 +452,7 @@ let l = class extends _(v) {
   }
   // ── Style settings tab ──────────────────────────────────────────────────
   _renderStyleTab() {
-    return o`
+    return r`
       <uui-box headline="Global Email Style">
         <p class="description">
           These settings apply to all email previews. Header and footer HTML
@@ -481,7 +486,7 @@ let l = class extends _(v) {
               placeholder="#333333"
               @input=${(e) => this._styleForm.primaryColor = e.target.value}
             ></uui-input>
-            ${this._styleForm.primaryColor ? o`
+            ${this._styleForm.primaryColor ? r`
                   <span
                     class="color-swatch"
                     style="background:${this._styleForm.primaryColor}"
@@ -540,7 +545,7 @@ let l = class extends _(v) {
   }
   // ── Main render ─────────────────────────────────────────────────────────
   render() {
-    return o`
+    return r`
       <div class="dashboard">
         ${this._renderMessage()}
 
@@ -569,8 +574,8 @@ let l = class extends _(v) {
     `;
   }
 };
-c = /* @__PURE__ */ new WeakMap();
-l.styles = b`
+h = /* @__PURE__ */ new WeakMap();
+i.styles = w`
     :host {
       display: block;
       padding: var(--uui-size-layout-1);
@@ -747,55 +752,55 @@ l.styles = b`
       padding: var(--uui-size-space-4) 0;
     }
   `;
-r([
-  u()
-], l.prototype, "_templates", 2);
-r([
-  u()
-], l.prototype, "_style", 2);
-r([
-  u()
-], l.prototype, "_loading", 2);
-r([
-  u()
-], l.prototype, "_message", 2);
-r([
-  u()
-], l.prototype, "_messageType", 2);
-r([
-  u()
-], l.prototype, "_activeTab", 2);
-r([
-  u()
-], l.prototype, "_showForm", 2);
-r([
-  u()
-], l.prototype, "_editingTemplate", 2);
-r([
-  u()
-], l.prototype, "_form", 2);
-r([
-  u()
-], l.prototype, "_showPreview", 2);
-r([
-  u()
-], l.prototype, "_previewHtml", 2);
-r([
-  u()
-], l.prototype, "_previewVariables", 2);
-r([
-  u()
-], l.prototype, "_showVariables", 2);
-r([
-  u()
-], l.prototype, "_variableList", 2);
-r([
-  u()
-], l.prototype, "_styleForm", 2);
-l = r([
-  y("email-templates-dashboard")
-], l);
+l([
+  o()
+], i.prototype, "_templates", 2);
+l([
+  o()
+], i.prototype, "_style", 2);
+l([
+  o()
+], i.prototype, "_loading", 2);
+l([
+  o()
+], i.prototype, "_message", 2);
+l([
+  o()
+], i.prototype, "_messageType", 2);
+l([
+  o()
+], i.prototype, "_activeTab", 2);
+l([
+  o()
+], i.prototype, "_showForm", 2);
+l([
+  o()
+], i.prototype, "_editingTemplate", 2);
+l([
+  o()
+], i.prototype, "_form", 2);
+l([
+  o()
+], i.prototype, "_showPreview", 2);
+l([
+  o()
+], i.prototype, "_previewHtml", 2);
+l([
+  o()
+], i.prototype, "_previewVariables", 2);
+l([
+  o()
+], i.prototype, "_showVariables", 2);
+l([
+  o()
+], i.prototype, "_variableList", 2);
+l([
+  o()
+], i.prototype, "_styleForm", 2);
+i = l([
+  T("email-templates-dashboard")
+], i);
 export {
-  l as EmailTemplatesDashboardElement
+  i as EmailTemplatesDashboardElement
 };
 //# sourceMappingURL=email-templates-dashboard.js.map

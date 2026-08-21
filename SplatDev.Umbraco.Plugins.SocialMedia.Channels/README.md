@@ -2,6 +2,13 @@
 
 Umbraco social media channel management plugin — manage connected accounts and schedule posts to social platforms from a backoffice dashboard.
 
+
+<!-- screenshot:start -->
+
+![SocialMedia.Channels dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.SocialMedia.Channels/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.SocialMedia.Channels.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.SocialMedia.Channels)
 
 ## Compatibility
@@ -67,6 +74,12 @@ fetch('/umbraco/api/SocialChannelsApi/SchedulePost', {
 - Stores channel data and scheduled posts but does not publish to social media platforms
 - No support for image/media attachments in scheduled posts
 - Uses Umbraco's own database connection string (no separate DB support)
+
+## Changelog
+
+### 2.2.1 — 2026-08-21
+- The plugin's tables are created on startup. They were never created before, so anything touching them failed on a fresh install.
+- Runs on SQLite as well as SQL Server. It previously assumed SQL Server and failed with "Keyword not supported: 'cache'" on the database Umbraco's installer offers by default.
 
 ## License
 

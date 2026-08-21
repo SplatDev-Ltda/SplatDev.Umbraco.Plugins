@@ -1,39 +1,44 @@
-import { LitElement as g, nothing as h, html as n, css as b, state as p, customElement as _ } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as y } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as f } from "@umbraco-cms/backoffice/auth";
-function v(e) {
-  let t = null;
-  const i = new Promise((s) => {
-    e.consumeContext(f, async (a) => {
-      var r;
+import { LitElement as v, nothing as _, html as u, css as w, state as p, customElement as $ } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as T } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as x } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as C } from "@umbraco-cms/backoffice/notification";
+function k(e) {
+  let t = null, a = null;
+  const n = e.consumeContext.bind(e), r = new Promise((o) => {
+    n(x, async (s) => {
+      var d;
       try {
-        t = await ((r = a == null ? void 0 : a.getLatestToken) == null ? void 0 : r.call(a)) ?? null;
+        t = await ((d = s == null ? void 0 : s.getLatestToken) == null ? void 0 : d.call(s)) ?? null;
       } catch {
         t = null;
       }
-      s();
-    }), setTimeout(s, 3e3);
+      o();
+    }), setTimeout(o, 3e3);
   });
-  return async (s, a = {}) => {
-    await i;
-    const r = new Headers(a.headers);
-    t && !r.has("Authorization") && r.set("Authorization", `Bearer ${t}`);
-    const u = await fetch(s, { ...a, credentials: "same-origin", headers: r });
-    return (u.status === 401 || u.status === 403) && console.error(
-      `[SplatDev] ${u.status} from ${String(s)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), u;
+  return n(C, (o) => {
+    a = o;
+  }), async (o, s = {}) => {
+    await r;
+    const d = new Headers(s.headers);
+    t && !d.has("Authorization") && d.set("Authorization", `Bearer ${t}`);
+    const c = await fetch(o, { ...s, credentials: "same-origin", headers: d });
+    if (!c.ok) {
+      const g = c.status === 401 || c.status === 403, f = g ? "Not authorised" : "Could not load data", b = g ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${c.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${c.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${c.status} from ${String(o)} — ${b}`), a == null || a.peek("danger", { data: { headline: f, message: b } });
+    }
+    return c;
   };
 }
-var $ = Object.defineProperty, x = Object.getOwnPropertyDescriptor, m = (e) => {
+var D = Object.defineProperty, A = Object.getOwnPropertyDescriptor, y = (e) => {
   throw TypeError(e);
-}, l = (e, t, i, s) => {
-  for (var a = s > 1 ? void 0 : s ? x(t, i) : t, r = e.length - 1, u; r >= 0; r--)
-    (u = e[r]) && (a = (s ? u(t, i, a) : u(a)) || a);
-  return s && a && $(t, i, a), a;
-}, w = (e, t, i) => t.has(e) || m("Cannot " + i), d = (e, t, i) => (w(e, t, "read from private field"), i ? i.call(e) : t.get(e)), T = (e, t, i) => t.has(e) ? m("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, i), c;
-let o = class extends y(g) {
+}, l = (e, t, a, n) => {
+  for (var r = n > 1 ? void 0 : n ? A(t, a) : t, o = e.length - 1, s; o >= 0; o--)
+    (s = e[o]) && (r = (n ? s(t, a, r) : s(r)) || r);
+  return n && r && D(t, a, r), r;
+}, M = (e, t, a) => t.has(e) || y("Cannot " + a), m = (e, t, a) => (M(e, t, "read from private field"), a ? a.call(e) : t.get(e)), I = (e, t, a) => t.has(e) ? y("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), h;
+let i = class extends T(v) {
   constructor() {
-    super(...arguments), T(this, c, v(this)), this._mappings = [], this._loading = !1, this._showForm = !1, this._saving = !1, this._activeTab = "mappings", this._form = this._emptyForm(), this._copyResult = null, this._selectedMappingId = "", this._sourceId = "", this._targetId = "", this._publish = !1, this._api = "/umbraco/api/copyvalue";
+    super(...arguments), I(this, h, k(this)), this._mappings = [], this._loading = !1, this._showForm = !1, this._saving = !1, this._activeTab = "mappings", this._form = this._emptyForm(), this._copyResult = null, this._selectedMappingId = "", this._sourceId = "", this._targetId = "", this._publish = !1, this._api = "/umbraco/api/copyvalue";
   }
   _emptyForm() {
     return { name: "", sourceDocTypeAlias: "", targetDocTypeAlias: "", propertyMappingsJson: "[]" };
@@ -44,7 +49,7 @@ let o = class extends y(g) {
   async _load() {
     this._loading = !0;
     try {
-      const e = await d(this, c).call(this, `${this._api}/GetMappings`);
+      const e = await m(this, h).call(this, `${this._api}/GetMappings`);
       e.ok && (this._mappings = await e.json());
     } catch {
       this._mappings = [];
@@ -56,12 +61,12 @@ let o = class extends y(g) {
     this._form = { ...e }, this._showForm = !0;
   }
   async _delete(e) {
-    confirm(`Delete mapping '${e.name}'?`) && (await d(this, c).call(this, `${this._api}/DeleteMapping?id=${e.id}`, { method: "DELETE" }), await this._load());
+    confirm(`Delete mapping '${e.name}'?`) && (await m(this, h).call(this, `${this._api}/DeleteMapping?id=${e.id}`, { method: "DELETE" }), await this._load());
   }
   async _save() {
     this._saving = !0;
     try {
-      await d(this, c).call(this, `${this._api}/SaveMapping`, {
+      await m(this, h).call(this, `${this._api}/SaveMapping`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(this._form)
@@ -71,7 +76,7 @@ let o = class extends y(g) {
     }
   }
   async _executeCopy() {
-    const e = this._mappings.find((r) => String(r.id) === this._selectedMappingId);
+    const e = this._mappings.find((o) => String(o.id) === this._selectedMappingId);
     if (!e) {
       alert("Select a mapping template.");
       return;
@@ -83,7 +88,7 @@ let o = class extends y(g) {
       alert("Invalid JSON in mapping template.");
       return;
     }
-    const i = await d(this, c).call(this, `${this._api}/CopyProperties`, {
+    const a = await m(this, h).call(this, `${this._api}/CopyProperties`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -92,21 +97,21 @@ let o = class extends y(g) {
         mappings: t,
         publish: this._publish
       })
-    }), s = i.ok, a = await i.json().catch(() => ({ message: "Unknown error" }));
-    this._copyResult = { success: s, message: a.message ?? (s ? "Success" : "Failed") };
+    }), n = a.ok, r = await a.json().catch(() => ({ message: "Unknown error" }));
+    this._copyResult = { success: n, message: r.message ?? (n ? "Success" : "Failed") };
   }
   _formatDate(e) {
     return new Date(e).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
   }
   _renderMappingsTab() {
-    return n`
+    return u`
       <div class="toolbar">
         <uui-button look="primary" label="Add Mapping Template" @click=${() => {
       this._form = this._emptyForm(), this._showForm = !0;
     }}>Add Mapping Template</uui-button>
       </div>
 
-      ${this._showForm ? n`
+      ${this._showForm ? u`
         <div class="form-card">
           <h3>${this._form.id ? "Edit" : "New"} Mapping Template</h3>
           <div class="form-row">
@@ -131,9 +136,9 @@ let o = class extends y(g) {
             <uui-button look="secondary" label="Cancel" @click=${() => this._showForm = !1}>Cancel</uui-button>
           </div>
         </div>
-      ` : h}
+      ` : _}
 
-      ${this._loading ? n`<p>Loading mappings...</p>` : this._mappings.length === 0 ? n`<p class="empty">No mapping templates found.</p>` : n`
+      ${this._loading ? u`<p>Loading mappings...</p>` : this._mappings.length === 0 ? u`<p class="empty">No mapping templates found.</p>` : u`
           <uui-box headline="Mapping Templates (${this._mappings.length})">
             <uui-table>
               <uui-table-head>
@@ -143,7 +148,7 @@ let o = class extends y(g) {
                 <uui-table-head-cell>Created</uui-table-head-cell>
                 <uui-table-head-cell>Actions</uui-table-head-cell>
               </uui-table-head>
-              ${this._mappings.map((e) => n`
+              ${this._mappings.map((e) => u`
                 <uui-table-row>
                   <uui-table-cell><strong>${e.name}</strong></uui-table-cell>
                   <uui-table-cell><code>${e.sourceDocTypeAlias}</code></uui-table-cell>
@@ -163,14 +168,14 @@ let o = class extends y(g) {
     `;
   }
   _renderCopyTab() {
-    return n`
+    return u`
       <div class="form-card">
         <h3>Execute Property Copy</h3>
         <div class="form-row">
           <label>Mapping Template</label>
           <select @change=${(e) => this._selectedMappingId = e.target.value}>
             <option value="">— Select a mapping —</option>
-            ${this._mappings.map((e) => n`<option value="${e.id}">${e.name}</option>`)}
+            ${this._mappings.map((e) => u`<option value="${e.id}">${e.name}</option>`)}
           </select>
         </div>
         <div class="form-row">
@@ -185,12 +190,12 @@ let o = class extends y(g) {
           <uui-toggle .checked=${this._publish} @change=${(e) => this._publish = e.target.checked} label="Publish after copy"></uui-toggle>
         </div>
         <uui-button look="primary" label="Execute Copy" @click=${this._executeCopy}>Execute Copy</uui-button>
-        ${this._copyResult ? n`<div class="${this._copyResult.success ? "result-ok" : "result-err"}">${this._copyResult.message}</div>` : h}
+        ${this._copyResult ? u`<div class="${this._copyResult.success ? "result-ok" : "result-err"}">${this._copyResult.message}</div>` : _}
       </div>
     `;
   }
   render() {
-    return n`
+    return u`
       <h1>Copy Value</h1>
       <p class="description">Copy property values between content nodes using reusable mapping templates.</p>
 
@@ -205,8 +210,8 @@ let o = class extends y(g) {
     `;
   }
 };
-c = /* @__PURE__ */ new WeakMap();
-o.styles = b`
+h = /* @__PURE__ */ new WeakMap();
+i.styles = w`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
     p.description { color: var(--uui-color-text-alt, #6b7280); margin: 0 0 24px; }
@@ -227,42 +232,42 @@ o.styles = b`
   `;
 l([
   p()
-], o.prototype, "_mappings", 2);
+], i.prototype, "_mappings", 2);
 l([
   p()
-], o.prototype, "_loading", 2);
+], i.prototype, "_loading", 2);
 l([
   p()
-], o.prototype, "_showForm", 2);
+], i.prototype, "_showForm", 2);
 l([
   p()
-], o.prototype, "_saving", 2);
+], i.prototype, "_saving", 2);
 l([
   p()
-], o.prototype, "_activeTab", 2);
+], i.prototype, "_activeTab", 2);
 l([
   p()
-], o.prototype, "_form", 2);
+], i.prototype, "_form", 2);
 l([
   p()
-], o.prototype, "_copyResult", 2);
+], i.prototype, "_copyResult", 2);
 l([
   p()
-], o.prototype, "_selectedMappingId", 2);
+], i.prototype, "_selectedMappingId", 2);
 l([
   p()
-], o.prototype, "_sourceId", 2);
+], i.prototype, "_sourceId", 2);
 l([
   p()
-], o.prototype, "_targetId", 2);
+], i.prototype, "_targetId", 2);
 l([
   p()
-], o.prototype, "_publish", 2);
-o = l([
-  _("copyvalue-dashboard")
-], o);
-const M = o;
+], i.prototype, "_publish", 2);
+i = l([
+  $("copyvalue-dashboard")
+], i);
+const F = i;
 export {
-  o as CopyValueDashboardElement,
-  M as default
+  i as CopyValueDashboardElement,
+  F as default
 };

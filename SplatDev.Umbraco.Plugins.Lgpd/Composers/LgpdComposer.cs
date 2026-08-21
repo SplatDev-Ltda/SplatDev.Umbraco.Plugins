@@ -7,6 +7,7 @@ using SplatDev.Umbraco.Plugins.Lgpd.Services;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 
+using SplatDev.Umbraco.Plugins.Lgpd.Persistence;
 namespace SplatDev.Umbraco.Plugins.Lgpd.Composers;
 
 public class LgpdComposer : IComposer
@@ -16,7 +17,7 @@ public class LgpdComposer : IComposer
         builder.Services.Configure<LgpdOptions>(builder.Config.GetSection("Lgpd"));
 
         builder.Services.AddDbContext<LgpdDbContext>(options =>
-            options.UseSqlServer(builder.Config.GetConnectionString("umbracoDbDSN") ?? string.Empty));
+            SplatDevDbContextConfig.UseUmbracoDatabase(options, builder.Config));
 
         builder.Services.AddScoped<ILgpdService, LgpdService>();
 

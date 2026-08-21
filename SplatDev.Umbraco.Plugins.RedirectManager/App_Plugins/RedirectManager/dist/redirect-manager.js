@@ -1,40 +1,45 @@
-import { LitElement as p, html as u, css as f, state as c, customElement as b } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as v } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as g } from "@umbraco-cms/backoffice/auth";
-function y(e) {
-  let t = null;
-  const a = new Promise((s) => {
-    e.consumeContext(g, async (i) => {
-      var l;
+import { LitElement as w, html as d, css as y, state as u, customElement as $ } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as T } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as R } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as U } from "@umbraco-cms/backoffice/notification";
+function k(e) {
+  let t = null, i = null;
+  const c = e.consumeContext.bind(e), l = new Promise((r) => {
+    c(R, async (a) => {
+      var h;
       try {
-        t = await ((l = i == null ? void 0 : i.getLatestToken) == null ? void 0 : l.call(i)) ?? null;
+        t = await ((h = a == null ? void 0 : a.getLatestToken) == null ? void 0 : h.call(a)) ?? null;
       } catch {
         t = null;
       }
-      s();
-    }), setTimeout(s, 3e3);
+      r();
+    }), setTimeout(r, 3e3);
   });
-  return async (s, i = {}) => {
-    await a;
-    const l = new Headers(i.headers);
-    t && !l.has("Authorization") && l.set("Authorization", `Bearer ${t}`);
-    const d = await fetch(s, { ...i, credentials: "same-origin", headers: l });
-    return (d.status === 401 || d.status === 403) && console.error(
-      `[SplatDev] ${d.status} from ${String(s)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), d;
+  return c(U, (r) => {
+    i = r;
+  }), async (r, a = {}) => {
+    await l;
+    const h = new Headers(a.headers);
+    t && !h.has("Authorization") && h.set("Authorization", `Bearer ${t}`);
+    const n = await fetch(r, { ...a, credentials: "same-origin", headers: h });
+    if (!n.ok) {
+      const f = n.status === 401 || n.status === 403, v = f ? "Not authorised" : "Could not load data", b = f ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${n.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${n.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${n.status} from ${String(r)} — ${b}`), i == null || i.peek("danger", { data: { headline: v, message: b } });
+    }
+    return n;
   };
 }
-var w = Object.defineProperty, $ = Object.getOwnPropertyDescriptor, _ = (e) => {
+var C = Object.defineProperty, E = Object.getOwnPropertyDescriptor, g = (e) => {
   throw TypeError(e);
-}, o = (e, t, a, s) => {
-  for (var i = s > 1 ? void 0 : s ? $(t, a) : t, l = e.length - 1, d; l >= 0; l--)
-    (d = e[l]) && (i = (s ? d(t, a, i) : d(i)) || i);
-  return s && i && w(t, a, i), i;
-}, T = (e, t, a) => t.has(e) || _("Cannot " + a), h = (e, t, a) => (T(e, t, "read from private field"), a ? a.call(e) : t.get(e)), R = (e, t, a) => t.has(e) ? _("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), n;
-const m = "/umbraco/backoffice/api/RedirectManager";
-let r = class extends v(p) {
+}, o = (e, t, i, c) => {
+  for (var l = c > 1 ? void 0 : c ? E(t, i) : t, r = e.length - 1, a; r >= 0; r--)
+    (a = e[r]) && (l = (c ? a(t, i, l) : a(l)) || l);
+  return c && l && C(t, i, l), l;
+}, x = (e, t, i) => t.has(e) || g("Cannot " + i), _ = (e, t, i) => (x(e, t, "read from private field"), i ? i.call(e) : t.get(e)), F = (e, t, i) => t.has(e) ? g("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, i), m;
+const p = "/umbraco/backoffice/api/RedirectManager";
+let s = class extends T(w) {
   constructor() {
-    super(...arguments), R(this, n, y(this)), this._redirects = [], this._loading = !1, this._message = "", this._showForm = !1, this._editItem = null, this._formUrl = "", this._formRedirectTo = "", this._filter = "";
+    super(...arguments), F(this, m, k(this)), this._redirects = [], this._loading = !1, this._message = "", this._showForm = !1, this._editItem = null, this._formUrl = "", this._formRedirectTo = "", this._filter = "";
   }
   connectedCallback() {
     super.connectedCallback(), this._load();
@@ -42,7 +47,7 @@ let r = class extends v(p) {
   async _load() {
     this._loading = !0;
     try {
-      const e = await h(this, n).call(this, `${m}/GetAll`);
+      const e = await _(this, m).call(this, `${p}/GetAll`);
       e.ok && (this._redirects = await e.json());
     } catch {
       this._redirects = [];
@@ -70,11 +75,11 @@ let r = class extends v(p) {
       redirectToUrl: this._formRedirectTo.trim()
     };
     try {
-      this._editItem ? (await h(this, n).call(this, `${m}/Put`, {
+      this._editItem ? (await _(this, m).call(this, `${p}/Put`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(e)
-      }), this._message = "Redirect updated.") : (await h(this, n).call(this, `${m}/Post`, {
+      }), this._message = "Redirect updated.") : (await _(this, m).call(this, `${p}/Post`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(e)
@@ -86,7 +91,7 @@ let r = class extends v(p) {
   async _delete(e) {
     if (confirm("Delete this redirect?"))
       try {
-        await h(this, n).call(this, `${m}/Delete?id=${e}`, { method: "DELETE" }), await this._load(), this._message = "Redirect deleted.";
+        await _(this, m).call(this, `${p}/Delete?id=${e}`, { method: "DELETE" }), await this._load(), this._message = "Redirect deleted.";
       } catch {
         this._message = "Error deleting redirect.";
       }
@@ -99,7 +104,7 @@ let r = class extends v(p) {
     );
   }
   _renderForm() {
-    return u`
+    return d`
       <uui-box headline=${this._editItem ? "Edit Redirect" : "New Redirect"}>
         <div class="form">
           <div class="field">
@@ -118,7 +123,7 @@ let r = class extends v(p) {
               @input=${(e) => this._formRedirectTo = e.target.value}
             ></uui-input>
           </div>
-          ${this._message ? u`<div class="message error">${this._message}</div>` : ""}
+          ${this._message ? d`<div class="message error">${this._message}</div>` : ""}
           <div class="form-actions">
             <uui-button look="primary" label="Save" @click=${this._save}>Save</uui-button>
             <uui-button look="secondary" label="Cancel" @click=${this._cancelForm}>Cancel</uui-button>
@@ -128,7 +133,7 @@ let r = class extends v(p) {
     `;
   }
   render() {
-    return u`
+    return d`
       <div class="dashboard">
         <div class="header">
           <div>
@@ -142,7 +147,7 @@ let r = class extends v(p) {
           >+ Add Redirect</uui-button>
         </div>
 
-        ${this._message && !this._showForm ? u`<div class="message success">${this._message}</div>` : ""}
+        ${this._message && !this._showForm ? d`<div class="message success">${this._message}</div>` : ""}
 
         ${this._showForm ? this._renderForm() : ""}
 
@@ -155,7 +160,7 @@ let r = class extends v(p) {
             ></uui-input>
           </div>
 
-          ${this._loading ? u`<div class="loading">Loading...</div>` : this._filtered.length === 0 ? u`<p class="empty">No redirects found.</p>` : u`
+          ${this._loading ? d`<div class="loading">Loading...</div>` : this._filtered.length === 0 ? d`<p class="empty">No redirects found.</p>` : d`
               <uui-table>
                 <uui-table-head>
                   <uui-table-head-cell>From URL</uui-table-head-cell>
@@ -164,7 +169,7 @@ let r = class extends v(p) {
                   <uui-table-head-cell></uui-table-head-cell>
                 </uui-table-head>
                 ${this._filtered.map(
-      (e) => u`
+      (e) => d`
                     <uui-table-row>
                       <uui-table-cell>${e.url}</uui-table-cell>
                       <uui-table-cell>${e.redirectToUrl}</uui-table-cell>
@@ -195,8 +200,8 @@ let r = class extends v(p) {
     `;
   }
 };
-n = /* @__PURE__ */ new WeakMap();
-r.styles = f`
+m = /* @__PURE__ */ new WeakMap();
+s.styles = y`
     :host {
       display: block;
       padding: var(--uui-size-layout-1);
@@ -272,33 +277,33 @@ r.styles = f`
     }
   `;
 o([
-  c()
-], r.prototype, "_redirects", 2);
+  u()
+], s.prototype, "_redirects", 2);
 o([
-  c()
-], r.prototype, "_loading", 2);
+  u()
+], s.prototype, "_loading", 2);
 o([
-  c()
-], r.prototype, "_message", 2);
+  u()
+], s.prototype, "_message", 2);
 o([
-  c()
-], r.prototype, "_showForm", 2);
+  u()
+], s.prototype, "_showForm", 2);
 o([
-  c()
-], r.prototype, "_editItem", 2);
+  u()
+], s.prototype, "_editItem", 2);
 o([
-  c()
-], r.prototype, "_formUrl", 2);
+  u()
+], s.prototype, "_formUrl", 2);
 o([
-  c()
-], r.prototype, "_formRedirectTo", 2);
+  u()
+], s.prototype, "_formRedirectTo", 2);
 o([
-  c()
-], r.prototype, "_filter", 2);
-r = o([
-  b("redirect-manager-dashboard")
-], r);
+  u()
+], s.prototype, "_filter", 2);
+s = o([
+  $("redirect-manager-dashboard")
+], s);
 export {
-  r as RedirectManagerDashboardElement
+  s as RedirectManagerDashboardElement
 };
 //# sourceMappingURL=redirect-manager.js.map

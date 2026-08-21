@@ -1,39 +1,44 @@
-import { LitElement as _, html as n, css as v, state as c, customElement as b } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as f } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as m } from "@umbraco-cms/backoffice/auth";
-function g(t) {
-  let a = null;
-  const s = new Promise((i) => {
-    t.consumeContext(m, async (e) => {
-      var r;
+import { LitElement as v, html as u, css as y, state as h, customElement as w } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as $ } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as x } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as T } from "@umbraco-cms/backoffice/notification";
+function C(t) {
+  let e = null, a = null;
+  const o = t.consumeContext.bind(t), i = new Promise((r) => {
+    o(x, async (s) => {
+      var d;
       try {
-        a = await ((r = e == null ? void 0 : e.getLatestToken) == null ? void 0 : r.call(e)) ?? null;
+        e = await ((d = s == null ? void 0 : s.getLatestToken) == null ? void 0 : d.call(s)) ?? null;
       } catch {
-        a = null;
+        e = null;
       }
-      i();
-    }), setTimeout(i, 3e3);
+      r();
+    }), setTimeout(r, 3e3);
   });
-  return async (i, e = {}) => {
-    await s;
-    const r = new Headers(e.headers);
-    a && !r.has("Authorization") && r.set("Authorization", `Bearer ${a}`);
-    const l = await fetch(i, { ...e, credentials: "same-origin", headers: r });
-    return (l.status === 401 || l.status === 403) && console.error(
-      `[SplatDev] ${l.status} from ${String(i)} — the backoffice token was ${a ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), l;
+  return o(T, (r) => {
+    a = r;
+  }), async (r, s = {}) => {
+    await i;
+    const d = new Headers(s.headers);
+    e && !d.has("Authorization") && d.set("Authorization", `Bearer ${e}`);
+    const n = await fetch(r, { ...s, credentials: "same-origin", headers: d });
+    if (!n.ok) {
+      const _ = n.status === 401 || n.status === 403, g = _ ? "Not authorised" : "Could not load data", b = _ ? `The backoffice token was ${e ? "sent but rejected" : "not available"} (${n.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${n.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${n.status} from ${String(r)} — ${b}`), a == null || a.peek("danger", { data: { headline: g, message: b } });
+    }
+    return n;
   };
 }
-var y = Object.defineProperty, w = Object.getOwnPropertyDescriptor, p = (t) => {
+var k = Object.defineProperty, E = Object.getOwnPropertyDescriptor, f = (t) => {
   throw TypeError(t);
-}, u = (t, a, s, i) => {
-  for (var e = i > 1 ? void 0 : i ? w(a, s) : a, r = t.length - 1, l; r >= 0; r--)
-    (l = t[r]) && (e = (i ? l(a, s, e) : l(e)) || e);
-  return i && e && y(a, s, e), e;
-}, x = (t, a, s) => a.has(t) || p("Cannot " + s), h = (t, a, s) => (x(t, a, "read from private field"), s ? s.call(t) : a.get(t)), $ = (t, a, s) => a.has(t) ? p("Cannot add the same private member more than once") : a instanceof WeakSet ? a.add(t) : a.set(t, s), d;
-let o = class extends f(_) {
+}, c = (t, e, a, o) => {
+  for (var i = o > 1 ? void 0 : o ? E(e, a) : e, r = t.length - 1, s; r >= 0; r--)
+    (s = t[r]) && (i = (o ? s(e, a, i) : s(i)) || i);
+  return o && i && k(e, a, i), i;
+}, z = (t, e, a) => e.has(t) || f("Cannot " + a), m = (t, e, a) => (z(t, e, "read from private field"), a ? a.call(t) : e.get(t)), S = (t, e, a) => e.has(t) ? f("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, a), p;
+let l = class extends $(v) {
   constructor() {
-    super(...arguments), $(this, d, g(this)), this._loading = !1, this._stats = null, this._daily = [], this._error = null, this._days = 30;
+    super(...arguments), S(this, p, C(this)), this._loading = !1, this._stats = null, this._daily = [], this._error = null, this._days = 30;
   }
   connectedCallback() {
     super.connectedCallback(), this._load();
@@ -41,15 +46,15 @@ let o = class extends f(_) {
   async _load() {
     this._loading = !0, this._error = null;
     try {
-      const [t, a] = await Promise.all([
-        h(this, d).call(this, `/umbraco/api/visitorcounter/GetStats?days=${this._days}`),
-        h(this, d).call(this, `/umbraco/api/visitorcounter/GetDailyCounts?days=${this._days}`)
+      const [t, e] = await Promise.all([
+        m(this, p).call(this, `/umbraco/api/visitorcounter/GetStats?days=${this._days}`),
+        m(this, p).call(this, `/umbraco/api/visitorcounter/GetDailyCounts?days=${this._days}`)
       ]);
       if (!t.ok) throw new Error(`Stats HTTP ${t.status}`);
-      if (!a.ok) throw new Error(`Daily HTTP ${a.status}`);
+      if (!e.ok) throw new Error(`Daily HTTP ${e.status}`);
       this._stats = await t.json();
-      const s = await a.json();
-      this._daily = s.slice().sort((i, e) => e.date.localeCompare(i.date));
+      const a = await e.json();
+      this._daily = a.slice().sort((o, i) => i.date.localeCompare(o.date));
     } catch (t) {
       this._error = t instanceof Error ? t.message : "Unknown error";
     } finally {
@@ -57,11 +62,11 @@ let o = class extends f(_) {
     }
   }
   render() {
-    return n`
+    return u`
       <h1>Visitor Counter</h1>
       <p class="description">Site visitor statistics for the last ${this._days} days.</p>
 
-      ${this._stats ? n`
+      ${this._stats ? u`
             <div class="stats-grid">
               <div class="stat-card">
                 <span class="stat-value">${this._stats.totalVisits.toLocaleString()}</span>
@@ -84,7 +89,7 @@ let o = class extends f(_) {
           >${this._loading ? "Loading…" : "Refresh"}</uui-button>
         </div>
 
-        ${this._error ? n`<uui-tag color="danger">${this._error}</uui-tag>` : this._loading ? n`<uui-loader></uui-loader>` : this._daily.length === 0 ? n`<div class="empty-state">No visitor data recorded yet.</div>` : n`
+        ${this._error ? u`<uui-tag color="danger">${this._error}</uui-tag>` : this._loading ? u`<uui-loader></uui-loader>` : this._daily.length === 0 ? u`<div class="empty-state">No visitor data recorded yet.</div>` : u`
               <uui-table>
                 <uui-table-head>
                   <uui-table-head-cell>Date</uui-table-head-cell>
@@ -92,7 +97,7 @@ let o = class extends f(_) {
                   <uui-table-head-cell>Unique Visitors</uui-table-head-cell>
                 </uui-table-head>
                 ${this._daily.map(
-      (t) => n`
+      (t) => u`
                     <uui-table-row>
                       <uui-table-cell>${t.date}</uui-table-cell>
                       <uui-table-cell>${t.totalVisits.toLocaleString()}</uui-table-cell>
@@ -106,8 +111,8 @@ let o = class extends f(_) {
     `;
   }
 };
-d = /* @__PURE__ */ new WeakMap();
-o.styles = v`
+p = /* @__PURE__ */ new WeakMap();
+l.styles = y`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -177,24 +182,24 @@ o.styles = v`
       width: 100%;
     }
   `;
-u([
-  c()
-], o.prototype, "_loading", 2);
-u([
-  c()
-], o.prototype, "_stats", 2);
-u([
-  c()
-], o.prototype, "_daily", 2);
-u([
-  c()
-], o.prototype, "_error", 2);
-u([
-  c()
-], o.prototype, "_days", 2);
-o = u([
-  b("visitor-counter-dashboard")
-], o);
+c([
+  h()
+], l.prototype, "_loading", 2);
+c([
+  h()
+], l.prototype, "_stats", 2);
+c([
+  h()
+], l.prototype, "_daily", 2);
+c([
+  h()
+], l.prototype, "_error", 2);
+c([
+  h()
+], l.prototype, "_days", 2);
+l = c([
+  w("visitor-counter-dashboard")
+], l);
 export {
-  o as VisitorCounterDashboardElement
+  l as VisitorCounterDashboardElement
 };

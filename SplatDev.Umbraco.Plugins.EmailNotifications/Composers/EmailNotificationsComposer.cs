@@ -5,6 +5,8 @@ using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 using SplatDev.Umbraco.Plugins.EmailNotifications.Models;
 using SplatDev.Umbraco.Plugins.EmailNotifications.Services;
+using SplatDev.Umbraco.Plugins.EmailNotifications.Components;
+using SplatDev.Umbraco.Plugins.EmailNotifications.Persistence;
 
 namespace SplatDev.Umbraco.Plugins.EmailNotifications.Composers;
 
@@ -14,8 +16,9 @@ public class EmailNotificationsComposer : IComposer
     {
         // DbContext
         builder.Services.AddDbContext<EmailNotificationsDbContext>(options =>
-            options.UseSqlServer(
-                builder.Config.GetConnectionString("umbracoDbDSN") ?? string.Empty));
+            SplatDevDbContextConfig.UseUmbracoDatabase(options, builder.Config));
+
+        builder.Components().Append<EmailNotificationsSchemaComponent>();
 
         // Mailgun options from config section SplatDev:EmailNotifications:Mailgun
         var mailgunSection = builder.Config.GetSection("SplatDev:EmailNotifications:Mailgun");

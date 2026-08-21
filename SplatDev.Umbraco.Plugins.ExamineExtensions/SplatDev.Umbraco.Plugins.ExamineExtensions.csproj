@@ -9,7 +9,7 @@
     <AssemblyName>SplatDev.Umbraco.Plugins.ExamineExtensions</AssemblyName>
     <RootNamespace>SplatDev.Umbraco.Plugins.ExamineExtensions</RootNamespace>
     <PackageId>SplatDev.Umbraco.Plugins.ExamineExtensions</PackageId>
-    <Version>1.2.1</Version>
+    <Version>1.2.2</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <Authors>SplatDev</Authors>

@@ -4,6 +4,8 @@ using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 using SplatDev.Umbraco.Plugins.Payments.PagSeguro.Models;
 using SplatDev.Umbraco.Plugins.Payments.PagSeguro.Services;
+using SplatDev.Umbraco.Plugins.Payments.PagSeguro.Components;
+using SplatDev.Umbraco.Plugins.Payments.PagSeguro.Persistence;
 
 namespace SplatDev.Umbraco.Plugins.Payments.PagSeguro.Composers;
 
@@ -16,7 +18,8 @@ public class PagSeguroComposer : IComposer
         builder.Services.AddScoped<IPagSeguroService, PagSeguroService>();
 
         builder.Services.AddDbContext<PagSeguroDbContext>(options =>
-            options.UseSqlServer(
-                builder.Config.GetSection("ConnectionStrings")["umbracoDbDSN"] ?? string.Empty));
+            SplatDevDbContextConfig.UseUmbracoDatabase(options, builder.Config));
+
+        builder.Components().Append<PaymentsPagSeguroSchemaComponent>();
     }
 }

@@ -69,6 +69,12 @@ The dashboard provides a UI for browsing indexes, running searches, and triggeri
 - No caching of search results; every call queries the index directly
 - No authorization on API endpoints
 
+## Changelog
+
+### 1.2.2 — 2026-08-21
+- Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.
+- A failed request now raises a notification instead of leaving the dashboard looking like there is simply no data.
+
 ## License
 
 MIT © [SplatDev](https://github.com/SplatDev-Ltda)

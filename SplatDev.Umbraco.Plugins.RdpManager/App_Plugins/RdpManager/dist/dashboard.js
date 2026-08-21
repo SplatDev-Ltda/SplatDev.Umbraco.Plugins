@@ -1,37 +1,42 @@
-import { LitElement as D, nothing as g, html as u, css as S, state as m, customElement as E } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as C } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as N } from "@umbraco-cms/backoffice/auth";
-function T(e) {
-  let t = null;
-  const a = new Promise((o) => {
-    e.consumeContext(N, async (i) => {
-      var r;
+import { LitElement as N, nothing as _, html as d, css as O, state as b, customElement as U } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as A } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as R } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as M } from "@umbraco-cms/backoffice/notification";
+function P(e) {
+  let t = null, a = null;
+  const o = e.consumeContext.bind(e), s = new Promise((r) => {
+    o(R, async (n) => {
+      var p;
       try {
-        t = await ((r = i == null ? void 0 : i.getLatestToken) == null ? void 0 : r.call(i)) ?? null;
+        t = await ((p = n == null ? void 0 : n.getLatestToken) == null ? void 0 : p.call(n)) ?? null;
       } catch {
         t = null;
       }
-      o();
-    }), setTimeout(o, 3e3);
+      r();
+    }), setTimeout(r, 3e3);
   });
-  return async (o, i = {}) => {
-    await a;
-    const r = new Headers(i.headers);
-    t && !r.has("Authorization") && r.set("Authorization", `Bearer ${t}`);
-    const c = await fetch(o, { ...i, credentials: "same-origin", headers: r });
-    return (c.status === 401 || c.status === 403) && console.error(
-      `[SplatDev] ${c.status} from ${String(o)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), c;
+  return o(M, (r) => {
+    a = r;
+  }), async (r, n = {}) => {
+    await s;
+    const p = new Headers(n.headers);
+    t && !p.has("Authorization") && p.set("Authorization", `Bearer ${t}`);
+    const h = await fetch(r, { ...n, credentials: "same-origin", headers: p });
+    if (!h.ok) {
+      const w = h.status === 401 || h.status === 403, T = w ? "Not authorised" : "Could not load data", $ = w ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${h.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${h.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${h.status} from ${String(r)} — ${$}`), a == null || a.peek("danger", { data: { headline: T, message: $ } });
+    }
+    return h;
   };
 }
-var R = Object.defineProperty, U = Object.getOwnPropertyDescriptor, _ = (e) => {
+var z = Object.defineProperty, L = Object.getOwnPropertyDescriptor, x = (e) => {
   throw TypeError(e);
-}, h = (e, t, a, o) => {
-  for (var i = o > 1 ? void 0 : o ? U(t, a) : t, r = e.length - 1, c; r >= 0; r--)
-    (c = e[r]) && (i = (o ? c(t, a, i) : c(i)) || i);
-  return o && i && R(t, a, i), i;
-}, w = (e, t, a) => t.has(e) || _("Cannot " + a), f = (e, t, a) => (w(e, t, "read from private field"), a ? a.call(e) : t.get(e)), v = (e, t, a) => t.has(e) ? _("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), s = (e, t, a) => (w(e, t, "access private method"), a), p, l, b, $, y, x, n, k;
-const O = {
+}, m = (e, t, a, o) => {
+  for (var s = o > 1 ? void 0 : o ? L(t, a) : t, r = e.length - 1, n; r >= 0; r--)
+    (n = e[r]) && (s = (o ? n(t, a, s) : n(s)) || s);
+  return o && s && z(t, a, s), s;
+}, k = (e, t, a) => t.has(e) || x("Cannot " + a), g = (e, t, a) => (k(e, t, "read from private field"), a ? a.call(e) : t.get(e)), y = (e, t, a) => t.has(e) ? x("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), l = (e, t, a) => (k(e, t, "access private method"), a), f, i, v, D, S, C, u, E;
+const j = {
   id: 0,
   name: "",
   host: "",
@@ -44,15 +49,15 @@ const O = {
   width: 1920,
   height: 1080
 };
-let d = class extends C(D) {
+let c = class extends A(N) {
   constructor() {
-    super(...arguments), v(this, l), v(this, p, T(this)), this._items = [], this._draft = null, this._loading = !0, this._busy = !1, this._msg = null, this._api = "/umbraco/api/RdpManagerApi";
+    super(...arguments), y(this, i), y(this, f, P(this)), this._items = [], this._draft = null, this._loading = !0, this._busy = !1, this._msg = null, this._api = "/umbraco/api/RdpManagerApi";
   }
   connectedCallback() {
-    super.connectedCallback(), s(this, l, b).call(this);
+    super.connectedCallback(), l(this, i, v).call(this);
   }
   render() {
-    return u`
+    return d`
       <h1>RDP connections</h1>
       <p class="description">
         Saved remote desktop connections. Download generates a standard <code>.rdp</code>
@@ -61,15 +66,15 @@ let d = class extends C(D) {
 
       <div class="row">
         <uui-button look="primary" ?disabled=${this._busy}
-          @click=${() => this._draft = { ...O }}>New connection</uui-button>
+          @click=${() => this._draft = { ...j }}>New connection</uui-button>
       </div>
 
-      ${this._msg ? u`<div class="msg ${this._msg.ok ? "ok" : "bad"}">${this._msg.text}</div>` : g}
+      ${this._msg ? d`<div class="msg ${this._msg.ok ? "ok" : "bad"}">${this._msg.text}</div>` : _}
 
-      ${s(this, l, k).call(this)}
+      ${l(this, i, E).call(this)}
 
       <uui-box headline="Connections" style="margin-top:16px;">
-        ${this._loading ? u`<uui-loader></uui-loader>` : this._items.length === 0 ? u`<p class="empty">No connections yet.</p>` : u`
+        ${this._loading ? d`<uui-loader></uui-loader>` : this._items.length === 0 ? d`<p class="empty">No connections yet.</p>` : d`
                 <uui-table>
                   <uui-table-head>
                     <uui-table-head-cell>Name</uui-table-head-cell>
@@ -78,54 +83,54 @@ let d = class extends C(D) {
                     <uui-table-head-cell>Display</uui-table-head-cell>
                     <uui-table-head-cell></uui-table-head-cell>
                   </uui-table-head>
-                  ${this._items.map((e) => u`
+                  ${this._items.map((e) => d`
                     <uui-table-row>
                       <uui-table-cell>
                         <strong>${e.name}</strong>
-                        ${e.notes ? u`<div class="hint">${e.notes}</div>` : g}
+                        ${e.notes ? d`<div class="hint">${e.notes}</div>` : _}
                       </uui-table-cell>
                       <uui-table-cell class="mono">${e.host}:${e.port}</uui-table-cell>
                       <uui-table-cell class="mono">
-                        ${e.username ? u`${e.domain ? `${e.domain}\\` : ""}${e.username}` : u`<span class="hint">not set</span>`}
+                        ${e.username ? d`${e.domain ? `${e.domain}\\` : ""}${e.username}` : d`<span class="hint">not set</span>`}
                       </uui-table-cell>
                       <uui-table-cell class="hint">
                         ${e.fullScreen ? "full screen" : `${e.width}×${e.height}`} · ${e.colorDepth}-bit
                       </uui-table-cell>
                       <uui-table-cell style="text-align:right;white-space:nowrap;">
                         <uui-button look="secondary" compact label="Download"
-                          @click=${() => s(this, l, x).call(this, e)}>Download</uui-button>
+                          @click=${() => l(this, i, C).call(this, e)}>Download</uui-button>
                         <uui-button look="secondary" compact label="Edit"
                           @click=${() => this._draft = { ...e }}>Edit</uui-button>
                         <uui-button look="secondary" color="danger" compact label="Delete"
-                          ?disabled=${this._busy} @click=${() => s(this, l, y).call(this, e)}>Delete</uui-button>
+                          ?disabled=${this._busy} @click=${() => l(this, i, S).call(this, e)}>Delete</uui-button>
                       </uui-table-cell>
                     </uui-table-row>`)}
                 </uui-table>`}
       </uui-box>`;
   }
 };
-p = /* @__PURE__ */ new WeakMap();
-l = /* @__PURE__ */ new WeakSet();
-b = async function() {
+f = /* @__PURE__ */ new WeakMap();
+i = /* @__PURE__ */ new WeakSet();
+v = async function() {
   this._loading = !0;
   try {
-    const e = await f(this, p).call(this, `${this._api}/GetAll`, { credentials: "same-origin" });
+    const e = await g(this, f).call(this, `${this._api}/GetAll`, { credentials: "same-origin" });
     e.ok && (this._items = await e.json());
   } finally {
     this._loading = !1;
   }
 };
-$ = async function() {
+D = async function() {
   if (this._draft) {
     this._busy = !0, this._msg = null;
     try {
-      const e = this._draft.id > 0, t = await f(this, p).call(this, `${this._api}/${e ? "Update" : "Create"}`, {
+      const e = this._draft.id > 0, t = await g(this, f).call(this, `${this._api}/${e ? "Update" : "Create"}`, {
         method: e ? "PUT" : "POST",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(this._draft)
       }), a = await t.json();
-      this._msg = { ok: t.ok, text: a.message ?? (t.ok ? "Saved." : "Could not save.") }, t.ok && (this._draft = null, await s(this, l, b).call(this));
+      this._msg = { ok: t.ok, text: a.message ?? (t.ok ? "Saved." : "Could not save.") }, t.ok && (this._draft = null, await l(this, i, v).call(this));
     } catch (e) {
       this._msg = { ok: !1, text: `The request failed: ${e.message}` };
     } finally {
@@ -133,16 +138,16 @@ $ = async function() {
     }
   }
 };
-y = async function(e) {
+S = async function(e) {
   var t;
   if (confirm(`Delete "${e.name}"?`)) {
     this._busy = !0, this._msg = null;
     try {
-      const a = await f(this, p).call(this, `${this._api}/Delete?id=${e.id}`, {
+      const a = await g(this, f).call(this, `${this._api}/Delete?id=${e.id}`, {
         method: "DELETE",
         credentials: "same-origin"
       }), o = await a.json();
-      this._msg = { ok: a.ok, text: o.message ?? "Deleted." }, ((t = this._draft) == null ? void 0 : t.id) === e.id && (this._draft = null), await s(this, l, b).call(this);
+      this._msg = { ok: a.ok, text: o.message ?? "Deleted." }, ((t = this._draft) == null ? void 0 : t.id) === e.id && (this._draft = null), await l(this, i, v).call(this);
     } catch (a) {
       this._msg = { ok: !1, text: `The request failed: ${a.message}` };
     } finally {
@@ -150,39 +155,39 @@ y = async function(e) {
     }
   }
 };
-x = async function(e) {
+C = async function(e) {
   this._msg = null;
   try {
-    const t = await f(this, p).call(this, `${this._api}/DownloadRdpFile?id=${e.id}`, { credentials: "same-origin" });
+    const t = await g(this, f).call(this, `${this._api}/DownloadRdpFile?id=${e.id}`, { credentials: "same-origin" });
     if (!t.ok) throw new Error(String(t.status));
-    const a = await t.blob(), o = URL.createObjectURL(a), i = document.createElement("a");
-    i.href = o, i.download = `${e.name.replace(/[^\w.-]+/g, "_")}.rdp`, i.click(), URL.revokeObjectURL(o);
+    const a = await t.blob(), o = URL.createObjectURL(a), s = document.createElement("a");
+    s.href = o, s.download = `${e.name.replace(/[^\w.-]+/g, "_")}.rdp`, s.click(), URL.revokeObjectURL(o);
   } catch (t) {
     this._msg = { ok: !1, text: `Could not download the file (${t.message}).` };
   }
 };
-n = function(e, t) {
+u = function(e, t) {
   this._draft && (this._draft = { ...this._draft, [e]: t });
 };
-k = function() {
+E = function() {
   const e = this._draft;
-  return e ? u`
+  return e ? d`
       <uui-box headline=${e.id > 0 ? `Edit ${e.name}` : "New connection"} style="margin-top:16px;">
         <div class="row">
           <div class="field grow">
             <label for="n">Name</label>
             <input id="n" .value=${e.name}
-              @input=${(t) => s(this, l, n).call(this, "name", t.target.value)} />
+              @input=${(t) => l(this, i, u).call(this, "name", t.target.value)} />
           </div>
           <div class="field grow">
             <label for="h">Host</label>
             <input id="h" .value=${e.host} placeholder="server.example.com"
-              @input=${(t) => s(this, l, n).call(this, "host", t.target.value)} />
+              @input=${(t) => l(this, i, u).call(this, "host", t.target.value)} />
           </div>
           <div class="field narrow">
             <label for="p">Port</label>
             <input id="p" type="number" min="1" max="65535" .value=${String(e.port)}
-              @input=${(t) => s(this, l, n).call(this, "port", Number(t.target.value))} />
+              @input=${(t) => l(this, i, u).call(this, "port", Number(t.target.value))} />
           </div>
         </div>
 
@@ -190,27 +195,27 @@ k = function() {
           <div class="field">
             <label for="u">Username <span class="hint">(optional)</span></label>
             <input id="u" .value=${e.username ?? ""}
-              @input=${(t) => s(this, l, n).call(this, "username", t.target.value)} />
+              @input=${(t) => l(this, i, u).call(this, "username", t.target.value)} />
           </div>
           <div class="field">
             <label for="dm">Domain <span class="hint">(optional)</span></label>
             <input id="dm" .value=${e.domain ?? ""}
-              @input=${(t) => s(this, l, n).call(this, "domain", t.target.value)} />
+              @input=${(t) => l(this, i, u).call(this, "domain", t.target.value)} />
           </div>
           <div class="field narrow">
             <label for="w">Width</label>
             <input id="w" type="number" min="640" .value=${String(e.width)}
-              @input=${(t) => s(this, l, n).call(this, "width", Number(t.target.value))} />
+              @input=${(t) => l(this, i, u).call(this, "width", Number(t.target.value))} />
           </div>
           <div class="field narrow">
             <label for="ht">Height</label>
             <input id="ht" type="number" min="480" .value=${String(e.height)}
-              @input=${(t) => s(this, l, n).call(this, "height", Number(t.target.value))} />
+              @input=${(t) => l(this, i, u).call(this, "height", Number(t.target.value))} />
           </div>
           <div class="field narrow">
             <label for="cd">Colour depth</label>
             <select id="cd" .value=${String(e.colorDepth)}
-              @change=${(t) => s(this, l, n).call(this, "colorDepth", Number(t.target.value))}>
+              @change=${(t) => l(this, i, u).call(this, "colorDepth", Number(t.target.value))}>
               <option value="15">15</option><option value="16">16</option>
               <option value="24">24</option><option value="32">32</option>
             </select>
@@ -218,7 +223,7 @@ k = function() {
           <div class="field narrow">
             <label>Full screen</label>
             <uui-toggle ?checked=${e.fullScreen}
-              @change=${(t) => s(this, l, n).call(this, "fullScreen", t.target.checked)}></uui-toggle>
+              @change=${(t) => l(this, i, u).call(this, "fullScreen", t.target.checked)}></uui-toggle>
           </div>
         </div>
 
@@ -226,19 +231,19 @@ k = function() {
           <div class="field grow">
             <label for="nt">Notes</label>
             <textarea id="nt" .value=${e.notes ?? ""}
-              @input=${(t) => s(this, l, n).call(this, "notes", t.target.value)}></textarea>
+              @input=${(t) => l(this, i, u).call(this, "notes", t.target.value)}></textarea>
           </div>
         </div>
 
         <div class="row" style="margin-top:14px;">
-          <uui-button look="primary" ?disabled=${this._busy} @click=${s(this, l, $)}>
+          <uui-button look="primary" ?disabled=${this._busy} @click=${l(this, i, D)}>
             ${this._busy ? "Saving…" : e.id > 0 ? "Save changes" : "Create"}
           </uui-button>
           <uui-button look="secondary" @click=${() => this._draft = null}>Cancel</uui-button>
         </div>
-      </uui-box>` : g;
+      </uui-box>` : _;
 };
-d.styles = S`
+c.styles = O`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
     p.description { color: var(--uui-color-text-alt, #6b7280); margin: 0 0 24px; max-width: 62ch; }
@@ -259,26 +264,26 @@ d.styles = S`
     .empty { color: var(--uui-color-text-alt, #6b7280); padding: 14px 0; }
     uui-table { width: 100%; }
   `;
-h([
-  m()
-], d.prototype, "_items", 2);
-h([
-  m()
-], d.prototype, "_draft", 2);
-h([
-  m()
-], d.prototype, "_loading", 2);
-h([
-  m()
-], d.prototype, "_busy", 2);
-h([
-  m()
-], d.prototype, "_msg", 2);
-d = h([
-  E("rdpmanager-dashboard")
-], d);
-const A = d;
+m([
+  b()
+], c.prototype, "_items", 2);
+m([
+  b()
+], c.prototype, "_draft", 2);
+m([
+  b()
+], c.prototype, "_loading", 2);
+m([
+  b()
+], c.prototype, "_busy", 2);
+m([
+  b()
+], c.prototype, "_msg", 2);
+c = m([
+  U("rdpmanager-dashboard")
+], c);
+const B = c;
 export {
-  d as RdpManagerDashboardElement,
-  A as default
+  c as RdpManagerDashboardElement,
+  B as default
 };

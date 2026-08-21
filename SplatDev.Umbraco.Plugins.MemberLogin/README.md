@@ -59,6 +59,12 @@ The view component renders the login form and sets `ViewBag` properties for stat
 - The `ForgotPassword` endpoint uses an email-obscured response pattern (always returns success) to prevent enumeration
 - View component only sets `ViewBag` properties; does not perform authentication server-side (delegates to API)
 
+## Changelog
+
+### 2.1.5 — 2026-08-21
+- Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.
+- A failed request now raises a notification instead of leaving the dashboard looking like there is simply no data.
+
 ## License
 
 MIT © [SplatDev](https://github.com/SplatDev-Ltda)

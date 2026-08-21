@@ -6,6 +6,8 @@ using Umbraco.Cms.Core.DependencyInjection;
 
 using SplatDev.Umbraco.Plugins.SocialMedia.Channels.Models;
 using SplatDev.Umbraco.Plugins.SocialMedia.Channels.Services;
+using SplatDev.Umbraco.Plugins.SocialMedia.Channels.Components;
+using SplatDev.Umbraco.Plugins.SocialMedia.Channels.Persistence;
 
 namespace SplatDev.Umbraco.Plugins.SocialMedia.Channels.Composers
 {
@@ -14,7 +16,9 @@ namespace SplatDev.Umbraco.Plugins.SocialMedia.Channels.Composers
         public void Compose(IUmbracoBuilder builder)
         {
             builder.Services.AddDbContext<SocialChannelsDbContext>(options =>
-                options.UseSqlServer(builder.Config.GetSection("ConnectionStrings")["umbracoDbDSN"] ?? string.Empty));
+                SplatDevDbContextConfig.UseUmbracoDatabase(options, builder.Config));
+
+        builder.Components().Append<SocialMediaChannelsSchemaComponent>();
 
             builder.Services.AddScoped<ISocialChannelsService, SocialChannelsService>();
         }

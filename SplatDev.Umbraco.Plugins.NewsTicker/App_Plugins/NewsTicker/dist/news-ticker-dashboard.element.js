@@ -1,39 +1,44 @@
-import { LitElement as m, html as c, css as g, state as u, customElement as _ } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as v } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as b } from "@umbraco-cms/backoffice/auth";
-function f(t) {
-  let e = null;
-  const s = new Promise((a) => {
-    t.consumeContext(b, async (i) => {
-      var r;
+import { LitElement as w, html as p, css as f, state as h, customElement as x } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as y } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as $ } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as k } from "@umbraco-cms/backoffice/notification";
+function T(t) {
+  let e = null, i = null;
+  const n = t.consumeContext.bind(t), o = new Promise((a) => {
+    n($, async (s) => {
+      var c;
       try {
-        e = await ((r = i == null ? void 0 : i.getLatestToken) == null ? void 0 : r.call(i)) ?? null;
+        e = await ((c = s == null ? void 0 : s.getLatestToken) == null ? void 0 : c.call(s)) ?? null;
       } catch {
         e = null;
       }
       a();
     }), setTimeout(a, 3e3);
   });
-  return async (a, i = {}) => {
-    await s;
-    const r = new Headers(i.headers);
-    e && !r.has("Authorization") && r.set("Authorization", `Bearer ${e}`);
-    const n = await fetch(a, { ...i, credentials: "same-origin", headers: r });
-    return (n.status === 401 || n.status === 403) && console.error(
-      `[SplatDev] ${n.status} from ${String(a)} — the backoffice token was ${e ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), n;
+  return n(k, (a) => {
+    i = a;
+  }), async (a, s = {}) => {
+    await o;
+    const c = new Headers(s.headers);
+    e && !c.has("Authorization") && c.set("Authorization", `Bearer ${e}`);
+    const l = await fetch(a, { ...s, credentials: "same-origin", headers: c });
+    if (!l.ok) {
+      const g = l.status === 401 || l.status === 403, b = g ? "Not authorised" : "Could not load data", _ = g ? `The backoffice token was ${e ? "sent but rejected" : "not available"} (${l.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${l.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${l.status} from ${String(a)} — ${_}`), i == null || i.peek("danger", { data: { headline: b, message: _ } });
+    }
+    return l;
   };
 }
-var w = Object.defineProperty, x = Object.getOwnPropertyDescriptor, h = (t) => {
+var A = Object.defineProperty, O = Object.getOwnPropertyDescriptor, v = (t) => {
   throw TypeError(t);
-}, d = (t, e, s, a) => {
-  for (var i = a > 1 ? void 0 : a ? x(e, s) : e, r = t.length - 1, n; r >= 0; r--)
-    (n = t[r]) && (i = (a ? n(e, s, i) : n(i)) || i);
-  return a && i && w(e, s, i), i;
-}, y = (t, e, s) => e.has(t) || h("Cannot " + s), p = (t, e, s) => (y(t, e, "read from private field"), s ? s.call(t) : e.get(t)), $ = (t, e, s) => e.has(t) ? h("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, s), l;
-let o = class extends v(m) {
+}, u = (t, e, i, n) => {
+  for (var o = n > 1 ? void 0 : n ? O(e, i) : e, a = t.length - 1, s; a >= 0; a--)
+    (s = t[a]) && (o = (n ? s(e, i, o) : s(o)) || o);
+  return n && o && A(e, i, o), o;
+}, I = (t, e, i) => e.has(t) || v("Cannot " + i), m = (t, e, i) => (I(t, e, "read from private field"), i ? i.call(t) : e.get(t)), S = (t, e, i) => e.has(t) ? v("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, i), d;
+let r = class extends y(w) {
   constructor() {
-    super(...arguments), $(this, l, f(this)), this._items = [], this._settings = null, this._loading = !1, this._newText = "", this._newUrl = "", this._newSortOrder = 0, this._apiBase = "/umbraco/api/newsticker";
+    super(...arguments), S(this, d, T(this)), this._items = [], this._settings = null, this._loading = !1, this._newText = "", this._newUrl = "", this._newSortOrder = 0, this._apiBase = "/umbraco/api/newsticker";
   }
   connectedCallback() {
     super.connectedCallback(), this._loadItems(), this._loadSettings();
@@ -41,14 +46,14 @@ let o = class extends v(m) {
   async _loadItems() {
     this._loading = !0;
     try {
-      const t = await p(this, l).call(this, `${this._apiBase}/items`);
+      const t = await m(this, d).call(this, `${this._apiBase}/items`);
       t.ok && (this._items = await t.json());
     } finally {
       this._loading = !1;
     }
   }
   async _loadSettings() {
-    const t = await p(this, l).call(this, `${this._apiBase}/settings`);
+    const t = await m(this, d).call(this, `${this._apiBase}/settings`);
     t.ok && (this._settings = await t.json());
   }
   async _addItem() {
@@ -59,7 +64,7 @@ let o = class extends v(m) {
       isActive: !0,
       sortOrder: this._newSortOrder
     };
-    (await p(this, l).call(this, `${this._apiBase}/items`, {
+    (await m(this, d).call(this, `${this._apiBase}/items`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(t)
@@ -67,23 +72,23 @@ let o = class extends v(m) {
   }
   async _toggleItem(t) {
     const e = { ...t, isActive: !t.isActive };
-    (await p(this, l).call(this, `${this._apiBase}/items/${t.id}`, {
+    (await m(this, d).call(this, `${this._apiBase}/items/${t.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(e)
     })).ok && await this._loadItems();
   }
   async _deleteItem(t) {
-    (await p(this, l).call(this, `${this._apiBase}/items/${t}`, { method: "DELETE" })).ok && await this._loadItems();
+    (await m(this, d).call(this, `${this._apiBase}/items/${t}`, { method: "DELETE" })).ok && await this._loadItems();
   }
   render() {
-    return c`
+    return p`
       <h1>News Ticker</h1>
       <p class="description">
         Manage scrolling news ticker items displayed across your Umbraco site.
       </p>
 
-      ${this._settings ? c`
+      ${this._settings ? p`
             <div class="section">
               <uui-box headline="Current Settings">
                 <p>
@@ -132,8 +137,8 @@ let o = class extends v(m) {
 
       <div class="section">
         <uui-box headline="Active Ticker Items">
-          ${this._loading ? c`<uui-loader></uui-loader>` : this._items.length === 0 ? c`<div class="empty-state">No ticker items found. Add one above.</div>` : this._items.map(
-      (t) => c`
+          ${this._loading ? p`<uui-loader></uui-loader>` : this._items.length === 0 ? p`<div class="empty-state">No ticker items found. Add one above.</div>` : this._items.map(
+      (t) => p`
                   <div class="item-row">
                     <div>
                       <span class="${t.isActive ? "badge-active" : "badge-inactive"}">
@@ -142,7 +147,7 @@ let o = class extends v(m) {
                     </div>
                     <div class="item-text">
                       <div>${t.text}</div>
-                      ${t.url ? c`<div class="item-url">${t.url}</div>` : ""}
+                      ${t.url ? p`<div class="item-url">${t.url}</div>` : ""}
                     </div>
                     <div style="font-size:0.75rem; color: var(--uui-color-text-alt);">
                       Order: ${t.sortOrder}
@@ -171,8 +176,8 @@ let o = class extends v(m) {
     `;
   }
 };
-l = /* @__PURE__ */ new WeakMap();
-o.styles = g`
+d = /* @__PURE__ */ new WeakMap();
+r.styles = f`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -256,27 +261,27 @@ o.styles = g`
       color: var(--uui-color-text-alt, #6b7280);
     }
   `;
-d([
-  u()
-], o.prototype, "_items", 2);
-d([
-  u()
-], o.prototype, "_settings", 2);
-d([
-  u()
-], o.prototype, "_loading", 2);
-d([
-  u()
-], o.prototype, "_newText", 2);
-d([
-  u()
-], o.prototype, "_newUrl", 2);
-d([
-  u()
-], o.prototype, "_newSortOrder", 2);
-o = d([
-  _("news-ticker-dashboard")
-], o);
+u([
+  h()
+], r.prototype, "_items", 2);
+u([
+  h()
+], r.prototype, "_settings", 2);
+u([
+  h()
+], r.prototype, "_loading", 2);
+u([
+  h()
+], r.prototype, "_newText", 2);
+u([
+  h()
+], r.prototype, "_newUrl", 2);
+u([
+  h()
+], r.prototype, "_newSortOrder", 2);
+r = u([
+  x("news-ticker-dashboard")
+], r);
 export {
-  o as NewsTickerDashboardElement
+  r as NewsTickerDashboardElement
 };

@@ -15,7 +15,7 @@ using Umbraco.Cms.Web.Common.ApplicationBuilder;
 using SplatDev.Umbraco.Plugins.CacheManager.Components;
 using SplatDev.Umbraco.Plugins.CacheManager.Repositories;
 using SplatDev.Umbraco.Plugins.CacheManager.Services;
-using Umbraco.Plugins.Mailer.Extensions;
+using SplatDev.Umbraco.Plugins.CacheManager.Extensions;
 
 using static SplatDev.Umbraco.Plugins.CacheManager.Constants.CacheConstants;
 
@@ -51,7 +51,9 @@ namespace SplatDev.Umbraco.Plugins.CacheManager.Composers
                 options.CacheAllQueries(CacheExpirationMode.Absolute, TimeSpan.FromMinutes(30));
                 options.UseDbCallsIfCachingProviderIsDown(TimeSpan.FromMinutes(1));
             });
-            builder.Services.AddConfiguredMsSqlDbContext(builder.Config.GetConnectionString("umbracoDbDSN") ?? "");
+            builder.Services.AddConfiguredMsSqlDbContext(
+                builder.Config.GetConnectionString("umbracoDbDSN") ?? "",
+                builder.Config.GetSection("ConnectionStrings")["umbracoDbDSN_ProviderName"]);
             #endregion
 
             #region Caching
