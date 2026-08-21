@@ -1,6 +1,8 @@
 <div ng-controller="DropzoneController as vm" class="umb-dashboard dropzone-plugin">
   <umb-load-indicator ng-if="vm.loading"></umb-load-indicator>
 
+  <div class="alert alert-error" ng-if="vm.loadError">{{vm.loadError}}</div>
+
   <div class="umb-box" ng-if="!vm.loading">
     <div class="umb-box-header">
       <h2>Dropzone — File Upload</h2>
@@ -20,8 +22,23 @@
       </div>
 
       <div class="control-group" style="margin-top:12px;">
-        <label>Parent Media ID (optional)</label>
-        <input type="number" ng-model="vm.parentMediaId" placeholder="-1 for root" class="input-small" />
+        <label>Destination folder</label>
+        <div>
+          <button type="button" class="btn btn-small" ng-click="vm.pickFolder()">
+            <i class="icon-folder"></i>
+            <span ng-if="!vm.parentFolder">Choose a folder…</span>
+            <span ng-if="vm.parentFolder">{{vm.parentFolder.name}}</span>
+          </button>
+          <button type="button" class="btn btn-link btn-small" ng-if="vm.parentFolder" ng-click="vm.clearFolder()">
+            Clear
+          </button>
+        </div>
+        <small class="text-muted" ng-if="!vm.parentFolder">Nothing chosen, so files go to the media root.</small>
+        <small class="text-muted" ng-if="vm.limits">
+          <span ng-if="vm.limits.allowedExtensions.length">Allowed: {{vm.limits.allowedExtensions.join(', ')}}.</span>
+          <span ng-if="!vm.limits.allowedExtensions.length">Any file type is accepted.</span>
+          <span ng-if="vm.limits.maxFileSizeMb > 0">Up to {{vm.limits.maxFileSizeMb}} MB each.</span>
+        </small>
       </div>
 
       <div ng-if="vm.queue.length" style="margin-top:12px;">
@@ -30,9 +47,11 @@
           <span>{{item.file.name}}</span>
           <uui-loader-bar ng-if="item.uploading"></uui-loader-bar>
           <span class="label label-success" ng-if="item.done">Uploaded</span>
+          <small class="text-muted" ng-if="item.detail">{{item.detail}}</small>
           <span class="label label-danger" ng-if="item.error">{{item.error}}</span>
         </div>
         <button class="btn btn-primary" ng-click="vm.uploadAll()">Upload All</button>
+        <button class="btn btn-link" ng-click="vm.clearQueue()">Clear list</button>
       </div>
 
       <div ng-if="vm.mediaItems.length" style="margin-top:24px;">

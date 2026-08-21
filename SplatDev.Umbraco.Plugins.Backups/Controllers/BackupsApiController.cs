@@ -18,6 +18,11 @@ namespace SplatDev.Umbraco.Plugins.Backups.Controllers;
 /// boundary; nothing gates it unless the controller says so.
 /// </remarks>
 [Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
+// The action-level route templates that used to sit on CreateAdvanced, Restore,
+// GetCloudProviders and TestProvider combined with this prefix rather than replacing
+// it, so the real URLs were /backups/GetCloudProviders/providers and the like. No
+// shipped UI ever called them — the dashboard made no requests at all — so they were
+// never noticed. They now resolve at /umbraco/api/backups/<Action> like the rest.
 [Route("umbraco/api/backups/[action]")]
 public class BackupsApiController : ControllerBase
 {
@@ -45,7 +50,7 @@ public class BackupsApiController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPost("advanced")]
+    [HttpPost]
     public async Task<IActionResult> CreateAdvanced([FromBody] BackupOptions options, CancellationToken ct)
     {
         if (!ModelState.IsValid)
@@ -55,7 +60,7 @@ public class BackupsApiController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPost("restore")]
+    [HttpPost]
     public async Task<IActionResult> Restore([FromQuery] string backupPath, [FromBody] RestoreOptions options, CancellationToken ct)
     {
         if (string.IsNullOrWhiteSpace(backupPath))
@@ -82,14 +87,14 @@ public class BackupsApiController : ControllerBase
         }
     }
 
-    [HttpGet("providers")]
+    [HttpGet]
     public async Task<IActionResult> GetCloudProviders()
     {
         var providers = await _service.GetCloudProvidersAsync();
         return Ok(providers);
     }
 
-    [HttpPost("providers/test")]
+    [HttpPost]
     public async Task<IActionResult> TestProvider([FromQuery] string providerId, CancellationToken ct)
     {
         if (string.IsNullOrWhiteSpace(providerId))

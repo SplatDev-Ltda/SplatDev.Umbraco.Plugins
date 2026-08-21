@@ -174,4 +174,9 @@ MIT — see [LICENSE](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins/
 
 ## Contributing
 
-Issues and PRs welcome at [github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins).
+Issues and PRs welcome at [github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins).\n\n## Changelog\n\n### 3.3.1 — 2026-08-21
+- The dashboard can now take a backup. It previously made no requests at all — it showed a hardcoded "Active" badge and a Save button that set a flag for three seconds and wrote nothing — while the API underneath supported all of this the whole time.
+- Choose what to include (content, media, database), whether to compress, whether to encrypt and with which key, which cloud providers to copy to, and whether to keep a local copy.
+- Restore from any listed backup, choosing scope, whether to overwrite existing items, and supplying the decryption key when the archive is encrypted.
+- Delete backups, and test a cloud provider's credentials before relying on it.
+- Four endpoints moved: CreateAdvanced, Restore, GetCloudProviders and TestProvider had action-level route templates that appended to the controller prefix, so they lived at URLs like /umbraco/api/backups/GetCloudProviders/providers. They now sit at /umbraco/api/backups/<Action> with the rest. No shipped UI called them, so nothing that worked before stops working.
