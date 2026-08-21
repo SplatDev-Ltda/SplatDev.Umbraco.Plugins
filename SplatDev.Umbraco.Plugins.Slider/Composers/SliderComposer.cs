@@ -4,6 +4,8 @@ using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 using SplatDev.Umbraco.Plugins.Slider.Models;
 using SplatDev.Umbraco.Plugins.Slider.Services;
+using SplatDev.Umbraco.Plugins.Slider.Components;
+using SplatDev.Umbraco.Plugins.Slider.Persistence;
 
 namespace SplatDev.Umbraco.Plugins.Slider.Composers;
 
@@ -14,7 +16,9 @@ public class SliderComposer : IComposer
         var connectionString = builder.Config.GetSection("ConnectionStrings")["umbracoDbDSN"];
 
         builder.Services.AddDbContext<SliderDbContext>(options =>
-            options.UseSqlServer(connectionString));
+            SplatDevDbContextConfig.UseUmbracoDatabase(options, builder.Config));
+
+        builder.Components().Append<SliderSchemaComponent>();
 
         builder.Services.AddScoped<ISliderService, SliderService>();
     }

@@ -1,41 +1,45 @@
-import { LitElement as _, html as r, nothing as n, css as v, state as s, customElement as b } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as f } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as m } from "@umbraco-cms/backoffice/auth";
-import { UMB_NOTIFICATION_CONTEXT as y } from "@umbraco-cms/backoffice/notification";
-function g(t) {
-  let e = null;
-  const o = new Promise((d) => {
-    t.consumeContext(m, async (l) => {
-      var u;
+import { LitElement as y, html as r, nothing as u, css as x, state as s, customElement as k } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as $ } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as w } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as m } from "@umbraco-cms/backoffice/notification";
+function I(t) {
+  let e = null, o = null;
+  const p = t.consumeContext.bind(t), n = new Promise((l) => {
+    p(w, async (d) => {
+      var h;
       try {
-        e = await ((u = l == null ? void 0 : l.getLatestToken) == null ? void 0 : u.call(l)) ?? null;
+        e = await ((h = d == null ? void 0 : d.getLatestToken) == null ? void 0 : h.call(d)) ?? null;
       } catch {
         e = null;
       }
-      d();
-    }), setTimeout(d, 3e3);
+      l();
+    }), setTimeout(l, 3e3);
   });
-  return async (d, l = {}) => {
-    await o;
-    const u = new Headers(l.headers);
-    e && !u.has("Authorization") && u.set("Authorization", `Bearer ${e}`);
-    const p = await fetch(d, { ...l, credentials: "same-origin", headers: u });
-    return (p.status === 401 || p.status === 403) && console.error(
-      `[SplatDev] ${p.status} from ${String(d)} — the backoffice token was ${e ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), p;
+  return p(m, (l) => {
+    o = l;
+  }), async (l, d = {}) => {
+    await n;
+    const h = new Headers(d.headers);
+    e && !h.has("Authorization") && h.set("Authorization", `Bearer ${e}`);
+    const c = await fetch(l, { ...d, credentials: "same-origin", headers: h });
+    if (!c.ok) {
+      const v = c.status === 401 || c.status === 403, g = v ? "Not authorised" : "Could not load data", b = v ? `The backoffice token was ${e ? "sent but rejected" : "not available"} (${c.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${c.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${c.status} from ${String(l)} — ${b}`), o == null || o.peek("danger", { data: { headline: g, message: b } });
+    }
+    return c;
   };
 }
-var x = Object.defineProperty, k = Object.getOwnPropertyDescriptor, h = (t) => {
+var R = Object.defineProperty, P = Object.getOwnPropertyDescriptor, f = (t) => {
   throw TypeError(t);
-}, a = (t, e, o, d) => {
-  for (var l = d > 1 ? void 0 : d ? k(e, o) : e, u = t.length - 1, p; u >= 0; u--)
-    (p = t[u]) && (l = (d ? p(e, o, l) : p(l)) || l);
-  return d && l && x(e, o, l), l;
-}, $ = (t, e, o) => e.has(t) || h("Cannot " + o), w = (t, e, o) => ($(t, e, "read from private field"), o ? o.call(t) : e.get(t)), I = (t, e, o) => e.has(t) ? h("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, o), c;
-const R = "/umbraco/backoffice/santander-banking", P = "X-RISIN-Api-Key";
-let i = class extends f(_) {
+}, a = (t, e, o, p) => {
+  for (var n = p > 1 ? void 0 : p ? P(e, o) : e, l = t.length - 1, d; l >= 0; l--)
+    (d = t[l]) && (n = (p ? d(e, o, n) : d(n)) || n);
+  return p && n && R(e, o, n), n;
+}, T = (t, e, o) => e.has(t) || f("Cannot " + o), S = (t, e, o) => (T(t, e, "read from private field"), o ? o.call(t) : e.get(t)), L = (t, e, o) => e.has(t) ? f("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, o), _;
+const z = "/umbraco/backoffice/santander-banking", D = "X-RISIN-Api-Key";
+let i = class extends $(y) {
   constructor() {
-    super(), I(this, c, g(this)), this._activeTab = "diagnostics", this._apiKey = "", this._loading = !1, this._diagnostics = null, this._balanceResult = null, this._statementResult = null, this._statementFrom = "", this._statementTo = "", this._statementPage = 1, this._pixValor = 0, this._pixDescricao = "", this._pixTxid = "", this._pixExpiracao = 3600, this._pixSearchTxid = "", this._pixResult = null, this._pixLookupResult = null, this._paymentPayload = "", this._paymentId = "", this._paymentResult = null, this._paymentLookupResult = null, this._boletoPayload = "", this._boletoWorkspaceId = "", this._boletoBillId = "", this._boletoResult = null, this._boletoLookupResult = null, this._workspacesResult = null, this._fxPayload = "", this._fxId = "", this._fxResult = null, this._fxLookupResult = null, this._voucherFrom = "", this._voucherTo = "", this._voucherId = "", this._voucherResult = null, this._voucherLookupResult = null, this.consumeContext(y, (t) => {
+    super(), L(this, _, I(this)), this._activeTab = "diagnostics", this._apiKey = "", this._loading = !1, this._diagnostics = null, this._balanceResult = null, this._statementResult = null, this._statementFrom = "", this._statementTo = "", this._statementPage = 1, this._pixValor = 0, this._pixDescricao = "", this._pixTxid = "", this._pixExpiracao = 3600, this._pixSearchTxid = "", this._pixResult = null, this._pixLookupResult = null, this._paymentPayload = "", this._paymentId = "", this._paymentResult = null, this._paymentLookupResult = null, this._boletoPayload = "", this._boletoWorkspaceId = "", this._boletoBillId = "", this._boletoResult = null, this._boletoLookupResult = null, this._workspacesResult = null, this._fxPayload = "", this._fxId = "", this._fxResult = null, this._fxLookupResult = null, this._voucherFrom = "", this._voucherTo = "", this._voucherId = "", this._voucherResult = null, this._voucherLookupResult = null, this.consumeContext(m, (t) => {
       this._notificationContext = t;
     });
   }
@@ -47,23 +51,23 @@ let i = class extends f(_) {
   }
   _headers() {
     const t = { "Content-Type": "application/json" };
-    return this._apiKey && (t[P] = this._apiKey), t;
+    return this._apiKey && (t[D] = this._apiKey), t;
   }
   async _api(t, e) {
     try {
-      const o = await w(this, c).call(this, `${R}${t}`, {
+      const o = await S(this, _).call(this, `${z}${t}`, {
         headers: this._headers(),
         ...e
       });
       if (o.status === 204) return null;
       if ((o.headers.get("content-type") || "").includes("application/json")) {
-        const u = await o.json();
-        if (!o.ok) throw new Error(u.error || u.title || `HTTP ${o.status}`);
-        return u;
+        const l = await o.json();
+        if (!o.ok) throw new Error(l.error || l.title || `HTTP ${o.status}`);
+        return l;
       }
-      const l = await o.text();
-      if (!o.ok) throw new Error(l || `HTTP ${o.status}`);
-      return l;
+      const n = await o.text();
+      if (!o.ok) throw new Error(n || `HTTP ${o.status}`);
+      return n;
     } catch (o) {
       return this._notify("danger", o.message || "Request failed"), null;
     }
@@ -286,7 +290,7 @@ let i = class extends f(_) {
         <uui-button look="primary" label="Get Balance" @click=${this._getBalance}>
           Get Balance
         </uui-button>
-        ${this._balanceResult ? r`<div class="result-box">${this._asJson(this._balanceResult)}</div>` : n}
+        ${this._balanceResult ? r`<div class="result-box">${this._asJson(this._balanceResult)}</div>` : u}
       </uui-box>
     `;
   }
@@ -318,7 +322,7 @@ let i = class extends f(_) {
             </uui-button>
           </div>
         </div>
-        ${this._statementResult ? r`<div class="result-box">${this._asJson(this._statementResult)}</div>` : n}
+        ${this._statementResult ? r`<div class="result-box">${this._asJson(this._statementResult)}</div>` : u}
       </uui-box>
     `;
   }
@@ -356,7 +360,7 @@ let i = class extends f(_) {
             </uui-button>
           </div>
         </div>
-        ${this._pixResult ? r`<div class="result-box">${this._asJson(this._pixResult)}</div>` : n}
+        ${this._pixResult ? r`<div class="result-box">${this._asJson(this._pixResult)}</div>` : u}
       </uui-box>
 
       <uui-box headline="PIX QR Code — Lookup" style="margin-top:var(--uui-size-space-4,12px);">
@@ -370,7 +374,7 @@ let i = class extends f(_) {
           ></uui-input>
           <uui-button look="primary" label="Lookup" @click=${this._consultarPix}>Lookup</uui-button>
         </div>
-        ${this._pixLookupResult ? r`<div class="result-box">${this._asJson(this._pixLookupResult)}</div>` : n}
+        ${this._pixLookupResult ? r`<div class="result-box">${this._asJson(this._pixLookupResult)}</div>` : u}
       </uui-box>
     `;
   }
@@ -394,7 +398,7 @@ let i = class extends f(_) {
             Initiate Payment
           </uui-button>
         </div>
-        ${this._paymentResult ? r`<div class="result-box">${this._asJson(this._paymentResult)}</div>` : n}
+        ${this._paymentResult ? r`<div class="result-box">${this._asJson(this._paymentResult)}</div>` : u}
       </uui-box>
 
       <uui-box headline="Payments — Lookup" style="margin-top:var(--uui-size-space-4,12px);">
@@ -408,7 +412,7 @@ let i = class extends f(_) {
           ></uui-input>
           <uui-button look="primary" label="Lookup" @click=${this._lookupPayment}>Lookup</uui-button>
         </div>
-        ${this._paymentLookupResult ? r`<div class="result-box">${this._asJson(this._paymentLookupResult)}</div>` : n}
+        ${this._paymentLookupResult ? r`<div class="result-box">${this._asJson(this._paymentLookupResult)}</div>` : u}
       </uui-box>
     `;
   }
@@ -418,7 +422,7 @@ let i = class extends f(_) {
         <uui-button look="primary" label="List Workspaces" @click=${this._listWorkspaces}>
           List Workspaces
         </uui-button>
-        ${this._workspacesResult ? r`<div class="result-box">${this._asJson(this._workspacesResult)}</div>` : n}
+        ${this._workspacesResult ? r`<div class="result-box">${this._asJson(this._workspacesResult)}</div>` : u}
       </uui-box>
 
       <uui-box headline="Boletos — Emit" style="margin-top:var(--uui-size-space-4,12px);">
@@ -447,7 +451,7 @@ let i = class extends f(_) {
             </uui-button>
           </div>
         </div>
-        ${this._boletoResult ? r`<div class="result-box">${this._asJson(this._boletoResult)}</div>` : n}
+        ${this._boletoResult ? r`<div class="result-box">${this._asJson(this._boletoResult)}</div>` : u}
       </uui-box>
 
       <uui-box headline="Boletos — Lookup" style="margin-top:var(--uui-size-space-4,12px);">
@@ -461,7 +465,7 @@ let i = class extends f(_) {
           ></uui-input>
           <uui-button look="primary" label="Lookup" @click=${this._consultarBoleto}>Lookup</uui-button>
         </div>
-        ${this._boletoLookupResult ? r`<div class="result-box">${this._asJson(this._boletoLookupResult)}</div>` : n}
+        ${this._boletoLookupResult ? r`<div class="result-box">${this._asJson(this._boletoLookupResult)}</div>` : u}
       </uui-box>
     `;
   }
@@ -485,7 +489,7 @@ let i = class extends f(_) {
             Get FX Quote
           </uui-button>
         </div>
-        ${this._fxResult ? r`<div class="result-box">${this._asJson(this._fxResult)}</div>` : n}
+        ${this._fxResult ? r`<div class="result-box">${this._asJson(this._fxResult)}</div>` : u}
       </uui-box>
 
       <uui-box headline="FX — Lookup" style="margin-top:var(--uui-size-space-4,12px);">
@@ -499,7 +503,7 @@ let i = class extends f(_) {
           ></uui-input>
           <uui-button look="primary" label="Lookup" @click=${this._consultarFx}>Lookup</uui-button>
         </div>
-        ${this._fxLookupResult ? r`<div class="result-box">${this._asJson(this._fxLookupResult)}</div>` : n}
+        ${this._fxLookupResult ? r`<div class="result-box">${this._asJson(this._fxLookupResult)}</div>` : u}
       </uui-box>
     `;
   }
@@ -525,7 +529,7 @@ let i = class extends f(_) {
             </uui-button>
           </div>
         </div>
-        ${this._voucherResult ? r`<div class="result-box">${this._asJson(this._voucherResult)}</div>` : n}
+        ${this._voucherResult ? r`<div class="result-box">${this._asJson(this._voucherResult)}</div>` : u}
       </uui-box>
 
       <uui-box headline="Vouchers — Get" style="margin-top:var(--uui-size-space-4,12px);">
@@ -539,7 +543,7 @@ let i = class extends f(_) {
           ></uui-input>
           <uui-button look="primary" label="Get Voucher" @click=${this._getVoucher}>Get Voucher</uui-button>
         </div>
-        ${this._voucherLookupResult ? r`<div class="result-box">${this._asJson(this._voucherLookupResult)}</div>` : n}
+        ${this._voucherLookupResult ? r`<div class="result-box">${this._asJson(this._voucherLookupResult)}</div>` : u}
       </uui-box>
     `;
   }
@@ -617,12 +621,12 @@ let i = class extends f(_) {
     })()}
       </div>
 
-      ${this._loading ? r`<uui-loader-bar style="margin-top:var(--uui-size-space-4,12px);"></uui-loader-bar>` : n}
+      ${this._loading ? r`<uui-loader-bar style="margin-top:var(--uui-size-space-4,12px);"></uui-loader-bar>` : u}
     `;
   }
 };
-c = /* @__PURE__ */ new WeakMap();
-i.styles = v`
+_ = /* @__PURE__ */ new WeakMap();
+i.styles = x`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -884,10 +888,10 @@ a([
   s()
 ], i.prototype, "_voucherLookupResult", 2);
 i = a([
-  b("santander-banking-dashboard")
+  k("santander-banking-dashboard")
 ], i);
-const D = i;
+const J = i;
 export {
   i as SantanderBankingDashboardElement,
-  D as default
+  J as default
 };

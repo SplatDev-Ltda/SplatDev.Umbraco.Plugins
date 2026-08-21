@@ -6,6 +6,8 @@ using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 using SplatDev.Umbraco.Plugins.NewsTicker.Models;
 using SplatDev.Umbraco.Plugins.NewsTicker.Services;
+using SplatDev.Umbraco.Plugins.NewsTicker.Components;
+using SplatDev.Umbraco.Plugins.NewsTicker.Persistence;
 
 namespace SplatDev.Umbraco.Plugins.NewsTicker.Composers;
 
@@ -17,8 +19,9 @@ public class NewsTickerComposer : IComposer
             builder.Config.GetSection(NewsTickerSettings.SectionKey));
 
         builder.Services.AddDbContext<NewsTickerDbContext>(options =>
-            options.UseSqlServer(
-                builder.Config.GetConnectionString("umbracoDbDSN") ?? string.Empty));
+            SplatDevDbContextConfig.UseUmbracoDatabase(options, builder.Config));
+
+        builder.Components().Append<NewsTickerSchemaComponent>();
 
         builder.Services.AddScoped<INewsTickerService, NewsTickerService>();
     }

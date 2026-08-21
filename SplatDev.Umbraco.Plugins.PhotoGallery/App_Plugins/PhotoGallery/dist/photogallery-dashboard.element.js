@@ -1,39 +1,44 @@
-import { LitElement as c, html as s, css as m, state as p, customElement as b } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as f } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as v } from "@umbraco-cms/backoffice/auth";
-function g(e) {
-  let t = null;
-  const r = new Promise((o) => {
-    e.consumeContext(v, async (a) => {
-      var i;
+import { LitElement as y, html as i, css as v, state as p, customElement as _ } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as w } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as x } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as $ } from "@umbraco-cms/backoffice/notification";
+function C(e) {
+  let t = null, a = null;
+  const l = e.consumeContext.bind(e), s = new Promise((r) => {
+    l(x, async (o) => {
+      var d;
       try {
-        t = await ((i = a == null ? void 0 : a.getLatestToken) == null ? void 0 : i.call(a)) ?? null;
+        t = await ((d = o == null ? void 0 : o.getLatestToken) == null ? void 0 : d.call(o)) ?? null;
       } catch {
         t = null;
       }
-      o();
-    }), setTimeout(o, 3e3);
+      r();
+    }), setTimeout(r, 3e3);
   });
-  return async (o, a = {}) => {
-    await r;
-    const i = new Headers(a.headers);
-    t && !i.has("Authorization") && i.set("Authorization", `Bearer ${t}`);
-    const l = await fetch(o, { ...a, credentials: "same-origin", headers: i });
-    return (l.status === 401 || l.status === 403) && console.error(
-      `[SplatDev] ${l.status} from ${String(o)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), l;
+  return l($, (r) => {
+    a = r;
+  }), async (r, o = {}) => {
+    await s;
+    const d = new Headers(o.headers);
+    t && !d.has("Authorization") && d.set("Authorization", `Bearer ${t}`);
+    const n = await fetch(r, { ...o, credentials: "same-origin", headers: d });
+    if (!n.ok) {
+      const m = n.status === 401 || n.status === 403, g = m ? "Not authorised" : "Could not load data", b = m ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${n.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${n.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${n.status} from ${String(r)} — ${b}`), a == null || a.peek("danger", { data: { headline: g, message: b } });
+    }
+    return n;
   };
 }
-var y = Object.defineProperty, _ = Object.getOwnPropertyDescriptor, h = (e) => {
+var T = Object.defineProperty, k = Object.getOwnPropertyDescriptor, f = (e) => {
   throw TypeError(e);
-}, u = (e, t, r, o) => {
-  for (var a = o > 1 ? void 0 : o ? _(t, r) : t, i = e.length - 1, l; i >= 0; i--)
-    (l = e[i]) && (a = (o ? l(t, r, a) : l(a)) || a);
-  return o && a && y(t, r, a), a;
-}, x = (e, t, r) => t.has(e) || h("Cannot " + r), w = (e, t, r) => (x(e, t, "read from private field"), r ? r.call(e) : t.get(e)), $ = (e, t, r) => t.has(e) ? h("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, r), d;
-let n = class extends f(c) {
+}, h = (e, t, a, l) => {
+  for (var s = l > 1 ? void 0 : l ? k(t, a) : t, r = e.length - 1, o; r >= 0; r--)
+    (o = e[r]) && (s = (l ? o(t, a, s) : o(s)) || s);
+  return l && s && T(t, a, s), s;
+}, A = (e, t, a) => t.has(e) || f("Cannot " + a), E = (e, t, a) => (A(e, t, "read from private field"), a ? a.call(e) : t.get(e)), P = (e, t, a) => t.has(e) ? f("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), c;
+let u = class extends w(y) {
   constructor() {
-    super(...arguments), $(this, d, g(this)), this._albums = [], this._loading = !0, this._error = "";
+    super(...arguments), P(this, c, C(this)), this._albums = [], this._loading = !0, this._error = "";
   }
   connectedCallback() {
     super.connectedCallback(), this._loadAlbums();
@@ -41,7 +46,7 @@ let n = class extends f(c) {
   async _loadAlbums() {
     this._error = "", this._loading = !0;
     try {
-      const e = await w(this, d).call(this, "/umbraco/api/photogallery/GetAlbums");
+      const e = await E(this, c).call(this, "/umbraco/api/photogallery/GetAlbums");
       if (!e.ok) throw new Error(await e.text());
       this._albums = await e.json();
     } catch (e) {
@@ -51,44 +56,44 @@ let n = class extends f(c) {
     }
   }
   render() {
-    return this._loading ? s`
+    return this._loading ? i`
         <uui-box headline="Photo Gallery">
           <div class="loading-container">
             <uui-loader></uui-loader>
           </div>
         </uui-box>
-      ` : this._error ? s`
+      ` : this._error ? i`
         <uui-box headline="Photo Gallery">
           <uui-alert look="danger" class="error-banner">${this._error}</uui-alert>
         </uui-box>
-      ` : this._albums.length === 0 ? s`
+      ` : this._albums.length === 0 ? i`
         <uui-box headline="Photo Gallery">
           <div class="empty-state">
             <p>No albums found. Create your first gallery album.</p>
           </div>
         </uui-box>
-      ` : s`
+      ` : i`
       <uui-box headline="Photo Gallery">
         ${this._albums.map(
-      (e) => s`
+      (e) => i`
             <uui-box .headline=${e.title} class="album-card">
-              ${e.description ? s`<p class="album-description">${e.description}</p>` : ""}
-              ${(e.photos ?? []).length > 0 ? s`
+              ${e.description ? i`<p class="album-description">${e.description}</p>` : ""}
+              ${(e.photos ?? []).length > 0 ? i`
                     <div class="photo-grid">
                       ${e.photos.map(
-        (t) => s`
+        (t) => i`
                           <div class="photo-thumb">
                             <img
                               src=${t.thumbnailUrl ?? t.imageUrl}
                               alt=${t.title}
                               loading="lazy"
                             />
-                            ${t.caption ? s`<div class="photo-caption">${t.caption}</div>` : ""}
+                            ${t.caption ? i`<div class="photo-caption">${t.caption}</div>` : ""}
                           </div>
                         `
       )}
                     </div>
-                  ` : s`<p class="album-description">No photos in this album.</p>`}
+                  ` : i`<p class="album-description">No photos in this album.</p>`}
             </uui-box>
           `
     )}
@@ -96,8 +101,8 @@ let n = class extends f(c) {
     `;
   }
 };
-d = /* @__PURE__ */ new WeakMap();
-n.styles = m`
+c = /* @__PURE__ */ new WeakMap();
+u.styles = v`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -157,20 +162,20 @@ n.styles = m`
       margin-bottom: var(--uui-size-layout-2, 24px);
     }
   `;
-u([
+h([
   p()
-], n.prototype, "_albums", 2);
-u([
+], u.prototype, "_albums", 2);
+h([
   p()
-], n.prototype, "_loading", 2);
-u([
+], u.prototype, "_loading", 2);
+h([
   p()
-], n.prototype, "_error", 2);
-n = u([
-  b("photogallery-dashboard")
-], n);
-const k = n;
+], u.prototype, "_error", 2);
+u = h([
+  _("photogallery-dashboard")
+], u);
+const U = u;
 export {
-  n as PhotogalleryDashboardElement,
-  k as default
+  u as PhotogalleryDashboardElement,
+  U as default
 };

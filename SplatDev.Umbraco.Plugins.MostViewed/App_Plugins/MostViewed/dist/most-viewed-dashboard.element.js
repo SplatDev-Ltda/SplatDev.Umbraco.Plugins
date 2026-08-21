@@ -1,39 +1,44 @@
-import { LitElement as p, html as n, css as _, state as c, customElement as b } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as v } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as g } from "@umbraco-cms/backoffice/auth";
-function m(e) {
-  let t = null;
-  const r = new Promise((o) => {
-    e.consumeContext(g, async (a) => {
-      var i;
+import { LitElement as w, html as c, css as v, state as h, customElement as f } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as y } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as $ } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as T } from "@umbraco-cms/backoffice/notification";
+function k(e) {
+  let t = null, a = null;
+  const l = e.consumeContext.bind(e), s = new Promise((r) => {
+    l($, async (o) => {
+      var u;
       try {
-        t = await ((i = a == null ? void 0 : a.getLatestToken) == null ? void 0 : i.call(a)) ?? null;
+        t = await ((u = o == null ? void 0 : o.getLatestToken) == null ? void 0 : u.call(o)) ?? null;
       } catch {
         t = null;
       }
-      o();
-    }), setTimeout(o, 3e3);
+      r();
+    }), setTimeout(r, 3e3);
   });
-  return async (o, a = {}) => {
-    await r;
-    const i = new Headers(a.headers);
-    t && !i.has("Authorization") && i.set("Authorization", `Bearer ${t}`);
-    const l = await fetch(o, { ...a, credentials: "same-origin", headers: i });
-    return (l.status === 401 || l.status === 403) && console.error(
-      `[SplatDev] ${l.status} from ${String(o)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), l;
+  return l(T, (r) => {
+    a = r;
+  }), async (r, o = {}) => {
+    await s;
+    const u = new Headers(o.headers);
+    t && !u.has("Authorization") && u.set("Authorization", `Bearer ${t}`);
+    const n = await fetch(r, { ...o, credentials: "same-origin", headers: u });
+    if (!n.ok) {
+      const _ = n.status === 401 || n.status === 403, m = _ ? "Not authorised" : "Could not load data", b = _ ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${n.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${n.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${n.status} from ${String(r)} — ${b}`), a == null || a.peek("danger", { data: { headline: m, message: b } });
+    }
+    return n;
   };
 }
-var f = Object.defineProperty, y = Object.getOwnPropertyDescriptor, h = (e) => {
+var C = Object.defineProperty, x = Object.getOwnPropertyDescriptor, g = (e) => {
   throw TypeError(e);
-}, u = (e, t, r, o) => {
-  for (var a = o > 1 ? void 0 : o ? y(t, r) : t, i = e.length - 1, l; i >= 0; i--)
-    (l = e[i]) && (a = (o ? l(t, r, a) : l(a)) || a);
-  return o && a && f(t, r, a), a;
-}, w = (e, t, r) => t.has(e) || h("Cannot " + r), $ = (e, t, r) => (w(e, t, "read from private field"), r ? r.call(e) : t.get(e)), k = (e, t, r) => t.has(e) ? h("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, r), d;
-let s = class extends v(p) {
+}, d = (e, t, a, l) => {
+  for (var s = l > 1 ? void 0 : l ? x(t, a) : t, r = e.length - 1, o; r >= 0; r--)
+    (o = e[r]) && (s = (l ? o(t, a, s) : o(s)) || s);
+  return l && s && C(t, a, s), s;
+}, E = (e, t, a) => t.has(e) || g("Cannot " + a), A = (e, t, a) => (E(e, t, "read from private field"), a ? a.call(e) : t.get(e)), O = (e, t, a) => t.has(e) ? g("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), p;
+let i = class extends y(w) {
   constructor() {
-    super(...arguments), k(this, d, m(this)), this._loading = !1, this._pages = [], this._error = null, this._count = 10, this._days = 30;
+    super(...arguments), O(this, p, k(this)), this._loading = !1, this._pages = [], this._error = null, this._count = 10, this._days = 30;
   }
   connectedCallback() {
     super.connectedCallback(), this._load();
@@ -41,7 +46,7 @@ let s = class extends v(p) {
   async _load() {
     this._loading = !0, this._error = null;
     try {
-      const e = `/umbraco/api/mostviewed/GetMostViewed?count=${this._count}&days=${this._days}`, t = await $(this, d).call(this, e);
+      const e = `/umbraco/api/mostviewed/GetMostViewed?count=${this._count}&days=${this._days}`, t = await A(this, p).call(this, e);
       if (!t.ok) throw new Error(`HTTP ${t.status}`);
       this._pages = await t.json();
     } catch (e) {
@@ -51,7 +56,7 @@ let s = class extends v(p) {
     }
   }
   render() {
-    return n`
+    return c`
       <h1>Most Viewed</h1>
       <p class="description">Top pages by view count in the last ${this._days} days.</p>
 
@@ -65,7 +70,7 @@ let s = class extends v(p) {
           >${this._loading ? "Loading…" : "Refresh"}</uui-button>
         </div>
 
-        ${this._error ? n`<uui-tag color="danger">${this._error}</uui-tag>` : this._loading ? n`<uui-loader></uui-loader>` : this._pages.length === 0 ? n`<div class="empty-state">No page views recorded yet.</div>` : n`
+        ${this._error ? c`<uui-tag color="danger">${this._error}</uui-tag>` : this._loading ? c`<uui-loader></uui-loader>` : this._pages.length === 0 ? c`<div class="empty-state">No page views recorded yet.</div>` : c`
               <uui-table>
                 <uui-table-head>
                   <uui-table-head-cell>#</uui-table-head-cell>
@@ -74,7 +79,7 @@ let s = class extends v(p) {
                   <uui-table-head-cell>Views</uui-table-head-cell>
                 </uui-table-head>
                 ${this._pages.map(
-      (e, t) => n`
+      (e, t) => c`
                     <uui-table-row>
                       <uui-table-cell><span class="rank">${t + 1}</span></uui-table-cell>
                       <uui-table-cell>${e.nodeName}</uui-table-cell>
@@ -91,8 +96,8 @@ let s = class extends v(p) {
     `;
   }
 };
-d = /* @__PURE__ */ new WeakMap();
-s.styles = _`
+p = /* @__PURE__ */ new WeakMap();
+i.styles = v`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -141,24 +146,24 @@ s.styles = _`
       width: 100%;
     }
   `;
-u([
-  c()
-], s.prototype, "_loading", 2);
-u([
-  c()
-], s.prototype, "_pages", 2);
-u([
-  c()
-], s.prototype, "_error", 2);
-u([
-  c()
-], s.prototype, "_count", 2);
-u([
-  c()
-], s.prototype, "_days", 2);
-s = u([
-  b("most-viewed-dashboard")
-], s);
+d([
+  h()
+], i.prototype, "_loading", 2);
+d([
+  h()
+], i.prototype, "_pages", 2);
+d([
+  h()
+], i.prototype, "_error", 2);
+d([
+  h()
+], i.prototype, "_count", 2);
+d([
+  h()
+], i.prototype, "_days", 2);
+i = d([
+  f("most-viewed-dashboard")
+], i);
 export {
-  s as MostViewedDashboardElement
+  i as MostViewedDashboardElement
 };

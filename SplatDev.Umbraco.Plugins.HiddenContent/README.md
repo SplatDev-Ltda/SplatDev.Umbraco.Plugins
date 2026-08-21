@@ -40,3 +40,9 @@ This plugin uses Umbraco's `IContentService` — no additional database tables n
 ## How It Works
 
 HideNodeAsync sets `umbracoNaviHide = "1"` and publishes. ShowNodeAsync sets it to `"0"` and publishes. Standard Umbraco navigation helpers and sitemap generators respect this property automatically.
+
+## Changelog
+
+### 2.3.2 — 2026-08-21
+- Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.
+- A failed request now raises a notification instead of leaving the dashboard looking like there is simply no data.

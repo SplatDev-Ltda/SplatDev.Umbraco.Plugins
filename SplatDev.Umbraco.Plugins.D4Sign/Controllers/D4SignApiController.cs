@@ -64,6 +64,25 @@ public class D4SignApiController(
         try
         {
             using var scope = scopeProvider.CreateScope();
+
+            // A fresh install has no d4sign_contrato table — the host site creates it. That
+            // is a setup step, not a failure, and it used to come back as a 500 carrying
+            // "Erro ao buscar documentos D4Sign", which reads as the integration being
+            // broken rather than not configured yet.
+            if (!scope.SqlContext.SqlSyntax.DoesTableExist(scope.Database, _opts.TableName))
+            {
+                logger.LogInformation(
+                    "D4Sign dashboard: table {Table} does not exist yet", _opts.TableName);
+
+                return Ok(new
+                {
+                    documents = Array.Empty<object>(),
+                    setupRequired = true,
+                    message = $"No table named '{_opts.TableName}' exists in this database yet. "
+                              + "Create it, or point D4Sign:TableName at the table that holds your contracts.",
+                });
+            }
+
             var rows = await scope.Database.FetchAsync<dynamic>(
                 new Sql($"SELECT * FROM {_opts.TableName} ORDER BY criado_em DESC"));
             return Ok(new { documents = rows });

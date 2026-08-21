@@ -1,39 +1,44 @@
-import { LitElement as _, html as u, css as b, state as l, customElement as g } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as m } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as f } from "@umbraco-cms/backoffice/auth";
-function y(e) {
-  let t = null;
-  const a = new Promise((n) => {
-    e.consumeContext(f, async (i) => {
-      var o;
+import { LitElement as y, html as o, css as x, state as n, customElement as v } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as w } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as $ } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as I } from "@umbraco-cms/backoffice/notification";
+function S(e) {
+  let t = null, i = null;
+  const d = e.consumeContext.bind(e), u = new Promise((l) => {
+    d($, async (a) => {
+      var c;
       try {
-        t = await ((o = i == null ? void 0 : i.getLatestToken) == null ? void 0 : o.call(i)) ?? null;
+        t = await ((c = a == null ? void 0 : a.getLatestToken) == null ? void 0 : c.call(a)) ?? null;
       } catch {
         t = null;
       }
-      n();
-    }), setTimeout(n, 3e3);
+      l();
+    }), setTimeout(l, 3e3);
   });
-  return async (n, i = {}) => {
-    await a;
-    const o = new Headers(i.headers);
-    t && !o.has("Authorization") && o.set("Authorization", `Bearer ${t}`);
-    const d = await fetch(n, { ...i, credentials: "same-origin", headers: o });
-    return (d.status === 401 || d.status === 403) && console.error(
-      `[SplatDev] ${d.status} from ${String(n)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), d;
+  return d(I, (l) => {
+    i = l;
+  }), async (l, a = {}) => {
+    await u;
+    const c = new Headers(a.headers);
+    t && !c.has("Authorization") && c.set("Authorization", `Bearer ${t}`);
+    const h = await fetch(l, { ...a, credentials: "same-origin", headers: c });
+    if (!h.ok) {
+      const b = h.status === 401 || h.status === 403, f = b ? "Not authorised" : "Could not load data", g = b ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${h.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${h.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${h.status} from ${String(l)} — ${g}`), i == null || i.peek("danger", { data: { headline: f, message: g } });
+    }
+    return h;
   };
 }
-var x = Object.defineProperty, v = Object.getOwnPropertyDescriptor, p = (e) => {
+var E = Object.defineProperty, k = Object.getOwnPropertyDescriptor, m = (e) => {
   throw TypeError(e);
-}, r = (e, t, a, n) => {
-  for (var i = n > 1 ? void 0 : n ? v(t, a) : t, o = e.length - 1, d; o >= 0; o--)
-    (d = e[o]) && (i = (n ? d(t, a, i) : d(i)) || i);
-  return n && i && x(t, a, i), i;
-}, w = (e, t, a) => t.has(e) || p("Cannot " + a), c = (e, t, a) => (w(e, t, "read from private field"), a ? a.call(e) : t.get(e)), $ = (e, t, a) => t.has(e) ? p("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), h;
-let s = class extends m(_) {
+}, r = (e, t, i, d) => {
+  for (var u = d > 1 ? void 0 : d ? k(t, i) : t, l = e.length - 1, a; l >= 0; l--)
+    (a = e[l]) && (u = (d ? a(t, i, u) : a(u)) || u);
+  return d && u && E(t, i, u), u;
+}, C = (e, t, i) => t.has(e) || m("Cannot " + i), _ = (e, t, i) => (C(e, t, "read from private field"), i ? i.call(e) : t.get(e)), z = (e, t, i) => t.has(e) ? m("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, i), p;
+let s = class extends w(y) {
   constructor() {
-    super(...arguments), $(this, h, y(this)), this._baseUrl = "/umbraco/api/examineextensions/", this._indexes = [], this._selectedIndex = "", this._rebuildIndex = "", this._query = "", this._pageSize = 20, this._results = null, this._rebuildMsg = "", this._loading = !0, this._searching = !1, this._rebuilding = !1, this._error = "";
+    super(...arguments), z(this, p, S(this)), this._baseUrl = "/umbraco/api/examineextensions/", this._indexes = [], this._selectedIndex = "", this._rebuildIndex = "", this._query = "", this._pageSize = 20, this._results = null, this._rebuildMsg = "", this._loading = !0, this._searching = !1, this._rebuilding = !1, this._error = "";
   }
   connectedCallback() {
     super.connectedCallback(), this._loadIndexes();
@@ -41,7 +46,7 @@ let s = class extends m(_) {
   async _loadIndexes() {
     this._loading = !0, this._error = "";
     try {
-      const e = await c(this, h).call(this, `${this._baseUrl}GetIndexes`);
+      const e = await _(this, p).call(this, `${this._baseUrl}GetIndexes`);
       if (!e.ok) throw new Error(await e.text());
       this._indexes = await e.json(), this._indexes.length > 0 && (this._selectedIndex = this._indexes[0], this._rebuildIndex = this._indexes[0]);
     } catch (e) {
@@ -54,7 +59,7 @@ let s = class extends m(_) {
     if (this._query.trim()) {
       this._results = null, this._searching = !0, this._error = "";
       try {
-        const e = await c(this, h).call(this, `${this._baseUrl}Search`, {
+        const e = await _(this, p).call(this, `${this._baseUrl}Search`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -77,7 +82,7 @@ let s = class extends m(_) {
     if (this._rebuildIndex) {
       this._rebuildMsg = "", this._rebuilding = !0, this._error = "";
       try {
-        const e = await c(this, h).call(this, `${this._baseUrl}RebuildIndex`, {
+        const e = await _(this, p).call(this, `${this._baseUrl}RebuildIndex`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(this._rebuildIndex)
@@ -109,11 +114,11 @@ let s = class extends m(_) {
     e.key === "Enter" && this._search();
   }
   _renderResults() {
-    return this._results ? u`
+    return this._results ? o`
       <div class="results-header">
         <h3 class="section-title">Results (${this._results.totalItems} total)</h3>
       </div>
-      ${this._results.items.length === 0 ? u`<p class="no-results">No results found.</p>` : u`
+      ${this._results.items.length === 0 ? o`<p class="no-results">No results found.</p>` : o`
             <table class="results-table">
               <thead>
                 <tr>
@@ -124,13 +129,13 @@ let s = class extends m(_) {
               </thead>
               <tbody>
                 ${this._results.items.map(
-      (e) => u`
+      (e) => o`
                     <tr>
                       <td>${e.id}</td>
                       <td>${e.score.toFixed(4)}</td>
                       <td>
                         ${Object.entries(e.fields).map(
-        ([t, a]) => u`<strong>${t}</strong>: ${String(a)}<br />`
+        ([t, i]) => o`<strong>${t}</strong>: ${String(i)}<br />`
       )}
                       </td>
                     </tr>
@@ -139,15 +144,15 @@ let s = class extends m(_) {
               </tbody>
             </table>
           `}
-    ` : u``;
+    ` : o``;
   }
   render() {
     if (this._loading)
-      return u`<uui-loader></uui-loader>`;
+      return o`<uui-loader></uui-loader>`;
     const e = this._indexes.map((t) => ({ name: t, value: t }));
-    return u`
+    return o`
       <uui-box headline="Examine Extensions">
-        ${this._error ? u`<uui-alert look="danger" style="margin-bottom:16px;">${this._error}</uui-alert>` : ""}
+        ${this._error ? o`<uui-alert look="danger" style="margin-bottom:16px;">${this._error}</uui-alert>` : ""}
 
         <div class="dashboard-grid">
           <div>
@@ -212,7 +217,7 @@ let s = class extends m(_) {
                 >
                   ${this._rebuilding ? "Rebuilding..." : "Rebuild Index"}
                 </uui-button>
-                ${this._rebuildMsg ? u`<uui-badge color="positive">${this._rebuildMsg}</uui-badge>` : ""}
+                ${this._rebuildMsg ? o`<uui-badge color="positive">${this._rebuildMsg}</uui-badge>` : ""}
               </div>
             </div>
           </div>
@@ -223,8 +228,8 @@ let s = class extends m(_) {
     `;
   }
 };
-h = /* @__PURE__ */ new WeakMap();
-s.styles = b`
+p = /* @__PURE__ */ new WeakMap();
+s.styles = x`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -299,43 +304,43 @@ s.styles = b`
     }
   `;
 r([
-  l()
+  n()
 ], s.prototype, "_indexes", 2);
 r([
-  l()
+  n()
 ], s.prototype, "_selectedIndex", 2);
 r([
-  l()
+  n()
 ], s.prototype, "_rebuildIndex", 2);
 r([
-  l()
+  n()
 ], s.prototype, "_query", 2);
 r([
-  l()
+  n()
 ], s.prototype, "_pageSize", 2);
 r([
-  l()
+  n()
 ], s.prototype, "_results", 2);
 r([
-  l()
+  n()
 ], s.prototype, "_rebuildMsg", 2);
 r([
-  l()
+  n()
 ], s.prototype, "_loading", 2);
 r([
-  l()
+  n()
 ], s.prototype, "_searching", 2);
 r([
-  l()
+  n()
 ], s.prototype, "_rebuilding", 2);
 r([
-  l()
+  n()
 ], s.prototype, "_error", 2);
 s = r([
-  g("examine-dashboard")
+  v("examine-dashboard")
 ], s);
-const k = s;
+const N = s;
 export {
   s as ExamineDashboardElement,
-  k as default
+  N as default
 };

@@ -81,6 +81,12 @@ Set `Environment: sandbox` for testing, `production` for live transactions.
 - Direct project reference to `SplatDev.Payments.BancoInter` (not a NuGet package dependency)
 - Webhook payload signature verification is handled at the library level
 
+## Changelog
+
+### 1.2.1 — 2026-08-21
+- The plugin's tables are created on startup. They were never created before, so anything touching them failed on a fresh install.
+- Runs on SQLite as well as SQL Server. It previously assumed SQL Server and failed with "Keyword not supported: 'cache'" on the database Umbraco's installer offers by default.
+
 ## License
 
 MIT © [SplatDev](https://github.com/SplatDev-Ltda)

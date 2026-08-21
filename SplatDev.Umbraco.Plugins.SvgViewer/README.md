@@ -2,6 +2,13 @@
 
 SVG file viewer plugin for Umbraco — renders inline SVG files from the Umbraco media library safely.
 
+
+<!-- screenshot:start -->
+
+![SvgViewer dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.SvgViewer/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.SvgViewer.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.SvgViewer)
 
 ## Compatibility
@@ -28,6 +35,12 @@ builder.CreateUmbracoBuilder()
     .AddSvgViewer()   // <-- add this
     .Build();
 ```
+
+## Changelog
+
+### 1.1.5 — 2026-08-21
+- Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.
+- A failed request now raises a notification instead of leaving the dashboard looking like there is simply no data.
 
 ## License
 

@@ -1,37 +1,42 @@
-import { LitElement as _, html as n, css as y, state as d, customElement as m } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as x } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as b } from "@umbraco-cms/backoffice/auth";
-function g(e) {
-  let t = null;
-  const r = new Promise((i) => {
-    e.consumeContext(b, async (a) => {
-      var o;
+import { LitElement as g, html as u, css as k, state as p, customElement as w } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as v } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as $ } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as E } from "@umbraco-cms/backoffice/notification";
+function P(e) {
+  let t = null, a = null;
+  const i = e.consumeContext.bind(e), l = new Promise((r) => {
+    i($, async (o) => {
+      var d;
       try {
-        t = await ((o = a == null ? void 0 : a.getLatestToken) == null ? void 0 : o.call(a)) ?? null;
+        t = await ((d = o == null ? void 0 : o.getLatestToken) == null ? void 0 : d.call(o)) ?? null;
       } catch {
         t = null;
       }
-      i();
-    }), setTimeout(i, 3e3);
+      r();
+    }), setTimeout(r, 3e3);
   });
-  return async (i, a = {}) => {
-    await r;
-    const o = new Headers(a.headers);
-    t && !o.has("Authorization") && o.set("Authorization", `Bearer ${t}`);
-    const s = await fetch(i, { ...a, credentials: "same-origin", headers: o });
-    return (s.status === 401 || s.status === 403) && console.error(
-      `[SplatDev] ${s.status} from ${String(i)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), s;
+  return i(E, (r) => {
+    a = r;
+  }), async (r, o = {}) => {
+    await l;
+    const d = new Headers(o.headers);
+    t && !d.has("Authorization") && d.set("Authorization", `Bearer ${t}`);
+    const n = await fetch(r, { ...o, credentials: "same-origin", headers: d });
+    if (!n.ok) {
+      const c = n.status === 401 || n.status === 403, b = c ? "Not authorised" : "Could not load data", _ = c ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${n.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${n.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${n.status} from ${String(r)} — ${_}`), a == null || a.peek("danger", { data: { headline: b, message: _ } });
+    }
+    return n;
   };
 }
-var k = Object.defineProperty, v = Object.getOwnPropertyDescriptor, c = (e) => {
+var I = Object.defineProperty, F = Object.getOwnPropertyDescriptor, x = (e) => {
   throw TypeError(e);
-}, u = (e, t, r, i) => {
-  for (var a = i > 1 ? void 0 : i ? v(t, r) : t, o = e.length - 1, s; o >= 0; o--)
-    (s = e[o]) && (a = (i ? s(t, r, a) : s(a)) || a);
-  return i && a && k(t, r, a), a;
-}, w = (e, t, r) => t.has(e) || c("Cannot " + r), p = (e, t, r) => (w(e, t, "read from private field"), r ? r.call(e) : t.get(e)), $ = (e, t, r) => t.has(e) ? c("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, r), h;
-const f = [
+}, h = (e, t, a, i) => {
+  for (var l = i > 1 ? void 0 : i ? F(t, a) : t, r = e.length - 1, o; r >= 0; r--)
+    (o = e[r]) && (l = (i ? o(t, a, l) : o(l)) || l);
+  return i && l && I(t, a, l), l;
+}, T = (e, t, a) => t.has(e) || x("Cannot " + a), m = (e, t, a) => (T(e, t, "read from private field"), a ? a.call(e) : t.get(e)), K = (e, t, a) => t.has(e) ? x("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), f;
+const y = [
   { key: "camera", label: "Camera" },
   { key: "lens", label: "Lens" },
   { key: "dateTaken", label: "Date Taken" },
@@ -43,14 +48,14 @@ const f = [
   { key: "gpsLatitude", label: "GPS Latitude" },
   { key: "gpsLongitude", label: "GPS Longitude" }
 ];
-let l = class extends x(_) {
+let s = class extends v(g) {
   constructor() {
-    super(...arguments), $(this, h, g(this)), this._mediaKey = "", this._filePath = "", this._data = null, this._error = "", this._loading = !1, this._baseUrl = "/umbraco/api/exif/";
+    super(...arguments), K(this, f, P(this)), this._mediaKey = "", this._filePath = "", this._data = null, this._error = "", this._loading = !1, this._baseUrl = "/umbraco/api/exif/";
   }
   async _lookupByKey() {
     this._data = null, this._error = "", this._loading = !0;
     try {
-      const e = await p(this, h).call(this, `${this._baseUrl}GetByMediaKey?mediaKey=${encodeURIComponent(this._mediaKey)}`);
+      const e = await m(this, f).call(this, `${this._baseUrl}GetByMediaKey?mediaKey=${encodeURIComponent(this._mediaKey)}`);
       if (!e.ok) throw new Error(await e.text());
       this._data = await e.json();
     } catch (e) {
@@ -62,7 +67,7 @@ let l = class extends x(_) {
   async _lookupByPath() {
     this._data = null, this._error = "", this._loading = !0;
     try {
-      const e = await p(this, h).call(this, `${this._baseUrl}GetByFilePath?filePath=${encodeURIComponent(this._filePath)}`);
+      const e = await m(this, f).call(this, `${this._baseUrl}GetByFilePath?filePath=${encodeURIComponent(this._filePath)}`);
       if (!e.ok) throw new Error(await e.text());
       this._data = await e.json();
     } catch (e) {
@@ -78,24 +83,24 @@ let l = class extends x(_) {
     this._filePath = e.target.value;
   }
   _renderRows() {
-    return this._data ? f.map(({ key: e, label: t, suffix: r }) => {
+    return this._data ? y.map(({ key: e, label: t, suffix: a }) => {
       const i = this._data[e];
-      return i == null || i === "" ? n`` : n`
+      return i == null || i === "" ? u`` : u`
         <tr>
           <th>${t}</th>
-          <td>${i}${r ?? ""}</td>
+          <td>${i}${a ?? ""}</td>
         </tr>
       `;
-    }) : n``;
+    }) : u``;
   }
   _hasAnyData() {
-    return this._data ? f.some(({ key: e }) => {
+    return this._data ? y.some(({ key: e }) => {
       const t = this._data[e];
       return t != null && t !== "";
     }) : !1;
   }
   render() {
-    return n`
+    return u`
       <uui-box headline="EXIF Metadata Viewer">
         <div class="lookup-grid">
           <div class="lookup-section">
@@ -143,22 +148,22 @@ let l = class extends x(_) {
           </div>
         </div>
 
-        ${this._error ? n`<uui-alert look="danger" class="error-banner">${this._error}</uui-alert>` : ""}
+        ${this._error ? u`<uui-alert look="danger" class="error-banner">${this._error}</uui-alert>` : ""}
 
-        ${this._hasAnyData() ? n`
+        ${this._hasAnyData() ? u`
               <h4 style="margin-top:20px; font-weight:600;">EXIF Data</h4>
               <table class="exif-table">
                 <tbody>
                   ${this._renderRows()}
                 </tbody>
               </table>
-            ` : this._data ? n`<p style="margin-top:16px; color:var(--uui-color-text-alt,#6b7280);">No EXIF data found for this media item.</p>` : ""}
+            ` : this._data ? u`<p style="margin-top:16px; color:var(--uui-color-text-alt,#6b7280);">No EXIF data found for this media item.</p>` : ""}
       </uui-box>
     `;
   }
 };
-h = /* @__PURE__ */ new WeakMap();
-l.styles = y`
+f = /* @__PURE__ */ new WeakMap();
+s.styles = k`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -216,26 +221,26 @@ l.styles = y`
       word-break: break-word;
     }
   `;
-u([
-  d()
-], l.prototype, "_mediaKey", 2);
-u([
-  d()
-], l.prototype, "_filePath", 2);
-u([
-  d()
-], l.prototype, "_data", 2);
-u([
-  d()
-], l.prototype, "_error", 2);
-u([
-  d()
-], l.prototype, "_loading", 2);
-l = u([
-  m("exif-dashboard")
-], l);
-const F = l;
+h([
+  p()
+], s.prototype, "_mediaKey", 2);
+h([
+  p()
+], s.prototype, "_filePath", 2);
+h([
+  p()
+], s.prototype, "_data", 2);
+h([
+  p()
+], s.prototype, "_error", 2);
+h([
+  p()
+], s.prototype, "_loading", 2);
+s = h([
+  w("exif-dashboard")
+], s);
+const G = s;
 export {
-  l as ExifDashboardElement,
-  F as default
+  s as ExifDashboardElement,
+  G as default
 };

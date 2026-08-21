@@ -1,40 +1,45 @@
-import { LitElement as g, html as i, css as b, state as n, customElement as m } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as _ } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as v } from "@umbraco-cms/backoffice/auth";
-function x(e) {
-  let t = null;
-  const r = new Promise((c) => {
-    e.consumeContext(v, async (o) => {
-      var d;
+import { LitElement as x, html as i, css as y, state as c, customElement as w } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as k } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as P } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as $ } from "@umbraco-cms/backoffice/notification";
+function C(e) {
+  let t = null, o = null;
+  const l = e.consumeContext.bind(e), d = new Promise((n) => {
+    l(P, async (r) => {
+      var p;
       try {
-        t = await ((d = o == null ? void 0 : o.getLatestToken) == null ? void 0 : d.call(o)) ?? null;
+        t = await ((p = r == null ? void 0 : r.getLatestToken) == null ? void 0 : p.call(r)) ?? null;
       } catch {
         t = null;
       }
-      c();
-    }), setTimeout(c, 3e3);
+      n();
+    }), setTimeout(n, 3e3);
   });
-  return async (c, o = {}) => {
-    await r;
-    const d = new Headers(o.headers);
-    t && !d.has("Authorization") && d.set("Authorization", `Bearer ${t}`);
-    const l = await fetch(c, { ...o, credentials: "same-origin", headers: d });
-    return (l.status === 401 || l.status === 403) && console.error(
-      `[SplatDev] ${l.status} from ${String(c)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), l;
+  return l($, (n) => {
+    o = n;
+  }), async (n, r = {}) => {
+    await d;
+    const p = new Headers(r.headers);
+    t && !p.has("Authorization") && p.set("Authorization", `Bearer ${t}`);
+    const u = await fetch(n, { ...r, credentials: "same-origin", headers: p });
+    if (!u.ok) {
+      const b = u.status === 401 || u.status === 403, v = b ? "Not authorised" : "Could not load data", m = b ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${u.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${u.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${u.status} from ${String(n)} — ${m}`), o == null || o.peek("danger", { data: { headline: v, message: m } });
+    }
+    return u;
   };
 }
-var y = Object.defineProperty, w = Object.getOwnPropertyDescriptor, h = (e) => {
+var S = Object.defineProperty, R = Object.getOwnPropertyDescriptor, _ = (e) => {
   throw TypeError(e);
-}, s = (e, t, r, c) => {
-  for (var o = c > 1 ? void 0 : c ? w(t, r) : t, d = e.length - 1, l; d >= 0; d--)
-    (l = e[d]) && (o = (c ? l(t, r, o) : l(o)) || o);
-  return c && o && y(t, r, o), o;
-}, P = (e, t, r) => t.has(e) || h("Cannot " + r), p = (e, t, r) => (P(e, t, "read from private field"), r ? r.call(e) : t.get(e)), k = (e, t, r) => t.has(e) ? h("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, r), u;
-const f = "/umbraco/api/mercadopago";
-let a = class extends _(g) {
+}, s = (e, t, o, l) => {
+  for (var d = l > 1 ? void 0 : l ? R(t, o) : t, n = e.length - 1, r; n >= 0; n--)
+    (r = e[n]) && (d = (l ? r(t, o, d) : r(d)) || d);
+  return l && d && S(t, o, d), d;
+}, E = (e, t, o) => t.has(e) || _("Cannot " + o), h = (e, t, o) => (E(e, t, "read from private field"), o ? o.call(e) : t.get(e)), O = (e, t, o) => t.has(e) ? _("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, o), f;
+const g = "/umbraco/api/mercadopago";
+let a = class extends k(x) {
   constructor() {
-    super(...arguments), k(this, u, x(this)), this._connStatus = "checking", this._config = null, this._configError = "", this._prefOrderRef = "", this._prefAmount = "", this._prefDescription = "", this._prefLoading = !1, this._prefResult = "", this._statusPaymentId = "", this._statusLoading = !1, this._statusResult = "";
+    super(...arguments), O(this, f, C(this)), this._connStatus = "checking", this._config = null, this._configError = "", this._prefOrderRef = "", this._prefAmount = "", this._prefDescription = "", this._prefLoading = !1, this._prefResult = "", this._statusPaymentId = "", this._statusLoading = !1, this._statusResult = "";
   }
   // ── Lifecycle ──────────────────────────────────────────────────────────────
   connectedCallback() {
@@ -44,7 +49,7 @@ let a = class extends _(g) {
   async _loadConfig() {
     this._connStatus = "checking", this._configError = "", this._config = null;
     try {
-      const e = await p(this, u).call(this, `${f}/GetConfig`);
+      const e = await h(this, f).call(this, `${g}/GetConfig`);
       e.ok ? (this._config = await e.json(), this._connStatus = "connected") : (this._connStatus = "error", this._configError = `HTTP ${e.status}: ${e.statusText}`);
     } catch (e) {
       this._connStatus = "error", this._configError = e instanceof Error ? e.message : String(e);
@@ -53,7 +58,7 @@ let a = class extends _(g) {
   async _createPreference() {
     this._prefLoading = !0, this._prefResult = "";
     try {
-      const t = await (await p(this, u).call(this, `${f}/CreatePreference`, {
+      const t = await (await h(this, f).call(this, `${g}/CreatePreference`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -72,7 +77,7 @@ let a = class extends _(g) {
   async _getPaymentStatus() {
     this._statusLoading = !0, this._statusResult = "";
     try {
-      const t = await (await p(this, u).call(this, `${f}/GetPaymentStatus?paymentId=${encodeURIComponent(this._statusPaymentId.trim())}`)).json();
+      const t = await (await h(this, f).call(this, `${g}/GetPaymentStatus?paymentId=${encodeURIComponent(this._statusPaymentId.trim())}`)).json();
       this._statusResult = JSON.stringify(t, null, 2);
     } catch (e) {
       this._statusResult = e instanceof Error ? e.message : String(e);
@@ -252,8 +257,8 @@ let a = class extends _(g) {
     `;
   }
 };
-u = /* @__PURE__ */ new WeakMap();
-a.styles = b`
+f = /* @__PURE__ */ new WeakMap();
+a.styles = y`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -438,43 +443,43 @@ a.styles = b`
     }
   `;
 s([
-  n()
+  c()
 ], a.prototype, "_connStatus", 2);
 s([
-  n()
+  c()
 ], a.prototype, "_config", 2);
 s([
-  n()
+  c()
 ], a.prototype, "_configError", 2);
 s([
-  n()
+  c()
 ], a.prototype, "_prefOrderRef", 2);
 s([
-  n()
+  c()
 ], a.prototype, "_prefAmount", 2);
 s([
-  n()
+  c()
 ], a.prototype, "_prefDescription", 2);
 s([
-  n()
+  c()
 ], a.prototype, "_prefLoading", 2);
 s([
-  n()
+  c()
 ], a.prototype, "_prefResult", 2);
 s([
-  n()
+  c()
 ], a.prototype, "_statusPaymentId", 2);
 s([
-  n()
+  c()
 ], a.prototype, "_statusLoading", 2);
 s([
-  n()
+  c()
 ], a.prototype, "_statusResult", 2);
 a = s([
-  m("mercadopago-dashboard")
+  w("mercadopago-dashboard")
 ], a);
-const R = a;
+const I = a;
 export {
   a as MercadoPagoDashboardElement,
-  R as default
+  I as default
 };

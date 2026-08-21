@@ -4,6 +4,8 @@ using SplatDev.Umbraco.Plugins.Payments.BancoInter.Models;
 using SplatDev.Umbraco.Plugins.Payments.BancoInter.Services;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
+using SplatDev.Umbraco.Plugins.Payments.BancoInter.Components;
+using SplatDev.Umbraco.Plugins.Payments.BancoInter.Persistence;
 
 namespace SplatDev.Umbraco.Plugins.Payments.BancoInter.Composers;
 
@@ -20,7 +22,8 @@ public class BancoInterComposer : IComposer
         builder.Services.AddScoped<IBancoInterBankingService, BancoInterBankingService>();
 
         builder.Services.AddDbContext<BancoInterDbContext>(options =>
-            options.UseSqlServer(
-                builder.Config.GetSection("ConnectionStrings")["umbracoDbDSN"] ?? string.Empty));
+            SplatDevDbContextConfig.UseUmbracoDatabase(options, builder.Config));
+
+        builder.Components().Append<PaymentsBancoInterSchemaComponent>();
     }
 }

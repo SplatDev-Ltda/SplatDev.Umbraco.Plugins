@@ -4,6 +4,8 @@ using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 using SplatDev.Umbraco.Plugins.JsonRpc.Models;
 using SplatDev.Umbraco.Plugins.JsonRpc.Services;
+using SplatDev.Umbraco.Plugins.JsonRpc.Components;
+using SplatDev.Umbraco.Plugins.JsonRpc.Persistence;
 
 namespace SplatDev.Umbraco.Plugins.JsonRpc.Composers;
 
@@ -14,6 +16,8 @@ public class JsonRpcComposer : IComposer
         builder.Services.AddScoped<IApiKeyService, ApiKeyService>();
         builder.Services.AddScoped<IJsonRpcService, JsonRpcService>();
         builder.Services.AddDbContext<JsonRpcDbContext>(options =>
-            options.UseSqlServer(builder.Config.GetSection("ConnectionStrings")["umbracoDbDSN"] ?? string.Empty));
+            SplatDevDbContextConfig.UseUmbracoDatabase(options, builder.Config));
+
+        builder.Components().Append<JsonRpcSchemaComponent>();
     }
 }

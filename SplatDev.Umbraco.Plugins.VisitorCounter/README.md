@@ -2,6 +2,13 @@
 
 Site visitor counter plugin for Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
+
+<!-- screenshot:start -->
+
+![VisitorCounter dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.VisitorCounter/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 ## Features
 - Cookie-based session tracking (IP-hash fallback, privacy-preserving)
 - Unique vs. total visit counts
@@ -44,3 +51,10 @@ cd client
 npm install
 npm run build
 ```
+
+## Changelog
+
+### 2.1.5 — 2026-08-21
+- Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.
+- A failed request now raises a notification instead of leaving the dashboard looking like there is simply no data.
+- Runs on SQLite as well as SQL Server. It previously assumed SQL Server and failed with "Keyword not supported: 'cache'" on the database Umbraco's installer offers by default.

@@ -149,6 +149,12 @@ Localized in English (`en`) and Spanish (`es`).
 - `Umbraco.Cms.Core` / `Umbraco.Cms.Web.Common` — Umbraco framework
 - `Umbraco.Cms.Api.Management` (net10.0 / Umbraco 17 only)
 
+## Changelog
+
+### 2.1.4 — 2026-08-21
+- Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.
+- A failed request now raises a notification instead of leaving the dashboard looking like there is simply no data.
+
 ## License
 
 MIT © [SplatDev](https://github.com/splatdevtech)

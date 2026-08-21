@@ -1,44 +1,49 @@
-import { LitElement as p, html as l, css as h, state as c, customElement as g } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as b } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as v } from "@umbraco-cms/backoffice/auth";
-function f(e) {
-  let o = null;
-  const t = new Promise((s) => {
-    e.consumeContext(v, async (r) => {
-      var i;
+import { LitElement as w, html as n, css as f, state as p, customElement as _ } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as y } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as T } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as $ } from "@umbraco-cms/backoffice/notification";
+function P(e) {
+  let o = null, t = null;
+  const s = e.consumeContext.bind(e), a = new Promise((i) => {
+    s(T, async (r) => {
+      var d;
       try {
-        o = await ((i = r == null ? void 0 : r.getLatestToken) == null ? void 0 : i.call(r)) ?? null;
+        o = await ((d = r == null ? void 0 : r.getLatestToken) == null ? void 0 : d.call(r)) ?? null;
       } catch {
         o = null;
       }
-      s();
-    }), setTimeout(s, 3e3);
+      i();
+    }), setTimeout(i, 3e3);
   });
-  return async (s, r = {}) => {
-    await t;
-    const i = new Headers(r.headers);
-    o && !i.has("Authorization") && i.set("Authorization", `Bearer ${o}`);
-    const a = await fetch(s, { ...r, credentials: "same-origin", headers: i });
-    return (a.status === 401 || a.status === 403) && console.error(
-      `[SplatDev] ${a.status} from ${String(s)} — the backoffice token was ${o ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), a;
+  return s($, (i) => {
+    t = i;
+  }), async (i, r = {}) => {
+    await a;
+    const d = new Headers(r.headers);
+    o && !d.has("Authorization") && d.set("Authorization", `Bearer ${o}`);
+    const l = await fetch(i, { ...r, credentials: "same-origin", headers: d });
+    if (!l.ok) {
+      const h = l.status === 401 || l.status === 403, v = h ? "Not authorised" : "Could not load data", g = h ? `The backoffice token was ${o ? "sent but rejected" : "not available"} (${l.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${l.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${l.status} from ${String(i)} — ${g}`), t == null || t.peek("danger", { data: { headline: v, message: g } });
+    }
+    return l;
   };
 }
-var _ = Object.defineProperty, w = Object.getOwnPropertyDescriptor, m = (e) => {
+var k = Object.defineProperty, x = Object.getOwnPropertyDescriptor, b = (e) => {
   throw TypeError(e);
-}, u = (e, o, t, s) => {
-  for (var r = s > 1 ? void 0 : s ? w(o, t) : o, i = e.length - 1, a; i >= 0; i--)
-    (a = e[i]) && (r = (s ? a(o, t, r) : a(r)) || r);
-  return s && r && _(o, t, r), r;
-}, y = (e, o, t) => o.has(e) || m("Cannot " + t), T = (e, o, t) => (y(e, o, "read from private field"), t ? t.call(e) : o.get(e)), P = (e, o, t) => o.has(e) ? m("Cannot add the same private member more than once") : o instanceof WeakSet ? o.add(e) : o.set(e, t), d;
-let n = class extends b(p) {
+}, c = (e, o, t, s) => {
+  for (var a = s > 1 ? void 0 : s ? x(o, t) : o, i = e.length - 1, r; i >= 0; i--)
+    (r = e[i]) && (a = (s ? r(o, t, a) : r(a)) || a);
+  return s && a && k(o, t, a), a;
+}, L = (e, o, t) => o.has(e) || b("Cannot " + t), E = (e, o, t) => (L(e, o, "read from private field"), t ? t.call(e) : o.get(e)), O = (e, o, t) => o.has(e) ? b("Cannot add the same private member more than once") : o instanceof WeakSet ? o.add(e) : o.set(e, t), m;
+let u = class extends y(w) {
   constructor() {
-    super(...arguments), P(this, d, f(this)), this._activeTab = "overview", this._result = null, this._loading = !1, this._apiBase = "/umbraco/api/memberlogin";
+    super(...arguments), O(this, m, P(this)), this._activeTab = "overview", this._result = null, this._loading = !1, this._apiBase = "/umbraco/api/memberlogin";
   }
   async _callApi(e, o) {
     this._loading = !0, this._result = null;
     try {
-      const t = await T(this, d).call(this, `${this._apiBase}/${e}`, {
+      const t = await E(this, m).call(this, `${this._apiBase}/${e}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(o)
@@ -54,7 +59,7 @@ let n = class extends b(p) {
     }
   }
   _renderOverview() {
-    return l`
+    return n`
       <uui-box headline="Member Login Plugin">
         <p>Provides custom member login functionality:</p>
         <ul>
@@ -74,7 +79,7 @@ let n = class extends b(p) {
     `;
   }
   _renderTestLogin() {
-    return l`
+    return n`
       <uui-box headline="Test Login">
         <div class="form-row">
           <label>Username / Email</label>
@@ -97,12 +102,12 @@ let n = class extends b(p) {
       });
     }}
         >Test Login</uui-button>
-        ${this._result ? l`<div class="result ${this._result.success ? "success" : "error"}">${this._result.message}</div>` : ""}
+        ${this._result ? n`<div class="result ${this._result.success ? "success" : "error"}">${this._result.message}</div>` : ""}
       </uui-box>
     `;
   }
   _renderForgotPassword() {
-    return l`
+    return n`
       <uui-box headline="Forgot Password">
         <div class="form-row">
           <label>Email Address</label>
@@ -119,18 +124,18 @@ let n = class extends b(p) {
       });
     }}
         >Send Reset Link</uui-button>
-        ${this._result ? l`<div class="result ${this._result.success ? "success" : "error"}">${this._result.message}</div>` : ""}
+        ${this._result ? n`<div class="result ${this._result.success ? "success" : "error"}">${this._result.message}</div>` : ""}
       </uui-box>
     `;
   }
   render() {
-    return l`
+    return n`
       <h1>Member Login Manager</h1>
       <p class="description">Manage member login and password reset from the Umbraco backoffice.</p>
 
       <div class="tabs">
         ${["overview", "test-login", "forgot-password"].map(
-      (e) => l`
+      (e) => n`
             <div
               class="tab ${this._activeTab === e ? "active" : ""}"
               @click=${() => {
@@ -145,8 +150,8 @@ let n = class extends b(p) {
     `;
   }
 };
-d = /* @__PURE__ */ new WeakMap();
-n.styles = h`
+m = /* @__PURE__ */ new WeakMap();
+u.styles = f`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -162,20 +167,20 @@ n.styles = h`
     .tab { padding: 10px 20px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; font-weight: 500; }
     .tab.active { border-bottom-color: var(--uui-color-focus, #1a56db); color: var(--uui-color-focus, #1a56db); }
   `;
-u([
-  c()
-], n.prototype, "_activeTab", 2);
-u([
-  c()
-], n.prototype, "_result", 2);
-u([
-  c()
-], n.prototype, "_loading", 2);
-n = u([
-  g("memberlogin-dashboard")
-], n);
-const L = n;
+c([
+  p()
+], u.prototype, "_activeTab", 2);
+c([
+  p()
+], u.prototype, "_result", 2);
+c([
+  p()
+], u.prototype, "_loading", 2);
+u = c([
+  _("memberlogin-dashboard")
+], u);
+const F = u;
 export {
-  n as MemberLoginDashboardElement,
-  L as default
+  u as MemberLoginDashboardElement,
+  F as default
 };

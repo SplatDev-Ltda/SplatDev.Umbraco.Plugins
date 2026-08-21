@@ -1,59 +1,64 @@
-import { LitElement as m, html as s, css as h, state as c, customElement as g } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as v } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as _ } from "@umbraco-cms/backoffice/auth";
-function f(e) {
-  let t = null;
-  const i = new Promise((r) => {
-    e.consumeContext(_, async (a) => {
-      var o;
+import { LitElement as _, html as d, css as w, state as b, customElement as y } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as T } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as $ } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as x } from "@umbraco-cms/backoffice/notification";
+function P(e) {
+  let t = null, a = null;
+  const l = e.consumeContext.bind(e), o = new Promise((r) => {
+    l($, async (i) => {
+      var u;
       try {
-        t = await ((o = a == null ? void 0 : a.getLatestToken) == null ? void 0 : o.call(a)) ?? null;
+        t = await ((u = i == null ? void 0 : i.getLatestToken) == null ? void 0 : u.call(i)) ?? null;
       } catch {
         t = null;
       }
       r();
     }), setTimeout(r, 3e3);
   });
-  return async (r, a = {}) => {
-    await i;
-    const o = new Headers(a.headers);
-    t && !o.has("Authorization") && o.set("Authorization", `Bearer ${t}`);
-    const l = await fetch(r, { ...a, credentials: "same-origin", headers: o });
-    return (l.status === 401 || l.status === 403) && console.error(
-      `[SplatDev] ${l.status} from ${String(r)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), l;
+  return l(x, (r) => {
+    a = r;
+  }), async (r, i = {}) => {
+    await o;
+    const u = new Headers(i.headers);
+    t && !u.has("Authorization") && u.set("Authorization", `Bearer ${t}`);
+    const s = await fetch(r, { ...i, credentials: "same-origin", headers: u });
+    if (!s.ok) {
+      const m = s.status === 401 || s.status === 403, f = m ? "Not authorised" : "Could not load data", h = m ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${s.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${s.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${s.status} from ${String(r)} — ${h}`), a == null || a.peek("danger", { data: { headline: f, message: h } });
+    }
+    return s;
   };
 }
-var w = Object.defineProperty, y = Object.getOwnPropertyDescriptor, b = (e) => {
+var k = Object.defineProperty, A = Object.getOwnPropertyDescriptor, v = (e) => {
   throw TypeError(e);
-}, u = (e, t, i, r) => {
-  for (var a = r > 1 ? void 0 : r ? y(t, i) : t, o = e.length - 1, l; o >= 0; o--)
-    (l = e[o]) && (a = (r ? l(t, i, a) : l(a)) || a);
-  return r && a && w(t, i, a), a;
-}, x = (e, t, i) => t.has(e) || b("Cannot " + i), p = (e, t, i) => (x(e, t, "read from private field"), i ? i.call(e) : t.get(e)), P = (e, t, i) => t.has(e) ? b("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, i), d;
-let n = class extends v(m) {
+}, c = (e, t, a, l) => {
+  for (var o = l > 1 ? void 0 : l ? A(t, a) : t, r = e.length - 1, i; r >= 0; r--)
+    (i = e[r]) && (o = (l ? i(t, a, o) : i(o)) || o);
+  return l && o && k(t, a, o), o;
+}, O = (e, t, a) => t.has(e) || v("Cannot " + a), g = (e, t, a) => (O(e, t, "read from private field"), a ? a.call(e) : t.get(e)), E = (e, t, a) => t.has(e) ? v("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), p;
+let n = class extends T(_) {
   constructor() {
-    super(...arguments), P(this, d, f(this)), this._activeTab = "overview", this._pending = [], this._loading = !1, this._result = null, this._apiBase = "/umbraco/api/memberregistration";
+    super(...arguments), E(this, p, P(this)), this._activeTab = "overview", this._pending = [], this._loading = !1, this._result = null, this._apiBase = "/umbraco/api/memberregistration";
   }
   connectedCallback() {
     super.connectedCallback(), this._loadPending();
   }
   async _loadPending() {
     try {
-      const e = await p(this, d).call(this, `${this._apiBase}/GetPending`);
+      const e = await g(this, p).call(this, `${this._apiBase}/GetPending`);
       e.ok && (this._pending = await e.json());
     } catch {
       this._pending = [];
     }
   }
   async _approveMember(e) {
-    await p(this, d).call(this, `${this._apiBase}/Approve?memberId=${e}`, { method: "POST" }), await this._loadPending();
+    await g(this, p).call(this, `${this._apiBase}/Approve?memberId=${e}`, { method: "POST" }), await this._loadPending();
   }
   _formatDate(e) {
     return new Date(e).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
   }
   _renderOverview() {
-    return s`
+    return d`
       <uui-box headline="Member Registration Plugin">
         <p>Provides member registration functionality:</p>
         <ul>
@@ -73,9 +78,9 @@ let n = class extends v(m) {
     `;
   }
   _renderPending() {
-    return s`
+    return d`
       <uui-box headline="Pending Members (${this._pending.length})">
-        ${this._pending.length === 0 ? s`<p style="color:var(--uui-color-text-alt,#6b7280)">No pending members.</p>` : s`
+        ${this._pending.length === 0 ? d`<p style="color:var(--uui-color-text-alt,#6b7280)">No pending members.</p>` : d`
               <uui-table>
                 <uui-table-head>
                   <uui-table-head-cell>Name</uui-table-head-cell>
@@ -85,7 +90,7 @@ let n = class extends v(m) {
                   <uui-table-head-cell>Actions</uui-table-head-cell>
                 </uui-table-head>
                 ${this._pending.map(
-      (e) => s`
+      (e) => d`
                     <uui-table-row>
                       <uui-table-cell>${e.name}</uui-table-cell>
                       <uui-table-cell>${e.email}</uui-table-cell>
@@ -105,7 +110,7 @@ let n = class extends v(m) {
     `;
   }
   render() {
-    return s`
+    return d`
       <h1>Member Registration Manager</h1>
       <p class="description">Manage member registration and approval workflow.</p>
 
@@ -124,8 +129,8 @@ let n = class extends v(m) {
     `;
   }
 };
-d = /* @__PURE__ */ new WeakMap();
-n.styles = h`
+p = /* @__PURE__ */ new WeakMap();
+n.styles = w`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -142,23 +147,23 @@ n.styles = h`
     .result.error { background: #fde8e8; color: #c81e1e; }
     .badge { display: inline-flex; align-items: center; justify-content: center; background: #1a56db; color: #fff; border-radius: 9999px; font-size: 0.75rem; padding: 0 6px; min-width: 20px; margin-left: 4px; }
   `;
-u([
-  c()
+c([
+  b()
 ], n.prototype, "_activeTab", 2);
-u([
-  c()
+c([
+  b()
 ], n.prototype, "_pending", 2);
-u([
-  c()
+c([
+  b()
 ], n.prototype, "_loading", 2);
-u([
-  c()
+c([
+  b()
 ], n.prototype, "_result", 2);
-n = u([
-  g("memberregistration-dashboard")
+n = c([
+  y("memberregistration-dashboard")
 ], n);
-const E = n;
+const B = n;
 export {
   n as MemberRegistrationDashboardElement,
-  E as default
+  B as default
 };

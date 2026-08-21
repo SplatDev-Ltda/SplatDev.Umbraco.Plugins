@@ -1,39 +1,44 @@
-import { LitElement as g, html as s, nothing as b, css as _, state as c, customElement as f } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as m } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as v } from "@umbraco-cms/backoffice/auth";
-function y(e) {
-  let t = null;
-  const i = new Promise((o) => {
-    e.consumeContext(v, async (a) => {
-      var u;
+import { LitElement as v, html as a, nothing as y, css as $, state as p, customElement as x } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as w } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as P } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as T } from "@umbraco-cms/backoffice/notification";
+function z(e) {
+  let t = null, s = null;
+  const n = e.consumeContext.bind(e), u = new Promise((l) => {
+    n(P, async (i) => {
+      var h;
       try {
-        t = await ((u = a == null ? void 0 : a.getLatestToken) == null ? void 0 : u.call(a)) ?? null;
+        t = await ((h = i == null ? void 0 : i.getLatestToken) == null ? void 0 : h.call(i)) ?? null;
       } catch {
         t = null;
       }
-      o();
-    }), setTimeout(o, 3e3);
+      l();
+    }), setTimeout(l, 3e3);
   });
-  return async (o, a = {}) => {
-    await i;
-    const u = new Headers(a.headers);
-    t && !u.has("Authorization") && u.set("Authorization", `Bearer ${t}`);
-    const r = await fetch(o, { ...a, credentials: "same-origin", headers: u });
-    return (r.status === 401 || r.status === 403) && console.error(
-      `[SplatDev] ${r.status} from ${String(o)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), r;
+  return n(T, (l) => {
+    s = l;
+  }), async (l, i = {}) => {
+    await u;
+    const h = new Headers(i.headers);
+    t && !h.has("Authorization") && h.set("Authorization", `Bearer ${t}`);
+    const c = await fetch(l, { ...i, credentials: "same-origin", headers: h });
+    if (!c.ok) {
+      const b = c.status === 401 || c.status === 403, m = b ? "Not authorised" : "Could not load data", _ = b ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${c.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${c.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${c.status} from ${String(l)} — ${_}`), s == null || s.peek("danger", { data: { headline: m, message: _ } });
+    }
+    return c;
   };
 }
-var x = Object.defineProperty, $ = Object.getOwnPropertyDescriptor, d = (e) => {
+var C = Object.defineProperty, k = Object.getOwnPropertyDescriptor, f = (e) => {
   throw TypeError(e);
-}, n = (e, t, i, o) => {
-  for (var a = o > 1 ? void 0 : o ? $(t, i) : t, u = e.length - 1, r; u >= 0; u--)
-    (r = e[u]) && (a = (o ? r(t, i, a) : r(a)) || a);
-  return o && a && x(t, i, a), a;
-}, P = (e, t, i) => t.has(e) || d("Cannot " + i), h = (e, t, i) => (P(e, t, "read from private field"), i ? i.call(e) : t.get(e)), w = (e, t, i) => t.has(e) ? d("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, i), p;
-let l = class extends m(g) {
+}, r = (e, t, s, n) => {
+  for (var u = n > 1 ? void 0 : n ? k(t, s) : t, l = e.length - 1, i; l >= 0; l--)
+    (i = e[l]) && (u = (n ? i(t, s, u) : i(u)) || u);
+  return n && u && C(t, s, u), u;
+}, S = (e, t, s) => t.has(e) || f("Cannot " + s), g = (e, t, s) => (S(e, t, "read from private field"), s ? s.call(e) : t.get(e)), D = (e, t, s) => t.has(e) ? f("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, s), d;
+let o = class extends w(v) {
   constructor() {
-    super(...arguments), w(this, p, y(this)), this._activeTab = "posts", this._posts = [], this._categories = [], this._tags = [], this._totalPosts = 0, this._page = 1, this._loading = !1, this._pageSize = 10, this._apiBase = "/umbraco/api/blog";
+    super(...arguments), D(this, d, z(this)), this._activeTab = "posts", this._posts = [], this._categories = [], this._tags = [], this._totalPosts = 0, this._page = 1, this._loading = !1, this._pageSize = 10, this._apiBase = "/umbraco/api/blog";
   }
   connectedCallback() {
     super.connectedCallback(), this._loadPosts(), this._loadCategories(), this._loadTags();
@@ -41,7 +46,7 @@ let l = class extends m(g) {
   async _loadPosts() {
     this._loading = !0;
     try {
-      const e = await h(this, p).call(this, `${this._apiBase}/GetPosts?page=${this._page}&pageSize=${this._pageSize}&publishedOnly=false`);
+      const e = await g(this, d).call(this, `${this._apiBase}/GetPosts?page=${this._page}&pageSize=${this._pageSize}&publishedOnly=false`);
       if (e.ok) {
         const t = await e.json();
         this._posts = t.posts ?? [], this._totalPosts = t.total ?? 0;
@@ -54,7 +59,7 @@ let l = class extends m(g) {
   }
   async _loadCategories() {
     try {
-      const e = await h(this, p).call(this, `${this._apiBase}/GetCategories`);
+      const e = await g(this, d).call(this, `${this._apiBase}/GetCategories`);
       e.ok && (this._categories = await e.json());
     } catch {
       this._categories = [];
@@ -62,7 +67,7 @@ let l = class extends m(g) {
   }
   async _loadTags() {
     try {
-      const e = await h(this, p).call(this, `${this._apiBase}/GetTags`);
+      const e = await g(this, d).call(this, `${this._apiBase}/GetTags`);
       e.ok && (this._tags = await e.json());
     } catch {
       this._tags = [];
@@ -82,7 +87,7 @@ let l = class extends m(g) {
     this._page * this._pageSize < this._totalPosts && (this._page++, await this._loadPosts());
   }
   _renderPostsTab() {
-    return this._loading ? s`<p>Loading posts...</p>` : s`
+    return this._loading ? a`<p>Loading posts...</p>` : a`
       <div class="stats-grid">
         <uui-box>
           <p class="stat-label">Total Posts</p>
@@ -99,7 +104,7 @@ let l = class extends m(g) {
       </div>
 
       <uui-box headline="Blog Posts">
-        ${this._posts.length === 0 ? s`<p class="empty">No posts found.</p>` : s`
+        ${this._posts.length === 0 ? a`<p class="empty">No posts found.</p>` : a`
               <uui-table>
                 <uui-table-head>
                   <uui-table-head-cell>Title</uui-table-head-cell>
@@ -112,7 +117,7 @@ let l = class extends m(g) {
                 ${this._posts.map(
       (e) => {
         var t;
-        return s`
+        return a`
                     <uui-table-row>
                       <uui-table-cell><strong>${e.title}</strong></uui-table-cell>
                       <uui-table-cell>${e.authorName}</uui-table-cell>
@@ -130,7 +135,7 @@ let l = class extends m(g) {
     )}
               </uui-table>
 
-              ${this._totalPosts > this._pageSize ? s`
+              ${this._totalPosts > this._pageSize ? a`
                     <div class="pagination">
                       <uui-button
                         look="secondary"
@@ -146,15 +151,15 @@ let l = class extends m(g) {
                         @click=${this._nextPage}
                       >Next</uui-button>
                     </div>
-                  ` : b}
+                  ` : y}
             `}
       </uui-box>
     `;
   }
   _renderCategoriesTab() {
-    return s`
+    return a`
       <uui-box headline="Categories (${this._categories.length})">
-        ${this._categories.length === 0 ? s`<p class="empty">No categories found.</p>` : s`
+        ${this._categories.length === 0 ? a`<p class="empty">No categories found.</p>` : a`
               <uui-table>
                 <uui-table-head>
                   <uui-table-head-cell>Name</uui-table-head-cell>
@@ -162,7 +167,7 @@ let l = class extends m(g) {
                   <uui-table-head-cell>Description</uui-table-head-cell>
                 </uui-table-head>
                 ${this._categories.map(
-      (e) => s`
+      (e) => a`
                     <uui-table-row>
                       <uui-table-cell><strong>${e.name}</strong></uui-table-cell>
                       <uui-table-cell><code>${e.slug}</code></uui-table-cell>
@@ -176,18 +181,18 @@ let l = class extends m(g) {
     `;
   }
   _renderTagsTab() {
-    return s`
+    return a`
       <uui-box headline="Tags (${this._tags.length})">
-        ${this._tags.length === 0 ? s`<p class="empty">No tags found.</p>` : s`
+        ${this._tags.length === 0 ? a`<p class="empty">No tags found.</p>` : a`
               <div class="tag-cloud">
-                ${this._tags.map((e) => s`<span class="tag-chip">${e.name}</span>`)}
+                ${this._tags.map((e) => a`<span class="tag-chip">${e.name}</span>`)}
               </div>
             `}
       </uui-box>
     `;
   }
   render() {
-    return s`
+    return a`
       <h1>Blog Manager</h1>
       <p class="description">
         Manage blog posts, categories, tags and comments from the Umbraco backoffice.
@@ -195,7 +200,7 @@ let l = class extends m(g) {
 
       <uui-tab-group>
         ${["posts", "categories", "tags"].map(
-      (e) => s`
+      (e) => a`
             <uui-tab
               label=${e.charAt(0).toUpperCase() + e.slice(1)}
               ?active=${this._activeTab === e}
@@ -213,8 +218,8 @@ let l = class extends m(g) {
     `;
   }
 };
-p = /* @__PURE__ */ new WeakMap();
-l.styles = _`
+d = /* @__PURE__ */ new WeakMap();
+o.styles = $`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -308,32 +313,32 @@ l.styles = _`
       padding: 24px 0;
     }
   `;
-n([
-  c()
-], l.prototype, "_activeTab", 2);
-n([
-  c()
-], l.prototype, "_posts", 2);
-n([
-  c()
-], l.prototype, "_categories", 2);
-n([
-  c()
-], l.prototype, "_tags", 2);
-n([
-  c()
-], l.prototype, "_totalPosts", 2);
-n([
-  c()
-], l.prototype, "_page", 2);
-n([
-  c()
-], l.prototype, "_loading", 2);
-l = n([
-  f("blog-dashboard")
-], l);
-const C = l;
+r([
+  p()
+], o.prototype, "_activeTab", 2);
+r([
+  p()
+], o.prototype, "_posts", 2);
+r([
+  p()
+], o.prototype, "_categories", 2);
+r([
+  p()
+], o.prototype, "_tags", 2);
+r([
+  p()
+], o.prototype, "_totalPosts", 2);
+r([
+  p()
+], o.prototype, "_page", 2);
+r([
+  p()
+], o.prototype, "_loading", 2);
+o = r([
+  x("blog-dashboard")
+], o);
+const O = o;
 export {
-  l as BlogDashboardElement,
-  C as default
+  o as BlogDashboardElement,
+  O as default
 };

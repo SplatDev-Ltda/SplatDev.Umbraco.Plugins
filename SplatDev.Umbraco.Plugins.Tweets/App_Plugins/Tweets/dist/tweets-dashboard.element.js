@@ -1,39 +1,44 @@
-import { LitElement as f, html as l, css as g, state as h, customElement as w } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as m } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as v } from "@umbraco-cms/backoffice/auth";
-function _(e) {
-  let t = null;
-  const r = new Promise((s) => {
-    e.consumeContext(v, async (a) => {
-      var i;
+import { LitElement as b, html as i, css as _, state as p, customElement as x } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as y } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as $ } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as C } from "@umbraco-cms/backoffice/notification";
+function T(e) {
+  let t = null, a = null;
+  const n = e.consumeContext.bind(e), o = new Promise((r) => {
+    n($, async (s) => {
+      var d;
       try {
-        t = await ((i = a == null ? void 0 : a.getLatestToken) == null ? void 0 : i.call(a)) ?? null;
+        t = await ((d = s == null ? void 0 : s.getLatestToken) == null ? void 0 : d.call(s)) ?? null;
       } catch {
         t = null;
       }
-      s();
-    }), setTimeout(s, 3e3);
+      r();
+    }), setTimeout(r, 3e3);
   });
-  return async (s, a = {}) => {
-    await r;
-    const i = new Headers(a.headers);
-    t && !i.has("Authorization") && i.set("Authorization", `Bearer ${t}`);
-    const o = await fetch(s, { ...a, credentials: "same-origin", headers: i });
-    return (o.status === 401 || o.status === 403) && console.error(
-      `[SplatDev] ${o.status} from ${String(s)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), o;
+  return n(C, (r) => {
+    a = r;
+  }), async (r, s = {}) => {
+    await o;
+    const d = new Headers(s.headers);
+    t && !d.has("Authorization") && d.set("Authorization", `Bearer ${t}`);
+    const l = await fetch(r, { ...s, credentials: "same-origin", headers: d });
+    if (!l.ok) {
+      const f = l.status === 401 || l.status === 403, v = f ? "Not authorised" : "Could not load data", g = f ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${l.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${l.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${l.status} from ${String(r)} — ${g}`), a == null || a.peek("danger", { data: { headline: v, message: g } });
+    }
+    return l;
   };
 }
-var b = Object.defineProperty, x = Object.getOwnPropertyDescriptor, u = (e) => {
+var k = Object.defineProperty, z = Object.getOwnPropertyDescriptor, m = (e) => {
   throw TypeError(e);
-}, c = (e, t, r, s) => {
-  for (var a = s > 1 ? void 0 : s ? x(t, r) : t, i = e.length - 1, o; i >= 0; i--)
-    (o = e[i]) && (a = (s ? o(t, r, a) : o(a)) || a);
-  return s && a && b(t, r, a), a;
-}, y = (e, t, r) => t.has(e) || u("Cannot " + r), p = (e, t, r) => (y(e, t, "read from private field"), r ? r.call(e) : t.get(e)), $ = (e, t, r) => t.has(e) ? u("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, r), d;
-let n = class extends m(f) {
+}, h = (e, t, a, n) => {
+  for (var o = n > 1 ? void 0 : n ? z(t, a) : t, r = e.length - 1, s; r >= 0; r--)
+    (s = e[r]) && (o = (n ? s(t, a, o) : s(o)) || o);
+  return n && o && k(t, a, o), o;
+}, A = (e, t, a) => t.has(e) || m("Cannot " + a), w = (e, t, a) => (A(e, t, "read from private field"), a ? a.call(e) : t.get(e)), R = (e, t, a) => t.has(e) ? m("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), u;
+let c = class extends y(b) {
   constructor() {
-    super(...arguments), $(this, d, _(this)), this._tweets = [], this._loading = !1, this._refreshing = !1, this._lastRefresh = null, this._apiBase = "/umbraco/api/tweets";
+    super(...arguments), R(this, u, T(this)), this._tweets = [], this._loading = !1, this._refreshing = !1, this._lastRefresh = null, this._apiBase = "/umbraco/api/tweets";
   }
   connectedCallback() {
     super.connectedCallback(), this._loadTweets();
@@ -41,7 +46,7 @@ let n = class extends m(f) {
   async _loadTweets() {
     this._loading = !0;
     try {
-      const e = await p(this, d).call(this, `${this._apiBase}/feed`);
+      const e = await w(this, u).call(this, `${this._apiBase}/feed`);
       e.ok && (this._tweets = await e.json(), this._tweets.length > 0 && (this._lastRefresh = this._tweets[0].cachedAt));
     } finally {
       this._loading = !1;
@@ -50,7 +55,7 @@ let n = class extends m(f) {
   async _refreshCache() {
     this._refreshing = !0;
     try {
-      (await (await p(this, d).call(this, `${this._apiBase}/refresh`, { method: "POST" })).json()).success && await this._loadTweets();
+      (await (await w(this, u).call(this, `${this._apiBase}/refresh`, { method: "POST" })).json()).success && await this._loadTweets();
     } finally {
       this._refreshing = !1;
     }
@@ -61,10 +66,10 @@ let n = class extends m(f) {
       day: "numeric",
       year: "numeric"
     });
-    return l`
+    return i`
       <div class="tweet-card">
         <div class="tweet-header">
-          ${e.authorAvatarUrl ? l`<img src="${e.authorAvatarUrl}" alt="${e.authorName}" class="tweet-avatar" />` : l`<div class="tweet-avatar">${e.authorHandle.charAt(0).toUpperCase()}</div>`}
+          ${e.authorAvatarUrl ? i`<img src="${e.authorAvatarUrl}" alt="${e.authorName}" class="tweet-avatar" />` : i`<div class="tweet-avatar">${e.authorHandle.charAt(0).toUpperCase()}</div>`}
           <div style="flex:1;">
             <div class="tweet-author-name">${e.authorName}</div>
             <div class="tweet-author-handle">@${e.authorHandle}</div>
@@ -103,7 +108,7 @@ let n = class extends m(f) {
     `;
   }
   render() {
-    return l`
+    return i`
       <h1>Tweets</h1>
       <p class="description">
         Preview and manage the locally cached Twitter/X feed displayed on your site.
@@ -133,7 +138,7 @@ let n = class extends m(f) {
         >
           Reload
         </uui-button>
-        ${this._lastRefresh ? l`
+        ${this._lastRefresh ? i`
               <span style="font-size:0.8rem; color: var(--uui-color-text-alt);">
                 Last cached: ${new Date(this._lastRefresh).toLocaleString()}
               </span>
@@ -141,17 +146,17 @@ let n = class extends m(f) {
       </div>
 
       <uui-box headline="Cached Feed (${this._tweets.length} tweet${this._tweets.length !== 1 ? "s" : ""})">
-        ${this._loading ? l`<uui-loader></uui-loader>` : this._tweets.length === 0 ? l`
+        ${this._loading ? i`<uui-loader></uui-loader>` : this._tweets.length === 0 ? i`
               <div class="empty-state">
                 <p>No cached tweets. Click <strong>Refresh from API</strong> to fetch the latest tweets.</p>
               </div>
-            ` : l`<div class="tweet-grid">${this._tweets.map((e) => this._renderTweetCard(e))}</div>`}
+            ` : i`<div class="tweet-grid">${this._tweets.map((e) => this._renderTweetCard(e))}</div>`}
       </uui-box>
     `;
   }
 };
-d = /* @__PURE__ */ new WeakMap();
-n.styles = g`
+u = /* @__PURE__ */ new WeakMap();
+c.styles = _`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -280,21 +285,21 @@ n.styles = g`
       font-size: 0.8rem;
     }
   `;
-c([
-  h()
-], n.prototype, "_tweets", 2);
-c([
-  h()
-], n.prototype, "_loading", 2);
-c([
-  h()
-], n.prototype, "_refreshing", 2);
-c([
-  h()
-], n.prototype, "_lastRefresh", 2);
-n = c([
-  w("tweets-dashboard")
-], n);
+h([
+  p()
+], c.prototype, "_tweets", 2);
+h([
+  p()
+], c.prototype, "_loading", 2);
+h([
+  p()
+], c.prototype, "_refreshing", 2);
+h([
+  p()
+], c.prototype, "_lastRefresh", 2);
+c = h([
+  x("tweets-dashboard")
+], c);
 export {
-  n as TweetsDashboardElement
+  c as TweetsDashboardElement
 };

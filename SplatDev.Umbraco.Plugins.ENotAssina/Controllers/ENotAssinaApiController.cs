@@ -84,6 +84,23 @@ public class ENotAssinaApiController(
             using var scope = scopeProvider.CreateScope();
             IList<dynamic> rows;
 
+            // The host site owns these tables; a fresh install has none of them. That is a
+            // setup step rather than a failure, and it used to surface as a 500 saying
+            // "Erro ao buscar documentos e-Not Assina", which reads as a broken integration.
+            if (!scope.SqlContext.SqlSyntax.DoesTableExist(scope.Database, _opts.TableName))
+            {
+                logger.LogInformation(
+                    "e-Not Assina dashboard: table {Table} does not exist yet", _opts.TableName);
+
+                return Ok(new
+                {
+                    documents = Array.Empty<object>(),
+                    setupRequired = true,
+                    message = $"No table named '{_opts.TableName}' exists in this database yet. "
+                              + "Create it, or point ENotAssina:TableName at the table that holds your documents.",
+                });
+            }
+
             if (!string.IsNullOrWhiteSpace(_opts.LocacaoTableName) &&
                 !string.IsNullOrWhiteSpace(_opts.CadastroLocacaoTableName) &&
                 !string.IsNullOrWhiteSpace(_opts.CadastroUnicoTableName))

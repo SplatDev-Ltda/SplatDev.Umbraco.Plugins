@@ -1,62 +1,67 @@
-import { LitElement as S, html as o, css as E, state as p, customElement as T } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as k } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as C } from "@umbraco-cms/backoffice/auth";
-function P(t) {
-  let e = null;
-  const i = new Promise((r) => {
-    t.consumeContext(C, async (s) => {
-      var a;
+import { LitElement as T, html as d, css as k, state as m, customElement as C } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as P } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as O } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as A } from "@umbraco-cms/backoffice/notification";
+function M(t) {
+  let e = null, s = null;
+  const n = t.consumeContext.bind(t), a = new Promise((r) => {
+    n(O, async (i) => {
+      var h;
       try {
-        e = await ((a = s == null ? void 0 : s.getLatestToken) == null ? void 0 : a.call(s)) ?? null;
+        e = await ((h = i == null ? void 0 : i.getLatestToken) == null ? void 0 : h.call(i)) ?? null;
       } catch {
         e = null;
       }
       r();
     }), setTimeout(r, 3e3);
   });
-  return async (r, s = {}) => {
-    await i;
-    const a = new Headers(s.headers);
-    e && !a.has("Authorization") && a.set("Authorization", `Bearer ${e}`);
-    const n = await fetch(r, { ...s, credentials: "same-origin", headers: a });
-    return (n.status === 401 || n.status === 403) && console.error(
-      `[SplatDev] ${n.status} from ${String(r)} — the backoffice token was ${e ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), n;
+  return n(A, (r) => {
+    s = r;
+  }), async (r, i = {}) => {
+    await a;
+    const h = new Headers(i.headers);
+    e && !h.has("Authorization") && h.set("Authorization", `Bearer ${e}`);
+    const o = await fetch(r, { ...i, credentials: "same-origin", headers: h });
+    if (!o.ok) {
+      const _ = o.status === 401 || o.status === 403, S = _ ? "Not authorised" : "Could not load data", b = _ ? `The backoffice token was ${e ? "sent but rejected" : "not available"} (${o.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${o.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${o.status} from ${String(r)} — ${b}`), s == null || s.peek("danger", { data: { headline: S, message: b } });
+    }
+    return o;
   };
 }
 var z = Object.defineProperty, D = Object.getOwnPropertyDescriptor, v = (t) => {
   throw TypeError(t);
-}, h = (t, e, i, r) => {
-  for (var s = r > 1 ? void 0 : r ? D(e, i) : e, a = t.length - 1, n; a >= 0; a--)
-    (n = t[a]) && (s = (r ? n(e, i, s) : n(s)) || s);
-  return r && s && z(e, i, s), s;
-}, b = (t, e, i) => e.has(t) || v("Cannot " + i), w = (t, e, i) => (b(t, e, "read from private field"), i ? i.call(t) : e.get(t)), f = (t, e, i) => e.has(t) ? v("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, i), c = (t, e, i) => (b(t, e, "access private method"), i), m, l, y, $, u;
-let d = class extends k(S) {
+}, u = (t, e, s, n) => {
+  for (var a = n > 1 ? void 0 : n ? D(e, s) : e, r = t.length - 1, i; r >= 0; r--)
+    (i = t[r]) && (a = (n ? i(e, s, a) : i(a)) || a);
+  return n && a && z(e, s, a), a;
+}, y = (t, e, s) => e.has(t) || v("Cannot " + s), $ = (t, e, s) => (y(t, e, "read from private field"), s ? s.call(t) : e.get(t)), w = (t, e, s) => e.has(t) ? v("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, s), p = (t, e, s) => (y(t, e, "access private method"), s), f, c, x, E, g;
+let l = class extends P(T) {
   constructor() {
-    super(...arguments), f(this, l), f(this, m, P(this)), this._settings = null, this._loading = !0, this._sending = !1, this._loadError = null, this._recipient = "", this._result = null, this._api = "/umbraco/api/smtp";
+    super(...arguments), w(this, c), w(this, f, M(this)), this._settings = null, this._loading = !0, this._sending = !1, this._loadError = null, this._recipient = "", this._result = null, this._api = "/umbraco/api/smtp";
   }
   connectedCallback() {
-    super.connectedCallback(), c(this, l, y).call(this);
+    super.connectedCallback(), p(this, c, x).call(this);
   }
   render() {
-    var t, e, i, r, s, a, n, g, _;
-    return o`
+    var t, e, s, n, a, r, i, h, o;
+    return d`
       <h1>SMTP</h1>
       <p class="description">
         The mail configuration this site is running with, and a test that sends through it.
       </p>
 
-      ${this._loading ? o`<uui-loader></uui-loader>` : this._loadError ? o`<div class="msg error">${this._loadError}</div>` : o`
+      ${this._loading ? d`<uui-loader></uui-loader>` : this._loadError ? d`<div class="msg error">${this._loadError}</div>` : d`
               <uui-box headline="Current configuration">
                 <dl>
-                  <dt>Host</dt><dd>${c(this, l, u).call(this, (t = this._settings) == null ? void 0 : t.host)}</dd>
+                  <dt>Host</dt><dd>${p(this, c, g).call(this, (t = this._settings) == null ? void 0 : t.host)}</dd>
                   <dt>Port</dt><dd>${((e = this._settings) == null ? void 0 : e.port) ?? "—"}</dd>
-                  <dt>SSL</dt><dd>${(i = this._settings) != null && i.enableSsl ? "enabled" : "disabled"}</dd>
-                  <dt>Username</dt><dd>${c(this, l, u).call(this, (r = this._settings) == null ? void 0 : r.username)}</dd>
+                  <dt>SSL</dt><dd>${(s = this._settings) != null && s.enableSsl ? "enabled" : "disabled"}</dd>
+                  <dt>Username</dt><dd>${p(this, c, g).call(this, (n = this._settings) == null ? void 0 : n.username)}</dd>
                   <dt>Password</dt>
-                  <dd>${(s = this._settings) != null && s.password ? o`•••••••• <span class="hint">(never sent to the browser)</span>` : o`<span class="unset">not set</span>`}</dd>
-                  <dt>From</dt><dd>${c(this, l, u).call(this, (a = this._settings) == null ? void 0 : a.fromEmail)}</dd>
-                  <dt>From name</dt><dd>${c(this, l, u).call(this, (n = this._settings) == null ? void 0 : n.fromName)}</dd>
+                  <dd>${(a = this._settings) != null && a.password ? d`•••••••• <span class="hint">(never sent to the browser)</span>` : d`<span class="unset">not set</span>`}</dd>
+                  <dt>From</dt><dd>${p(this, c, g).call(this, (r = this._settings) == null ? void 0 : r.fromEmail)}</dd>
+                  <dt>From name</dt><dd>${p(this, c, g).call(this, (i = this._settings) == null ? void 0 : i.fromName)}</dd>
                 </dl>
                 <p class="hint">
                   Read from the <code>SmtpSettings</code> configuration section. Change it in
@@ -68,13 +73,13 @@ let d = class extends k(S) {
                 <div class="row">
                   <input
                     type="email"
-                    placeholder=${((g = this._settings) == null ? void 0 : g.fromEmail) || "recipient@example.com"}
+                    placeholder=${((h = this._settings) == null ? void 0 : h.fromEmail) || "recipient@example.com"}
                     .value=${this._recipient}
-                    @input=${(x) => this._recipient = x.target.value} />
+                    @input=${(_) => this._recipient = _.target.value} />
                   <uui-button
                     look="primary"
-                    ?disabled=${this._sending || !((_ = this._settings) != null && _.host)}
-                    @click=${c(this, l, $)}>
+                    ?disabled=${this._sending || !((o = this._settings) != null && o.host)}
+                    @click=${p(this, c, E)}>
                     ${this._sending ? "Sending…" : "Send test"}
                   </uui-button>
                 </div>
@@ -83,10 +88,10 @@ let d = class extends k(S) {
                   the credentials above, which stay on the server.
                 </p>
 
-                ${this._result ? o`
+                ${this._result ? d`
                       <div class="msg ${this._result.success ? "success" : "error"}">
                         ${this._result.message}
-                        ${this._result.error ? o`<code>${this._result.error}</code>` : ""}
+                        ${this._result.error ? d`<code>${this._result.error}</code>` : ""}
                       </div>
                     ` : ""}
               </uui-box>
@@ -94,12 +99,12 @@ let d = class extends k(S) {
     `;
   }
 };
-m = /* @__PURE__ */ new WeakMap();
-l = /* @__PURE__ */ new WeakSet();
-y = async function() {
+f = /* @__PURE__ */ new WeakMap();
+c = /* @__PURE__ */ new WeakSet();
+x = async function() {
   this._loading = !0, this._loadError = null;
   try {
-    const t = await w(this, m).call(this, `${this._api}/GetSettings`, { credentials: "same-origin" });
+    const t = await $(this, f).call(this, `${this._api}/GetSettings`, { credentials: "same-origin" });
     if (!t.ok) throw new Error(`${t.status}`);
     this._settings = await t.json();
   } catch (t) {
@@ -108,10 +113,10 @@ y = async function() {
     this._loading = !1;
   }
 };
-$ = async function() {
+E = async function() {
   this._sending = !0, this._result = null;
   try {
-    const t = this._recipient ? `?to=${encodeURIComponent(this._recipient)}` : "", e = await w(this, m).call(this, `${this._api}/SendTest${t}`, {
+    const t = this._recipient ? `?to=${encodeURIComponent(this._recipient)}` : "", e = await $(this, f).call(this, `${this._api}/SendTest${t}`, {
       method: "POST",
       credentials: "same-origin"
     });
@@ -127,10 +132,10 @@ $ = async function() {
     this._sending = !1;
   }
 };
-u = function(t) {
-  return t ? o`${t}` : o`<span class="unset">not set</span>`;
+g = function(t) {
+  return t ? d`${t}` : d`<span class="unset">not set</span>`;
 };
-d.styles = E`
+l.styles = k`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
     p.description { color: var(--uui-color-text-alt, #6b7280); margin: 0 0 24px; }
@@ -146,29 +151,29 @@ d.styles = E`
     .msg code { display: block; margin-top: 6px; font-size: 0.8125rem; opacity: 0.85; }
     .hint { color: var(--uui-color-text-alt, #6b7280); font-size: 0.875rem; margin-top: 12px; }
   `;
-h([
-  p()
-], d.prototype, "_settings", 2);
-h([
-  p()
-], d.prototype, "_loading", 2);
-h([
-  p()
-], d.prototype, "_sending", 2);
-h([
-  p()
-], d.prototype, "_loadError", 2);
-h([
-  p()
-], d.prototype, "_recipient", 2);
-h([
-  p()
-], d.prototype, "_result", 2);
-d = h([
-  T("smtp-dashboard")
-], d);
-const U = d;
+u([
+  m()
+], l.prototype, "_settings", 2);
+u([
+  m()
+], l.prototype, "_loading", 2);
+u([
+  m()
+], l.prototype, "_sending", 2);
+u([
+  m()
+], l.prototype, "_loadError", 2);
+u([
+  m()
+], l.prototype, "_recipient", 2);
+u([
+  m()
+], l.prototype, "_result", 2);
+l = u([
+  C("smtp-dashboard")
+], l);
+const I = l;
 export {
-  d as SmtpDashboardElement,
-  U as default
+  l as SmtpDashboardElement,
+  I as default
 };

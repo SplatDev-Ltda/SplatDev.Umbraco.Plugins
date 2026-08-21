@@ -64,6 +64,14 @@ Manage RDP connections through the backoffice dashboard. Each connection stores 
 - No authentication or authorization on API endpoints — any authenticated backoffice user can access all connections
 - Uses the same `ConnectionStrings:umbracoDbDSN` as Umbraco (no separate connection string support)
 
+## Changelog
+
+### 2.3.2 — 2026-08-21
+- Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.
+- A failed request now raises a notification instead of leaving the dashboard looking like there is simply no data.
+- The plugin's tables are created on startup. They were never created before, so anything touching them failed on a fresh install.
+- Runs on SQLite as well as SQL Server. It previously assumed SQL Server and failed with "Keyword not supported: 'cache'" on the database Umbraco's installer offers by default.
+
 ## License
 
 MIT © [SplatDev](https://github.com/SplatDev-Ltda)

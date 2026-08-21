@@ -1,39 +1,44 @@
-import { LitElement as p, html as r, css as b, state as d, customElement as f } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as g } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as m } from "@umbraco-cms/backoffice/auth";
-function v(t) {
-  let e = null;
-  const i = new Promise((l) => {
-    t.consumeContext(m, async (a) => {
-      var u;
+import { LitElement as v, html as c, css as _, state as p, customElement as y } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as w } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as x } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as z } from "@umbraco-cms/backoffice/notification";
+function $(t) {
+  let e = null, a = null;
+  const u = t.consumeContext.bind(t), s = new Promise((l) => {
+    u(x, async (i) => {
+      var r;
       try {
-        e = await ((u = a == null ? void 0 : a.getLatestToken) == null ? void 0 : u.call(a)) ?? null;
+        e = await ((r = i == null ? void 0 : i.getLatestToken) == null ? void 0 : r.call(i)) ?? null;
       } catch {
         e = null;
       }
       l();
     }), setTimeout(l, 3e3);
   });
-  return async (l, a = {}) => {
-    await i;
-    const u = new Headers(a.headers);
-    e && !u.has("Authorization") && u.set("Authorization", `Bearer ${e}`);
-    const s = await fetch(l, { ...a, credentials: "same-origin", headers: u });
-    return (s.status === 401 || s.status === 403) && console.error(
-      `[SplatDev] ${s.status} from ${String(l)} — the backoffice token was ${e ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), s;
+  return u(z, (l) => {
+    a = l;
+  }), async (l, i = {}) => {
+    await s;
+    const r = new Headers(i.headers);
+    e && !r.has("Authorization") && r.set("Authorization", `Bearer ${e}`);
+    const o = await fetch(l, { ...i, credentials: "same-origin", headers: r });
+    if (!o.ok) {
+      const b = o.status === 401 || o.status === 403, m = b ? "Not authorised" : "Could not load data", f = b ? `The backoffice token was ${e ? "sent but rejected" : "not available"} (${o.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${o.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${o.status} from ${String(l)} — ${f}`), a == null || a.peek("danger", { data: { headline: m, message: f } });
+    }
+    return o;
   };
 }
-var _ = Object.defineProperty, y = Object.getOwnPropertyDescriptor, h = (t) => {
+var C = Object.defineProperty, E = Object.getOwnPropertyDescriptor, g = (t) => {
   throw TypeError(t);
-}, n = (t, e, i, l) => {
-  for (var a = l > 1 ? void 0 : l ? y(e, i) : e, u = t.length - 1, s; u >= 0; u--)
-    (s = t[u]) && (a = (l ? s(e, i, a) : s(a)) || a);
-  return l && a && _(e, i, a), a;
-}, w = (t, e, i) => e.has(t) || h("Cannot " + i), x = (t, e, i) => (w(t, e, "read from private field"), i ? i.call(t) : e.get(t)), z = (t, e, i) => e.has(t) ? h("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, i), c;
-let o = class extends g(p) {
+}, d = (t, e, a, u) => {
+  for (var s = u > 1 ? void 0 : u ? E(e, a) : e, l = t.length - 1, i; l >= 0; l--)
+    (i = t[l]) && (s = (u ? i(e, a, s) : i(s)) || s);
+  return u && s && C(e, a, s), s;
+}, T = (t, e, a) => e.has(t) || g("Cannot " + a), A = (t, e, a) => (T(t, e, "read from private field"), a ? a.call(t) : e.get(t)), I = (t, e, a) => e.has(t) ? g("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, a), h;
+let n = class extends w(v) {
   constructor() {
-    super(...arguments), z(this, c, v(this)), this._filter = "", this._loading = !1, this._exceptions = [], this._apiAvailable = !1, this._apiBase = "/umbraco/management/api/v1/exception-manager";
+    super(...arguments), I(this, h, $(this)), this._filter = "", this._loading = !1, this._exceptions = [], this._apiAvailable = !1, this._apiBase = "/umbraco/management/api/v1/exception-manager";
   }
   _handleFilterInput(t) {
     const e = t.target;
@@ -43,12 +48,12 @@ let o = class extends g(p) {
     if (this._apiAvailable) {
       this._loading = !0;
       try {
-        const t = this._filter ? `${this._apiBase}?filter=${encodeURIComponent(this._filter)}` : this._apiBase, e = await x(this, c).call(this, t, {
+        const t = this._filter ? `${this._apiBase}?filter=${encodeURIComponent(this._filter)}` : this._apiBase, e = await A(this, h).call(this, t, {
           headers: { "Content-Type": "application/json" }
         });
         if (e.ok) {
-          const i = await e.json();
-          this._exceptions = i;
+          const a = await e.json();
+          this._exceptions = a;
         }
       } catch {
       } finally {
@@ -65,7 +70,7 @@ let o = class extends g(p) {
   }
   render() {
     const t = this._filteredExceptions;
-    return r`
+    return c`
       <div class="dashboard-header">
         <h1>Exception Manager</h1>
         <p>
@@ -109,7 +114,7 @@ let o = class extends g(p) {
             </uui-button>
           </div>
 
-          ${t.length > 0 ? r`
+          ${t.length > 0 ? c`
                 <uui-table>
                   <uui-table-head>
                     <uui-table-head-cell>URL</uui-table-head-cell>
@@ -119,7 +124,7 @@ let o = class extends g(p) {
                     <uui-table-head-cell>Message</uui-table-head-cell>
                   </uui-table-head>
                   ${t.map(
-      (e) => r`
+      (e) => c`
                       <uui-table-row>
                         <uui-table-cell>${e.url}</uui-table-cell>
                         <uui-table-cell>${e.ip}</uui-table-cell>
@@ -130,7 +135,7 @@ let o = class extends g(p) {
                     `
     )}
                 </uui-table>
-              ` : r`
+              ` : c`
                 <uui-table>
                   <uui-table-head>
                     <uui-table-head-cell>URL</uui-table-head-cell>
@@ -150,8 +155,8 @@ let o = class extends g(p) {
     `;
   }
 };
-c = /* @__PURE__ */ new WeakMap();
-o.styles = b`
+h = /* @__PURE__ */ new WeakMap();
+n.styles = _`
     :host {
       display: block;
       padding: var(--uui-size-layout-1);
@@ -233,20 +238,20 @@ o.styles = b`
       margin-top: 2px;
     }
   `;
-n([
-  d()
-], o.prototype, "_filter", 2);
-n([
-  d()
-], o.prototype, "_loading", 2);
-n([
-  d()
-], o.prototype, "_exceptions", 2);
-o = n([
-  f("exception-manager-dashboard")
-], o);
-const P = o;
+d([
+  p()
+], n.prototype, "_filter", 2);
+d([
+  p()
+], n.prototype, "_loading", 2);
+d([
+  p()
+], n.prototype, "_exceptions", 2);
+n = d([
+  y("exception-manager-dashboard")
+], n);
+const D = n;
 export {
-  o as ExceptionManagerDashboardElement,
-  P as default
+  n as ExceptionManagerDashboardElement,
+  D as default
 };

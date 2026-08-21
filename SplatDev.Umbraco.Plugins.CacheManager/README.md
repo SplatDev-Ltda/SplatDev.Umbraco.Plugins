@@ -92,6 +92,14 @@ Trigger manually from the backoffice dashboard or let the background service run
 - `EFCoreSecondLevelCacheInterceptor` — EF query result caching
 - `Microsoft.EntityFrameworkCore` — DB context for cache tracking tables
 
+## Changelog
+
+### 2.1.6 — 2026-08-21
+- Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.
+- A failed request now raises a notification instead of leaving the dashboard looking like there is simply no data.
+- Runs on SQLite as well as SQL Server. It previously assumed SQL Server and failed with "Keyword not supported: 'cache'" on the database Umbraco's installer offers by default.
+- Internal extension namespace corrected — it was left over from another plugin.
+
 ## License
 
 MIT © [SplatDev](https://github.com/splatdevtech)

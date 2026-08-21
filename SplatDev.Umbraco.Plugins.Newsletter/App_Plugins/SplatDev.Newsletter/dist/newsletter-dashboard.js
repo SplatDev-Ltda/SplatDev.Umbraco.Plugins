@@ -1,40 +1,45 @@
-import { LitElement as h, html as a, css as b, state as r, customElement as m } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as _ } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as g } from "@umbraco-cms/backoffice/auth";
-function v(e) {
-  let t = null;
-  const i = new Promise((n) => {
-    e.consumeContext(g, async (u) => {
-      var o;
+import { LitElement as v, html as a, css as f, state as u, customElement as w } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as $ } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as y } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as S } from "@umbraco-cms/backoffice/notification";
+function C(e) {
+  let t = null, i = null;
+  const o = e.consumeContext.bind(e), c = new Promise((r) => {
+    o(y, async (n) => {
+      var p;
       try {
-        t = await ((o = u == null ? void 0 : u.getLatestToken) == null ? void 0 : o.call(u)) ?? null;
+        t = await ((p = n == null ? void 0 : n.getLatestToken) == null ? void 0 : p.call(n)) ?? null;
       } catch {
         t = null;
       }
-      n();
-    }), setTimeout(n, 3e3);
+      r();
+    }), setTimeout(r, 3e3);
   });
-  return async (n, u = {}) => {
-    await i;
-    const o = new Headers(u.headers);
-    t && !o.has("Authorization") && o.set("Authorization", `Bearer ${t}`);
-    const c = await fetch(n, { ...u, credentials: "same-origin", headers: o });
-    return (c.status === 401 || c.status === 403) && console.error(
-      `[SplatDev] ${c.status} from ${String(n)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), c;
+  return o(S, (r) => {
+    i = r;
+  }), async (r, n = {}) => {
+    await c;
+    const p = new Headers(n.headers);
+    t && !p.has("Authorization") && p.set("Authorization", `Bearer ${t}`);
+    const d = await fetch(r, { ...n, credentials: "same-origin", headers: p });
+    if (!d.ok) {
+      const b = d.status === 401 || d.status === 403, g = b ? "Not authorised" : "Could not load data", m = b ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${d.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${d.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${d.status} from ${String(r)} — ${m}`), i == null || i.peek("danger", { data: { headline: g, message: m } });
+    }
+    return d;
   };
 }
-var f = Object.defineProperty, w = Object.getOwnPropertyDescriptor, p = (e) => {
+var k = Object.defineProperty, L = Object.getOwnPropertyDescriptor, _ = (e) => {
   throw TypeError(e);
-}, l = (e, t, i, n) => {
-  for (var u = n > 1 ? void 0 : n ? w(t, i) : t, o = e.length - 1, c; o >= 0; o--)
-    (c = e[o]) && (u = (n ? c(t, i, u) : c(u)) || u);
-  return n && u && f(t, i, u), u;
-}, $ = (e, t, i) => t.has(e) || p("Cannot " + i), y = (e, t, i) => ($(e, t, "read from private field"), i ? i.call(e) : t.get(e)), S = (e, t, i) => t.has(e) ? p("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, i), d;
-const C = "/umbraco/management/api/v1/newsletter";
-let s = class extends _(h) {
+}, l = (e, t, i, o) => {
+  for (var c = o > 1 ? void 0 : o ? L(t, i) : t, r = e.length - 1, n; r >= 0; r--)
+    (n = e[r]) && (c = (o ? n(t, i, c) : n(c)) || c);
+  return o && c && k(t, i, c), c;
+}, I = (e, t, i) => t.has(e) || _("Cannot " + i), T = (e, t, i) => (I(e, t, "read from private field"), i ? i.call(e) : t.get(e)), N = (e, t, i) => t.has(e) ? _("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, i), h;
+const x = "/umbraco/management/api/v1/newsletter";
+let s = class extends $(v) {
   constructor() {
-    super(...arguments), S(this, d, v(this)), this._lists = [], this._subscribers = [], this._campaigns = [], this._stats = null, this._loading = !1, this._message = "", this._messageType = "", this._activeTab = "subscribers", this._selectedListId = null, this._newListName = "", this._newSubEmail = "", this._newSubName = "", this._showCampaignForm = !1, this._editingCampaign = null, this._campaignForm = { name: "", subject: "", listId: 0, templateId: "" }, this._selectedStatsCampaignId = null;
+    super(...arguments), N(this, h, C(this)), this._lists = [], this._subscribers = [], this._campaigns = [], this._stats = null, this._loading = !1, this._message = "", this._messageType = "", this._activeTab = "subscribers", this._selectedListId = null, this._newListName = "", this._newSubEmail = "", this._newSubName = "", this._showCampaignForm = !1, this._editingCampaign = null, this._campaignForm = { name: "", subject: "", listId: 0, templateId: "" }, this._selectedStatsCampaignId = null;
   }
   connectedCallback() {
     super.connectedCallback(), this._loadLists(), this._loadCampaigns();
@@ -47,14 +52,14 @@ let s = class extends _(h) {
   }
   async _api(e, t) {
     try {
-      const i = await y(this, d).call(this, `${C}${e}`, {
+      const i = await T(this, h).call(this, `${x}${e}`, {
         headers: { "Content-Type": "application/json", ...t == null ? void 0 : t.headers },
         ...t
       });
       if (i.status === 204) return null;
       if (i.ok) return i.json();
-      const n = await i.text();
-      return this._showMessage(n || `Request failed (${i.status})`, "error"), null;
+      const o = await i.text();
+      return this._showMessage(o || `Request failed (${i.status})`, "error"), null;
     } catch {
       return this._showMessage("Network error", "error"), null;
     }
@@ -504,8 +509,8 @@ let s = class extends _(h) {
     `;
   }
 };
-d = /* @__PURE__ */ new WeakMap();
-s.styles = b`
+h = /* @__PURE__ */ new WeakMap();
+s.styles = f`
     :host {
       display: block;
       padding: var(--uui-size-layout-1);
@@ -609,55 +614,55 @@ s.styles = b`
     }
   `;
 l([
-  r()
+  u()
 ], s.prototype, "_lists", 2);
 l([
-  r()
+  u()
 ], s.prototype, "_subscribers", 2);
 l([
-  r()
+  u()
 ], s.prototype, "_campaigns", 2);
 l([
-  r()
+  u()
 ], s.prototype, "_stats", 2);
 l([
-  r()
+  u()
 ], s.prototype, "_loading", 2);
 l([
-  r()
+  u()
 ], s.prototype, "_message", 2);
 l([
-  r()
+  u()
 ], s.prototype, "_messageType", 2);
 l([
-  r()
+  u()
 ], s.prototype, "_activeTab", 2);
 l([
-  r()
+  u()
 ], s.prototype, "_selectedListId", 2);
 l([
-  r()
+  u()
 ], s.prototype, "_newListName", 2);
 l([
-  r()
+  u()
 ], s.prototype, "_newSubEmail", 2);
 l([
-  r()
+  u()
 ], s.prototype, "_newSubName", 2);
 l([
-  r()
+  u()
 ], s.prototype, "_showCampaignForm", 2);
 l([
-  r()
+  u()
 ], s.prototype, "_editingCampaign", 2);
 l([
-  r()
+  u()
 ], s.prototype, "_campaignForm", 2);
 l([
-  r()
+  u()
 ], s.prototype, "_selectedStatsCampaignId", 2);
 s = l([
-  m("newsletter-dashboard")
+  w("newsletter-dashboard")
 ], s);
 export {
   s as NewsletterDashboardElement

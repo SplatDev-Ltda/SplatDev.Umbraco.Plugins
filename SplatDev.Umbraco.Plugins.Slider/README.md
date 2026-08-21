@@ -2,6 +2,13 @@
 
 Image slider plugin for Umbraco — stores slide data with EF Core, renders via configurable view component. Provides a Bellissima backoffice dashboard for managing sliders and slides.
 
+
+<!-- screenshot:start -->
+
+![Slider dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Slider/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Slider.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Slider)
 
 ## Compatibility
@@ -68,6 +75,14 @@ Output: `App_Plugins/Slider/dist/slider-dashboard.element.js`
 | `/umbraco/api/slider/AddSlide` | POST | Add a slide to a slider |
 | `/umbraco/api/slider/UpdateSlide` | PUT | Update slide properties |
 | `/umbraco/api/slider/DeleteSlide` | DELETE | Remove a slide |
+
+## Changelog
+
+### 1.2.2 — 2026-08-21
+- Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.
+- A failed request now raises a notification instead of leaving the dashboard looking like there is simply no data.
+- The plugin's tables are created on startup. They were never created before, so anything touching them failed on a fresh install.
+- Runs on SQLite as well as SQL Server. It previously assumed SQL Server and failed with "Keyword not supported: 'cache'" on the database Umbraco's installer offers by default.
 
 ## License
 

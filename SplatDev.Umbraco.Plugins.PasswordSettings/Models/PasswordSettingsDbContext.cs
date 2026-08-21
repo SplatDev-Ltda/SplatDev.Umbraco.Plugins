@@ -11,7 +11,11 @@ public class PasswordSettingsDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasDefaultSchema("passwordsettings");
+        // SQLite has no schemas. Asking for one there makes EF fold it into the
+        // table name, so the generated DDL and the queries disagree about what the
+        // table is called and every read fails against an object never created.
+        if (!Database.IsSqlite())
+            modelBuilder.HasDefaultSchema("passwordsettings");
 
         modelBuilder.Entity<PasswordHistory>()
             .HasIndex(h => h.MemberId);

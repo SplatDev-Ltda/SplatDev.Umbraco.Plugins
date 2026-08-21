@@ -12,7 +12,9 @@ public class LgpdDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasDefaultSchema("lgpd");
+        // SQLite has no schemas; asking for one folds it into the table name.
+        if (!Database.IsSqlite())
+            modelBuilder.HasDefaultSchema("lgpd");
 
         modelBuilder.Entity<Consentimento>(e =>
         {

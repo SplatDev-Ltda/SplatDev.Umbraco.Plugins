@@ -1,39 +1,44 @@
-import { LitElement as b, html as s, nothing as p, css as _, state as d, customElement as m } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as f } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as v } from "@umbraco-cms/backoffice/auth";
-function y(e) {
-  let a = null;
-  const t = new Promise((o) => {
-    e.consumeContext(v, async (i) => {
-      var l;
+import { LitElement as y, html as i, nothing as b, css as $, state as h, customElement as T } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as k } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as x } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as w } from "@umbraco-cms/backoffice/notification";
+function C(e) {
+  let a = null, t = null;
+  const n = e.consumeContext.bind(e), l = new Promise((o) => {
+    n(x, async (s) => {
+      var p;
       try {
-        a = await ((l = i == null ? void 0 : i.getLatestToken) == null ? void 0 : l.call(i)) ?? null;
+        a = await ((p = s == null ? void 0 : s.getLatestToken) == null ? void 0 : p.call(s)) ?? null;
       } catch {
         a = null;
       }
       o();
     }), setTimeout(o, 3e3);
   });
-  return async (o, i = {}) => {
-    await t;
-    const l = new Headers(i.headers);
-    a && !l.has("Authorization") && l.set("Authorization", `Bearer ${a}`);
-    const u = await fetch(o, { ...i, credentials: "same-origin", headers: l });
-    return (u.status === 401 || u.status === 403) && console.error(
-      `[SplatDev] ${u.status} from ${String(o)} — the backoffice token was ${a ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), u;
+  return n(w, (o) => {
+    t = o;
+  }), async (o, s = {}) => {
+    await l;
+    const p = new Headers(s.headers);
+    a && !p.has("Authorization") && p.set("Authorization", `Bearer ${a}`);
+    const c = await fetch(o, { ...s, credentials: "same-origin", headers: p });
+    if (!c.ok) {
+      const _ = c.status === 401 || c.status === 403, v = _ ? "Not authorised" : "Could not load data", m = _ ? `The backoffice token was ${a ? "sent but rejected" : "not available"} (${c.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${c.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${c.status} from ${String(o)} — ${m}`), t == null || t.peek("danger", { data: { headline: v, message: m } });
+    }
+    return c;
   };
 }
-var $ = Object.defineProperty, T = Object.getOwnPropertyDescriptor, g = (e) => {
+var P = Object.defineProperty, z = Object.getOwnPropertyDescriptor, f = (e) => {
   throw TypeError(e);
-}, c = (e, a, t, o) => {
-  for (var i = o > 1 ? void 0 : o ? T(a, t) : a, l = e.length - 1, u; l >= 0; l--)
-    (u = e[l]) && (i = (o ? u(a, t, i) : u(i)) || i);
-  return o && i && $(a, t, i), i;
-}, k = (e, a, t) => a.has(e) || g("Cannot " + t), h = (e, a, t) => (k(e, a, "read from private field"), t ? t.call(e) : a.get(e)), x = (e, a, t) => a.has(e) ? g("Cannot add the same private member more than once") : a instanceof WeakSet ? a.add(e) : a.set(e, t), n;
-let r = class extends f(b) {
+}, u = (e, a, t, n) => {
+  for (var l = n > 1 ? void 0 : n ? z(a, t) : a, o = e.length - 1, s; o >= 0; o--)
+    (s = e[o]) && (l = (n ? s(a, t, l) : s(l)) || l);
+  return n && l && P(a, t, l), l;
+}, L = (e, a, t) => a.has(e) || f("Cannot " + t), g = (e, a, t) => (L(e, a, "read from private field"), t ? t.call(e) : a.get(e)), S = (e, a, t) => a.has(e) ? f("Cannot add the same private member more than once") : a instanceof WeakSet ? a.add(e) : a.set(e, t), d;
+let r = class extends k(y) {
   constructor() {
-    super(...arguments), x(this, n, y(this)), this._activeTab = "categories", this._categories = [], this._selectedCategory = null, this._threads = [], this._totalThreads = 0, this._page = 1, this._loading = !1, this._pageSize = 20, this._apiBase = "/umbraco/api/forums";
+    super(...arguments), S(this, d, C(this)), this._activeTab = "categories", this._categories = [], this._selectedCategory = null, this._threads = [], this._totalThreads = 0, this._page = 1, this._loading = !1, this._pageSize = 20, this._apiBase = "/umbraco/api/forums";
   }
   connectedCallback() {
     super.connectedCallback(), this._loadCategories();
@@ -41,7 +46,7 @@ let r = class extends f(b) {
   async _loadCategories() {
     this._loading = !0;
     try {
-      const e = await h(this, n).call(this, `${this._apiBase}/GetCategories`);
+      const e = await g(this, d).call(this, `${this._apiBase}/GetCategories`);
       e.ok && (this._categories = await e.json());
     } catch {
       this._categories = [];
@@ -56,7 +61,7 @@ let r = class extends f(b) {
     if (this._selectedCategory) {
       this._loading = !0;
       try {
-        const e = await h(this, n).call(this, `${this._apiBase}/GetThreads?categoryId=${this._selectedCategory.id}&page=${this._page}&pageSize=${this._pageSize}`);
+        const e = await g(this, d).call(this, `${this._apiBase}/GetThreads?categoryId=${this._selectedCategory.id}&page=${this._page}&pageSize=${this._pageSize}`);
         if (e.ok) {
           const a = await e.json();
           this._threads = a.threads ?? [], this._totalThreads = a.total ?? 0;
@@ -69,17 +74,17 @@ let r = class extends f(b) {
     }
   }
   async _lockThread(e) {
-    await h(this, n).call(this, `${this._apiBase}/LockThread?threadId=${e.id}&locked=${!e.isLocked}`, {
+    await g(this, d).call(this, `${this._apiBase}/LockThread?threadId=${e.id}&locked=${!e.isLocked}`, {
       method: "POST"
     }), e.isLocked = !e.isLocked, this.requestUpdate();
   }
   async _pinThread(e) {
-    await h(this, n).call(this, `${this._apiBase}/PinThread?threadId=${e.id}&pinned=${!e.isPinned}`, {
+    await g(this, d).call(this, `${this._apiBase}/PinThread?threadId=${e.id}&pinned=${!e.isPinned}`, {
       method: "POST"
     }), e.isPinned = !e.isPinned, this.requestUpdate();
   }
   async _deleteThread(e) {
-    confirm("Delete this thread and all its replies?") && (await h(this, n).call(this, `${this._apiBase}/DeleteThread?threadId=${e}`, { method: "DELETE" }), this._threads = this._threads.filter((a) => a.id !== e), this._totalThreads--, this.requestUpdate());
+    confirm("Delete this thread and all its replies?") && (await g(this, d).call(this, `${this._apiBase}/DeleteThread?threadId=${e}`, { method: "DELETE" }), this._threads = this._threads.filter((a) => a.id !== e), this._totalThreads--, this.requestUpdate());
   }
   _formatDate(e) {
     return new Date(e).toLocaleDateString("en-US", {
@@ -95,7 +100,7 @@ let r = class extends f(b) {
     this._page * this._pageSize < this._totalThreads && (this._page++, await this._loadThreads());
   }
   _renderCategoriesTab() {
-    return this._loading ? s`<p>Loading categories...</p>` : s`
+    return this._loading ? i`<p>Loading categories...</p>` : i`
       <div class="stats-grid">
         <uui-box>
           <p class="stat-label">Categories</p>
@@ -104,10 +109,10 @@ let r = class extends f(b) {
       </div>
 
       <uui-box headline="Forum Categories">
-        ${this._categories.length === 0 ? s`<p class="empty">No categories found.</p>` : s`
+        ${this._categories.length === 0 ? i`<p class="empty">No categories found.</p>` : i`
               <div class="categories-grid">
                 ${this._categories.map(
-      (e) => s`
+      (e) => i`
                     <div class="category-card" @click=${() => this._selectCategory(e)}>
                       <h3>${e.name}</h3>
                       <p>${e.description || "No description"}</p>
@@ -124,7 +129,7 @@ let r = class extends f(b) {
   }
   _renderThreadsTab() {
     var e, a;
-    return this._loading ? s`<p>Loading threads...</p>` : s`
+    return this._loading ? i`<p>Loading threads...</p>` : i`
       <div class="breadcrumb">
         <a @click=${() => {
       this._activeTab = "categories";
@@ -148,7 +153,7 @@ let r = class extends f(b) {
       </div>
 
       <uui-box headline="Threads in ${((a = this._selectedCategory) == null ? void 0 : a.name) ?? ""}">
-        ${this._threads.length === 0 ? s`<p class="empty">No threads in this category.</p>` : s`
+        ${this._threads.length === 0 ? i`<p class="empty">No threads in this category.</p>` : i`
               <uui-table>
                 <uui-table-head>
                   <uui-table-head-cell>Title</uui-table-head-cell>
@@ -160,10 +165,10 @@ let r = class extends f(b) {
                   <uui-table-head-cell>Actions</uui-table-head-cell>
                 </uui-table-head>
                 ${this._threads.map(
-      (t) => s`
+      (t) => i`
                     <uui-table-row>
                       <uui-table-cell>
-                        ${t.isPinned ? s`<span title="Pinned">&#128204;</span> ` : p}
+                        ${t.isPinned ? i`<span title="Pinned">&#128204;</span> ` : b}
                         <strong>${t.title}</strong>
                       </uui-table-cell>
                       <uui-table-cell>${t.authorName}</uui-table-cell>
@@ -197,7 +202,7 @@ let r = class extends f(b) {
     )}
               </uui-table>
 
-              ${this._totalThreads > this._pageSize ? s`
+              ${this._totalThreads > this._pageSize ? i`
                     <div class="pagination">
                       <uui-button
                         look="secondary"
@@ -213,13 +218,13 @@ let r = class extends f(b) {
                         @click=${this._nextPage}
                       >Next</uui-button>
                     </div>
-                  ` : p}
+                  ` : b}
             `}
       </uui-box>
     `;
   }
   render() {
-    return s`
+    return i`
       <h1>Forums Manager</h1>
       <p class="description">
         Manage discussion forum categories, threads, replies and moderation from the Umbraco backoffice.
@@ -231,13 +236,13 @@ let r = class extends f(b) {
           ?active=${this._activeTab === "categories"}
           @click=${() => this._activeTab = "categories"}
         >Categories</uui-tab>
-        ${this._selectedCategory ? s`
+        ${this._selectedCategory ? i`
               <uui-tab
                 label="Threads"
                 ?active=${this._activeTab === "threads"}
                 @click=${() => this._activeTab = "threads"}
               >Threads: ${this._selectedCategory.name}</uui-tab>
-            ` : p}
+            ` : b}
       </uui-tab-group>
 
       <div class="tab-content">
@@ -246,8 +251,8 @@ let r = class extends f(b) {
     `;
   }
 };
-n = /* @__PURE__ */ new WeakMap();
-r.styles = _`
+d = /* @__PURE__ */ new WeakMap();
+r.styles = $`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -364,32 +369,32 @@ r.styles = _`
       text-decoration: underline;
     }
   `;
-c([
-  d()
+u([
+  h()
 ], r.prototype, "_activeTab", 2);
-c([
-  d()
+u([
+  h()
 ], r.prototype, "_categories", 2);
-c([
-  d()
+u([
+  h()
 ], r.prototype, "_selectedCategory", 2);
-c([
-  d()
+u([
+  h()
 ], r.prototype, "_threads", 2);
-c([
-  d()
+u([
+  h()
 ], r.prototype, "_totalThreads", 2);
-c([
-  d()
+u([
+  h()
 ], r.prototype, "_page", 2);
-c([
-  d()
+u([
+  h()
 ], r.prototype, "_loading", 2);
-r = c([
-  m("forums-dashboard")
+r = u([
+  T("forums-dashboard")
 ], r);
-const z = r;
+const A = r;
 export {
   r as ForumsDashboardElement,
-  z as default
+  A as default
 };

@@ -61,6 +61,13 @@ Add a CharLimit data type to any text property on a document type. The property 
 - Editor validation is client-side only — backend enforcement must be handled separately
 - Different `DataEditor` attribute signatures are used via conditional compilation for net8.0 vs net10.0
 
+## Changelog
+
+### 1.2.2 — 2026-08-21
+- Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.
+- A failed request now raises a notification instead of leaving the dashboard looking like there is simply no data.
+- The backoffice manifest now points at the dashboard the build actually produces; it referenced an older hand-written file that shadowed it.
+
 ## License
 
 MIT © [SplatDev](https://github.com/SplatDev-Ltda)

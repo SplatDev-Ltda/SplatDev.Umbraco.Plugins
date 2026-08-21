@@ -63,6 +63,12 @@ The build output is placed at `App_Plugins/Exif/dist/exif-dashboard.element.js` 
 - `Controllers/ExifApiController.cs` — Back-end API returning EXIF metadata
 - `Services/` — EXIF extraction service (MetadataExtractor)
 
+## Changelog
+
+### 1.2.2 — 2026-08-21
+- Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.
+- A failed request now raises a notification instead of leaving the dashboard looking like there is simply no data.
+
 ## License
 
 MIT © [SplatDev](https://github.com/SplatDev-Ltda)

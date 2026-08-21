@@ -6,6 +6,8 @@ using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 using SplatDev.Umbraco.Plugins.Tweets.Models;
 using SplatDev.Umbraco.Plugins.Tweets.Services;
+using SplatDev.Umbraco.Plugins.Tweets.Components;
+using SplatDev.Umbraco.Plugins.Tweets.Persistence;
 
 namespace SplatDev.Umbraco.Plugins.Tweets.Composers;
 
@@ -17,8 +19,9 @@ public class TweetsComposer : IComposer
             builder.Config.GetSection(TweetSettings.SectionKey));
 
         builder.Services.AddDbContext<TweetsDbContext>(options =>
-            options.UseSqlServer(
-                builder.Config.GetConnectionString("umbracoDbDSN") ?? string.Empty));
+            SplatDevDbContextConfig.UseUmbracoDatabase(options, builder.Config));
+
+        builder.Components().Append<TweetsSchemaComponent>();
 
         builder.Services.AddHttpClient("TwitterV2");
 

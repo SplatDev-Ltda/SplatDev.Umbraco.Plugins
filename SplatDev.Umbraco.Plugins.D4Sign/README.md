@@ -50,6 +50,11 @@ Add to `appsettings.json`:
 }
 ```
 
+## Changelog
+
+### 1.2.2 — 2026-08-21
+- A missing table is reported as a setup step instead of a 500 that reads like a broken integration.
+
 ## License
 
 MIT © [SplatDev](https://github.com/SplatDev-Ltda)

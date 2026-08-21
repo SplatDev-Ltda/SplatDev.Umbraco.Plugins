@@ -1,55 +1,60 @@
-import { LitElement as v, html as o, nothing as h, css as m, state as c, customElement as f } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as g } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as _ } from "@umbraco-cms/backoffice/auth";
-function b(t) {
-  let a = null;
-  const e = new Promise((r) => {
-    t.consumeContext(_, async (s) => {
-      var i;
+import { LitElement as b, html as o, nothing as _, css as y, state as v, customElement as w } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as $ } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as S } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as T } from "@umbraco-cms/backoffice/notification";
+function x(a) {
+  let t = null, e = null;
+  const l = a.consumeContext.bind(a), s = new Promise((r) => {
+    l(S, async (i) => {
+      var n;
       try {
-        a = await ((i = s == null ? void 0 : s.getLatestToken) == null ? void 0 : i.call(s)) ?? null;
+        t = await ((n = i == null ? void 0 : i.getLatestToken) == null ? void 0 : n.call(i)) ?? null;
       } catch {
-        a = null;
+        t = null;
       }
       r();
     }), setTimeout(r, 3e3);
   });
-  return async (r, s = {}) => {
-    await e;
-    const i = new Headers(s.headers);
-    a && !i.has("Authorization") && i.set("Authorization", `Bearer ${a}`);
-    const l = await fetch(r, { ...s, credentials: "same-origin", headers: i });
-    return (l.status === 401 || l.status === 403) && console.error(
-      `[SplatDev] ${l.status} from ${String(r)} — the backoffice token was ${a ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), l;
+  return l(T, (r) => {
+    e = r;
+  }), async (r, i = {}) => {
+    await s;
+    const n = new Headers(i.headers);
+    t && !n.has("Authorization") && n.set("Authorization", `Bearer ${t}`);
+    const d = await fetch(r, { ...i, credentials: "same-origin", headers: n });
+    if (!d.ok) {
+      const h = d.status === 401 || d.status === 403, g = h ? "Not authorised" : "Could not load data", m = h ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${d.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${d.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${d.status} from ${String(r)} — ${m}`), e == null || e.peek("danger", { data: { headline: g, message: m } });
+    }
+    return d;
   };
 }
-var y = Object.defineProperty, $ = Object.getOwnPropertyDescriptor, p = (t) => {
-  throw TypeError(t);
-}, u = (t, a, e, r) => {
-  for (var s = r > 1 ? void 0 : r ? $(a, e) : a, i = t.length - 1, l; i >= 0; i--)
-    (l = t[i]) && (s = (r ? l(a, e, s) : l(s)) || s);
-  return r && s && y(a, e, s), s;
-}, S = (t, a, e) => a.has(t) || p("Cannot " + e), w = (t, a, e) => (S(t, a, "read from private field"), e ? e.call(t) : a.get(t)), x = (t, a, e) => a.has(t) ? p("Cannot add the same private member more than once") : a instanceof WeakSet ? a.add(t) : a.set(t, e), n;
-let d = class extends g(v) {
+var C = Object.defineProperty, A = Object.getOwnPropertyDescriptor, f = (a) => {
+  throw TypeError(a);
+}, p = (a, t, e, l) => {
+  for (var s = l > 1 ? void 0 : l ? A(t, e) : t, r = a.length - 1, i; r >= 0; r--)
+    (i = a[r]) && (s = (l ? i(t, e, s) : i(s)) || s);
+  return l && s && C(t, e, s), s;
+}, E = (a, t, e) => t.has(a) || f("Cannot " + e), O = (a, t, e) => (E(a, t, "read from private field"), e ? e.call(a) : t.get(a)), k = (a, t, e) => t.has(a) ? f("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(a) : t.set(a, e), c;
+let u = class extends $(b) {
   constructor() {
-    super(...arguments), x(this, n, b(this)), this._sliders = [], this._loading = !0;
+    super(...arguments), k(this, c, x(this)), this._sliders = [], this._loading = !0;
   }
   connectedCallback() {
     super.connectedCallback(), this._loadSliders();
   }
   async _loadSliders() {
     try {
-      const t = await w(this, n).call(this, "/umbraco/api/slider/GetSliders");
-      this._sliders = await t.json();
+      const a = await O(this, c).call(this, "/umbraco/api/slider/GetSliders");
+      this._sliders = await a.json();
     } finally {
       this._loading = !1;
     }
   }
   _getTotalSlides() {
-    return this._sliders.reduce((t, a) => {
+    return this._sliders.reduce((a, t) => {
       var e;
-      return t + (((e = a.slides) == null ? void 0 : e.length) ?? 0);
+      return a + (((e = t.slides) == null ? void 0 : e.length) ?? 0);
     }, 0);
   }
   render() {
@@ -63,7 +68,7 @@ let d = class extends g(v) {
           </div>
         </uui-box>
       `;
-    const t = this._getTotalSlides(), a = this._sliders.filter((e) => e.autoplay).length;
+    const a = this._getTotalSlides(), t = this._sliders.filter((e) => e.autoplay).length;
     return o`
       <div class="stats">
         <div class="stat-card">
@@ -71,11 +76,11 @@ let d = class extends g(v) {
           <div class="label">Sliders</div>
         </div>
         <div class="stat-card">
-          <div class="value">${t}</div>
+          <div class="value">${a}</div>
           <div class="label">Slides</div>
         </div>
         <div class="stat-card">
-          <div class="value">${a}</div>
+          <div class="value">${t}</div>
           <div class="label">Autoplay</div>
         </div>
       </div>
@@ -83,7 +88,7 @@ let d = class extends g(v) {
       <uui-box headline="Slider Manager">
         ${this._sliders.map(
       (e) => {
-        var r;
+        var l;
         return o`
             <uui-box class="slider-card" headline=${e.name}>
               <div class="slider-meta">
@@ -92,13 +97,13 @@ let d = class extends g(v) {
                 <span>Loop: ${e.loop ? "Yes" : "No"}</span>
                 <span>Slides: ${(e.slides ?? []).length}</span>
               </div>
-              ${(r = e.slides) != null && r.length ? o`
+              ${(l = e.slides) != null && l.length ? o`
                     <ul class="slide-list">
-                      ${[...e.slides ?? []].sort((s, i) => s.sortOrder - i.sortOrder).map(
+                      ${[...e.slides ?? []].sort((s, r) => s.sortOrder - r.sortOrder).map(
           (s) => o`
                             <li>
                               <strong>${s.title}</strong>
-                              ${s.subtitle ? o` — ${s.subtitle}` : h}
+                              ${s.subtitle ? o` — ${s.subtitle}` : _}
                             </li>
                           `
         )}
@@ -112,8 +117,8 @@ let d = class extends g(v) {
     `;
   }
 };
-n = /* @__PURE__ */ new WeakMap();
-d.styles = m`
+c = /* @__PURE__ */ new WeakMap();
+u.styles = y`
     :host {
       display: block;
       padding: 1rem;
@@ -181,17 +186,17 @@ d.styles = m`
       border-radius: var(--uui-border-radius);
     }
   `;
-u([
-  c()
-], d.prototype, "_sliders", 2);
-u([
-  c()
-], d.prototype, "_loading", 2);
-d = u([
-  f("slider-dashboard")
-], d);
-const k = d;
+p([
+  v()
+], u.prototype, "_sliders", 2);
+p([
+  v()
+], u.prototype, "_loading", 2);
+u = p([
+  w("slider-dashboard")
+], u);
+const P = u;
 export {
-  d as SliderDashboardElement,
-  k as default
+  u as SliderDashboardElement,
+  P as default
 };

@@ -2,6 +2,13 @@
 
 Umbraco social sharing buttons plugin — generate share URLs for Facebook, Twitter, LinkedIn, WhatsApp, and Email with configurable display options.
 
+
+<!-- screenshot:start -->
+
+![SocialMedia.Share dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.SocialMedia.Share/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.SocialMedia.Share.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.SocialMedia.Share)
 
 ## Compatibility
@@ -61,6 +68,11 @@ fetch('/umbraco/api/ShareApi/GetShareLinks?pageUrl=' + encodeURIComponent(locati
 - Only generates share URLs — does not perform actual posting or track share analytics
 - No built-in front-end rendering; consumers must call the API and render buttons themselves
 - Default platforms are hardcoded as Facebook, Twitter, LinkedIn, WhatsApp, Email if no config section is provided
+
+## Changelog
+
+### 2.1.4 — 2026-08-21
+- README now shows a screenshot of the dashboard.
 
 ## License
 

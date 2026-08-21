@@ -10,6 +10,7 @@ using SplatDev.Umbraco.Plugins.VisitorCounter.Middleware;
 using SplatDev.Umbraco.Plugins.VisitorCounter.Models;
 using SplatDev.Umbraco.Plugins.VisitorCounter.Services;
 
+using SplatDev.Umbraco.Plugins.VisitorCounter.Persistence;
 namespace SplatDev.Umbraco.Plugins.VisitorCounter.Composers;
 
 public class VisitorCounterSchemaComposer : ComponentComposer<VisitorCounterSchemaComponent>
@@ -21,8 +22,7 @@ public class VisitorCounterComposer : IComposer
     public void Compose(IUmbracoBuilder builder)
     {
         builder.Services.AddDbContext<VisitorCounterDbContext>(options =>
-            options.UseSqlServer(
-                builder.Config.GetConnectionString("umbracoDbDSN") ?? string.Empty));
+            SplatDevDbContextConfig.UseUmbracoDatabase(options, builder.Config));
 
         builder.Services.AddScoped<IVisitorCounterService, VisitorCounterService>();
         builder.Services.AddTransient<VisitorCounterMiddleware>();

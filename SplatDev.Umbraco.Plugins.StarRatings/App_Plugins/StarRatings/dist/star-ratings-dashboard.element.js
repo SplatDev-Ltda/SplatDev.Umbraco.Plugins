@@ -1,39 +1,44 @@
-import { LitElement as p, html as n, css as _, state as c, customElement as b } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as g } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as f } from "@umbraco-cms/backoffice/auth";
-function v(e) {
-  let t = null;
-  const r = new Promise((o) => {
-    e.consumeContext(f, async (a) => {
-      var l;
+import { LitElement as m, html as c, css as v, state as h, customElement as y } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as w } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as $ } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as T } from "@umbraco-cms/backoffice/notification";
+function C(e) {
+  let t = null, a = null;
+  const l = e.consumeContext.bind(e), s = new Promise((o) => {
+    l($, async (r) => {
+      var u;
       try {
-        t = await ((l = a == null ? void 0 : a.getLatestToken) == null ? void 0 : l.call(a)) ?? null;
+        t = await ((u = r == null ? void 0 : r.getLatestToken) == null ? void 0 : u.call(r)) ?? null;
       } catch {
         t = null;
       }
       o();
     }), setTimeout(o, 3e3);
   });
-  return async (o, a = {}) => {
-    await r;
-    const l = new Headers(a.headers);
-    t && !l.has("Authorization") && l.set("Authorization", `Bearer ${t}`);
-    const s = await fetch(o, { ...a, credentials: "same-origin", headers: l });
-    return (s.status === 401 || s.status === 403) && console.error(
-      `[SplatDev] ${s.status} from ${String(o)} — the backoffice token was ${t ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), s;
+  return l(T, (o) => {
+    a = o;
+  }), async (o, r = {}) => {
+    await s;
+    const u = new Headers(r.headers);
+    t && !u.has("Authorization") && u.set("Authorization", `Bearer ${t}`);
+    const i = await fetch(o, { ...r, credentials: "same-origin", headers: u });
+    if (!i.ok) {
+      const b = i.status === 401 || i.status === 403, f = b ? "Not authorised" : "Could not load data", _ = b ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${i.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${i.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${i.status} from ${String(o)} — ${_}`), a == null || a.peek("danger", { data: { headline: f, message: _ } });
+    }
+    return i;
   };
 }
-var m = Object.defineProperty, y = Object.getOwnPropertyDescriptor, h = (e) => {
+var R = Object.defineProperty, k = Object.getOwnPropertyDescriptor, g = (e) => {
   throw TypeError(e);
-}, u = (e, t, r, o) => {
-  for (var a = o > 1 ? void 0 : o ? y(t, r) : t, l = e.length - 1, s; l >= 0; l--)
-    (s = e[l]) && (a = (o ? s(t, r, a) : s(a)) || a);
-  return o && a && m(t, r, a), a;
-}, w = (e, t, r) => t.has(e) || h("Cannot " + r), $ = (e, t, r) => (w(e, t, "read from private field"), r ? r.call(e) : t.get(e)), R = (e, t, r) => t.has(e) ? h("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, r), d;
-let i = class extends g(p) {
+}, d = (e, t, a, l) => {
+  for (var s = l > 1 ? void 0 : l ? k(t, a) : t, o = e.length - 1, r; o >= 0; o--)
+    (r = e[o]) && (s = (l ? r(t, a, s) : r(s)) || s);
+  return l && s && R(t, a, s), s;
+}, E = (e, t, a) => t.has(e) || g("Cannot " + a), x = (e, t, a) => (E(e, t, "read from private field"), a ? a.call(e) : t.get(e)), A = (e, t, a) => t.has(e) ? g("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), p;
+let n = class extends w(m) {
   constructor() {
-    super(...arguments), R(this, d, v(this)), this._loading = !1, this._topRated = [], this._error = null, this._count = 10;
+    super(...arguments), A(this, p, C(this)), this._loading = !1, this._topRated = [], this._error = null, this._count = 10;
   }
   connectedCallback() {
     super.connectedCallback(), this._load();
@@ -41,7 +46,7 @@ let i = class extends g(p) {
   async _load() {
     this._loading = !0, this._error = null;
     try {
-      const e = await $(this, d).call(this, `/umbraco/api/starratings/GetTopRated?count=${this._count}`);
+      const e = await x(this, p).call(this, `/umbraco/api/starratings/GetTopRated?count=${this._count}`);
       if (!e.ok) throw new Error(`HTTP ${e.status}`);
       this._topRated = await e.json();
     } catch (e) {
@@ -55,7 +60,7 @@ let i = class extends g(p) {
     return "★".repeat(t) + "☆".repeat(5 - t);
   }
   render() {
-    return n`
+    return c`
       <h1>Star Ratings</h1>
       <p class="description">Top-rated content across your Umbraco site.</p>
 
@@ -69,7 +74,7 @@ let i = class extends g(p) {
           >${this._loading ? "Loading…" : "Refresh"}</uui-button>
         </div>
 
-        ${this._error ? n`<uui-tag color="danger">${this._error}</uui-tag>` : this._loading ? n`<uui-loader></uui-loader>` : this._topRated.length === 0 ? n`<div class="empty-state">No ratings recorded yet.</div>` : n`
+        ${this._error ? c`<uui-tag color="danger">${this._error}</uui-tag>` : this._loading ? c`<uui-loader></uui-loader>` : this._topRated.length === 0 ? c`<div class="empty-state">No ratings recorded yet.</div>` : c`
               <uui-table>
                 <uui-table-head>
                   <uui-table-head-cell>Content Key</uui-table-head-cell>
@@ -78,7 +83,7 @@ let i = class extends g(p) {
                   <uui-table-head-cell>Votes</uui-table-head-cell>
                 </uui-table-head>
                 ${this._topRated.map(
-      (e) => n`
+      (e) => c`
                     <uui-table-row>
                       <uui-table-cell>${e.contentKey}</uui-table-cell>
                       <uui-table-cell>
@@ -95,8 +100,8 @@ let i = class extends g(p) {
     `;
   }
 };
-d = /* @__PURE__ */ new WeakMap();
-i.styles = _`
+p = /* @__PURE__ */ new WeakMap();
+n.styles = v`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -136,21 +141,21 @@ i.styles = _`
       width: 100%;
     }
   `;
-u([
-  c()
-], i.prototype, "_loading", 2);
-u([
-  c()
-], i.prototype, "_topRated", 2);
-u([
-  c()
-], i.prototype, "_error", 2);
-u([
-  c()
-], i.prototype, "_count", 2);
-i = u([
-  b("star-ratings-dashboard")
-], i);
+d([
+  h()
+], n.prototype, "_loading", 2);
+d([
+  h()
+], n.prototype, "_topRated", 2);
+d([
+  h()
+], n.prototype, "_error", 2);
+d([
+  h()
+], n.prototype, "_count", 2);
+n = d([
+  y("star-ratings-dashboard")
+], n);
 export {
-  i as StarRatingsDashboardElement
+  n as StarRatingsDashboardElement
 };

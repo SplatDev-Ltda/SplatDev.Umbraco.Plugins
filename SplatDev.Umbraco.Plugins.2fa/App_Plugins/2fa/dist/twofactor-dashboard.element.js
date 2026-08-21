@@ -1,46 +1,51 @@
-import { LitElement as p, html as m, css as b, state as h, customElement as _ } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as g } from "@umbraco-cms/backoffice/element-api";
+import { LitElement as w, html as u, css as y, state as d, customElement as v } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as x } from "@umbraco-cms/backoffice/element-api";
 import "@umbraco-cms/backoffice/member";
-import { UMB_AUTH_CONTEXT as f } from "@umbraco-cms/backoffice/auth";
-function y(t) {
-  let e = null;
-  const a = new Promise((r) => {
-    t.consumeContext(f, async (s) => {
-      var o;
+import { UMB_AUTH_CONTEXT as k } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as $ } from "@umbraco-cms/backoffice/notification";
+function T(t) {
+  let e = null, s = null;
+  const n = t.consumeContext.bind(t), r = new Promise((o) => {
+    n(k, async (a) => {
+      var m;
       try {
-        e = await ((o = s == null ? void 0 : s.getLatestToken) == null ? void 0 : o.call(s)) ?? null;
+        e = await ((m = a == null ? void 0 : a.getLatestToken) == null ? void 0 : m.call(a)) ?? null;
       } catch {
         e = null;
       }
-      r();
-    }), setTimeout(r, 3e3);
+      o();
+    }), setTimeout(o, 3e3);
   });
-  return async (r, s = {}) => {
-    await a;
-    const o = new Headers(s.headers);
-    e && !o.has("Authorization") && o.set("Authorization", `Bearer ${e}`);
-    const n = await fetch(r, { ...s, credentials: "same-origin", headers: o });
-    return (n.status === 401 || n.status === 403) && console.error(
-      `[SplatDev] ${n.status} from ${String(r)} — the backoffice token was ${e ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), n;
+  return n($, (o) => {
+    s = o;
+  }), async (o, a = {}) => {
+    await r;
+    const m = new Headers(a.headers);
+    e && !m.has("Authorization") && m.set("Authorization", `Bearer ${e}`);
+    const l = await fetch(o, { ...a, credentials: "same-origin", headers: m });
+    if (!l.ok) {
+      const p = l.status === 401 || l.status === 403, f = p ? "Not authorised" : "Could not load data", b = p ? `The backoffice token was ${e ? "sent but rejected" : "not available"} (${l.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${l.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${l.status} from ${String(o)} — ${b}`), s == null || s.peek("danger", { data: { headline: f, message: b } });
+    }
+    return l;
   };
 }
-var v = Object.defineProperty, w = Object.getOwnPropertyDescriptor, c = (t) => {
+var A = Object.defineProperty, C = Object.getOwnPropertyDescriptor, g = (t) => {
   throw TypeError(t);
-}, l = (t, e, a, r) => {
-  for (var s = r > 1 ? void 0 : r ? w(e, a) : e, o = t.length - 1, n; o >= 0; o--)
-    (n = t[o]) && (s = (r ? n(e, a, s) : n(s)) || s);
-  return r && s && v(e, a, s), s;
-}, x = (t, e, a) => e.has(t) || c("Cannot " + a), u = (t, e, a) => (x(t, e, "read from private field"), a ? a.call(t) : e.get(t)), k = (t, e, a) => e.has(t) ? c("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, a), d;
-let i = class extends g(p) {
+}, h = (t, e, s, n) => {
+  for (var r = n > 1 ? void 0 : n ? C(e, s) : e, o = t.length - 1, a; o >= 0; o--)
+    (a = t[o]) && (r = (n ? a(e, s, r) : a(r)) || r);
+  return n && r && A(e, s, r), r;
+}, E = (t, e, s) => e.has(t) || g("Cannot " + s), _ = (t, e, s) => (E(t, e, "read from private field"), s ? s.call(t) : e.get(t)), F = (t, e, s) => e.has(t) ? g("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, s), c;
+let i = class extends x(w) {
   constructor() {
-    super(...arguments), k(this, d, y(this)), this._member = [], this._memberName = "", this._status = null, this._loading = !1, this._message = null, this._api = "/umbraco/api/twofactor/admin";
+    super(...arguments), F(this, c, T(this)), this._member = [], this._memberName = "", this._status = null, this._loading = !1, this._message = null, this._api = "/umbraco/api/twofactor/admin";
   }
   async _checkStatus() {
     if (this._memberId) {
       this._loading = !0, this._message = null;
       try {
-        const t = await u(this, d).call(this, `${this._api}/IsEnabled?member=${encodeURIComponent(this._member[0] ?? "")}`, { credentials: "same-origin" });
+        const t = await _(this, c).call(this, `${this._api}/IsEnabled?member=${encodeURIComponent(this._member[0] ?? "")}`, { credentials: "same-origin" });
         if (!t.ok) throw new Error(String(t.status));
         const e = await t.json();
         this._status = e.enabled, this._memberName = e.memberName ?? "";
@@ -55,7 +60,7 @@ let i = class extends g(p) {
     if (confirm("Revoke 2FA for this member? They will need to enrol again.")) {
       this._loading = !0;
       try {
-        const t = await u(this, d).call(this, `${this._api}/Disable?member=${encodeURIComponent(this._member[0] ?? "")}`, { method: "POST", credentials: "same-origin" });
+        const t = await _(this, c).call(this, `${this._api}/Disable?member=${encodeURIComponent(this._member[0] ?? "")}`, { method: "POST", credentials: "same-origin" });
         if (!t.ok) throw new Error(String(t.status));
         const e = await t.json();
         this._status = !1, this._message = { type: "success", text: e.message ?? "2FA revoked." };
@@ -67,7 +72,7 @@ let i = class extends g(p) {
     }
   }
   render() {
-    return m`
+    return u`
       <h1>Two-Factor Authentication</h1>
       <p class="description">
         Pick a member to see whether they have TOTP enrolled, and revoke it if they have
@@ -89,21 +94,21 @@ let i = class extends g(p) {
         </div>
       </uui-box>
 
-      ${this._message ? m`<div class="msg ${this._message.type}" style="margin-top:12px;">${this._message.text}</div>` : ""}
+      ${this._message ? u`<div class="msg ${this._message.type}" style="margin-top:12px;">${this._message.text}</div>` : ""}
 
-      ${this._status !== null ? m`
+      ${this._status !== null ? u`
             <uui-box headline=${this._memberName ? `2FA for ${this._memberName}` : "2FA status"} style="margin-top:16px;">
               <span class="status-badge ${this._status ? "enabled" : "disabled"}">
                 ${this._status ? "Enabled" : "Not enrolled"}
               </span>
 
-              ${this._status ? m`
+              ${this._status ? u`
                     <div class="action-row">
                       <uui-button look="danger" @click=${this._disable} ?disabled=${this._loading}>
                         Revoke 2FA
                       </uui-button>
                     </div>
-                  ` : m`
+                  ` : u`
                     <p class="hint">
                       This member has not enrolled. Enrolment happens on the member's own
                       account page, not from the backoffice.
@@ -114,8 +119,8 @@ let i = class extends g(p) {
     `;
   }
 };
-d = /* @__PURE__ */ new WeakMap();
-i.styles = b`
+c = /* @__PURE__ */ new WeakMap();
+i.styles = y`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
     p.description { color: var(--uui-color-text-alt, #6b7280); margin: 0 0 24px; }
@@ -129,26 +134,26 @@ i.styles = b`
     .action-row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
     .hint { color: var(--uui-color-text-alt, #6b7280); margin-top: 12px; font-size: 0.9rem; }
   `;
-l([
-  h()
+h([
+  d()
 ], i.prototype, "_member", 2);
-l([
-  h()
+h([
+  d()
 ], i.prototype, "_memberName", 2);
-l([
-  h()
+h([
+  d()
 ], i.prototype, "_status", 2);
-l([
-  h()
+h([
+  d()
 ], i.prototype, "_loading", 2);
-l([
-  h()
+h([
+  d()
 ], i.prototype, "_message", 2);
-i = l([
-  _("twofactor-dashboard")
+i = h([
+  v("twofactor-dashboard")
 ], i);
-const F = i;
+const z = i;
 export {
   i as TwoFactorDashboardElement,
-  F as default
+  z as default
 };

@@ -1,44 +1,49 @@
-import { LitElement as h, html as i, css as g, state as b, customElement as m } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as v } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as f } from "@umbraco-cms/backoffice/auth";
-function _(a) {
-  let e = null;
-  const t = new Promise((r) => {
-    a.consumeContext(f, async (s) => {
-      var o;
+import { LitElement as _, html as i, css as w, state as p, customElement as y } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as $ } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as x } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as C } from "@umbraco-cms/backoffice/notification";
+function S(a) {
+  let e = null, t = null;
+  const n = a.consumeContext.bind(a), o = new Promise((r) => {
+    n(x, async (s) => {
+      var c;
       try {
-        e = await ((o = s == null ? void 0 : s.getLatestToken) == null ? void 0 : o.call(s)) ?? null;
+        e = await ((c = s == null ? void 0 : s.getLatestToken) == null ? void 0 : c.call(s)) ?? null;
       } catch {
         e = null;
       }
       r();
     }), setTimeout(r, 3e3);
   });
-  return async (r, s = {}) => {
-    await t;
-    const o = new Headers(s.headers);
-    e && !o.has("Authorization") && o.set("Authorization", `Bearer ${e}`);
-    const d = await fetch(r, { ...s, credentials: "same-origin", headers: o });
-    return (d.status === 401 || d.status === 403) && console.error(
-      `[SplatDev] ${d.status} from ${String(r)} — the backoffice token was ${e ? "sent but rejected" : "not available"}. The dashboard may render as empty.`
-    ), d;
+  return n(C, (r) => {
+    t = r;
+  }), async (r, s = {}) => {
+    await o;
+    const c = new Headers(s.headers);
+    e && !c.has("Authorization") && c.set("Authorization", `Bearer ${e}`);
+    const d = await fetch(r, { ...s, credentials: "same-origin", headers: c });
+    if (!d.ok) {
+      const g = d.status === 401 || d.status === 403, f = g ? "Not authorised" : "Could not load data", m = g ? `The backoffice token was ${e ? "sent but rejected" : "not available"} (${d.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${d.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${d.status} from ${String(r)} — ${m}`), t == null || t.peek("danger", { data: { headline: f, message: m } });
+    }
+    return d;
   };
 }
-var w = Object.defineProperty, x = Object.getOwnPropertyDescriptor, u = (a) => {
+var T = Object.defineProperty, k = Object.getOwnPropertyDescriptor, v = (a) => {
   throw TypeError(a);
-}, l = (a, e, t, r) => {
-  for (var s = r > 1 ? void 0 : r ? x(e, t) : e, o = a.length - 1, d; o >= 0; o--)
-    (d = a[o]) && (s = (r ? d(e, t, s) : d(s)) || s);
-  return r && s && w(e, t, s), s;
-}, y = (a, e, t) => e.has(a) || u("Cannot " + t), p = (a, e, t) => (y(a, e, "read from private field"), t ? t.call(a) : e.get(a)), $ = (a, e, t) => e.has(a) ? u("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(a) : e.set(a, t), c;
-const S = {
+}, u = (a, e, t, n) => {
+  for (var o = n > 1 ? void 0 : n ? k(e, t) : e, r = a.length - 1, s; r >= 0; r--)
+    (s = a[r]) && (o = (n ? s(e, t, o) : s(o)) || o);
+  return n && o && T(e, t, o), o;
+}, A = (a, e, t) => e.has(a) || v("Cannot " + t), h = (a, e, t) => (A(a, e, "read from private field"), t ? t.call(a) : e.get(a)), N = (a, e, t) => e.has(a) ? v("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(a) : e.set(a, t), b;
+const B = {
   0: "Draft",
   1: "Scheduled",
   2: "Sent"
 };
-let n = class extends v(h) {
+let l = class extends $(_) {
   constructor() {
-    super(...arguments), $(this, c, _(this)), this._subscribers = [], this._campaigns = [], this._loading = !1, this._activeTab = "subscribers", this._apiBase = "/umbraco/api/newsletters";
+    super(...arguments), N(this, b, S(this)), this._subscribers = [], this._campaigns = [], this._loading = !1, this._activeTab = "subscribers", this._apiBase = "/umbraco/api/newsletters";
   }
   connectedCallback() {
     super.connectedCallback(), this._loadSubscribers(), this._loadCampaigns();
@@ -46,18 +51,18 @@ let n = class extends v(h) {
   async _loadSubscribers() {
     this._loading = !0;
     try {
-      const a = await p(this, c).call(this, `${this._apiBase}/subscribers`);
+      const a = await h(this, b).call(this, `${this._apiBase}/subscribers`);
       a.ok && (this._subscribers = await a.json());
     } finally {
       this._loading = !1;
     }
   }
   async _loadCampaigns() {
-    const a = await p(this, c).call(this, `${this._apiBase}/campaigns`);
+    const a = await h(this, b).call(this, `${this._apiBase}/campaigns`);
     a.ok && (this._campaigns = await a.json());
   }
   async _sendCampaign(a) {
-    (await p(this, c).call(this, `${this._apiBase}/send`, {
+    (await h(this, b).call(this, `${this._apiBase}/send`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ campaignId: a.id })
@@ -65,7 +70,7 @@ let n = class extends v(h) {
   }
   _statusBadge(a) {
     const e = ["badge-draft", "badge-scheduled", "badge-sent"][a] ?? "badge-draft";
-    return i`<span class="badge ${e}">${S[a] ?? "Unknown"}</span>`;
+    return i`<span class="badge ${e}">${B[a] ?? "Unknown"}</span>`;
   }
   render() {
     const a = this._subscribers.filter((t) => t.isConfirmed).length, e = this._campaigns.filter((t) => t.status === 2).length;
@@ -188,8 +193,8 @@ let n = class extends v(h) {
     `;
   }
 };
-c = /* @__PURE__ */ new WeakMap();
-n.styles = g`
+b = /* @__PURE__ */ new WeakMap();
+l.styles = w`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -296,21 +301,21 @@ n.styles = g`
       color: var(--uui-color-text-alt, #6b7280);
     }
   `;
-l([
-  b()
-], n.prototype, "_subscribers", 2);
-l([
-  b()
-], n.prototype, "_campaigns", 2);
-l([
-  b()
-], n.prototype, "_loading", 2);
-l([
-  b()
-], n.prototype, "_activeTab", 2);
-n = l([
-  m("newsletters-dashboard")
-], n);
+u([
+  p()
+], l.prototype, "_subscribers", 2);
+u([
+  p()
+], l.prototype, "_campaigns", 2);
+u([
+  p()
+], l.prototype, "_loading", 2);
+u([
+  p()
+], l.prototype, "_activeTab", 2);
+l = u([
+  y("newsletters-dashboard")
+], l);
 export {
-  n as NewslettersDashboardElement
+  l as NewslettersDashboardElement
 };

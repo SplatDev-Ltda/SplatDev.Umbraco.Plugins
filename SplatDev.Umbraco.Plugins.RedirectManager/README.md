@@ -128,6 +128,12 @@ The `RegexRedirectComposer` + `PatternUrlRedirector` handle bulk redirects via r
 | `RegexRedirectComposer` | Pattern-based redirect pipeline |
 | `RedirectConfiguration` | Rate limiting and path configuration |
 
+## Changelog
+
+### 2.1.6 — 2026-08-21
+- Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.
+- A failed request now raises a notification instead of leaving the dashboard looking like there is simply no data.
+
 ## License
 
 MIT © [SplatDev](https://github.com/splatdevtech)

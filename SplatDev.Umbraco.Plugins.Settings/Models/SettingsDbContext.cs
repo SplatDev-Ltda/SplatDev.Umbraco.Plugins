@@ -11,7 +11,11 @@ namespace SplatDev.Umbraco.Plugins.Settings.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasDefaultSchema("settings");
+            // SQLite has no schemas. Asking for one there makes EF fold it into the
+            // table name, so the generated DDL and the queries disagree about what the
+            // table is called and every read fails against an object never created.
+            if (!Database.IsSqlite())
+                modelBuilder.HasDefaultSchema("settings");
 
             modelBuilder.Entity<SettingGroup>(entity =>
             {
