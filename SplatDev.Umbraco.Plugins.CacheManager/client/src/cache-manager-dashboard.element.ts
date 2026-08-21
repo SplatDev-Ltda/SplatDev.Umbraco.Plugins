@@ -41,6 +41,8 @@ export class CacheManagerDashboardElement extends UmbElementMixin(LitElement) {
   @state() private _message = "";
   @state() private _activeTab: "overview" | "history" | "notfound" = "overview";
 
+  @state() private _loadError: string | null = null;
+
   connectedCallback() {
     super.connectedCallback();
     this._loadAll();
@@ -59,8 +61,9 @@ export class CacheManagerDashboardElement extends UmbElementMixin(LitElement) {
   private async _loadStats() {
     try {
       const r = await this.#fetch(`${API_BASE}/GetStatistics`);
-      if (r.ok) this._stats = await r.json();
+      if (this.#responseOk(r)) this._stats = await r.json();
     } catch {
+      this._loadError ??= "The request failed. See the browser console for details.";
       // stats endpoint requires preview features — may not be available
     }
   }
@@ -68,8 +71,9 @@ export class CacheManagerDashboardElement extends UmbElementMixin(LitElement) {
   private async _loadHistory() {
     try {
       const r = await this.#fetch(`${API_BASE}/GetLastTask`);
-      if (r.ok) this._history = await r.json();
+      if (this.#responseOk(r)) this._history = await r.json();
     } catch {
+      this._loadError ??= "The request failed. See the browser console for details.";
       this._history = [];
     }
   }
@@ -77,8 +81,9 @@ export class CacheManagerDashboardElement extends UmbElementMixin(LitElement) {
   private async _loadNotFound() {
     try {
       const r = await this.#fetch(`${API_BASE}/GetUrlNotFound`);
-      if (r.ok) this._notFound = await r.json();
+      if (this.#responseOk(r)) this._notFound = await r.json();
     } catch {
+      this._loadError ??= "The request failed. See the browser console for details.";
       this._notFound = [];
     }
   }
@@ -89,6 +94,7 @@ export class CacheManagerDashboardElement extends UmbElementMixin(LitElement) {
       const r = await this.#fetch(`${API_BASE}/ClearCache`, { method: "POST" });
       this._message = r.ok ? "Cache cleared successfully." : "Failed to clear cache.";
     } catch {
+      this._loadError ??= "The request failed. See the browser console for details.";
       this._message = "Error clearing cache.";
     }
     this._loading = false;
@@ -100,8 +106,9 @@ export class CacheManagerDashboardElement extends UmbElementMixin(LitElement) {
     try {
       const r = await this.#fetch(`${API_BASE}/RefreshCache`, { method: "POST" });
       this._message = r.ok ? "Cache refreshed successfully." : "Failed to refresh cache.";
-      if (r.ok) await this._loadHistory();
+      if (this.#responseOk(r)) await this._loadHistory();
     } catch {
+      this._loadError ??= "The request failed. See the browser console for details.";
       this._message = "Error refreshing cache.";
     }
     this._loading = false;
@@ -113,6 +120,7 @@ export class CacheManagerDashboardElement extends UmbElementMixin(LitElement) {
       this._history = [];
       this._message = "Cache log cleared.";
     } catch {
+      this._loadError ??= "The request failed. See the browser console for details.";
       this._message = "Error clearing log.";
     }
   }
@@ -226,8 +234,32 @@ export class CacheManagerDashboardElement extends UmbElementMixin(LitElement) {
     `;
   }
 
+  /**
+   * Guards a response and records why it failed.
+   *
+   * This used to be a bare `response.ok` check with no else branch, so a failed request
+   * left the previous (usually empty) state on screen and read as "there is no data"
+   * rather than "the request did not succeed".
+   */
+  #responseOk(response: Response): boolean {
+    if (response.ok) {
+      this._loadError = null;
+      return true;
+    }
+
+    this._loadError =
+      response.status === 401 || response.status === 403
+        ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete."
+        : `The request did not succeed — the server returned ${response.status}${response.statusText ? ` ${response.statusText}` : ""}.`;
+    return false;
+  }
+
+
   override render() {
     return html`
+      ${this._loadError
+        ? html`<div class="splatdev-load-error" role="alert">${this._loadError}</div>`
+        : ""}
       <div class="dashboard">
         <div class="header">
           <h1>Cache Manager</h1>
@@ -323,6 +355,19 @@ export class CacheManagerDashboardElement extends UmbElementMixin(LitElement) {
     }
     uui-table {
       width: 100%;
+    }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
     }
   `;
 }

@@ -220,6 +220,19 @@ export class PagSeguroDashboardElement extends UmbElementMixin(LitElement) {
       align-items: center;
       flex-wrap: wrap;
     }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
   `;
 
   // ── Reactive state ──
@@ -241,6 +254,8 @@ export class PagSeguroDashboardElement extends UmbElementMixin(LitElement) {
   @state() private _stStatus = "";
   @state() private _stError = "";
 
+  @state() private _loadError: string | null = null;
+
   // ── Lifecycle ──
   override connectedCallback() {
     super.connectedCallback();
@@ -253,7 +268,7 @@ export class PagSeguroDashboardElement extends UmbElementMixin(LitElement) {
     this._configError = "";
     try {
       const r = await this.#fetch(`${API}/GetConfig`);
-      if (r.ok) {
+      if (this.#responseOk(r)) {
         this._config = await r.json();
         this._connStatus = "connected";
       } else {
@@ -284,7 +299,7 @@ export class PagSeguroDashboardElement extends UmbElementMixin(LitElement) {
           description: this._txDescription.trim() || undefined,
         }),
       });
-      if (r.ok) {
+      if (this.#responseOk(r)) {
         const body = await r.json();
         this._txCheckoutUrl = body.checkoutUrl ?? "";
       } else {
@@ -307,7 +322,7 @@ export class PagSeguroDashboardElement extends UmbElementMixin(LitElement) {
       const r = await this.#fetch(
         `${API}/GetTransactionStatus?code=${encodeURIComponent(this._stCode.trim())}`
       );
-      if (r.ok) {
+      if (this.#responseOk(r)) {
         const body = await r.json();
         this._stStatus = body.status ?? "(sem status)";
       } else {
@@ -332,8 +347,32 @@ export class PagSeguroDashboardElement extends UmbElementMixin(LitElement) {
   }
 
   // ── Render ──
+
+  /**
+   * Guards a response and records why it failed.
+   *
+   * This used to be a bare `response.ok` check with no else branch, so a failed request
+   * left the previous (usually empty) state on screen and read as "there is no data"
+   * rather than "the request did not succeed".
+   */
+  #responseOk(response: Response): boolean {
+    if (response.ok) {
+      this._loadError = null;
+      return true;
+    }
+
+    this._loadError =
+      response.status === 401 || response.status === 403
+        ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete."
+        : `The request did not succeed — the server returned ${response.status}${response.statusText ? ` ${response.statusText}` : ""}.`;
+    return false;
+  }
+
   override render() {
     return html`
+      ${this._loadError
+        ? html`<div class="splatdev-load-error" role="alert">${this._loadError}</div>`
+        : ""}
       <!-- Header -->
       <div class="dashboard-header">
         <div class="brand-logo"><span>PS</span></div>

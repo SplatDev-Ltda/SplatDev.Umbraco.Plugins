@@ -1,45 +1,45 @@
-import { LitElement as f, html as i, css as w, state as p, customElement as $ } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as C } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as T } from "@umbraco-cms/backoffice/auth";
-import { UMB_NOTIFICATION_CONTEXT as k } from "@umbraco-cms/backoffice/notification";
-function x(e) {
+import { LitElement as x, html as s, css as k, state as d, customElement as E } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as S } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as F } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as z } from "@umbraco-cms/backoffice/notification";
+function O(e) {
   let a = null, t = null;
-  const c = e.consumeContext.bind(e), o = new Promise((l) => {
-    c(T, async (s) => {
-      var d;
+  const h = e.consumeContext.bind(e), o = new Promise((r) => {
+    h(F, async (i) => {
+      var b;
       try {
-        a = await ((d = s == null ? void 0 : s.getLatestToken) == null ? void 0 : d.call(s)) ?? null;
+        a = await ((b = i == null ? void 0 : i.getLatestToken) == null ? void 0 : b.call(i)) ?? null;
       } catch {
         a = null;
       }
-      l();
-    }), setTimeout(l, 3e3);
+      r();
+    }), setTimeout(r, 3e3);
   });
-  return c(k, (l) => {
-    t = l;
-  }), async (l, s = {}) => {
+  return h(z, (r) => {
+    t = r;
+  }), async (r, i = {}) => {
     await o;
-    const d = new Headers(s.headers);
-    a && !d.has("Authorization") && d.set("Authorization", `Bearer ${a}`);
-    const n = await fetch(l, { ...s, credentials: "same-origin", headers: d });
+    const b = new Headers(i.headers);
+    a && !b.has("Authorization") && b.set("Authorization", `Bearer ${a}`);
+    const n = await fetch(r, { ...i, credentials: "same-origin", headers: b });
     if (!n.ok) {
-      const v = n.status === 401 || n.status === 403, y = v ? "Not authorised" : "Could not load data", m = v ? `The backoffice token was ${a ? "sent but rejected" : "not available"} (${n.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${n.status}. Anything shown below may be incomplete.`;
-      console.error(`[SplatDev] ${n.status} from ${String(l)} — ${m}`), t == null || t.peek("danger", { data: { headline: y, message: m } });
+      const m = n.status === 401 || n.status === 403, T = m ? "Not authorised" : "Could not load data", y = m ? `The backoffice token was ${a ? "sent but rejected" : "not available"} (${n.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${n.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${n.status} from ${String(r)} — ${y}`), t == null || t.peek("danger", { data: { headline: T, message: y } });
     }
     return n;
   };
 }
-var F = Object.defineProperty, z = Object.getOwnPropertyDescriptor, g = (e) => {
+var A = Object.defineProperty, L = Object.getOwnPropertyDescriptor, $ = (e) => {
   throw TypeError(e);
-}, h = (e, a, t, c) => {
-  for (var o = c > 1 ? void 0 : c ? z(a, t) : a, l = e.length - 1, s; l >= 0; l--)
-    (s = e[l]) && (o = (c ? s(a, t, o) : s(o)) || o);
-  return c && o && F(a, t, o), o;
-}, A = (e, a, t) => a.has(e) || g("Cannot " + t), b = (e, a, t) => (A(e, a, "read from private field"), t ? t.call(e) : a.get(e)), O = (e, a, t) => a.has(e) ? g("Cannot add the same private member more than once") : a instanceof WeakSet ? a.add(e) : a.set(e, t), u;
-const _ = "/umbraco/backoffice/api/CacheWarmer";
-let r = class extends C(f) {
+}, c = (e, a, t, h) => {
+  for (var o = h > 1 ? void 0 : h ? L(a, t) : a, r = e.length - 1, i; r >= 0; r--)
+    (i = e[r]) && (o = (h ? i(a, t, o) : i(o)) || o);
+  return h && o && A(a, t, o), o;
+}, C = (e, a, t) => a.has(e) || $("Cannot " + t), _ = (e, a, t) => (C(e, a, "read from private field"), t ? t.call(e) : a.get(e)), w = (e, a, t) => a.has(e) ? $("Cannot add the same private member more than once") : a instanceof WeakSet ? a.add(e) : a.set(e, t), g = (e, a, t) => (C(e, a, "access private method"), t), u, v, f;
+const p = "/umbraco/backoffice/api/CacheWarmer";
+let l = class extends S(x) {
   constructor() {
-    super(...arguments), O(this, u, x(this)), this._stats = null, this._history = [], this._notFound = [], this._loading = !1, this._message = "", this._activeTab = "overview";
+    super(...arguments), w(this, v), w(this, u, O(this)), this._stats = null, this._history = [], this._notFound = [], this._loading = !1, this._message = "", this._activeTab = "overview", this._loadError = null;
   }
   connectedCallback() {
     super.connectedCallback(), this._loadAll();
@@ -53,59 +53,60 @@ let r = class extends C(f) {
   }
   async _loadStats() {
     try {
-      const e = await b(this, u).call(this, `${_}/GetStatistics`);
-      e.ok && (this._stats = await e.json());
+      const e = await _(this, u).call(this, `${p}/GetStatistics`);
+      g(this, v, f).call(this, e) && (this._stats = await e.json());
     } catch {
+      this._loadError ?? (this._loadError = "The request failed. See the browser console for details.");
     }
   }
   async _loadHistory() {
     try {
-      const e = await b(this, u).call(this, `${_}/GetLastTask`);
-      e.ok && (this._history = await e.json());
+      const e = await _(this, u).call(this, `${p}/GetLastTask`);
+      g(this, v, f).call(this, e) && (this._history = await e.json());
     } catch {
-      this._history = [];
+      this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), this._history = [];
     }
   }
   async _loadNotFound() {
     try {
-      const e = await b(this, u).call(this, `${_}/GetUrlNotFound`);
-      e.ok && (this._notFound = await e.json());
+      const e = await _(this, u).call(this, `${p}/GetUrlNotFound`);
+      g(this, v, f).call(this, e) && (this._notFound = await e.json());
     } catch {
-      this._notFound = [];
+      this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), this._notFound = [];
     }
   }
   async _clearCache() {
     this._loading = !0;
     try {
-      const e = await b(this, u).call(this, `${_}/ClearCache`, { method: "POST" });
+      const e = await _(this, u).call(this, `${p}/ClearCache`, { method: "POST" });
       this._message = e.ok ? "Cache cleared successfully." : "Failed to clear cache.";
     } catch {
-      this._message = "Error clearing cache.";
+      this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), this._message = "Error clearing cache.";
     }
     this._loading = !1;
   }
   async _refreshCache() {
     this._loading = !0, this._message = "Refreshing cache — this may take a moment...";
     try {
-      const e = await b(this, u).call(this, `${_}/RefreshCache`, { method: "POST" });
-      this._message = e.ok ? "Cache refreshed successfully." : "Failed to refresh cache.", e.ok && await this._loadHistory();
+      const e = await _(this, u).call(this, `${p}/RefreshCache`, { method: "POST" });
+      this._message = e.ok ? "Cache refreshed successfully." : "Failed to refresh cache.", g(this, v, f).call(this, e) && await this._loadHistory();
     } catch {
-      this._message = "Error refreshing cache.";
+      this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), this._message = "Error refreshing cache.";
     }
     this._loading = !1;
   }
   async _clearLog() {
     try {
-      await b(this, u).call(this, `${_}/ClearLog`, { method: "POST" }), this._history = [], this._message = "Cache log cleared.";
+      await _(this, u).call(this, `${p}/ClearLog`, { method: "POST" }), this._history = [], this._message = "Cache log cleared.";
     } catch {
-      this._message = "Error clearing log.";
+      this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), this._message = "Error clearing log.";
     }
   }
   _renderOverview() {
     var e, a;
-    return i`
+    return s`
       <uui-box headline="Cache Actions">
-        ${this._message ? i`<div class="message">${this._message}</div>` : ""}
+        ${this._message ? s`<div class="message">${this._message}</div>` : ""}
         <div class="action-row">
           <uui-button
             look="primary"
@@ -126,7 +127,7 @@ let r = class extends C(f) {
         </div>
       </uui-box>
 
-      ${this._stats ? i`
+      ${this._stats ? s`
           <uui-box headline="Cache Statistics">
             <div class="stat-grid">
               <div class="stat">
@@ -147,7 +148,7 @@ let r = class extends C(f) {
     `;
   }
   _renderHistory() {
-    return i`
+    return s`
       <uui-box headline="Cache Warm-up History">
         <uui-button
           slot="header-actions"
@@ -155,7 +156,7 @@ let r = class extends C(f) {
           label="Clear Log"
           @click=${this._clearLog}
         >Clear Log</uui-button>
-        ${this._history.length === 0 ? i`<p class="empty">No cache history available.</p>` : i`
+        ${this._history.length === 0 ? s`<p class="empty">No cache history available.</p>` : s`
             <uui-table>
               <uui-table-head>
                 <uui-table-head-cell>URL</uui-table-head-cell>
@@ -163,7 +164,7 @@ let r = class extends C(f) {
                 <uui-table-head-cell>Cached At</uui-table-head-cell>
               </uui-table-head>
               ${this._history.map(
-      (e) => i`
+      (e) => s`
                   <uui-table-row>
                     <uui-table-cell>${e.url}</uui-table-cell>
                     <uui-table-cell>${e.status}</uui-table-cell>
@@ -177,9 +178,9 @@ let r = class extends C(f) {
     `;
   }
   _renderNotFound() {
-    return i`
+    return s`
       <uui-box headline="404 — URLs Not Found">
-        ${this._notFound.length === 0 ? i`<p class="empty">No 404s recorded.</p>` : i`
+        ${this._notFound.length === 0 ? s`<p class="empty">No 404s recorded.</p>` : s`
             <uui-table>
               <uui-table-head>
                 <uui-table-head-cell>URL</uui-table-head-cell>
@@ -187,7 +188,7 @@ let r = class extends C(f) {
                 <uui-table-head-cell>Date</uui-table-head-cell>
               </uui-table-head>
               ${this._notFound.map(
-      (e) => i`
+      (e) => s`
                   <uui-table-row>
                     <uui-table-cell>${e.url}</uui-table-cell>
                     <uui-table-cell>${e.referrer ?? "—"}</uui-table-cell>
@@ -201,7 +202,8 @@ let r = class extends C(f) {
     `;
   }
   render() {
-    return i`
+    return s`
+      ${this._loadError ? s`<div class="splatdev-load-error" role="alert">${this._loadError}</div>` : ""}
       <div class="dashboard">
         <div class="header">
           <h1>Cache Manager</h1>
@@ -236,7 +238,11 @@ let r = class extends C(f) {
   }
 };
 u = /* @__PURE__ */ new WeakMap();
-r.styles = w`
+v = /* @__PURE__ */ new WeakSet();
+f = function(e) {
+  return e.ok ? (this._loadError = null, !0) : (this._loadError = e.status === 401 || e.status === 403 ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete." : `The request did not succeed — the server returned ${e.status}${e.statusText ? ` ${e.statusText}` : ""}.`, !1);
+};
+l.styles = k`
     :host {
       display: block;
       padding: var(--uui-size-layout-1);
@@ -299,29 +305,45 @@ r.styles = w`
     uui-table {
       width: 100%;
     }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
   `;
-h([
-  p()
-], r.prototype, "_stats", 2);
-h([
-  p()
-], r.prototype, "_history", 2);
-h([
-  p()
-], r.prototype, "_notFound", 2);
-h([
-  p()
-], r.prototype, "_loading", 2);
-h([
-  p()
-], r.prototype, "_message", 2);
-h([
-  p()
-], r.prototype, "_activeTab", 2);
-r = h([
-  $("cache-manager-dashboard")
-], r);
+c([
+  d()
+], l.prototype, "_stats", 2);
+c([
+  d()
+], l.prototype, "_history", 2);
+c([
+  d()
+], l.prototype, "_notFound", 2);
+c([
+  d()
+], l.prototype, "_loading", 2);
+c([
+  d()
+], l.prototype, "_message", 2);
+c([
+  d()
+], l.prototype, "_activeTab", 2);
+c([
+  d()
+], l.prototype, "_loadError", 2);
+l = c([
+  E("cache-manager-dashboard")
+], l);
 export {
-  r as CacheManagerDashboardElement
+  l as CacheManagerDashboardElement
 };
 //# sourceMappingURL=cache-manager.js.map

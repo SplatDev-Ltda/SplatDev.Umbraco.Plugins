@@ -1,45 +1,45 @@
-import { LitElement as w, html as d, css as y, state as u, customElement as $ } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as T } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as R } from "@umbraco-cms/backoffice/auth";
-import { UMB_NOTIFICATION_CONTEXT as U } from "@umbraco-cms/backoffice/notification";
-function k(e) {
+import { LitElement as E, html as d, css as R, state as u, customElement as x } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as k } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as U } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as C } from "@umbraco-cms/backoffice/notification";
+function F(e) {
   let t = null, i = null;
-  const c = e.consumeContext.bind(e), l = new Promise((r) => {
-    c(R, async (a) => {
+  const c = e.consumeContext.bind(e), l = new Promise((s) => {
+    c(U, async (r) => {
       var h;
       try {
-        t = await ((h = a == null ? void 0 : a.getLatestToken) == null ? void 0 : h.call(a)) ?? null;
+        t = await ((h = r == null ? void 0 : r.getLatestToken) == null ? void 0 : h.call(r)) ?? null;
       } catch {
         t = null;
       }
-      r();
-    }), setTimeout(r, 3e3);
+      s();
+    }), setTimeout(s, 3e3);
   });
-  return c(U, (r) => {
-    i = r;
-  }), async (r, a = {}) => {
+  return c(C, (s) => {
+    i = s;
+  }), async (s, r = {}) => {
     await l;
-    const h = new Headers(a.headers);
+    const h = new Headers(r.headers);
     t && !h.has("Authorization") && h.set("Authorization", `Bearer ${t}`);
-    const n = await fetch(r, { ...a, credentials: "same-origin", headers: h });
+    const n = await fetch(s, { ...r, credentials: "same-origin", headers: h });
     if (!n.ok) {
-      const f = n.status === 401 || n.status === 403, v = f ? "Not authorised" : "Could not load data", b = f ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${n.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${n.status}. Anything shown below may be incomplete.`;
-      console.error(`[SplatDev] ${n.status} from ${String(r)} — ${b}`), i == null || i.peek("danger", { data: { headline: v, message: b } });
+      const b = n.status === 401 || n.status === 403, $ = b ? "Not authorised" : "Could not load data", g = b ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${n.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${n.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${n.status} from ${String(s)} — ${g}`), i == null || i.peek("danger", { data: { headline: $, message: g } });
     }
     return n;
   };
 }
-var C = Object.defineProperty, E = Object.getOwnPropertyDescriptor, g = (e) => {
+var z = Object.defineProperty, S = Object.getOwnPropertyDescriptor, w = (e) => {
   throw TypeError(e);
 }, o = (e, t, i, c) => {
-  for (var l = c > 1 ? void 0 : c ? E(t, i) : t, r = e.length - 1, a; r >= 0; r--)
-    (a = e[r]) && (l = (c ? a(t, i, l) : a(l)) || l);
-  return c && l && C(t, i, l), l;
-}, x = (e, t, i) => t.has(e) || g("Cannot " + i), _ = (e, t, i) => (x(e, t, "read from private field"), i ? i.call(e) : t.get(e)), F = (e, t, i) => t.has(e) ? g("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, i), m;
+  for (var l = c > 1 ? void 0 : c ? S(t, i) : t, s = e.length - 1, r; s >= 0; s--)
+    (r = e[s]) && (l = (c ? r(t, i, l) : r(l)) || l);
+  return c && l && z(t, i, l), l;
+}, y = (e, t, i) => t.has(e) || w("Cannot " + i), m = (e, t, i) => (y(e, t, "read from private field"), i ? i.call(e) : t.get(e)), v = (e, t, i) => t.has(e) ? w("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, i), O = (e, t, i) => (y(e, t, "access private method"), i), _, f, T;
 const p = "/umbraco/backoffice/api/RedirectManager";
-let s = class extends T(w) {
+let a = class extends k(E) {
   constructor() {
-    super(...arguments), F(this, m, k(this)), this._redirects = [], this._loading = !1, this._message = "", this._showForm = !1, this._editItem = null, this._formUrl = "", this._formRedirectTo = "", this._filter = "";
+    super(...arguments), v(this, f), v(this, _, F(this)), this._redirects = [], this._loading = !1, this._message = "", this._showForm = !1, this._editItem = null, this._formUrl = "", this._formRedirectTo = "", this._filter = "", this._loadError = null;
   }
   connectedCallback() {
     super.connectedCallback(), this._load();
@@ -47,10 +47,10 @@ let s = class extends T(w) {
   async _load() {
     this._loading = !0;
     try {
-      const e = await _(this, m).call(this, `${p}/GetAll`);
-      e.ok && (this._redirects = await e.json());
+      const e = await m(this, _).call(this, `${p}/GetAll`);
+      O(this, f, T).call(this, e) && (this._redirects = await e.json());
     } catch {
-      this._redirects = [];
+      this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), this._redirects = [];
     }
     this._loading = !1;
   }
@@ -75,25 +75,25 @@ let s = class extends T(w) {
       redirectToUrl: this._formRedirectTo.trim()
     };
     try {
-      this._editItem ? (await _(this, m).call(this, `${p}/Put`, {
+      this._editItem ? (await m(this, _).call(this, `${p}/Put`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(e)
-      }), this._message = "Redirect updated.") : (await _(this, m).call(this, `${p}/Post`, {
+      }), this._message = "Redirect updated.") : (await m(this, _).call(this, `${p}/Post`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(e)
       }), this._message = "Redirect created."), this._showForm = !1, this._editItem = null, await this._load();
     } catch {
-      this._message = "Error saving redirect.";
+      this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), this._message = "Error saving redirect.";
     }
   }
   async _delete(e) {
     if (confirm("Delete this redirect?"))
       try {
-        await _(this, m).call(this, `${p}/Delete?id=${e}`, { method: "DELETE" }), await this._load(), this._message = "Redirect deleted.";
+        await m(this, _).call(this, `${p}/Delete?id=${e}`, { method: "DELETE" }), await this._load(), this._message = "Redirect deleted.";
       } catch {
-        this._message = "Error deleting redirect.";
+        this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), this._message = "Error deleting redirect.";
       }
   }
   get _filtered() {
@@ -134,6 +134,7 @@ let s = class extends T(w) {
   }
   render() {
     return d`
+      ${this._loadError ? d`<div class="splatdev-load-error" role="alert">${this._loadError}</div>` : ""}
       <div class="dashboard">
         <div class="header">
           <div>
@@ -200,8 +201,12 @@ let s = class extends T(w) {
     `;
   }
 };
-m = /* @__PURE__ */ new WeakMap();
-s.styles = y`
+_ = /* @__PURE__ */ new WeakMap();
+f = /* @__PURE__ */ new WeakSet();
+T = function(e) {
+  return e.ok ? (this._loadError = null, !0) : (this._loadError = e.status === 401 || e.status === 403 ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete." : `The request did not succeed — the server returned ${e.status}${e.statusText ? ` ${e.statusText}` : ""}.`, !1);
+};
+a.styles = R`
     :host {
       display: block;
       padding: var(--uui-size-layout-1);
@@ -275,35 +280,51 @@ s.styles = y`
     uui-table {
       width: 100%;
     }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
   `;
 o([
   u()
-], s.prototype, "_redirects", 2);
+], a.prototype, "_redirects", 2);
 o([
   u()
-], s.prototype, "_loading", 2);
+], a.prototype, "_loading", 2);
 o([
   u()
-], s.prototype, "_message", 2);
+], a.prototype, "_message", 2);
 o([
   u()
-], s.prototype, "_showForm", 2);
+], a.prototype, "_showForm", 2);
 o([
   u()
-], s.prototype, "_editItem", 2);
+], a.prototype, "_editItem", 2);
 o([
   u()
-], s.prototype, "_formUrl", 2);
+], a.prototype, "_formUrl", 2);
 o([
   u()
-], s.prototype, "_formRedirectTo", 2);
+], a.prototype, "_formRedirectTo", 2);
 o([
   u()
-], s.prototype, "_filter", 2);
-s = o([
-  $("redirect-manager-dashboard")
-], s);
+], a.prototype, "_filter", 2);
+o([
+  u()
+], a.prototype, "_loadError", 2);
+a = o([
+  x("redirect-manager-dashboard")
+], a);
 export {
-  s as RedirectManagerDashboardElement
+  a as RedirectManagerDashboardElement
 };
 //# sourceMappingURL=redirect-manager.js.map

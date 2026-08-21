@@ -22,12 +22,27 @@ export class DropzoneDashboard extends UmbElementMixin(LitElement) {
         table { width: 100%; border-collapse: collapse; margin-top: 16px; }
         th, td { border: 1px solid var(--uui-color-border); padding: 8px 12px; }
         th { background: var(--uui-color-surface-emphasis); }
-    `;
+    
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
+  `;
 
     @state() _queue = [];
     @state() _mediaItems = [];
     @state() _parentMediaId = "";
     @state() _dragging = false;
+
+    @state() private _loadError: string | null = null;
 
     connectedCallback() {
         super.connectedCallback();
@@ -64,8 +79,9 @@ export class DropzoneDashboard extends UmbElementMixin(LitElement) {
             if (this._parentMediaId) fd.append("parentMediaId", this._parentMediaId);
             try {
                 const r = await this.#fetch("/umbraco/api/dropzone/Upload", { method: "POST", body: fd });
-                if (r.ok) { item.done = true; } else { const d = await r.json(); item.error = d.error || "Failed"; }
-            } catch { item.error = "Upload error"; }
+                if (this.#responseOk(r)) { item.done = true; } else { const d = await r.json(); item.error = d.error || "Failed"; }
+            } catch {
+      this._loadError ??= "The request failed. See the browser console for details."; item.error = "Upload error"; }
             item.uploading = false;
             this.requestUpdate();
         }
@@ -77,8 +93,32 @@ export class DropzoneDashboard extends UmbElementMixin(LitElement) {
         await this._loadMedia();
     }
 
+  /**
+   * Guards a response and records why it failed.
+   *
+   * This used to be a bare `response.ok` check with no else branch, so a failed request
+   * left the previous (usually empty) state on screen and read as "there is no data"
+   * rather than "the request did not succeed".
+   */
+  #responseOk(response: Response): boolean {
+    if (response.ok) {
+      this._loadError = null;
+      return true;
+    }
+
+    this._loadError =
+      response.status === 401 || response.status === 403
+        ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete."
+        : `The request did not succeed — the server returned ${response.status}${response.statusText ? ` ${response.statusText}` : ""}.`;
+    return false;
+  }
+
+
     render() {
         return html`
+      ${this._loadError
+        ? html`<div class="splatdev-load-error" role="alert">${this._loadError}</div>`
+        : ""}
             <uui-box headline="Dropzone — File Upload">
                 <div
                     class="drop-area ${this._dragging ? "active" : ""}"

@@ -35,6 +35,19 @@ export class DefaultValueDashboardElement extends UmbElementMixin(LitElement) {
     .empty { color: var(--uui-color-text-alt, #6b7280); padding: 24px 0; }
     uui-table { width: 100%; }
     code { background: #f3f4f6; padding: 1px 6px; border-radius: 4px; font-size: 0.8rem; }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
   `;
 
   @state() private _rules: DefaultValueRule[] = [];
@@ -43,6 +56,8 @@ export class DefaultValueDashboardElement extends UmbElementMixin(LitElement) {
   @state() private _saving = false;
   @state() private _filter = "";
   @state() private _form: FormData = this._emptyForm();
+
+  @state() private _loadError: string | null = null;
 
   private readonly _api = "/umbraco/api/defaultvalue";
 
@@ -59,8 +74,9 @@ export class DefaultValueDashboardElement extends UmbElementMixin(LitElement) {
     this._loading = true;
     try {
       const r = await this.#fetch(`${this._api}/GetRules`);
-      if (r.ok) this._rules = await r.json();
-    } catch { this._rules = []; }
+      if (this.#responseOk(r)) this._rules = await r.json();
+    } catch {
+      this._loadError ??= "The request failed. See the browser console for details."; this._rules = []; }
     finally { this._loading = false; }
   }
 
@@ -127,8 +143,32 @@ export class DefaultValueDashboardElement extends UmbElementMixin(LitElement) {
     `;
   }
 
+  /**
+   * Guards a response and records why it failed.
+   *
+   * This used to be a bare `response.ok` check with no else branch, so a failed request
+   * left the previous (usually empty) state on screen and read as "there is no data"
+   * rather than "the request did not succeed".
+   */
+  #responseOk(response: Response): boolean {
+    if (response.ok) {
+      this._loadError = null;
+      return true;
+    }
+
+    this._loadError =
+      response.status === 401 || response.status === 403
+        ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete."
+        : `The request did not succeed — the server returned ${response.status}${response.statusText ? ` ${response.statusText}` : ""}.`;
+    return false;
+  }
+
+
   override render() {
     return html`
+      ${this._loadError
+        ? html`<div class="splatdev-load-error" role="alert">${this._loadError}</div>`
+        : ""}
       <h1>Default Values</h1>
       <p class="description">Configure default property values per document type. Applied automatically when new content nodes are created.</p>
 

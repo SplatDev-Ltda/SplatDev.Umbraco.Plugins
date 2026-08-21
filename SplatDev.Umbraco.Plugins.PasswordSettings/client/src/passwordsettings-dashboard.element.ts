@@ -36,6 +36,19 @@ export class PasswordSettingsDashboardElement extends UmbElementMixin(LitElement
     .error-list { list-style: disc; padding-left: 1.25rem; color: #b91c1c; margin-top: 8px; }
     .actions { margin-top: 20px; display: flex; gap: 12px; align-items: center; }
     .status { font-size: 0.875rem; color: #065f46; }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
   `;
 
   @state() private _policy: PasswordPolicy | null = null;
@@ -44,6 +57,8 @@ export class PasswordSettingsDashboardElement extends UmbElementMixin(LitElement
   @state() private _testPassword = "";
   @state() private _validationResult: ValidationResult | null = null;
   @state() private _statusMsg = "";
+
+  @state() private _loadError: string | null = null;
 
   private readonly _apiBase = "/umbraco/api/passwordsettings";
 
@@ -56,7 +71,7 @@ export class PasswordSettingsDashboardElement extends UmbElementMixin(LitElement
     this._loading = true;
     try {
       const res = await this.#fetch(`${this._apiBase}/GetPolicy`);
-      if (res.ok) this._policy = await res.json();
+      if (this.#responseOk(res)) this._policy = await res.json();
     } finally {
       this._loading = false;
     }
@@ -72,7 +87,7 @@ export class PasswordSettingsDashboardElement extends UmbElementMixin(LitElement
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(this._policy),
       });
-      if (res.ok) {
+      if (this.#responseOk(res)) {
         this._policy = await res.json();
         this._statusMsg = "Policy saved successfully.";
       }
@@ -88,15 +103,39 @@ export class PasswordSettingsDashboardElement extends UmbElementMixin(LitElement
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ password: this._testPassword }),
     });
-    if (res.ok) this._validationResult = await res.json();
+    if (this.#responseOk(res)) this._validationResult = await res.json();
   }
 
   private _setField<K extends keyof PasswordPolicy>(key: K, value: PasswordPolicy[K]): void {
     if (this._policy) this._policy = { ...this._policy, [key]: value };
   }
 
+  /**
+   * Guards a response and records why it failed.
+   *
+   * This used to be a bare `response.ok` check with no else branch, so a failed request
+   * left the previous (usually empty) state on screen and read as "there is no data"
+   * rather than "the request did not succeed".
+   */
+  #responseOk(response: Response): boolean {
+    if (response.ok) {
+      this._loadError = null;
+      return true;
+    }
+
+    this._loadError =
+      response.status === 401 || response.status === 403
+        ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete."
+        : `The request did not succeed — the server returned ${response.status}${response.statusText ? ` ${response.statusText}` : ""}.`;
+    return false;
+  }
+
+
   override render() {
     return html`
+      ${this._loadError
+        ? html`<div class="splatdev-load-error" role="alert">${this._loadError}</div>`
+        : ""}
       <h1>Password Settings</h1>
       <p class="description">Configure complexity rules, expiration and reuse prevention for member passwords.</p>
 

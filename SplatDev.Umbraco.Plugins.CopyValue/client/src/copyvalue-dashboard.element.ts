@@ -42,6 +42,19 @@ export class CopyValueDashboardElement extends UmbElementMixin(LitElement) {
     .result-ok { background: #d1fae5; color: #065f46; padding: 10px 14px; border-radius: 6px; margin-top: 12px; }
     .result-err { background: #fee2e2; color: #991b1b; padding: 10px 14px; border-radius: 6px; margin-top: 12px; }
     .hint { color: #6b7280; font-size: 0.75rem; margin-top: 4px; }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
   `;
 
   @state() private _mappings: CopyMapping[] = [];
@@ -55,6 +68,8 @@ export class CopyValueDashboardElement extends UmbElementMixin(LitElement) {
   @state() private _sourceId = "";
   @state() private _targetId = "";
   @state() private _publish = false;
+
+  @state() private _loadError: string | null = null;
 
   private readonly _api = "/umbraco/api/copyvalue";
 
@@ -71,8 +86,9 @@ export class CopyValueDashboardElement extends UmbElementMixin(LitElement) {
     this._loading = true;
     try {
       const r = await this.#fetch(`${this._api}/GetMappings`);
-      if (r.ok) this._mappings = await r.json();
-    } catch { this._mappings = []; }
+      if (this.#responseOk(r)) this._mappings = await r.json();
+    } catch {
+      this._loadError ??= "The request failed. See the browser console for details."; this._mappings = []; }
     finally { this._loading = false; }
   }
 
@@ -105,8 +121,8 @@ export class CopyValueDashboardElement extends UmbElementMixin(LitElement) {
     if (!mapping) { alert("Select a mapping template."); return; }
 
     let mappings;
-    try { mappings = JSON.parse(mapping.propertyMappingsJson); }
-    catch { alert("Invalid JSON in mapping template."); return; }
+    try { mappings = JSON.parse(mapping.propertyMappingsJson); } catch {
+      this._loadError ??= "The request failed. See the browser console for details."; alert("Invalid JSON in mapping template."); return; }
 
     const r = await this.#fetch(`${this._api}/CopyProperties`, {
       method: "POST",
@@ -222,8 +238,32 @@ export class CopyValueDashboardElement extends UmbElementMixin(LitElement) {
     `;
   }
 
+  /**
+   * Guards a response and records why it failed.
+   *
+   * This used to be a bare `response.ok` check with no else branch, so a failed request
+   * left the previous (usually empty) state on screen and read as "there is no data"
+   * rather than "the request did not succeed".
+   */
+  #responseOk(response: Response): boolean {
+    if (response.ok) {
+      this._loadError = null;
+      return true;
+    }
+
+    this._loadError =
+      response.status === 401 || response.status === 403
+        ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete."
+        : `The request did not succeed — the server returned ${response.status}${response.statusText ? ` ${response.statusText}` : ""}.`;
+    return false;
+  }
+
+
   override render() {
     return html`
+      ${this._loadError
+        ? html`<div class="splatdev-load-error" role="alert">${this._loadError}</div>`
+        : ""}
       <h1>Copy Value</h1>
       <p class="description">Copy property values between content nodes using reusable mapping templates.</p>
 

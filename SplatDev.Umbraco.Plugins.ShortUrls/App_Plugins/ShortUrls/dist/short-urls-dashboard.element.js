@@ -1,44 +1,44 @@
-import { LitElement as v, html as c, css as y, state as u, customElement as U } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as w } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as C } from "@umbraco-cms/backoffice/auth";
-import { UMB_NOTIFICATION_CONTEXT as S } from "@umbraco-cms/backoffice/notification";
-function $(e) {
+import { LitElement as C, html as c, css as $, state as l, customElement as T } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as x } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as L } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as z } from "@umbraco-cms/backoffice/notification";
+function k(e) {
   let t = null, i = null;
-  const n = e.consumeContext.bind(e), l = new Promise((r) => {
-    n(C, async (o) => {
-      var d;
+  const u = e.consumeContext.bind(e), n = new Promise((o) => {
+    u(L, async (r) => {
+      var h;
       try {
-        t = await ((d = o == null ? void 0 : o.getLatestToken) == null ? void 0 : d.call(o)) ?? null;
+        t = await ((h = r == null ? void 0 : r.getLatestToken) == null ? void 0 : h.call(r)) ?? null;
       } catch {
         t = null;
       }
-      r();
-    }), setTimeout(r, 3e3);
+      o();
+    }), setTimeout(o, 3e3);
   });
-  return n(S, (r) => {
-    i = r;
-  }), async (r, o = {}) => {
-    await l;
-    const d = new Headers(o.headers);
-    t && !d.has("Authorization") && d.set("Authorization", `Bearer ${t}`);
-    const h = await fetch(r, { ...o, credentials: "same-origin", headers: d });
-    if (!h.ok) {
-      const f = h.status === 401 || h.status === 403, g = f ? "Not authorised" : "Could not load data", _ = f ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${h.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${h.status}. Anything shown below may be incomplete.`;
-      console.error(`[SplatDev] ${h.status} from ${String(r)} — ${_}`), i == null || i.peek("danger", { data: { headline: g, message: _ } });
+  return u(z, (o) => {
+    i = o;
+  }), async (o, r = {}) => {
+    await n;
+    const h = new Headers(r.headers);
+    t && !h.has("Authorization") && h.set("Authorization", `Bearer ${t}`);
+    const d = await fetch(o, { ...r, credentials: "same-origin", headers: h });
+    if (!d.ok) {
+      const g = d.status === 401 || d.status === 403, S = g ? "Not authorised" : "Could not load data", v = g ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${d.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${d.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${d.status} from ${String(o)} — ${v}`), i == null || i.peek("danger", { data: { headline: S, message: v } });
     }
-    return h;
+    return d;
   };
 }
-var T = Object.defineProperty, L = Object.getOwnPropertyDescriptor, b = (e) => {
+var E = Object.defineProperty, R = Object.getOwnPropertyDescriptor, U = (e) => {
   throw TypeError(e);
-}, s = (e, t, i, n) => {
-  for (var l = n > 1 ? void 0 : n ? L(t, i) : t, r = e.length - 1, o; r >= 0; r--)
-    (o = e[r]) && (l = (n ? o(t, i, l) : o(l)) || l);
-  return n && l && T(t, i, l), l;
-}, z = (e, t, i) => t.has(e) || b("Cannot " + i), m = (e, t, i) => (z(e, t, "read from private field"), i ? i.call(e) : t.get(e)), k = (e, t, i) => t.has(e) ? b("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, i), p;
-let a = class extends w(v) {
+}, s = (e, t, i, u) => {
+  for (var n = u > 1 ? void 0 : u ? R(t, i) : t, o = e.length - 1, r; o >= 0; o--)
+    (r = e[o]) && (n = (u ? r(t, i, n) : r(n)) || n);
+  return u && n && E(t, i, n), n;
+}, w = (e, t, i) => t.has(e) || U("Cannot " + i), _ = (e, t, i) => (w(e, t, "read from private field"), i ? i.call(e) : t.get(e)), y = (e, t, i) => t.has(e) ? U("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, i), b = (e, t, i) => (w(e, t, "access private method"), i), p, m, f;
+let a = class extends x(C) {
   constructor() {
-    super(...arguments), k(this, p, $(this)), this._apiAvailable = !1, this._apiBase = "/umbraco/management/api/v1/short-urls", this._shortUrls = [], this._filter = "", this._loading = !1, this._showForm = !1, this._formMode = "create", this._editingId = null, this._formShortCode = "", this._formTargetUrl = "", this._formSaving = !1;
+    super(...arguments), y(this, m), y(this, p, k(this)), this._apiAvailable = !1, this._apiBase = "/umbraco/management/api/v1/short-urls", this._shortUrls = [], this._filter = "", this._loading = !1, this._showForm = !1, this._formMode = "create", this._editingId = null, this._formShortCode = "", this._formTargetUrl = "", this._formSaving = !1, this._loadError = null;
   }
   _handleFilterInput(e) {
     const t = e.target;
@@ -48,10 +48,10 @@ let a = class extends w(v) {
     if (this._apiAvailable) {
       this._loading = !0;
       try {
-        const e = await m(this, p).call(this, this._apiBase, {
+        const e = await _(this, p).call(this, this._apiBase, {
           headers: { "Content-Type": "application/json" }
         });
-        if (e.ok) {
+        if (b(this, m, f).call(this, e)) {
           const t = await e.json();
           this._shortUrls = t;
         }
@@ -81,12 +81,12 @@ let a = class extends w(v) {
         const e = {
           shortCode: this._formShortCode.trim(),
           targetUrl: this._formTargetUrl.trim()
-        }, t = this._formMode === "edit" && this._editingId ? `${this._apiBase}/${this._editingId}` : this._apiBase, i = this._formMode === "edit" ? "PUT" : "POST";
-        (await m(this, p).call(this, t, {
+        }, t = this._formMode === "edit" && this._editingId ? `${this._apiBase}/${this._editingId}` : this._apiBase, i = this._formMode === "edit" ? "PUT" : "POST", u = await _(this, p).call(this, t, {
           method: i,
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(e)
-        })).ok && (await this._load(), this._showForm = !1);
+        });
+        b(this, m, f).call(this, u) && (await this._load(), this._showForm = !1);
       } catch {
       } finally {
         this._formSaving = !1;
@@ -96,9 +96,10 @@ let a = class extends w(v) {
   async _delete(e) {
     if (this._apiAvailable)
       try {
-        (await m(this, p).call(this, `${this._apiBase}/${e}`, {
+        const t = await _(this, p).call(this, `${this._apiBase}/${e}`, {
           method: "DELETE"
-        })).ok && (this._shortUrls = this._shortUrls.filter((i) => i.id !== e));
+        });
+        b(this, m, f).call(this, t) && (this._shortUrls = this._shortUrls.filter((i) => i.id !== e));
       } catch {
       }
   }
@@ -175,6 +176,7 @@ let a = class extends w(v) {
   render() {
     const e = this._filteredShortUrls;
     return c`
+      ${this._loadError ? c`<div class="splatdev-load-error" role="alert">${this._loadError}</div>` : ""}
       <div class="dashboard-header">
         <h1>Short URLs</h1>
         <p>
@@ -290,7 +292,11 @@ let a = class extends w(v) {
   }
 };
 p = /* @__PURE__ */ new WeakMap();
-a.styles = y`
+m = /* @__PURE__ */ new WeakSet();
+f = function(e) {
+  return e.ok ? (this._loadError = null, !0) : (this._loadError = e.status === 401 || e.status === 403 ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete." : `The request did not succeed — the server returned ${e.status}${e.statusText ? ` ${e.statusText}` : ""}.`, !1);
+};
+a.styles = $`
     :host {
       display: block;
       padding: var(--uui-size-layout-1);
@@ -403,39 +409,55 @@ a.styles = y`
       border-radius: var(--uui-border-radius);
       font-size: 0.9em;
     }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
   `;
 s([
-  u()
+  l()
 ], a.prototype, "_shortUrls", 2);
 s([
-  u()
+  l()
 ], a.prototype, "_filter", 2);
 s([
-  u()
+  l()
 ], a.prototype, "_loading", 2);
 s([
-  u()
+  l()
 ], a.prototype, "_showForm", 2);
 s([
-  u()
+  l()
 ], a.prototype, "_formMode", 2);
 s([
-  u()
+  l()
 ], a.prototype, "_editingId", 2);
 s([
-  u()
+  l()
 ], a.prototype, "_formShortCode", 2);
 s([
-  u()
+  l()
 ], a.prototype, "_formTargetUrl", 2);
 s([
-  u()
+  l()
 ], a.prototype, "_formSaving", 2);
+s([
+  l()
+], a.prototype, "_loadError", 2);
 a = s([
-  U("short-urls-dashboard")
+  T("short-urls-dashboard")
 ], a);
-const A = a;
+const O = a;
 export {
   a as ShortUrlsDashboardElement,
-  A as default
+  O as default
 };

@@ -1,11 +1,11 @@
-import { LitElement as y, html as i, nothing as b, css as $, state as h, customElement as T } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as k } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as x } from "@umbraco-cms/backoffice/auth";
-import { UMB_NOTIFICATION_CONTEXT as w } from "@umbraco-cms/backoffice/notification";
-function C(e) {
+import { LitElement as w, html as i, nothing as _, css as C, state as n, customElement as P } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as z } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as E } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as L } from "@umbraco-cms/backoffice/notification";
+function S(e) {
   let a = null, t = null;
-  const n = e.consumeContext.bind(e), l = new Promise((o) => {
-    n(x, async (s) => {
+  const d = e.consumeContext.bind(e), l = new Promise((o) => {
+    d(E, async (s) => {
       var p;
       try {
         a = await ((p = s == null ? void 0 : s.getLatestToken) == null ? void 0 : p.call(s)) ?? null;
@@ -15,7 +15,7 @@ function C(e) {
       o();
     }), setTimeout(o, 3e3);
   });
-  return n(w, (o) => {
+  return d(L, (o) => {
     t = o;
   }), async (o, s = {}) => {
     await l;
@@ -23,22 +23,22 @@ function C(e) {
     a && !p.has("Authorization") && p.set("Authorization", `Bearer ${a}`);
     const c = await fetch(o, { ...s, credentials: "same-origin", headers: p });
     if (!c.ok) {
-      const _ = c.status === 401 || c.status === 403, v = _ ? "Not authorised" : "Could not load data", m = _ ? `The backoffice token was ${a ? "sent but rejected" : "not available"} (${c.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${c.status}. Anything shown below may be incomplete.`;
-      console.error(`[SplatDev] ${c.status} from ${String(o)} — ${m}`), t == null || t.peek("danger", { data: { headline: v, message: m } });
+      const f = c.status === 401 || c.status === 403, k = f ? "Not authorised" : "Could not load data", v = f ? `The backoffice token was ${a ? "sent but rejected" : "not available"} (${c.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${c.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${c.status} from ${String(o)} — ${v}`), t == null || t.peek("danger", { data: { headline: k, message: v } });
     }
     return c;
   };
 }
-var P = Object.defineProperty, z = Object.getOwnPropertyDescriptor, f = (e) => {
+var D = Object.defineProperty, O = Object.getOwnPropertyDescriptor, T = (e) => {
   throw TypeError(e);
-}, u = (e, a, t, n) => {
-  for (var l = n > 1 ? void 0 : n ? z(a, t) : a, o = e.length - 1, s; o >= 0; o--)
-    (s = e[o]) && (l = (n ? s(a, t, l) : s(l)) || l);
-  return n && l && P(a, t, l), l;
-}, L = (e, a, t) => a.has(e) || f("Cannot " + t), g = (e, a, t) => (L(e, a, "read from private field"), t ? t.call(e) : a.get(e)), S = (e, a, t) => a.has(e) ? f("Cannot add the same private member more than once") : a instanceof WeakSet ? a.add(e) : a.set(e, t), d;
-let r = class extends k(y) {
+}, u = (e, a, t, d) => {
+  for (var l = d > 1 ? void 0 : d ? O(a, t) : a, o = e.length - 1, s; o >= 0; o--)
+    (s = e[o]) && (l = (d ? s(a, t, l) : s(l)) || l);
+  return d && l && D(a, t, l), l;
+}, x = (e, a, t) => a.has(e) || T("Cannot " + t), g = (e, a, t) => (x(e, a, "read from private field"), t ? t.call(e) : a.get(e)), y = (e, a, t) => a.has(e) ? T("Cannot add the same private member more than once") : a instanceof WeakSet ? a.add(e) : a.set(e, t), $ = (e, a, t) => (x(e, a, "access private method"), t), h, b, m;
+let r = class extends z(w) {
   constructor() {
-    super(...arguments), S(this, d, C(this)), this._activeTab = "categories", this._categories = [], this._selectedCategory = null, this._threads = [], this._totalThreads = 0, this._page = 1, this._loading = !1, this._pageSize = 20, this._apiBase = "/umbraco/api/forums";
+    super(...arguments), y(this, b), y(this, h, S(this)), this._activeTab = "categories", this._categories = [], this._selectedCategory = null, this._threads = [], this._totalThreads = 0, this._page = 1, this._loading = !1, this._loadError = null, this._pageSize = 20, this._apiBase = "/umbraco/api/forums";
   }
   connectedCallback() {
     super.connectedCallback(), this._loadCategories();
@@ -46,10 +46,10 @@ let r = class extends k(y) {
   async _loadCategories() {
     this._loading = !0;
     try {
-      const e = await g(this, d).call(this, `${this._apiBase}/GetCategories`);
-      e.ok && (this._categories = await e.json());
+      const e = await g(this, h).call(this, `${this._apiBase}/GetCategories`);
+      $(this, b, m).call(this, e) && (this._categories = await e.json());
     } catch {
-      this._categories = [];
+      this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), this._categories = [];
     } finally {
       this._loading = !1;
     }
@@ -61,30 +61,30 @@ let r = class extends k(y) {
     if (this._selectedCategory) {
       this._loading = !0;
       try {
-        const e = await g(this, d).call(this, `${this._apiBase}/GetThreads?categoryId=${this._selectedCategory.id}&page=${this._page}&pageSize=${this._pageSize}`);
-        if (e.ok) {
+        const e = await g(this, h).call(this, `${this._apiBase}/GetThreads?categoryId=${this._selectedCategory.id}&page=${this._page}&pageSize=${this._pageSize}`);
+        if ($(this, b, m).call(this, e)) {
           const a = await e.json();
           this._threads = a.threads ?? [], this._totalThreads = a.total ?? 0;
         }
       } catch {
-        this._threads = [];
+        this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), this._threads = [];
       } finally {
         this._loading = !1;
       }
     }
   }
   async _lockThread(e) {
-    await g(this, d).call(this, `${this._apiBase}/LockThread?threadId=${e.id}&locked=${!e.isLocked}`, {
+    await g(this, h).call(this, `${this._apiBase}/LockThread?threadId=${e.id}&locked=${!e.isLocked}`, {
       method: "POST"
     }), e.isLocked = !e.isLocked, this.requestUpdate();
   }
   async _pinThread(e) {
-    await g(this, d).call(this, `${this._apiBase}/PinThread?threadId=${e.id}&pinned=${!e.isPinned}`, {
+    await g(this, h).call(this, `${this._apiBase}/PinThread?threadId=${e.id}&pinned=${!e.isPinned}`, {
       method: "POST"
     }), e.isPinned = !e.isPinned, this.requestUpdate();
   }
   async _deleteThread(e) {
-    confirm("Delete this thread and all its replies?") && (await g(this, d).call(this, `${this._apiBase}/DeleteThread?threadId=${e}`, { method: "DELETE" }), this._threads = this._threads.filter((a) => a.id !== e), this._totalThreads--, this.requestUpdate());
+    confirm("Delete this thread and all its replies?") && (await g(this, h).call(this, `${this._apiBase}/DeleteThread?threadId=${e}`, { method: "DELETE" }), this._threads = this._threads.filter((a) => a.id !== e), this._totalThreads--, this.requestUpdate());
   }
   _formatDate(e) {
     return new Date(e).toLocaleDateString("en-US", {
@@ -168,7 +168,7 @@ let r = class extends k(y) {
       (t) => i`
                     <uui-table-row>
                       <uui-table-cell>
-                        ${t.isPinned ? i`<span title="Pinned">&#128204;</span> ` : b}
+                        ${t.isPinned ? i`<span title="Pinned">&#128204;</span> ` : _}
                         <strong>${t.title}</strong>
                       </uui-table-cell>
                       <uui-table-cell>${t.authorName}</uui-table-cell>
@@ -218,13 +218,14 @@ let r = class extends k(y) {
                         @click=${this._nextPage}
                       >Next</uui-button>
                     </div>
-                  ` : b}
+                  ` : _}
             `}
       </uui-box>
     `;
   }
   render() {
     return i`
+      ${this._loadError ? i`<div class="splatdev-load-error" role="alert">${this._loadError}</div>` : ""}
       <h1>Forums Manager</h1>
       <p class="description">
         Manage discussion forum categories, threads, replies and moderation from the Umbraco backoffice.
@@ -242,7 +243,7 @@ let r = class extends k(y) {
                 ?active=${this._activeTab === "threads"}
                 @click=${() => this._activeTab = "threads"}
               >Threads: ${this._selectedCategory.name}</uui-tab>
-            ` : b}
+            ` : _}
       </uui-tab-group>
 
       <div class="tab-content">
@@ -251,8 +252,12 @@ let r = class extends k(y) {
     `;
   }
 };
-d = /* @__PURE__ */ new WeakMap();
-r.styles = $`
+h = /* @__PURE__ */ new WeakMap();
+b = /* @__PURE__ */ new WeakSet();
+m = function(e) {
+  return e.ok ? (this._loadError = null, !0) : (this._loadError = e.status === 401 || e.status === 403 ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete." : `The request did not succeed — the server returned ${e.status}${e.statusText ? ` ${e.statusText}` : ""}.`, !1);
+};
+r.styles = C`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -368,33 +373,49 @@ r.styles = $`
       cursor: pointer;
       text-decoration: underline;
     }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
   `;
 u([
-  h()
+  n()
 ], r.prototype, "_activeTab", 2);
 u([
-  h()
+  n()
 ], r.prototype, "_categories", 2);
 u([
-  h()
+  n()
 ], r.prototype, "_selectedCategory", 2);
 u([
-  h()
+  n()
 ], r.prototype, "_threads", 2);
 u([
-  h()
+  n()
 ], r.prototype, "_totalThreads", 2);
 u([
-  h()
+  n()
 ], r.prototype, "_page", 2);
 u([
-  h()
+  n()
 ], r.prototype, "_loading", 2);
+u([
+  n()
+], r.prototype, "_loadError", 2);
 r = u([
-  T("forums-dashboard")
+  P("forums-dashboard")
 ], r);
-const A = r;
+const B = r;
 export {
   r as ForumsDashboardElement,
-  A as default
+  B as default
 };

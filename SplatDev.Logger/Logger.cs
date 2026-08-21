@@ -13,12 +13,32 @@ namespace SplatDev.Logger
     {
         public static string ConnectionString { get; set; } = string.Empty;
 
+        /// <summary>
+        /// The ADO.NET provider the connection string belongs to.
+        /// </summary>
+        /// <remarks>
+        /// This used to be hardcoded to SQL Server, so a caller running on SQLite — which
+        /// Umbraco offers by default — got "Keyword not supported: 'cache'" out of a logger
+        /// that then swallowed it, leaving no log and no sign of why. Set this to a value
+        /// containing "Sqlite" to use SQLite instead. SQL Server remains the default, so
+        /// existing callers are unaffected.
+        /// </remarks>
+        public static string ProviderName { get; set; } = "Microsoft.Data.SqlClient";
+
         private static LoggerDbContext CreateContext()
         {
-            var options = new DbContextOptionsBuilder<LoggerDbContext>()
-                .UseSqlServer(ConnectionString)
-                .Options;
-            return new LoggerDbContext(options);
+            var builder = new DbContextOptionsBuilder<LoggerDbContext>();
+
+            if (ProviderName?.IndexOf("Sqlite", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                builder.UseSqlite(ConnectionString);
+            }
+            else
+            {
+                builder.UseSqlServer(ConnectionString);
+            }
+
+            return new LoggerDbContext(builder.Options);
         }
 
         public static void Log(string message, string details = "", LogType type = LogType.Info, string user = "System")

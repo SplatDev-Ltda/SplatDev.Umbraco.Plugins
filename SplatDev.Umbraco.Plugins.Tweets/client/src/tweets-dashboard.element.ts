@@ -149,12 +149,27 @@ export class TweetsDashboardElement extends UmbElementMixin(LitElement) {
       border-radius: 3px;
       font-size: 0.8rem;
     }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
   `;
 
   @state() private _tweets: CachedTweet[] = [];
   @state() private _loading = false;
   @state() private _refreshing = false;
   @state() private _lastRefresh: string | null = null;
+
+  @state() private _loadError: string | null = null;
 
   private readonly _apiBase = "/umbraco/api/tweets";
 
@@ -167,7 +182,7 @@ export class TweetsDashboardElement extends UmbElementMixin(LitElement) {
     this._loading = true;
     try {
       const res = await this.#fetch(`${this._apiBase}/feed`);
-      if (res.ok) {
+      if (this.#responseOk(res)) {
         this._tweets = await res.json() as CachedTweet[];
         if (this._tweets.length > 0) {
           this._lastRefresh = this._tweets[0].cachedAt;
@@ -242,8 +257,32 @@ export class TweetsDashboardElement extends UmbElementMixin(LitElement) {
     `;
   }
 
+  /**
+   * Guards a response and records why it failed.
+   *
+   * This used to be a bare `response.ok` check with no else branch, so a failed request
+   * left the previous (usually empty) state on screen and read as "there is no data"
+   * rather than "the request did not succeed".
+   */
+  #responseOk(response: Response): boolean {
+    if (response.ok) {
+      this._loadError = null;
+      return true;
+    }
+
+    this._loadError =
+      response.status === 401 || response.status === 403
+        ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete."
+        : `The request did not succeed — the server returned ${response.status}${response.statusText ? ` ${response.statusText}` : ""}.`;
+    return false;
+  }
+
+
   override render() {
     return html`
+      ${this._loadError
+        ? html`<div class="splatdev-load-error" role="alert">${this._loadError}</div>`
+        : ""}
       <h1>Tweets</h1>
       <p class="description">
         Preview and manage the locally cached Twitter/X feed displayed on your site.

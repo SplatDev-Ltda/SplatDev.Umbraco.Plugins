@@ -105,10 +105,10 @@ CSPRNG output, stored as SHA-256.
 
 EF Core, schema `twofactor`: `TwoFactorSetups`, `BackupCodes`.
 
-```bash
-dotnet ef migrations add InitialCreate --context TwoFactorDbContext
-dotnet ef database update --context TwoFactorDbContext
-```
+The tables are created for you the first time the site starts: the plugin runs its own
+Umbraco migration against the database Umbraco is already using, on whichever provider
+it is configured with — SQL Server or SQLite. There is nothing to scaffold and nothing
+to run by hand.
 
 ## Client build
 
@@ -119,6 +119,9 @@ npx vite build
 ```
 
 ## Changelog
+
+### 3.1.3 — 2026-08-21
+- README no longer tells you to scaffold EF Core migrations by hand — the plugin creates its own tables on first start, on SQL Server or SQLite.
 
 ### 3.1.2 — 2026-08-21
 - Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.

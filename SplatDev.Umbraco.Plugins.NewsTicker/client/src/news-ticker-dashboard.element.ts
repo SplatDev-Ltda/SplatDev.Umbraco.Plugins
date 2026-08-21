@@ -107,6 +107,19 @@ export class NewsTickerDashboardElement extends UmbElementMixin(LitElement) {
       padding: 32px;
       color: var(--uui-color-text-alt, #6b7280);
     }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
   `;
 
   @state() private _items: NewsTickerItem[] = [];
@@ -115,6 +128,8 @@ export class NewsTickerDashboardElement extends UmbElementMixin(LitElement) {
   @state() private _newText = "";
   @state() private _newUrl = "";
   @state() private _newSortOrder = 0;
+
+  @state() private _loadError: string | null = null;
 
   private readonly _apiBase = "/umbraco/api/newsticker";
 
@@ -128,7 +143,7 @@ export class NewsTickerDashboardElement extends UmbElementMixin(LitElement) {
     this._loading = true;
     try {
       const res = await this.#fetch(`${this._apiBase}/items`);
-      if (res.ok) this._items = await res.json() as NewsTickerItem[];
+      if (this.#responseOk(res)) this._items = await res.json() as NewsTickerItem[];
     } finally {
       this._loading = false;
     }
@@ -136,7 +151,7 @@ export class NewsTickerDashboardElement extends UmbElementMixin(LitElement) {
 
   private async _loadSettings(): Promise<void> {
     const res = await this.#fetch(`${this._apiBase}/settings`);
-    if (res.ok) this._settings = await res.json() as NewsTickerSettings;
+    if (this.#responseOk(res)) this._settings = await res.json() as NewsTickerSettings;
   }
 
   private async _addItem(): Promise<void> {
@@ -152,7 +167,7 @@ export class NewsTickerDashboardElement extends UmbElementMixin(LitElement) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(item),
     });
-    if (res.ok) {
+    if (this.#responseOk(res)) {
       this._newText = "";
       this._newUrl = "";
       this._newSortOrder = 0;
@@ -167,16 +182,40 @@ export class NewsTickerDashboardElement extends UmbElementMixin(LitElement) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updated),
     });
-    if (res.ok) await this._loadItems();
+    if (this.#responseOk(res)) await this._loadItems();
   }
 
   private async _deleteItem(id: number): Promise<void> {
     const res = await this.#fetch(`${this._apiBase}/items/${id}`, { method: "DELETE" });
-    if (res.ok) await this._loadItems();
+    if (this.#responseOk(res)) await this._loadItems();
   }
+
+  /**
+   * Guards a response and records why it failed.
+   *
+   * This used to be a bare `response.ok` check with no else branch, so a failed request
+   * left the previous (usually empty) state on screen and read as "there is no data"
+   * rather than "the request did not succeed".
+   */
+  #responseOk(response: Response): boolean {
+    if (response.ok) {
+      this._loadError = null;
+      return true;
+    }
+
+    this._loadError =
+      response.status === 401 || response.status === 403
+        ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete."
+        : `The request did not succeed — the server returned ${response.status}${response.statusText ? ` ${response.statusText}` : ""}.`;
+    return false;
+  }
+
 
   override render() {
     return html`
+      ${this._loadError
+        ? html`<div class="splatdev-load-error" role="alert">${this._loadError}</div>`
+        : ""}
       <h1>News Ticker</h1>
       <p class="description">
         Manage scrolling news ticker items displayed across your Umbraco site.

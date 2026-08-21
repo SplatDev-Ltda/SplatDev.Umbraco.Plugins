@@ -1,45 +1,45 @@
-import { LitElement as v, html as a, css as f, state as u, customElement as w } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as $ } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as y } from "@umbraco-cms/backoffice/auth";
-import { UMB_NOTIFICATION_CONTEXT as S } from "@umbraco-cms/backoffice/notification";
-function C(e) {
+import { LitElement as y, html as a, css as S, state as u, customElement as C } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as x } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as k } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as T } from "@umbraco-cms/backoffice/notification";
+function L(e) {
   let t = null, i = null;
-  const o = e.consumeContext.bind(e), c = new Promise((r) => {
-    o(y, async (n) => {
-      var p;
+  const o = e.consumeContext.bind(e), c = new Promise((n) => {
+    o(k, async (r) => {
+      var h;
       try {
-        t = await ((p = n == null ? void 0 : n.getLatestToken) == null ? void 0 : p.call(n)) ?? null;
+        t = await ((h = r == null ? void 0 : r.getLatestToken) == null ? void 0 : h.call(r)) ?? null;
       } catch {
         t = null;
       }
-      r();
-    }), setTimeout(r, 3e3);
+      n();
+    }), setTimeout(n, 3e3);
   });
-  return o(S, (r) => {
-    i = r;
-  }), async (r, n = {}) => {
+  return o(T, (n) => {
+    i = n;
+  }), async (n, r = {}) => {
     await c;
-    const p = new Headers(n.headers);
-    t && !p.has("Authorization") && p.set("Authorization", `Bearer ${t}`);
-    const d = await fetch(r, { ...n, credentials: "same-origin", headers: p });
+    const h = new Headers(r.headers);
+    t && !h.has("Authorization") && h.set("Authorization", `Bearer ${t}`);
+    const d = await fetch(n, { ...r, credentials: "same-origin", headers: h });
     if (!d.ok) {
-      const b = d.status === 401 || d.status === 403, g = b ? "Not authorised" : "Could not load data", m = b ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${d.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${d.status}. Anything shown below may be incomplete.`;
-      console.error(`[SplatDev] ${d.status} from ${String(r)} — ${m}`), i == null || i.peek("danger", { data: { headline: g, message: m } });
+      const m = d.status === 401 || d.status === 403, $ = m ? "Not authorised" : "Could not load data", _ = m ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${d.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${d.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${d.status} from ${String(n)} — ${_}`), i == null || i.peek("danger", { data: { headline: $, message: _ } });
     }
     return d;
   };
 }
-var k = Object.defineProperty, L = Object.getOwnPropertyDescriptor, _ = (e) => {
+var E = Object.defineProperty, I = Object.getOwnPropertyDescriptor, v = (e) => {
   throw TypeError(e);
 }, l = (e, t, i, o) => {
-  for (var c = o > 1 ? void 0 : o ? L(t, i) : t, r = e.length - 1, n; r >= 0; r--)
-    (n = e[r]) && (c = (o ? n(t, i, c) : n(c)) || c);
-  return o && c && k(t, i, c), c;
-}, I = (e, t, i) => t.has(e) || _("Cannot " + i), T = (e, t, i) => (I(e, t, "read from private field"), i ? i.call(e) : t.get(e)), N = (e, t, i) => t.has(e) ? _("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, i), h;
-const x = "/umbraco/management/api/v1/newsletter";
-let s = class extends $(v) {
+  for (var c = o > 1 ? void 0 : o ? I(t, i) : t, n = e.length - 1, r; n >= 0; n--)
+    (r = e[n]) && (c = (o ? r(t, i, c) : r(c)) || c);
+  return o && c && E(t, i, c), c;
+}, f = (e, t, i) => t.has(e) || v("Cannot " + i), N = (e, t, i) => (f(e, t, "read from private field"), i ? i.call(e) : t.get(e)), g = (e, t, i) => t.has(e) ? v("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, i), F = (e, t, i) => (f(e, t, "access private method"), i), p, b, w;
+const z = "/umbraco/management/api/v1/newsletter";
+let s = class extends x(y) {
   constructor() {
-    super(...arguments), N(this, h, C(this)), this._lists = [], this._subscribers = [], this._campaigns = [], this._stats = null, this._loading = !1, this._message = "", this._messageType = "", this._activeTab = "subscribers", this._selectedListId = null, this._newListName = "", this._newSubEmail = "", this._newSubName = "", this._showCampaignForm = !1, this._editingCampaign = null, this._campaignForm = { name: "", subject: "", listId: 0, templateId: "" }, this._selectedStatsCampaignId = null;
+    super(...arguments), g(this, b), g(this, p, L(this)), this._lists = [], this._subscribers = [], this._campaigns = [], this._stats = null, this._loading = !1, this._message = "", this._messageType = "", this._activeTab = "subscribers", this._selectedListId = null, this._newListName = "", this._newSubEmail = "", this._newSubName = "", this._showCampaignForm = !1, this._editingCampaign = null, this._campaignForm = { name: "", subject: "", listId: 0, templateId: "" }, this._selectedStatsCampaignId = null, this._loadError = null;
   }
   connectedCallback() {
     super.connectedCallback(), this._loadLists(), this._loadCampaigns();
@@ -52,16 +52,16 @@ let s = class extends $(v) {
   }
   async _api(e, t) {
     try {
-      const i = await T(this, h).call(this, `${x}${e}`, {
+      const i = await N(this, p).call(this, `${z}${e}`, {
         headers: { "Content-Type": "application/json", ...t == null ? void 0 : t.headers },
         ...t
       });
       if (i.status === 204) return null;
-      if (i.ok) return i.json();
+      if (F(this, b, w).call(this, i)) return i.json();
       const o = await i.text();
       return this._showMessage(o || `Request failed (${i.status})`, "error"), null;
     } catch {
-      return this._showMessage("Network error", "error"), null;
+      return this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), this._showMessage("Network error", "error"), null;
     }
   }
   // ── List loading ──────────────────────────────────────────────────────────
@@ -468,9 +468,9 @@ let s = class extends $(v) {
         ` : a`<p class="empty">Select a campaign to view statistics.</p>`}
     `;
   }
-  // ── Main render ───────────────────────────────────────────────────────────
   render() {
     return a`
+      ${this._loadError ? a`<div class="splatdev-load-error" role="alert">${this._loadError}</div>` : ""}
       <div class="dashboard">
         ${this._message ? a`<div class="message ${this._messageType}">${this._message}</div>` : ""}
 
@@ -509,8 +509,12 @@ let s = class extends $(v) {
     `;
   }
 };
-h = /* @__PURE__ */ new WeakMap();
-s.styles = f`
+p = /* @__PURE__ */ new WeakMap();
+b = /* @__PURE__ */ new WeakSet();
+w = function(e) {
+  return e.ok ? (this._loadError = null, !0) : (this._loadError = e.status === 401 || e.status === 403 ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete." : `The request did not succeed — the server returned ${e.status}${e.statusText ? ` ${e.statusText}` : ""}.`, !1);
+};
+s.styles = S`
     :host {
       display: block;
       padding: var(--uui-size-layout-1);
@@ -612,6 +616,19 @@ s.styles = f`
     uui-table {
       width: 100%;
     }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
   `;
 l([
   u()
@@ -661,8 +678,11 @@ l([
 l([
   u()
 ], s.prototype, "_selectedStatsCampaignId", 2);
+l([
+  u()
+], s.prototype, "_loadError", 2);
 s = l([
-  w("newsletter-dashboard")
+  C("newsletter-dashboard")
 ], s);
 export {
   s as NewsletterDashboardElement

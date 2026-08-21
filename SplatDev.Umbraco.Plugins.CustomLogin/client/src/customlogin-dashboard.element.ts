@@ -37,6 +37,19 @@ export class CustomLoginDashboardElement extends UmbElementMixin(LitElement) {
     .msg { padding: 10px 14px; border-radius: 4px; margin-bottom: 16px; }
     .msg.success { background: #d1fae5; color: #065f46; }
     .msg.error { background: #fee2e2; color: #991b1b; }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
   `;
 
   @state() private _settings: CustomLoginSettings = {
@@ -51,6 +64,8 @@ export class CustomLoginDashboardElement extends UmbElementMixin(LitElement) {
   @state() private _saving = false;
   @state() private _message: { type: "success" | "error"; text: string } | null = null;
 
+  @state() private _loadError: string | null = null;
+
   private readonly _apiBase = "/umbraco/api/customlogin";
 
   override connectedCallback(): void {
@@ -62,8 +77,9 @@ export class CustomLoginDashboardElement extends UmbElementMixin(LitElement) {
     this._loading = true;
     try {
       const response = await this.#fetch(`${this._apiBase}/GetSettings`);
-      if (response.ok) this._settings = await response.json();
+      if (this.#responseOk(response)) this._settings = await response.json();
     } catch {
+      this._loadError ??= "The request failed. See the browser console for details.";
       /* use defaults */
     } finally {
       this._loading = false;
@@ -79,12 +95,13 @@ export class CustomLoginDashboardElement extends UmbElementMixin(LitElement) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(this._settings),
       });
-      if (response.ok) {
+      if (this.#responseOk(response)) {
         this._message = { type: "success", text: "Settings saved successfully." };
       } else {
         this._message = { type: "error", text: "Failed to save settings." };
       }
     } catch {
+      this._loadError ??= "The request failed. See the browser console for details.";
       this._message = { type: "error", text: "Network error. Please try again." };
     } finally {
       this._saving = false;
@@ -95,10 +112,34 @@ export class CustomLoginDashboardElement extends UmbElementMixin(LitElement) {
     this._settings = { ...this._settings, [key]: value };
   }
 
+  /**
+   * Guards a response and records why it failed.
+   *
+   * This used to be a bare `response.ok` check with no else branch, so a failed request
+   * left the previous (usually empty) state on screen and read as "there is no data"
+   * rather than "the request did not succeed".
+   */
+  #responseOk(response: Response): boolean {
+    if (response.ok) {
+      this._loadError = null;
+      return true;
+    }
+
+    this._loadError =
+      response.status === 401 || response.status === 403
+        ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete."
+        : `The request did not succeed — the server returned ${response.status}${response.statusText ? ` ${response.statusText}` : ""}.`;
+    return false;
+  }
+
+
   override render() {
     if (this._loading) return html`<p>Loading...</p>`;
 
     return html`
+      ${this._loadError
+        ? html`<div class="splatdev-load-error" role="alert">${this._loadError}</div>`
+        : ""}
       <h1>Custom Login Settings</h1>
       <p class="description">Configure the branded login page appearance and SSO integration.</p>
 

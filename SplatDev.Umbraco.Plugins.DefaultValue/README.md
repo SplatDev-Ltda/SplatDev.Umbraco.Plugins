@@ -28,12 +28,11 @@ Set default values for Umbraco content properties by document type and property 
 
 Add the NuGet package to your Umbraco project. The `DefaultValueComposer` registers the `DefaultValueDbContext` and `IDefaultValueService` automatically.
 
-Run EF Core migrations:
 
-```bash
-dotnet ef migrations add InitialDefaultValue --context DefaultValueDbContext
-dotnet ef database update --context DefaultValueDbContext
-```
+The tables are created for you the first time the site starts: the plugin runs its own
+Umbraco migration against the database Umbraco is already using, on whichever provider
+it is configured with — SQL Server or SQLite. There is nothing to scaffold and nothing
+to run by hand.
 
 ## Usage in Code
 
@@ -56,6 +55,10 @@ await _defaultValueService.ApplyDefaultsAsync("blogPost", properties);
 | POST | `/umbraco/api/defaultvalue/ApplyDefaults?documentTypeAlias=x` | Apply defaults to a property bag |
 
 ## Changelog
+
+### 2.2.3 — 2026-08-21
+- A failed request now says so in the dashboard. Previously the dashboard kept its previous (usually empty) state, so a refused or failed call looked identical to having no data.
+- README no longer tells you to scaffold EF Core migrations by hand — the plugin creates its own tables on first start, on SQL Server or SQLite.
 
 ### 2.2.2 — 2026-08-21
 - Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.

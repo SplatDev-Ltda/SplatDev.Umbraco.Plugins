@@ -45,6 +45,19 @@ export class HiddenContentDashboardElement extends UmbElementMixin(LitElement) {
     .crumb { color: var(--uui-color-text-alt, #6b7280); font-size: 0.8125rem; }
     .empty { color: var(--uui-color-text-alt, #6b7280); padding: 16px 0; }
     uui-table { width: 100%; }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
   `;
 
   @state() private _hidden: ContentRef[] = [];
@@ -52,6 +65,8 @@ export class HiddenContentDashboardElement extends UmbElementMixin(LitElement) {
   @state() private _busy = false;
   @state() private _selection: string[] = [];
   @state() private _result: HiddenResult | null = null;
+
+  @state() private _loadError: string | null = null;
 
   private readonly _api = "/umbraco/api/hiddencontent";
 
@@ -64,7 +79,7 @@ export class HiddenContentDashboardElement extends UmbElementMixin(LitElement) {
     this._loading = true;
     try {
       const r = await this.#fetch(`${this._api}/GetHiddenNodes`, { credentials: "same-origin" });
-      if (r.ok) this._hidden = await r.json();
+      if (this.#responseOk(r)) this._hidden = await r.json();
     } finally {
       this._loading = false;
     }
@@ -86,7 +101,7 @@ export class HiddenContentDashboardElement extends UmbElementMixin(LitElement) {
         body: JSON.stringify({ nodes }),
       });
       this._result = await r.json();
-      if (r.ok) {
+      if (this.#responseOk(r)) {
         this._selection = [];
         await this.#load();
       }
@@ -97,8 +112,32 @@ export class HiddenContentDashboardElement extends UmbElementMixin(LitElement) {
     }
   }
 
+  /**
+   * Guards a response and records why it failed.
+   *
+   * This used to be a bare `response.ok` check with no else branch, so a failed request
+   * left the previous (usually empty) state on screen and read as "there is no data"
+   * rather than "the request did not succeed".
+   */
+  #responseOk(response: Response): boolean {
+    if (response.ok) {
+      this._loadError = null;
+      return true;
+    }
+
+    this._loadError =
+      response.status === 401 || response.status === 403
+        ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete."
+        : `The request did not succeed — the server returned ${response.status}${response.statusText ? ` ${response.statusText}` : ""}.`;
+    return false;
+  }
+
+
   override render() {
     return html`
+      ${this._loadError
+        ? html`<div class="splatdev-load-error" role="alert">${this._loadError}</div>`
+        : ""}
       <h1>Hidden content</h1>
       <p class="description">
         Hide pages from navigation without unpublishing them. This sets the standard

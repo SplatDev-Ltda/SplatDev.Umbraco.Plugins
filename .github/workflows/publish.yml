@@ -42,6 +42,7 @@ jobs:
           mkdir -p ./nupkgs
           FAIL=()
           PASS=()
+          NOOUT=()
           # Plugins, plus the libraries they ProjectReference. Packing only the plugins
           # left those libraries behind: SplatDev.Payments.* and SplatDev.Cache sat at
           # 1.0.0 on NuGet while the plugins packed a dependency on >= 1.0.1, so
@@ -60,7 +61,16 @@ jobs:
             echo "--- Building $name ---"
             if dotnet build "$csproj" -c Release --no-restore 2>&1 | grep -q "Build succeeded"; then
               dotnet pack "$csproj" --no-build -c Release -o ./nupkgs
-              PASS+=("$name")
+              # Count the artifact, not the exit status. dotnet pack succeeds and emits
+              # nothing for a project with IsPackable=false, so a project could be listed
+              # as "Packed" having produced no package — ContentPackages was reported that
+              # way in v2.1.7, and the same shape is how Schema2Yaml went unnoticed.
+              if compgen -G "./nupkgs/${name}.*.nupkg" > /dev/null; then
+                PASS+=("$name")
+              else
+                echo "::notice::$name built but produced no package (IsPackable=false?)"
+                NOOUT+=("$name")
+              fi
             else
               echo "::warning::Skipping $name (build failed)"
               FAIL+=("$name")
@@ -69,6 +79,9 @@ jobs:
           echo ""
           echo "=== Pack Summary ==="
           echo "Packed (${#PASS[@]}): ${PASS[*]}"
+          if [ ${#NOOUT[@]} -gt 0 ]; then
+            echo "Built but produced no package (${#NOOUT[@]}): ${NOOUT[*]}"
+          fi
           if [ ${#FAIL[@]} -gt 0 ]; then
             echo "Skipped (${#FAIL[@]}): ${FAIL[*]}"
           fi

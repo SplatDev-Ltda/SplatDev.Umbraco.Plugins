@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>SplatDev.Umbraco.Plugins.EmailTemplates</PackageId>
-    <Version>1.2.2</Version>
+    <Version>1.2.3</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <Description>Email template engine with variable substitution, preview, and singleton style settings for Umbraco 17 Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0). Includes Bellissima backoffice UI.</Description>

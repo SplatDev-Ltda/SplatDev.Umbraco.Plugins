@@ -32,12 +32,27 @@ export class MemberRegistrationDashboardElement extends UmbElementMixin(LitEleme
     .result.success { background: #d1fae5; color: #065f46; }
     .result.error { background: #fde8e8; color: #c81e1e; }
     .badge { display: inline-flex; align-items: center; justify-content: center; background: #1a56db; color: #fff; border-radius: 9999px; font-size: 0.75rem; padding: 0 6px; min-width: 20px; margin-left: 4px; }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
   `;
 
   @state() private _activeTab: string = "overview";
   @state() private _pending: PendingMember[] = [];
   @state() private _loading: boolean = false;
   @state() private _result: { success: boolean; message: string } | null = null;
+
+  @state() private _loadError: string | null = null;
 
   private _apiBase = "/umbraco/api/memberregistration";
 
@@ -49,8 +64,9 @@ export class MemberRegistrationDashboardElement extends UmbElementMixin(LitEleme
   private async _loadPending(): Promise<void> {
     try {
       const resp = await this.#fetch(`${this._apiBase}/GetPending`);
-      if (resp.ok) this._pending = await resp.json();
+      if (this.#responseOk(resp)) this._pending = await resp.json();
     } catch {
+      this._loadError ??= "The request failed. See the browser console for details.";
       this._pending = [];
     }
   }
@@ -120,8 +136,32 @@ export class MemberRegistrationDashboardElement extends UmbElementMixin(LitEleme
     `;
   }
 
+  /**
+   * Guards a response and records why it failed.
+   *
+   * This used to be a bare `response.ok` check with no else branch, so a failed request
+   * left the previous (usually empty) state on screen and read as "there is no data"
+   * rather than "the request did not succeed".
+   */
+  #responseOk(response: Response): boolean {
+    if (response.ok) {
+      this._loadError = null;
+      return true;
+    }
+
+    this._loadError =
+      response.status === 401 || response.status === 403
+        ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete."
+        : `The request did not succeed — the server returned ${response.status}${response.statusText ? ` ${response.statusText}` : ""}.`;
+    return false;
+  }
+
+
   override render() {
     return html`
+      ${this._loadError
+        ? html`<div class="splatdev-load-error" role="alert">${this._loadError}</div>`
+        : ""}
       <h1>Member Registration Manager</h1>
       <p class="description">Manage member registration and approval workflow.</p>
 

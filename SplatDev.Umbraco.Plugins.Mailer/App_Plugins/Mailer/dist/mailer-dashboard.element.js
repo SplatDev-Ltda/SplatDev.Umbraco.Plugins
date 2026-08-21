@@ -1,44 +1,44 @@
-import { LitElement as _, html as c, css as b, state as m, customElement as y } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as w } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as T } from "@umbraco-cms/backoffice/auth";
-import { UMB_NOTIFICATION_CONTEXT as S } from "@umbraco-cms/backoffice/notification";
-function $(e) {
-  let t = null, s = null;
-  const o = e.consumeContext.bind(e), r = new Promise((i) => {
-    o(T, async (a) => {
+import { LitElement as x, html as c, css as T, state as h, customElement as $ } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as E } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as S } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as z } from "@umbraco-cms/backoffice/notification";
+function A(e) {
+  let t = null, a = null;
+  const n = e.consumeContext.bind(e), r = new Promise((i) => {
+    n(S, async (s) => {
       var d;
       try {
-        t = await ((d = a == null ? void 0 : a.getLatestToken) == null ? void 0 : d.call(a)) ?? null;
+        t = await ((d = s == null ? void 0 : s.getLatestToken) == null ? void 0 : d.call(s)) ?? null;
       } catch {
         t = null;
       }
       i();
     }), setTimeout(i, 3e3);
   });
-  return o(S, (i) => {
-    s = i;
-  }), async (i, a = {}) => {
+  return n(z, (i) => {
+    a = i;
+  }), async (i, s = {}) => {
     await r;
-    const d = new Headers(a.headers);
+    const d = new Headers(s.headers);
     t && !d.has("Authorization") && d.set("Authorization", `Bearer ${t}`);
-    const n = await fetch(i, { ...a, credentials: "same-origin", headers: d });
-    if (!n.ok) {
-      const p = n.status === 401 || n.status === 403, f = p ? "Not authorised" : "Could not load data", g = p ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${n.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${n.status}. Anything shown below may be incomplete.`;
-      console.error(`[SplatDev] ${n.status} from ${String(i)} — ${g}`), s == null || s.peek("danger", { data: { headline: f, message: g } });
+    const l = await fetch(i, { ...s, credentials: "same-origin", headers: d });
+    if (!l.ok) {
+      const v = l.status === 401 || l.status === 403, w = v ? "Not authorised" : "Could not load data", f = v ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${l.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${l.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${l.status} from ${String(i)} — ${f}`), a == null || a.peek("danger", { data: { headline: w, message: f } });
     }
-    return n;
+    return l;
   };
 }
-var x = Object.defineProperty, z = Object.getOwnPropertyDescriptor, v = (e) => {
+var M = Object.defineProperty, k = Object.getOwnPropertyDescriptor, _ = (e) => {
   throw TypeError(e);
-}, u = (e, t, s, o) => {
-  for (var r = o > 1 ? void 0 : o ? z(t, s) : t, i = e.length - 1, a; i >= 0; i--)
-    (a = e[i]) && (r = (o ? a(t, s, r) : a(r)) || r);
-  return o && r && x(t, s, r), r;
-}, E = (e, t, s) => t.has(e) || v("Cannot " + s), A = (e, t, s) => (E(e, t, "read from private field"), s ? s.call(e) : t.get(e)), C = (e, t, s) => t.has(e) ? v("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, s), h;
-let l = class extends w(_) {
+}, u = (e, t, a, n) => {
+  for (var r = n > 1 ? void 0 : n ? k(t, a) : t, i = e.length - 1, s; i >= 0; i--)
+    (s = e[i]) && (r = (n ? s(t, a, r) : s(r)) || r);
+  return n && r && M(t, a, r), r;
+}, b = (e, t, a) => t.has(e) || _("Cannot " + a), C = (e, t, a) => (b(e, t, "read from private field"), a ? a.call(e) : t.get(e)), g = (e, t, a) => t.has(e) ? _("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), O = (e, t, a) => (b(e, t, "access private method"), a), m, p, y;
+let o = class extends E(x) {
   constructor() {
-    super(...arguments), C(this, h, $(this)), this._email = "", this._sendState = "idle", this._message = "";
+    super(...arguments), g(this, p), g(this, m, A(this)), this._email = "", this._sendState = "idle", this._message = "", this._loadError = null;
   }
   _handleEmailInput(e) {
     const t = e.target;
@@ -51,13 +51,13 @@ let l = class extends w(_) {
     }
     this._sendState = "loading", this._message = "";
     try {
-      const e = await A(this, h).call(this, `/umbraco/backoffice/api/MailerApi/SendTestAsync?email=${encodeURIComponent(this._email)}`, {
+      const e = await C(this, m).call(this, `/umbraco/backoffice/api/MailerApi/SendTestAsync?email=${encodeURIComponent(this._email)}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         }
       });
-      if (e.ok)
+      if (O(this, p, y).call(this, e))
         this._sendState = "success", this._message = `Test email sent successfully to ${this._email}.`;
       else {
         const t = await e.text();
@@ -69,6 +69,7 @@ let l = class extends w(_) {
   }
   render() {
     return c`
+      ${this._loadError ? c`<div class="splatdev-load-error" role="alert">${this._loadError}</div>` : ""}
       <div class="dashboard-header">
         <h1>Mailer Dashboard</h1>
         <p>
@@ -128,8 +129,12 @@ let l = class extends w(_) {
     `;
   }
 };
-h = /* @__PURE__ */ new WeakMap();
-l.styles = b`
+m = /* @__PURE__ */ new WeakMap();
+p = /* @__PURE__ */ new WeakSet();
+y = function(e) {
+  return e.ok ? (this._loadError = null, !0) : (this._loadError = e.status === 401 || e.status === 403 ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete." : `The request did not succeed — the server returned ${e.status}${e.statusText ? ` ${e.statusText}` : ""}.`, !1);
+};
+o.styles = T`
     :host {
       display: block;
       padding: var(--uui-size-layout-1);
@@ -198,21 +203,37 @@ l.styles = b`
     .info-box-content strong {
       color: var(--uui-color-text);
     }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
   `;
 u([
-  m()
-], l.prototype, "_email", 2);
+  h()
+], o.prototype, "_email", 2);
 u([
-  m()
-], l.prototype, "_sendState", 2);
+  h()
+], o.prototype, "_sendState", 2);
 u([
-  m()
-], l.prototype, "_message", 2);
-l = u([
-  y("mailer-dashboard")
-], l);
-const P = l;
+  h()
+], o.prototype, "_message", 2);
+u([
+  h()
+], o.prototype, "_loadError", 2);
+o = u([
+  $("mailer-dashboard")
+], o);
+const G = o;
 export {
-  l as MailerDashboardElement,
-  P as default
+  o as MailerDashboardElement,
+  G as default
 };

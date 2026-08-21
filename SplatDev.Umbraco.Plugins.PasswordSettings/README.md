@@ -37,14 +37,17 @@ Tables:
 
 Add a connection string named `umbracoDbDSN` in your `appsettings.json`.
 
-Run EF Core migrations:
 
-```bash
-dotnet ef migrations add InitialCreate --project UmbracoCms.Plugins.PasswordSettings
-dotnet ef database update --project UmbracoCms.Plugins.PasswordSettings
-```
+The tables are created for you the first time the site starts: the plugin runs its own
+Umbraco migration against the database Umbraco is already using, on whichever provider
+it is configured with — SQL Server or SQLite. There is nothing to scaffold and nothing
+to run by hand.
 
 ## Changelog
+
+### 2.2.3 — 2026-08-21
+- A failed request now says so in the dashboard. Previously the dashboard kept its previous (usually empty) state, so a refused or failed call looked identical to having no data.
+- README no longer tells you to scaffold EF Core migrations by hand — the plugin creates its own tables on first start, on SQL Server or SQLite.
 
 ### 2.2.2 — 2026-08-21
 - Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.

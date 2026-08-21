@@ -137,12 +137,27 @@ export class NewslettersDashboardElement extends UmbElementMixin(LitElement) {
       padding: 32px;
       color: var(--uui-color-text-alt, #6b7280);
     }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
   `;
 
   @state() private _subscribers: NewsletterSubscriber[] = [];
   @state() private _campaigns: NewsletterCampaign[] = [];
   @state() private _loading = false;
   @state() private _activeTab: "subscribers" | "campaigns" = "subscribers";
+
+  @state() private _loadError: string | null = null;
 
   private readonly _apiBase = "/umbraco/api/newsletters";
 
@@ -156,7 +171,7 @@ export class NewslettersDashboardElement extends UmbElementMixin(LitElement) {
     this._loading = true;
     try {
       const res = await this.#fetch(`${this._apiBase}/subscribers`);
-      if (res.ok) this._subscribers = await res.json() as NewsletterSubscriber[];
+      if (this.#responseOk(res)) this._subscribers = await res.json() as NewsletterSubscriber[];
     } finally {
       this._loading = false;
     }
@@ -164,7 +179,7 @@ export class NewslettersDashboardElement extends UmbElementMixin(LitElement) {
 
   private async _loadCampaigns(): Promise<void> {
     const res = await this.#fetch(`${this._apiBase}/campaigns`);
-    if (res.ok) this._campaigns = await res.json() as NewsletterCampaign[];
+    if (this.#responseOk(res)) this._campaigns = await res.json() as NewsletterCampaign[];
   }
 
   private async _sendCampaign(campaign: NewsletterCampaign): Promise<void> {
@@ -173,7 +188,7 @@ export class NewslettersDashboardElement extends UmbElementMixin(LitElement) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ campaignId: campaign.id }),
     });
-    if (res.ok) {
+    if (this.#responseOk(res)) {
       await this._loadCampaigns();
     }
   }
@@ -183,11 +198,35 @@ export class NewslettersDashboardElement extends UmbElementMixin(LitElement) {
     return html`<span class="badge ${cls}">${STATUS_LABELS[status] ?? "Unknown"}</span>`;
   }
 
+  /**
+   * Guards a response and records why it failed.
+   *
+   * This used to be a bare `response.ok` check with no else branch, so a failed request
+   * left the previous (usually empty) state on screen and read as "there is no data"
+   * rather than "the request did not succeed".
+   */
+  #responseOk(response: Response): boolean {
+    if (response.ok) {
+      this._loadError = null;
+      return true;
+    }
+
+    this._loadError =
+      response.status === 401 || response.status === 403
+        ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete."
+        : `The request did not succeed — the server returned ${response.status}${response.statusText ? ` ${response.statusText}` : ""}.`;
+    return false;
+  }
+
+
   override render() {
     const confirmedCount = this._subscribers.filter((s) => s.isConfirmed).length;
     const sentCampaigns = this._campaigns.filter((c) => c.status === 2).length;
 
     return html`
+      ${this._loadError
+        ? html`<div class="splatdev-load-error" role="alert">${this._loadError}</div>`
+        : ""}
       <h1>Newsletters</h1>
       <p class="description">
         Manage newsletter subscribers and send campaigns to your audience.

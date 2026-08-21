@@ -73,6 +73,8 @@ export class EmailTemplatesDashboardElement extends UmbElementMixin(LitElement) 
     globalCss: "",
   };
 
+  @state() private _loadError: string | null = null;
+
   connectedCallback() {
     super.connectedCallback();
     this._loadTemplates();
@@ -103,11 +105,12 @@ export class EmailTemplatesDashboardElement extends UmbElementMixin(LitElement) 
       if (contentType.includes("text/html")) {
         return (await r.text()) as unknown as T;
       }
-      if (r.ok) return r.json();
+      if (this.#responseOk(r)) return r.json();
       const err = await r.text();
       this._showMessage(err || `Request failed (${r.status})`, "error");
       return null;
     } catch {
+      this._loadError ??= "The request failed. See the browser console for details.";
       this._showMessage("Network error", "error");
       return null;
     }
@@ -685,8 +688,32 @@ export class EmailTemplatesDashboardElement extends UmbElementMixin(LitElement) 
 
   // ── Main render ─────────────────────────────────────────────────────────
 
+  /**
+   * Guards a response and records why it failed.
+   *
+   * This used to be a bare `response.ok` check with no else branch, so a failed request
+   * left the previous (usually empty) state on screen and read as "there is no data"
+   * rather than "the request did not succeed".
+   */
+  #responseOk(response: Response): boolean {
+    if (response.ok) {
+      this._loadError = null;
+      return true;
+    }
+
+    this._loadError =
+      response.status === 401 || response.status === 403
+        ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete."
+        : `The request did not succeed — the server returned ${response.status}${response.statusText ? ` ${response.statusText}` : ""}.`;
+    return false;
+  }
+
+
   override render() {
     return html`
+      ${this._loadError
+        ? html`<div class="splatdev-load-error" role="alert">${this._loadError}</div>`
+        : ""}
       <div class="dashboard">
         ${this._renderMessage()}
 
@@ -890,6 +917,19 @@ export class EmailTemplatesDashboardElement extends UmbElementMixin(LitElement) 
       flex-wrap: wrap;
       gap: var(--uui-size-space-2);
       padding: var(--uui-size-space-4) 0;
+    }
+  
+    .splatdev-load-error {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--uui-color-danger, #d42054);
+      background: var(--uui-color-danger-emphasis, #fdeaef);
+      color: var(--uui-color-danger-contrast, #6d0f28);
+      font-size: 0.9rem;
+      border-radius: 3px;
     }
   `;
 }
