@@ -69,6 +69,11 @@ fetch('/umbraco/api/ShareApi/GetShareLinks?pageUrl=' + encodeURIComponent(locati
 - No built-in front-end rendering; consumers must call the API and render buttons themselves
 - Default platforms are hardcoded as Facebook, Twitter, LinkedIn, WhatsApp, Email if no config section is provided
 
+## Changelog
+
+### 2.1.4 — 2026-08-21
+- README now shows a screenshot of the dashboard.
+
 ## License
 
 MIT © [SplatDev](https://github.com/SplatDev-Ltda)

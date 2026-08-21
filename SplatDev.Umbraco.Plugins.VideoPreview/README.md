@@ -64,6 +64,11 @@ fetch('/umbraco/api/videopreview/GetVideoInfo?url=https://www.youtube.com/watch?
 - No caching of video info results; each call performs a fresh HTTP request
 - No support for custom thumbnail sizes or video platform configuration
 
+## Changelog
+
+### 2.1.4 — 2026-08-21
+- README now shows a screenshot of the dashboard.
+
 ## License
 
 MIT © [SplatDev](https://github.com/SplatDev-Ltda)

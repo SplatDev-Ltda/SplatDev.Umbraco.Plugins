@@ -57,6 +57,11 @@ Add to `appsettings.json`:
 }
 ```
 
+## Changelog
+
+### 2.1.4 — 2026-08-21
+- README now shows a screenshot of the dashboard.
+
 ## License
 
 MIT © [SplatDev](https://github.com/SplatDev-Ltda)
