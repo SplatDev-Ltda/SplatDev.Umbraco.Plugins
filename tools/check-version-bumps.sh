@@ -26,6 +26,14 @@ for dir in $(git diff --name-only "$TAG"..HEAD 2>/dev/null \
   csproj=$(ls "$dir"/*.csproj 2>/dev/null | head -1)
   [ -z "$csproj" ] && continue
 
+  # A plugin whose only changed files cannot reach the package does not need a bump.
+  # Removing a development node_modules symlink from source control is the case that
+  # prompted this: nothing under node_modules is packed, so bumping would publish an
+  # identical package purely to satisfy this check.
+  shipping=$(git diff --name-only "$TAG"..HEAD -- "$dir" 2>/dev/null \
+             | grep -vE '(^|/)node_modules(/|$)' | wc -l)
+  [ "$shipping" -eq 0 ] && continue
+
   now=$(grep -oP '(?<=<Version>)[^<]+' "$csproj" | head -1)
   was=$(git show "$TAG:$csproj" 2>/dev/null | grep -oP '(?<=<Version>)[^<]+' | head -1)
 
