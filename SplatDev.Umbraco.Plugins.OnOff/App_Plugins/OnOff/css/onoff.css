@@ -1,0 +1,80 @@
+/*
+ * Styling for the Umbraco 13 On/Off property editor.
+ *
+ * views/edit.html has always used these class names and nothing defined them — the
+ * package manifest listed no stylesheet at all, so the editor rendered as an unstyled
+ * button. The only stylesheet in the package belonged to the older On.Off.Button folder
+ * and used a different set of class names (.onoffswitch*), so it never applied here.
+ *
+ * Kept in step with the Umbraco 17 element so the control looks the same in both.
+ */
+.onoff-editor .onoff-toggle-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    width: 96px;
+    height: 34px;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid #d1d5db;
+    background: #f1f2f0;
+    cursor: pointer;
+    overflow: hidden;
+    transition: background 160ms ease, border-color 160ms ease;
+}
+
+.onoff-editor .onoff-toggle-btn:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+.onoff-editor .onoff-toggle-label {
+    flex: 1;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-align: center;
+    color: #6b7280;
+    padding-left: 26px;
+    padding-right: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 160ms ease;
+}
+
+.onoff-editor .onoff-toggle-indicator {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.28);
+    transition: transform 160ms ease;
+}
+
+.onoff-editor .onoff-on .onoff-toggle-btn {
+    background: #2f9e44;
+    border-color: #2f9e44;
+}
+
+.onoff-editor .onoff-on .onoff-toggle-label {
+    color: #fff;
+    padding-left: 8px;
+    padding-right: 26px;
+}
+
+.onoff-editor .onoff-on .onoff-toggle-indicator {
+    transform: translateX(62px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .onoff-editor .onoff-toggle-btn,
+    .onoff-editor .onoff-toggle-label,
+    .onoff-editor .onoff-toggle-indicator {
+        transition: none;
+    }
+}
