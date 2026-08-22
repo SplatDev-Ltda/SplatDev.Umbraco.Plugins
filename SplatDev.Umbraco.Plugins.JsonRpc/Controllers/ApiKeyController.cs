@@ -40,15 +40,10 @@ public class ApiKeyController : ControllerBase
             return BadRequest("Name is required.");
 
         var key = await _service.Create(request.Name, request.Permissions ?? "*");
-        return Ok(new
-        {
-            key.Id,
-            key.Name,
-            key.Permissions,
-            key.IsActive,
-            key.CreatedAt,
-            Note = "The raw key is embedded in Name as '||RAW:<key>'. Store it — it cannot be recovered later."
-        });
+
+        // rawKey is returned once and only once. Only its hash is stored, so there is no
+        // way to show it again — the caller has to keep it now or create another key.
+        return Ok(key);
     }
 
     [HttpPost]

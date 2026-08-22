@@ -18,18 +18,25 @@ namespace SplatDev.Umbraco.Plugins.SocialMedia.Channels.Controllers
     {
         private readonly ISocialChannelsService _socialChannelsService = socialChannelsService;
 
+        /// <summary>Connected channels, without their credentials.</summary>
+        /// <remarks>
+        /// This returned the entity, so every channel's AccessToken and RefreshToken went
+        /// to the browser in the response body. Nothing in a dashboard needs them.
+        /// </remarks>
         [HttpGet]
         public async Task<IActionResult> GetChannels()
         {
             var channels = await _socialChannelsService.GetChannelsAsync();
-            return Ok(channels);
+            return Ok(channels.Select(SocialChannelSummary.From));
         }
 
         [HttpPost]
         public async Task<IActionResult> AddChannel([FromBody] SocialChannel channel)
         {
             var created = await _socialChannelsService.AddChannelAsync(channel);
-            return Ok(created);
+
+            // Echoing the created entity handed the token straight back out again.
+            return Ok(SocialChannelSummary.From(created));
         }
 
         [HttpDelete]

@@ -77,6 +77,11 @@ fetch('/umbraco/api/SocialChannelsApi/SchedulePost', {
 
 ## Changelog
 
+### 2.2.2 — 2026-08-21
+- Access tokens are no longer sent to the browser. GetChannels and AddChannel returned the stored entity, which carries AccessToken and RefreshToken, so every connected account's OAuth credentials were serialised into the dashboard's JSON. They now return a summary that says whether a token exists and whether it has expired, and nothing more.
+- The dashboard reaches all six operations it always had: list, connect and disconnect a channel, and list, schedule and remove a post. It previously made no requests at all.
+- A failed request now says so instead of leaving an empty list.
+
 ### 2.2.1 — 2026-08-21
 - The plugin's tables are created on startup. They were never created before, so anything touching them failed on a fresh install.
 - Runs on SQLite as well as SQL Server. It previously assumed SQL Server and failed with "Keyword not supported: 'cache'" on the database Umbraco's installer offers by default.

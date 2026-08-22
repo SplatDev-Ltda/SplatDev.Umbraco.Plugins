@@ -1,26 +1,106 @@
 <div class="umb-dashboard" ng-controller="DictionaryManagerDashboardController">
     <div class="umb-panel-header">
-        <h1>Dictionary Manager</h1>
-        <p class="umb-panel-description">Bulk import and export Umbraco dictionary items. Manage translations across languages.</p>
+        <h1>Dictionary</h1>
+        <p class="umb-panel-description">
+            Every dictionary item on the site and its translations. Edit a value and it saves
+            when you leave the field. You can also move the whole set in and out as JSON.
+        </p>
     </div>
+
+    <div class="alert alert-error" ng-if="loadError">{{loadError}}</div>
+    <div class="alert alert-{{message.type}}" ng-if="message" style="margin-bottom:12px;">{{message.text}}</div>
+
     <div class="umb-box">
-        <div class="umb-box-header" style="display:flex;align-items:center;gap:12px;padding:16px;">
-            <div style="width:48px;height:48px;border-radius:10px;background:#3b82f6;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;">📚</div>
-            <div>
-                <h3 style="margin:0 0 4px;font-size:1rem;font-weight:600;">Dictionary Manager</h3>
-                <p style="margin:0;font-size:0.875rem;color:#6b7280;">Plugin is installed and running on Umbraco 13.</p>
-            </div>
-            <span style="margin-left:auto;display:inline-block;padding:2px 8px;border-radius:9999px;font-size:0.7rem;font-weight:700;text-transform:uppercase;background:#d1fae5;color:#065f46;">Active</span>
+        <div class="umb-box-header">
+            <h2>Items</h2>
         </div>
-        <div class="umb-box-content" style="padding:16px;border-top:1px solid #e5e7eb;">
-            <div ng-if="loading" class="umb-loading">Loading...</div>
-            <div ng-if="message" class="alert alert-{{message.type}}" style="margin-bottom:12px;">{{message.text}}</div>
-            <p style="color:#374151;">Bulk import and export Umbraco dictionary items. Manage translations across languages.</p>
-            <div style="margin-top:16px;">
-                <button class="btn btn-primary" ng-click="save()" ng-disabled="loading">
-                    {{saved ? 'Saved!' : 'Save Settings'}}
+        <div class="umb-box-content">
+
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px;">
+                <input type="text" ng-model="filter" placeholder="Filter by key or translation" class="umb-property-editor-tiny" style="flex:1 1 220px;" />
+
+                <button type="button" class="btn" ng-click="exportJson()" ng-disabled="busy === 'export'">
+                    <i class="icon-download-alt"></i>
+                    <span>{{busy === 'export' ? 'Exporting…' : 'Export JSON'}}</span>
                 </button>
+
+                <input id="dm-import" type="file" accept="application/json,.json" style="display:none"
+                       onchange="angular.element(this).scope().importJson(this.files)" />
+                <button type="button" class="btn" ng-disabled="busy === 'import'"
+                        onclick="document.getElementById('dm-import').click()">
+                    <i class="icon-upload"></i>
+                    <span>{{busy === 'import' ? 'Importing…' : 'Import JSON'}}</span>
+                </button>
+
+                <label class="checkbox" style="margin:0;">
+                    <input type="checkbox" ng-model="overrideOnImport" /> Overwrite existing on import
+                </label>
             </div>
+
+            <umb-load-indicator ng-if="loading"></umb-load-indicator>
+
+            <p ng-if="!loading && !items.length" class="text-muted">
+                No dictionary items yet. Add one below.
+            </p>
+
+            <table class="table table-striped" ng-if="!loading && items.length">
+                <thead>
+                    <tr>
+                        <th>Key</th>
+                        <th ng-repeat="code in languages">{{code}}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="item in items | filter:matchesFilter">
+                        <td>
+                            <span ng-if="item.parentKey" class="text-muted">&#8627;</span>
+                            <code>{{item.key}}</code>
+                        </td>
+                        <td ng-repeat="code in languages">
+                            <input type="text"
+                                   ng-model="item.translations[code]"
+                                   ng-blur="saveTranslation(item, code)"
+                                   ng-disabled="busy === ('save:' + item.key + ':' + code)"
+                                   class="umb-property-editor-tiny" />
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-link text-error"
+                                    ng-click="remove(item.key)"
+                                    ng-disabled="busy === ('delete:' + item.key)">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="umb-box">
+        <div class="umb-box-header">
+            <h2>Add an item</h2>
+        </div>
+        <div class="umb-box-content">
+            <div class="control-group">
+                <label>Key</label>
+                <input type="text" ng-model="newItem.key" placeholder="e.g. general.close" />
+            </div>
+            <div class="control-group">
+                <label>Parent key (optional)</label>
+                <input type="text" ng-model="newItem.parentKey" placeholder="Leave empty for a root item" />
+                <small class="text-muted">
+                    A parent key nests this item beneath an existing one, the same as the
+                    dictionary tree in the Translation section.
+                </small>
+            </div>
+            <div class="control-group" ng-repeat="code in languages">
+                <label>{{code}}</label>
+                <input type="text" ng-model="newItem.translations[code]" />
+            </div>
+            <button type="button" class="btn btn-primary" ng-click="create()" ng-disabled="busy === 'create'">
+                {{busy === 'create' ? 'Adding…' : 'Add item'}}
+            </button>
         </div>
     </div>
 </div>
