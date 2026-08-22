@@ -16,7 +16,8 @@ interface RedirectUrl {
   createdOn?: string;
 }
 
-const API_BASE = "/umbraco/backoffice/api/RedirectManager";
+// Umbraco 17 route. /umbraco/backoffice/api/... is the Umbraco 13 prefix and 404s here.
+const API_BASE = "/umbraco/api/redirectmanager";
 
 @customElement("redirect-manager-dashboard")
 export class RedirectManagerDashboardElement extends UmbElementMixin(LitElement) {
@@ -41,7 +42,7 @@ export class RedirectManagerDashboardElement extends UmbElementMixin(LitElement)
   private async _load() {
     this._loading = true;
     try {
-      const r = await this.#fetch(`${API_BASE}/GetAll`);
+      const r = await this.#fetch(`${API_BASE}/all`);
       if (this.#responseOk(r)) this._redirects = await r.json();
     } catch {
       this._loadError ??= "The request failed. See the browser console for details.";
@@ -85,14 +86,14 @@ export class RedirectManagerDashboardElement extends UmbElementMixin(LitElement)
     };
     try {
       if (this._editItem) {
-        await this.#fetch(`${API_BASE}/Put`, {
+        await this.#fetch(`${API_BASE}/update`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
         });
         this._message = "Redirect updated.";
       } else {
-        await this.#fetch(`${API_BASE}/Post`, {
+        await this.#fetch(`${API_BASE}/create`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
@@ -111,7 +112,7 @@ export class RedirectManagerDashboardElement extends UmbElementMixin(LitElement)
   private async _delete(id: number) {
     if (!confirm("Delete this redirect?")) return;
     try {
-      await this.#fetch(`${API_BASE}/Delete?id=${id}`, { method: "DELETE" });
+      await this.#fetch(`${API_BASE}/${id}`, { method: "DELETE" });
       await this._load();
       this._message = "Redirect deleted.";
     } catch {

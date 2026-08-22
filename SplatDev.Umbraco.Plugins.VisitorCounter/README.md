@@ -54,6 +54,11 @@ npm run build
 
 ## Changelog
 
+### 2.1.7 — 2026-08-22
+- Statistics load instead of returning 500. The migration created `VisitorSession` and `DailyVisitorCount`, while the entities map to `VisitorCounter_Session` and `VisitorCounter_DailyCount`, so every read hit a table that was never created.
+- Table creation is now generated from the EF model itself, so the names cannot drift from the queries again.
+- The tables the old migration created under the wrong names are left in place rather than dropped, in case a site put data in them by hand. They are unused; an empty one is safe to drop.
+
 ### 2.1.6 — 2026-08-21
 - README no longer tells you to scaffold EF Core migrations by hand — the plugin creates its own tables on first start, on SQL Server or SQLite.
 

@@ -72,6 +72,9 @@ documentTypes:
 
 ## Changelog
 
+### 1.0.42 — 2026-08-22
+- The Status panel shows real state. The dashboard has always called `GET /umbraco/api/Yaml2Schema/Status`, but no controller existed, so the call 404'd on every load and the panel fell back to hardcoded text describing the plugin in general — it claimed an import runs on startup whether or not a YAML file was present, and never showed that one had. The endpoint now reports the configured path, whether an import is pending, and when the last one completed.
+
 ### 1.0.41 — 2026-08-22
 - The backoffice dashboard now appears. Its assets lived under `wwwroot/App_Plugins/`, which is not a path Umbraco or the static-file middleware ever serves from — every request for the manifest and the bundle returned 404, so the dashboard was unreachable on any install.
 - The plugin now embeds its `App_Plugins` in the assembly, serves them from there, and registers its own package manifest, matching every other plugin in this repo. It no longer depends on a `buildTransitive` copy step that silently does nothing when it fails.

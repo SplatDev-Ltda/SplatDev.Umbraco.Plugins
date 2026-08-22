@@ -3,12 +3,12 @@ import { UmbElementMixin as k } from "@umbraco-cms/backoffice/element-api";
 import { UMB_AUTH_CONTEXT as U } from "@umbraco-cms/backoffice/auth";
 import { UMB_NOTIFICATION_CONTEXT as C } from "@umbraco-cms/backoffice/notification";
 function F(e) {
-  let t = null, i = null;
+  let t = null, r = null;
   const c = e.consumeContext.bind(e), l = new Promise((s) => {
-    c(U, async (r) => {
+    c(U, async (i) => {
       var h;
       try {
-        t = await ((h = r == null ? void 0 : r.getLatestToken) == null ? void 0 : h.call(r)) ?? null;
+        t = await ((h = i == null ? void 0 : i.getLatestToken) == null ? void 0 : h.call(i)) ?? null;
       } catch {
         t = null;
       }
@@ -16,30 +16,30 @@ function F(e) {
     }), setTimeout(s, 3e3);
   });
   return c(C, (s) => {
-    i = s;
-  }), async (s, r = {}) => {
+    r = s;
+  }), async (s, i = {}) => {
     await l;
-    const h = new Headers(r.headers);
+    const h = new Headers(i.headers);
     t && !h.has("Authorization") && h.set("Authorization", `Bearer ${t}`);
-    const n = await fetch(s, { ...r, credentials: "same-origin", headers: h });
+    const n = await fetch(s, { ...i, credentials: "same-origin", headers: h });
     if (!n.ok) {
       const b = n.status === 401 || n.status === 403, $ = b ? "Not authorised" : "Could not load data", g = b ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${n.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${n.status}. Anything shown below may be incomplete.`;
-      console.error(`[SplatDev] ${n.status} from ${String(s)} — ${g}`), i == null || i.peek("danger", { data: { headline: $, message: g } });
+      console.error(`[SplatDev] ${n.status} from ${String(s)} — ${g}`), r == null || r.peek("danger", { data: { headline: $, message: g } });
     }
     return n;
   };
 }
 var z = Object.defineProperty, S = Object.getOwnPropertyDescriptor, w = (e) => {
   throw TypeError(e);
-}, o = (e, t, i, c) => {
-  for (var l = c > 1 ? void 0 : c ? S(t, i) : t, s = e.length - 1, r; s >= 0; s--)
-    (r = e[s]) && (l = (c ? r(t, i, l) : r(l)) || l);
-  return c && l && z(t, i, l), l;
-}, y = (e, t, i) => t.has(e) || w("Cannot " + i), m = (e, t, i) => (y(e, t, "read from private field"), i ? i.call(e) : t.get(e)), v = (e, t, i) => t.has(e) ? w("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, i), O = (e, t, i) => (y(e, t, "access private method"), i), _, f, T;
-const p = "/umbraco/backoffice/api/RedirectManager";
+}, o = (e, t, r, c) => {
+  for (var l = c > 1 ? void 0 : c ? S(t, r) : t, s = e.length - 1, i; s >= 0; s--)
+    (i = e[s]) && (l = (c ? i(t, r, l) : i(l)) || l);
+  return c && l && z(t, r, l), l;
+}, y = (e, t, r) => t.has(e) || w("Cannot " + r), _ = (e, t, r) => (y(e, t, "read from private field"), r ? r.call(e) : t.get(e)), v = (e, t, r) => t.has(e) ? w("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, r), O = (e, t, r) => (y(e, t, "access private method"), r), m, f, T;
+const p = "/umbraco/api/redirectmanager";
 let a = class extends k(E) {
   constructor() {
-    super(...arguments), v(this, f), v(this, _, F(this)), this._redirects = [], this._loading = !1, this._message = "", this._showForm = !1, this._editItem = null, this._formUrl = "", this._formRedirectTo = "", this._filter = "", this._loadError = null;
+    super(...arguments), v(this, f), v(this, m, F(this)), this._redirects = [], this._loading = !1, this._message = "", this._showForm = !1, this._editItem = null, this._formUrl = "", this._formRedirectTo = "", this._filter = "", this._loadError = null;
   }
   connectedCallback() {
     super.connectedCallback(), this._load();
@@ -47,7 +47,7 @@ let a = class extends k(E) {
   async _load() {
     this._loading = !0;
     try {
-      const e = await m(this, _).call(this, `${p}/GetAll`);
+      const e = await _(this, m).call(this, `${p}/all`);
       O(this, f, T).call(this, e) && (this._redirects = await e.json());
     } catch {
       this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), this._redirects = [];
@@ -75,11 +75,11 @@ let a = class extends k(E) {
       redirectToUrl: this._formRedirectTo.trim()
     };
     try {
-      this._editItem ? (await m(this, _).call(this, `${p}/Put`, {
+      this._editItem ? (await _(this, m).call(this, `${p}/update`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(e)
-      }), this._message = "Redirect updated.") : (await m(this, _).call(this, `${p}/Post`, {
+      }), this._message = "Redirect updated.") : (await _(this, m).call(this, `${p}/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(e)
@@ -91,7 +91,7 @@ let a = class extends k(E) {
   async _delete(e) {
     if (confirm("Delete this redirect?"))
       try {
-        await m(this, _).call(this, `${p}/Delete?id=${e}`, { method: "DELETE" }), await this._load(), this._message = "Redirect deleted.";
+        await _(this, m).call(this, `${p}/${e}`, { method: "DELETE" }), await this._load(), this._message = "Redirect deleted.";
       } catch {
         this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), this._message = "Error deleting redirect.";
       }
@@ -201,7 +201,7 @@ let a = class extends k(E) {
     `;
   }
 };
-_ = /* @__PURE__ */ new WeakMap();
+m = /* @__PURE__ */ new WeakMap();
 f = /* @__PURE__ */ new WeakSet();
 T = function(e) {
   return e.ok ? (this._loadError = null, !0) : (this._loadError = e.status === 401 || e.status === 403 ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete." : `The request did not succeed — the server returned ${e.status}${e.statusText ? ` ${e.statusText}` : ""}.`, !1);

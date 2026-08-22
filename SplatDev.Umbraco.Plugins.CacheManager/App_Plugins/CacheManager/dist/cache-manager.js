@@ -1,11 +1,11 @@
 import { LitElement as x, html as s, css as k, state as d, customElement as E } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin as S } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as F } from "@umbraco-cms/backoffice/auth";
-import { UMB_NOTIFICATION_CONTEXT as z } from "@umbraco-cms/backoffice/notification";
+import { UMB_AUTH_CONTEXT as z } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as F } from "@umbraco-cms/backoffice/notification";
 function O(e) {
   let a = null, t = null;
   const h = e.consumeContext.bind(e), o = new Promise((r) => {
-    h(F, async (i) => {
+    h(z, async (i) => {
       var b;
       try {
         a = await ((b = i == null ? void 0 : i.getLatestToken) == null ? void 0 : b.call(i)) ?? null;
@@ -15,7 +15,7 @@ function O(e) {
       r();
     }), setTimeout(r, 3e3);
   });
-  return h(z, (r) => {
+  return h(F, (r) => {
     t = r;
   }), async (r, i = {}) => {
     await o;
@@ -23,20 +23,20 @@ function O(e) {
     a && !b.has("Authorization") && b.set("Authorization", `Bearer ${a}`);
     const n = await fetch(r, { ...i, credentials: "same-origin", headers: b });
     if (!n.ok) {
-      const m = n.status === 401 || n.status === 403, T = m ? "Not authorised" : "Could not load data", y = m ? `The backoffice token was ${a ? "sent but rejected" : "not available"} (${n.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${n.status}. Anything shown below may be incomplete.`;
-      console.error(`[SplatDev] ${n.status} from ${String(r)} — ${y}`), t == null || t.peek("danger", { data: { headline: T, message: y } });
+      const m = n.status === 401 || n.status === 403, C = m ? "Not authorised" : "Could not load data", y = m ? `The backoffice token was ${a ? "sent but rejected" : "not available"} (${n.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${n.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${n.status} from ${String(r)} — ${y}`), t == null || t.peek("danger", { data: { headline: C, message: y } });
     }
     return n;
   };
 }
-var A = Object.defineProperty, L = Object.getOwnPropertyDescriptor, $ = (e) => {
+var A = Object.defineProperty, N = Object.getOwnPropertyDescriptor, $ = (e) => {
   throw TypeError(e);
 }, c = (e, a, t, h) => {
-  for (var o = h > 1 ? void 0 : h ? L(a, t) : a, r = e.length - 1, i; r >= 0; r--)
+  for (var o = h > 1 ? void 0 : h ? N(a, t) : a, r = e.length - 1, i; r >= 0; r--)
     (i = e[r]) && (o = (h ? i(a, t, o) : i(o)) || o);
   return h && o && A(a, t, o), o;
-}, C = (e, a, t) => a.has(e) || $("Cannot " + t), _ = (e, a, t) => (C(e, a, "read from private field"), t ? t.call(e) : a.get(e)), w = (e, a, t) => a.has(e) ? $("Cannot add the same private member more than once") : a instanceof WeakSet ? a.add(e) : a.set(e, t), g = (e, a, t) => (C(e, a, "access private method"), t), u, v, f;
-const p = "/umbraco/backoffice/api/CacheWarmer";
+}, T = (e, a, t) => a.has(e) || $("Cannot " + t), _ = (e, a, t) => (T(e, a, "read from private field"), t ? t.call(e) : a.get(e)), w = (e, a, t) => a.has(e) ? $("Cannot add the same private member more than once") : a instanceof WeakSet ? a.add(e) : a.set(e, t), g = (e, a, t) => (T(e, a, "access private method"), t), u, v, f;
+const p = "/umbraco/api/cachewarmer";
 let l = class extends S(x) {
   constructor() {
     super(...arguments), w(this, v), w(this, u, O(this)), this._stats = null, this._history = [], this._notFound = [], this._loading = !1, this._message = "", this._activeTab = "overview", this._loadError = null;
@@ -53,7 +53,7 @@ let l = class extends S(x) {
   }
   async _loadStats() {
     try {
-      const e = await _(this, u).call(this, `${p}/GetStatistics`);
+      const e = await _(this, u).call(this, `${p}/statistics`);
       g(this, v, f).call(this, e) && (this._stats = await e.json());
     } catch {
       this._loadError ?? (this._loadError = "The request failed. See the browser console for details.");
@@ -61,7 +61,7 @@ let l = class extends S(x) {
   }
   async _loadHistory() {
     try {
-      const e = await _(this, u).call(this, `${p}/GetLastTask`);
+      const e = await _(this, u).call(this, `${p}/last-task`);
       g(this, v, f).call(this, e) && (this._history = await e.json());
     } catch {
       this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), this._history = [];
@@ -69,7 +69,7 @@ let l = class extends S(x) {
   }
   async _loadNotFound() {
     try {
-      const e = await _(this, u).call(this, `${p}/GetUrlNotFound`);
+      const e = await _(this, u).call(this, `${p}/url-not-found`);
       g(this, v, f).call(this, e) && (this._notFound = await e.json());
     } catch {
       this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), this._notFound = [];
@@ -78,7 +78,7 @@ let l = class extends S(x) {
   async _clearCache() {
     this._loading = !0;
     try {
-      const e = await _(this, u).call(this, `${p}/ClearCache`, { method: "POST" });
+      const e = await _(this, u).call(this, `${p}/clear-cache`, { method: "POST" });
       this._message = e.ok ? "Cache cleared successfully." : "Failed to clear cache.";
     } catch {
       this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), this._message = "Error clearing cache.";
@@ -88,7 +88,7 @@ let l = class extends S(x) {
   async _refreshCache() {
     this._loading = !0, this._message = "Refreshing cache — this may take a moment...";
     try {
-      const e = await _(this, u).call(this, `${p}/RefreshCache`, { method: "POST" });
+      const e = await _(this, u).call(this, `${p}/refresh-cache`, { method: "POST" });
       this._message = e.ok ? "Cache refreshed successfully." : "Failed to refresh cache.", g(this, v, f).call(this, e) && await this._loadHistory();
     } catch {
       this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), this._message = "Error refreshing cache.";
@@ -97,7 +97,7 @@ let l = class extends S(x) {
   }
   async _clearLog() {
     try {
-      await _(this, u).call(this, `${p}/ClearLog`, { method: "POST" }), this._history = [], this._message = "Cache log cleared.";
+      await _(this, u).call(this, `${p}/clear-log`, { method: "POST" }), this._history = [], this._message = "Cache log cleared.";
     } catch {
       this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), this._message = "Error clearing log.";
     }
