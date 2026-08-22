@@ -73,6 +73,11 @@ The build output is placed at `App_Plugins/JsonRpc/dist/jsonrpc-dashboard.elemen
 
 ## Changelog
 
+### 2.2.2 — 2026-08-21
+- API keys can be managed from the dashboard — list, create and revoke. It previously made no requests at all.
+- A newly created key is returned as its own result with a rawKey field, shown once. It used to be smuggled back inside the entity's Name as "name||RAW:key", which every caller had to parse and which was one accidental re-save away from writing a live key into the database in plain text.
+- A failed request now says so instead of leaving an empty list.
+
 ### 2.2.1 — 2026-08-21
 - The plugin's tables are created on startup. They were never created before, so anything touching them failed on a fresh install.
 - Runs on SQLite as well as SQL Server. It previously assumed SQL Server and failed with "Keyword not supported: 'cache'" on the database Umbraco's installer offers by default.

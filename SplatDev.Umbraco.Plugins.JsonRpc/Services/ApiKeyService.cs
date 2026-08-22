@@ -21,7 +21,7 @@ public class ApiKeyService : IApiKeyService
             .ToListAsync();
     }
 
-    public async Task<ApiKey> Create(string name, string permissions)
+    public async Task<ApiKeyCreated> Create(string name, string permissions)
     {
         // Generate a random 32-byte key and store its SHA-256 hash
         var rawKey     = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
@@ -39,10 +39,15 @@ public class ApiKeyService : IApiKeyService
         await _db.ApiKeys.AddAsync(entity);
         await _db.SaveChangesAsync();
 
-        // Temporarily expose the raw key in the Name field so the caller can retrieve it once
-        // The caller must store it — it cannot be recovered from the hash after this point
-        entity.Name = $"{name}||RAW:{rawKey}";
-        return entity;
+        return new ApiKeyCreated
+        {
+            Id = entity.Id,
+            Name = entity.Name,
+            Permissions = entity.Permissions,
+            IsActive = entity.IsActive,
+            CreatedAt = entity.CreatedAt,
+            RawKey = rawKey,
+        };
     }
 
     public async Task Revoke(int id)
