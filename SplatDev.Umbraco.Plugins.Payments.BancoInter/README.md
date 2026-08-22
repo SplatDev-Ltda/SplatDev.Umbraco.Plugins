@@ -83,6 +83,14 @@ Set `Environment: sandbox` for testing, `production` for live transactions.
 
 ## Changelog
 
+### 1.2.2 — 2026-08-21
+- Pix settlement callbacks work again. The webhook sat behind the backoffice authorization added in 1.2.0, so Banco Inter's server — which has no backoffice session — was answered with 401 and a charge stayed pending even after the payer had paid.
+- The webhook is now gated on a shared secret (`BancoInter:WebhookSecret`) supplied on the callback URL, and refuses everything while that secret is unset rather than defaulting to open. It marks transactions as settled, so an anonymous caller must not be able to reach it.
+- Registering the webhook builds the callback URL server-side and appends the secret, so the secret never passes through the browser.
+- The dashboard reaches the plugin's operations for the first time — it previously made no requests at all. It reads the balance on demand, creates Pix charges, registers callbacks, and lists the charges and boletos this site has created.
+- Sandbox and production are stated at the top of the dashboard, and the create button says "Create a real charge" outside sandbox. The same button either issues a test instrument or moves money.
+- Added GetTransactions and GetStatus. Every charge and boleto was already recorded in the plugin's own table with no way to read it back.
+
 ### 1.2.1 — 2026-08-21
 - The plugin's tables are created on startup. They were never created before, so anything touching them failed on a fresh install.
 - Runs on SQLite as well as SQL Server. It previously assumed SQL Server and failed with "Keyword not supported: 'cache'" on the database Umbraco's installer offers by default.
