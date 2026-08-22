@@ -189,6 +189,11 @@ Other UmbracoCms themes depend on this package and override or extend:
 
 ---
 
+## Changelog
+
+### 1.0.3 — 2026-08-22
+- This package's README now reaches NuGet. The publish workflow discovered packages by a list of name patterns, and this one matched none of them, so it was never built or pushed by CI — the version on NuGet was placed there by hand before the README was wired up, and no release could refresh it. Discovery is now by prefix, so the package ships whenever the repo is tagged.
+
 ## License
 
 MIT — Copyright © 2026 SplatDev

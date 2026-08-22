@@ -9,7 +9,7 @@
     <ToolCommandName>umbraco-packager</ToolCommandName>
     <PackageId>SplatDev.Umbraco.Tools.Packager</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Authors>SplatDev</Authors>
     <Company>SplatDev Ltda</Company>
     <Description>CLI tool for creating Umbraco NuGet packages — generates package.manifest, bundles App_Plugins assets, and wraps dotnet pack.</Description>

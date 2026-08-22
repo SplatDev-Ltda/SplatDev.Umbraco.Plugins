@@ -43,19 +43,22 @@ jobs:
           FAIL=()
           PASS=()
           NOOUT=()
-          # Plugins, plus the libraries they ProjectReference. Packing only the plugins
-          # left those libraries behind: SplatDev.Payments.* and SplatDev.Cache sat at
-          # 1.0.0 on NuGet while the plugins packed a dependency on >= 1.0.1, so
-          # Santander, Getnet and Payments.BancoInter could not be installed at all —
-          # NuGet had no such version to resolve. A plugin is only shippable if what it
-          # depends on ships with it.
-          for csproj in $(find . -maxdepth 3 \
-              \( -name "SplatDev.Umbraco.Plugins.*.csproj" \
-                 -o -name "SplatDev.Payments.*.csproj" \
-                 -o -name "SplatDev.Cache.csproj" \
-                 -o -name "SplatDev.Umbraco.Common.csproj" \
-                 -o -name "SplatDev.Umbraco.Markup.csproj" \) \
-            | grep -v "Tests\|BackupManager\|FormsClone\|obj\|bin\|PdfCurator" \
+          # Every packable SplatDev project, not a hand-maintained list of name patterns.
+          #
+          # The list this replaces named five patterns, so roughly fifty packages —
+          # SplatDev.Umbraco.DataTypes.*, SplatDev.Messaging.*, SplatDev.Search.*,
+          # SplatDev.Logger, SplatDev.Security and the rest — were never discovered here
+          # at all. They are on NuGet from manual pushes and frozen there: no tag could
+          # refresh them, so nothing added to their READMEs could ever reach a package
+          # page. SplatDev.Umbraco.DataTypes.USStates 2.0.1 still shows "missing a
+          # README" for exactly that reason, having been packed before the README wiring
+          # existed and never republished since.
+          #
+          # Discovering by prefix rather than by list means a new package ships by
+          # existing. Projects with IsPackable=false emit nothing and are reported below
+          # as such, so nothing needs to be excluded by name for that.
+          for csproj in $(find . -maxdepth 3 -name "SplatDev.*.csproj" \
+            | grep -v "Tests\|BackupManager\|FormsClone\|obj\|bin\|PdfCurator\|/customers/\|test-environments" \
             | sort); do
             name=$(basename "$csproj" .csproj)
             echo "--- Building $name ---"

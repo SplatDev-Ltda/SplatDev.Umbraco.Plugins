@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <PackageId>SplatDev.Umbraco.Themes.Corporate</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Authors>SplatDev</Authors>
     <Description>Professional corporate theme for Umbraco - home, about, services, team, contact pages</Description>
     <PackageTags>umbraco umbraco-marketplace theme corporate business</PackageTags>

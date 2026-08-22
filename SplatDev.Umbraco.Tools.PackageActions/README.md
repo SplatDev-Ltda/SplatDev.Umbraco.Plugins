@@ -47,3 +47,9 @@ Implement `IPackageAction` for custom setup logic, or use the built-in actions i
 
 - Headless library — no backoffice UI or Bellissima dashboard
 - Actions execute synchronously during package install; large datasets may block the install process
+
+## Changelog
+
+### 1.0.2 — 2026-08-22
+- This package's README now reaches NuGet. The publish workflow discovered packages by a list of name patterns, and this one matched none of them, so it was never built or pushed by CI — the version on NuGet was placed there by hand before the README was wired up, and no release could refresh it. Discovery is now by prefix, so the package ships whenever the repo is tagged.
+
