@@ -62,6 +62,23 @@ Spins up Umbraco 13 (`:5001`) and Umbraco 17 (`:5000`) baselines plus a Playwrig
 **Legacy Umbraco 8 versions can outrank the current package.** Several ids carry `8.18.x` builds whose version numbers sort *above* today's `2.x`/`3.x`, so NuGet resolves the v8 assembly as latest. This is not cosmetic: `Backups` served 8.18.7.2 over the 3.3.0 that added authorization to its anonymous `Restore` and `Delete` endpoints, making a published security fix unreachable. Unlist the legacy versions — `.github/workflows/unlist-legacy.yml`, manual dispatch — and check the *search* index, not the flat container, which lists unlisted versions too:
 `curl -s "https://azuresearch-usnc.nuget.org/query?q=packageid:<id>&prerelease=true"`.
 
+**Some package ids were replaced rather than updated, and the dead one often looks newer.** A plugin rebuilt under a conforming name left its old id on NuGet, still resolvable, sometimes at a higher version than its replacement — so a search turns up both and the stale one wins the eye:
+
+| Superseded id | Its version | Use instead | Current |
+| --- | --- | --- | --- |
+| `…Plugins.SocialMediaChannels` | 3.0.8.4 (Umbraco 7) | `…Plugins.SocialMedia.Channels` | 2.2.2 |
+| `…Plugins.SimpleAnalytics` | 2.0.0.6 (Umbraco 7) | `…Plugins.Analytics` | 2.1.5 |
+| `…Plugin.Backups13` | 13.2.0.12 | `…Plugins.Backups` | 3.3.2 |
+| `SplatDevUmbracoPluginBackup` | 9.5.4 | `…Plugins.Backups` | 3.3.2 |
+| `…Plugins.CharLimitRestrict` | 2.0.1 | `…Plugins.CharLimit` | 1.2.2 |
+| `…Plugins.OnOffButton` | 2.0.1 | `…Plugins.OnOff` | 2.2.4 |
+| `…Plugins.RestrictPage` | 2.0.1 | `…Plugins.Restricted` | 2.3.2 |
+| `…Plugins.YouTubePreview` | 2.0.1 | `…Plugins.VideoPreview` | 2.1.4 |
+
+`.github/workflows/unlist-superseded.yml` unlists these wholesale (manual dispatch, dry-run by default). Unlisting hides an id from search and resolution without deleting it, and the Umbraco Marketplace takes its listings from NuGet so the entry goes with it. It is **not** deprecation: NuGet's deprecation flag adds a banner naming the replacement, which is what someone who already installed one needs to see, and it can only be set in the nuget.org UI — do both.
+
+Two ids in this group are deliberately left alone. `…Plugins.AdPreview` (0.0.3.5, Umbraco 7) has a v17 port in PR #118 that will publish under the same id, and `…Plugins.HideContent` (1.0.1, a `umbracoNaviHide` visual) has no current equivalent to point anyone at.
+
 **Private feed.** `nuget.config` maps `PdfCurator.*` to `https://nuget.pkg.github.com/splatdevtech/` and reads `%GITHUB_ACTOR%` / `%GITHUB_TOKEN%` from the environment. Restore of PdfCurator fails without those set.
 
 **Versioning/publish.** `<Version>` is per-`.csproj` (no central version). Pushing a `v*` tag runs `publish.yml`, which packs each publishable plugin and pushes to NuGet.org (skipping versions that already exist) and GitHub Packages. `Directory.Build.props` supplies Authors/Company/Copyright/license only — keep it that way. It used to declare `MailKit`/`MimeKit` repo-wide, which made every package depend on an email stack it never used and silently overrode Mailer's own pinned version; add package references to the project that needs them.

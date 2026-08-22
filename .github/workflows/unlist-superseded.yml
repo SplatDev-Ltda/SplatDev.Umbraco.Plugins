@@ -1,0 +1,107 @@
+name: Unlist superseded NuGet packages
+
+# Some package ids were replaced rather than updated: the plugin was rebuilt under a
+# conforming name and the old id was left on NuGet, still resolvable, sometimes carrying
+# a HIGHER version number than its replacement. Anyone searching finds both, and the
+# stale one often looks newer:
+#
+#   SplatDev.Umbraco.Plugins.SocialMediaChannels  3.0.8.4   (Umbraco 7)
+#   SplatDev.Umbraco.Plugins.SocialMedia.Channels 2.2.2     (Umbraco 13/17, current)
+#
+# Unlisting hides an id from search and from resolution without deleting it, so anyone
+# who pinned an explicit version keeps working. The Umbraco Marketplace takes its
+# listings from NuGet, so unlisting removes the entry there too.
+#
+# Unlisting is NOT deprecation. NuGet's deprecation feature adds a banner and points at
+# the replacement package, which is what someone who already installed one of these
+# needs to see, and it cannot be set from the CLI. Mark these deprecated in the
+# nuget.org UI with the alternate package named below as well as running this.
+#
+# Run from the Actions tab. Deliberately manual: unlisting is outward-facing and should
+# never happen on a push.
+
+on:
+  workflow_dispatch:
+    inputs:
+      packages:
+        description: 'Space-separated package ids to unlist ENTIRELY (every version)'
+        required: true
+        default: >-
+          SplatDev.Umbraco.Plugins.SocialMediaChannels
+          SplatDev.Umbraco.Plugins.SimpleAnalytics
+          SplatDev.Umbraco.Plugin.Backups13
+          SplatDevUmbracoPluginBackup
+          SplatDev.Umbraco.Plugins.CharLimitRestrict
+          SplatDev.Umbraco.Plugins.OnOffButton
+          SplatDev.Umbraco.Plugins.RestrictPage
+          SplatDev.Umbraco.Plugins.YouTubePreview
+      confirm:
+        description: 'Type UNLIST to proceed'
+        required: true
+        default: ''
+      dry_run:
+        description: 'List what would be unlisted without doing it'
+        type: boolean
+        default: true
+
+jobs:
+  unlist:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check confirmation
+        run: |
+          if [ "${{ github.event.inputs.confirm }}" != "UNLIST" ]; then
+            echo "::error::Confirmation not given. Type UNLIST to proceed."
+            exit 1
+          fi
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Unlist every version of each package
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+        run: |
+          if [ -z "$NUGET_API_KEY" ] && [ "$DRY_RUN" != "true" ]; then
+            echo "::error::NUGET_API_KEY is not set."
+            exit 1
+          fi
+
+          TOTAL=0
+          for id in ${{ github.event.inputs.packages }}; do
+            lower=$(echo "$id" | tr '[:upper:]' '[:lower:]')
+
+            # The flat container lists unlisted versions too, which is what we want here:
+            # re-running this must be harmless, and an already-unlisted version simply
+            # gets unlisted again.
+            versions=$(curl -s --max-time 30 \
+              "https://api.nuget.org/v3-flatcontainer/$lower/index.json" \
+              | python3 -c "import sys,json;print(' '.join(json.load(sys.stdin).get('versions',[])))" 2>/dev/null)
+
+            if [ -z "$versions" ]; then
+              echo "::warning::$id — no versions found on NuGet, skipping."
+              continue
+            fi
+
+            for v in $versions; do
+              TOTAL=$((TOTAL+1))
+              if [ "$DRY_RUN" = "true" ]; then
+                echo "would unlist  $id $v"
+              else
+                echo "unlisting     $id $v"
+                dotnet nuget delete "$id" "$v" \
+                  --source https://api.nuget.org/v3/index.json \
+                  --api-key "$NUGET_API_KEY" \
+                  --non-interactive || echo "::warning::Could not unlist $id $v"
+              fi
+            done
+          done
+
+          echo ""
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "Dry run: $TOTAL version(s) would be unlisted. Re-run with dry_run unchecked to apply."
+          else
+            echo "Unlisted $TOTAL version(s)."
+          fi
