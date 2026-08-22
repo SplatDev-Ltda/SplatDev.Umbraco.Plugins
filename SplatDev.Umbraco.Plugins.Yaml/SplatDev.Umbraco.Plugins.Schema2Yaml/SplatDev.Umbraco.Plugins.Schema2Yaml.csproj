@@ -6,6 +6,7 @@
       net9.0  → Umbraco 15 (15.x) and Umbraco 16 (16.x)
       net10.0 → Umbraco 17 (17.x)
     -->
+    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
@@ -21,7 +22,7 @@
     <_BasePackageTags>umbraco yaml infrastructure-as-code cms content-management export schema document-types data-types templates media languages dictionary members users umbraco-marketplace</_BasePackageTags>
 
     <PackageId>$(_BasePackageId)</PackageId>
-    <Version>2.0.9</Version>
+    <Version>2.0.10</Version>
     <Authors>Carlos Casalicchio</Authors>
     <Company>SplatDev</Company>
     <Copyright>Copyright © 2026 SplatDev</Copyright>
@@ -66,18 +67,21 @@
        on an Umbraco 13 site: NuGet reported a hard version conflict against
        Umbraco.Cms.Web.Common 13.x. Its sibling Yaml2Schema pins 13.12.0 correctly. -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.11" />
     <PackageReference Include="Umbraco.Cms.Core" Version="[13.0.0, 14.0.0)" />
     <PackageReference Include="Umbraco.Cms.Web.Common" Version="[13.0.0, 14.0.0)" />
   </ItemGroup>
 
   <!-- Umbraco 15 / 16  (net9.0) -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="9.0.11" />
     <PackageReference Include="Umbraco.Cms.Core" Version="[15.0.0, 17.0.0)" />
     <PackageReference Include="Umbraco.Cms.Web.Common" Version="[15.0.0, 17.0.0)" />
   </ItemGroup>
 
   <!-- Umbraco 17  (net10.0) -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.6" />
     <PackageReference Include="Umbraco.Cms.Core" Version="[17.0.0, 18.0.0)" />
     <PackageReference Include="Umbraco.Cms.Web.Common" Version="[17.0.0, 18.0.0)" />
   </ItemGroup>
@@ -94,9 +98,10 @@
     <None Include="umbraco-marketplace.json" Pack="true" PackagePath="\" />
   </ItemGroup>
 
-  <!-- Include App_Plugins in the NuGet package via contentFiles (modern NuGet convention) -->
+  <!-- Embed App_Plugins so the assets ship inside the assembly, and pack them for sites that still copy content. -->
   <ItemGroup>
-    <Content Include="wwwroot\App_Plugins\**\*" Pack="true" PackagePath="App_Plugins_Package\" />
+    <EmbeddedResource Include="App_Plugins\**\*" />
+    <Content Include="App_Plugins\**\*" Pack="true" PackagePath="App_Plugins" />
   </ItemGroup>
 
   <!-- Include buildTransitive targets for reliable App_Plugins delivery -->

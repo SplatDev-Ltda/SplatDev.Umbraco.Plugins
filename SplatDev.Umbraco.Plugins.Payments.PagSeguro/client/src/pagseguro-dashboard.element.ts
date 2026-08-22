@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "@umbraco-cms/backoffice/external/lit";
+import { LitElement, html, css, unsafeCSS } from "@umbraco-cms/backoffice/external/lit";
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
@@ -10,11 +10,20 @@ const API = "/umbraco/api/pagseguro";
 const COLOR_BLUE = "#00B1EB";
 const COLOR_GREEN = "#0ECC8B";
 
-type ConnStatus = "unknown" | "checking" | "connected" | "error";
+// Lit's `css` tag only accepts nested css results or numbers — interpolating a plain
+// string throws while the module is evaluating, which meant the class was never
+// defined and the dashboard rendered nothing at all. The plain strings above are
+// still what the inline style attribute in render() needs, so keep both.
+const CSS_BLUE = unsafeCSS(COLOR_BLUE);
+const CSS_GREEN = unsafeCSS(COLOR_GREEN);
+
+type ConnStatus = "unknown" | "checking" | "configured" | "unconfigured" | "error";
 
 interface PagSeguroConfig {
   email: string;
   sandbox: boolean;
+  /** Whether an account e-mail and token are both present in configuration. */
+  configured: boolean;
 }
 
 @customElement("pagseguro-dashboard")
@@ -40,7 +49,7 @@ export class PagSeguroDashboardElement extends UmbElementMixin(LitElement) {
       width: 44px;
       height: 44px;
       border-radius: 10px;
-      background: linear-gradient(135deg, ${COLOR_BLUE}, ${COLOR_GREEN});
+      background: linear-gradient(135deg, ${CSS_BLUE}, ${CSS_GREEN});
       display: flex;
       align-items: center;
       justify-content: center;
@@ -79,7 +88,8 @@ export class PagSeguroDashboardElement extends UmbElementMixin(LitElement) {
     }
     .status-pill--unknown  { background: #f3f4f6; color: #374151; }
     .status-pill--checking { background: #e0f5fd; color: #0369a1; }
-    .status-pill--connected { background: #d1fae5; color: #065f46; }
+    .status-pill--configured { background: #d1fae5; color: #065f46; }
+    .status-pill--unconfigured { background: #fef3c7; color: #92400e; }
     .status-pill--error    { background: #fee2e2; color: #dc2626; }
     .status-dot {
       width: 8px;
@@ -117,8 +127,8 @@ export class PagSeguroDashboardElement extends UmbElementMixin(LitElement) {
       color: var(--uui-color-text, #111827);
       word-break: break-all;
     }
-    .info-card__value--blue  { color: ${COLOR_BLUE}; }
-    .info-card__value--green { color: ${COLOR_GREEN}; }
+    .info-card__value--blue  { color: ${CSS_BLUE}; }
+    .info-card__value--green { color: ${CSS_GREEN}; }
     .info-card__value--warn  { color: #d97706; }
 
     /* ── Form rows ── */
@@ -151,7 +161,7 @@ export class PagSeguroDashboardElement extends UmbElementMixin(LitElement) {
       outline: none;
     }
     .native-input:focus {
-      border-color: ${COLOR_BLUE};
+      border-color: ${CSS_BLUE};
       box-shadow: 0 0 0 3px rgba(0, 177, 235, 0.15);
     }
 
@@ -163,8 +173,8 @@ export class PagSeguroDashboardElement extends UmbElementMixin(LitElement) {
       margin-bottom: 14px;
       line-height: 1.5;
     }
-    .notice--info    { background: #e0f5fd; color: #0c4a6e; border-left: 3px solid ${COLOR_BLUE}; }
-    .notice--success { background: #d1fae5; color: #064e3b; border-left: 3px solid ${COLOR_GREEN}; }
+    .notice--info    { background: #e0f5fd; color: #0c4a6e; border-left: 3px solid ${CSS_BLUE}; }
+    .notice--success { background: #d1fae5; color: #064e3b; border-left: 3px solid ${CSS_GREEN}; }
     .notice--warn    { background: #fffbeb; color: #92400e; border-left: 3px solid #f59e0b; }
     .notice--error   { background: #fef2f2; color: #991b1b; border-left: 3px solid #ef4444; }
 
@@ -178,12 +188,12 @@ export class PagSeguroDashboardElement extends UmbElementMixin(LitElement) {
       background: var(--uui-color-surface-alt, #f9fafb);
     }
     .result-box a {
-      color: ${COLOR_BLUE};
+      color: ${CSS_BLUE};
       font-weight: 600;
       word-break: break-all;
     }
     .result-box a:hover {
-      color: ${COLOR_GREEN};
+      color: ${CSS_GREEN};
     }
     .result-label {
       font-size: 0.75rem;
@@ -270,7 +280,9 @@ export class PagSeguroDashboardElement extends UmbElementMixin(LitElement) {
       const r = await this.#fetch(`${API}/GetConfig`);
       if (this.#responseOk(r)) {
         this._config = await r.json();
-        this._connStatus = "connected";
+        // A 200 here only means this plugin answered — it says nothing about PagSeguro.
+        // Report what is actually known: whether credentials are configured.
+        this._connStatus = this._config?.configured ? "configured" : "unconfigured";
       } else {
         this._connStatus = "error";
         this._configError = `HTTP ${r.status}: ${r.statusText}`;
@@ -339,10 +351,11 @@ export class PagSeguroDashboardElement extends UmbElementMixin(LitElement) {
   // ── Helpers ──
   private _connLabel(): string {
     switch (this._connStatus) {
-      case "checking":  return "Verificando…";
-      case "connected": return "Conectado";
-      case "error":     return "Falha de conexão";
-      default:          return "Desconhecido";
+      case "checking":     return "Verificando…";
+      case "configured":   return "Configurado";
+      case "unconfigured": return "Não configurado";
+      case "error":        return "Falha ao ler a configuração";
+      default:             return "Desconhecido";
     }
   }
 
@@ -395,6 +408,16 @@ export class PagSeguroDashboardElement extends UmbElementMixin(LitElement) {
           </div>`
         : ""}
 
+      <!-- Nothing configured: say so, rather than letting every action fail later -->
+      ${this._connStatus === "unconfigured"
+        ? html`<div class="notice notice--warn">
+            <strong>Nenhuma credencial configurada.</strong> Defina
+            <code>PagSeguro:Email</code> e <code>PagSeguro:Token</code> em
+            <code>appsettings.json</code>. Sem elas, criar uma transação ou consultar
+            um status vai falhar no PagSeguro.
+          </div>`
+        : ""}
+
       <!-- Config info cards -->
       <div class="info-grid">
         <div class="info-card">
@@ -414,8 +437,12 @@ export class PagSeguroDashboardElement extends UmbElementMixin(LitElement) {
           </div>
         </div>
         <div class="info-card">
-          <div class="info-card__label">API Status</div>
-          <div class="info-card__value ${this._connStatus === "connected" ? "info-card__value--green" : ""}">
+          <div class="info-card__label">Credenciais</div>
+          <div class="info-card__value ${this._connStatus === "configured"
+              ? "info-card__value--green"
+              : this._connStatus === "unconfigured"
+                ? "info-card__value--warn"
+                : ""}">
             ${this._connLabel()}
           </div>
         </div>
