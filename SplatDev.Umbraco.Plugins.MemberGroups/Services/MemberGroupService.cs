@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
+using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.Membership;
 using Umbraco.Cms.Core.Services;
@@ -170,16 +171,25 @@ namespace SplatDev.Umbraco.Plugins.MemberGroups.Services
 
 #if NET10_0_OR_GREATER
                 // Umbraco 17: IUserService.Save(IUserGroup) removed; use IUserGroupService.CreateAsync
-                var result = _userGroupService.CreateAsync(group, Guid.Empty).GetAwaiter().GetResult();
-                if (result.Success && result.Result is not null)
+                // CreateAsync needs the key of the user performing the change, and rejects
+                // Guid.Empty. It was being handed exactly that, so creation failed every
+                // time — and the failure was swallowed: the warning below was logged, the
+                // id stayed 0, and the caller was told the group had been created.
+                var result = _userGroupService
+                    .CreateAsync(group, Constants.Security.SuperUserKey)
+                    .GetAwaiter()
+                    .GetResult();
+
+                if (!result.Success || result.Result is null)
                 {
-                    groupToCreate.Id = result.Result.Id;
+                    _logger.LogError(
+                        "CreateGroup: IUserGroupService.CreateAsync failed for group '{GroupName}' with {Status}.",
+                        groupToCreate.Name, result.Status);
+                    throw new InvalidOperationException(
+                        $"Could not create group '{groupToCreate.Name}': {result.Status}.");
                 }
-                else
-                {
-                    _logger.LogWarning("CreateGroup: IUserGroupService.CreateAsync did not succeed for group '{GroupName}'.", groupToCreate.Name);
-                    groupToCreate.Id = group.Id;
-                }
+
+                groupToCreate.Id = result.Result.Id;
 #else
                 _userService.Save(group);
                 groupToCreate.Id = group.Id;

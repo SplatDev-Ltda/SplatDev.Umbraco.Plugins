@@ -69,6 +69,11 @@ export class MemberGroupsDashboardElement extends UmbElementMixin(LitElement) {
 
   @state() private _loadError: string | null = null;
 
+  @state() private _newGroupName = "";
+  @state() private _assignEmail = "";
+  @state() private _assignGroup = "";
+  @state() private _busy = "";
+
   private _apiBase = "/umbraco/api/membergroups";
 
   override connectedCallback(): void {
@@ -93,6 +98,13 @@ export class MemberGroupsDashboardElement extends UmbElementMixin(LitElement) {
       this._loadError ??= "The request failed. See the browser console for details."; this._types = []; }
   }
 
+  /**
+   * Calls one of the mutating endpoints.
+   *
+   * This helper was already here and nothing ever called it: six of the nine operations
+   * the API exposes — create a group, add a member to one, and the rest — had no way in
+   * from the dashboard at all.
+   */
   private async _post(action: string, body?: object | string): Promise<void> {
     this._loading = true;
     this._result = null;
@@ -134,11 +146,42 @@ export class MemberGroupsDashboardElement extends UmbElementMixin(LitElement) {
     }
   }
 
+  /** Creates a member group. SaveMemberGroup is the endpoint that creates *member*
+   * groups; CreateGroup creates a backoffice user group, which is a different thing. */
+  private async _createGroup(): Promise<void> {
+    const name = this._newGroupName.trim();
+    if (!name) {
+      this._result = { success: false, message: "Give the group a name." };
+      return;
+    }
+    this._busy = "create";
+    await this._post("SaveMemberGroup", `groupName=${encodeURIComponent(name)}`);
+    this._busy = "";
+    if (this._result?.success) {
+      this._newGroupName = "";
+      await this._loadGroups();
+    }
+  }
+
+  /** Puts an existing member into a group, by the member's email address. */
+  private async _addToGroup(email?: string, group?: string): Promise<void> {
+    const targetEmail = (email ?? this._assignEmail).trim();
+    const targetGroup = (group ?? this._assignGroup).trim();
+    if (!targetEmail || !targetGroup) {
+      this._result = { success: false, message: "Choose a member and a group." };
+      return;
+    }
+    this._busy = "assign";
+    await this._post("AddToGroup", { email: targetEmail, group: targetGroup });
+    this._busy = "";
+    if (this._result?.success) this._assignEmail = "";
+  }
+
   private _renderGroups() {
     return html`
-      <uui-box headline="Member Groups (${this._groups.length})">
+      <uui-box headline="Member groups (${this._groups.length})">
         ${this._groups.length === 0
-          ? html`<p style="color:var(--uui-color-text-alt,#6b7280)">No member groups found.</p>`
+          ? html`<p style="color:var(--uui-color-text-alt,#6b7280)">No member groups yet. Create one below.</p>`
           : html`
               <uui-table>
                 <uui-table-head>
@@ -154,12 +197,81 @@ export class MemberGroupsDashboardElement extends UmbElementMixin(LitElement) {
               </uui-table>
             `}
       </uui-box>
+
+      <uui-box headline="Create a member group">
+        <div class="form-row">
+          <label for="newGroup">Group name</label>
+          <uui-input
+            id="newGroup"
+            label="Group name"
+            placeholder="e.g. Subscribers"
+            .value=${this._newGroupName}
+            @input=${(e: Event) => (this._newGroupName = (e.target as HTMLInputElement).value)}
+          ></uui-input>
+        </div>
+        <div class="btn-row">
+          <uui-button
+            look="primary"
+            color="positive"
+            label="Create group"
+            ?disabled=${this._busy === "create" || this._loading}
+            @click=${() => this._createGroup()}
+            >${this._busy === "create" ? "Creating…" : "Create group"}</uui-button
+          >
+        </div>
+      </uui-box>
+
+      <uui-box headline="Add a member to a group">
+        <div class="form-row">
+          <label for="assignEmail">Member email</label>
+          <uui-input
+            id="assignEmail"
+            type="email"
+            label="Member email"
+            placeholder="member@example.com"
+            .value=${this._assignEmail}
+            @input=${(e: Event) => (this._assignEmail = (e.target as HTMLInputElement).value)}
+          ></uui-input>
+        </div>
+        <div class="form-row">
+          <label for="assignGroup">Group</label>
+          <uui-select
+            id="assignGroup"
+            label="Group"
+            .value=${this._assignGroup}
+            @change=${(e: Event) => (this._assignGroup = (e.target as HTMLSelectElement).value)}
+            .options=${this._groups.map((g) => ({
+              name: g.name,
+              value: g.name,
+              selected: g.name === this._assignGroup,
+            }))}
+          ></uui-select>
+        </div>
+        <div class="btn-row">
+          <uui-button
+            look="primary"
+            label="Add to group"
+            ?disabled=${this._busy === "assign" || this._groups.length === 0}
+            @click=${() => this._addToGroup()}
+            >${this._busy === "assign" ? "Adding…" : "Add to group"}</uui-button
+          >
+        </div>
+        ${this._groups.length === 0
+          ? html`<p style="color:var(--uui-color-text-alt,#6b7280);font-size:0.85rem;margin:10px 0 0">
+              Create a group first — there is nothing to add anyone to yet.
+            </p>`
+          : ""}
+      </uui-box>
     `;
   }
 
   private _renderTypes() {
     return html`
       <uui-box headline="Member Types">
+        <p style="color:var(--uui-color-text-alt,#6b7280);font-size:0.875rem;margin:0 0 14px">
+          Shown for reference. Member types are created and edited on the Member Types
+          dashboard.
+        </p>
         ${this._types.length === 0
           ? html`<p style="color:var(--uui-color-text-alt,#6b7280)">No member types found.</p>`
           : html`
@@ -207,6 +319,38 @@ export class MemberGroupsDashboardElement extends UmbElementMixin(LitElement) {
               <uui-table-row><uui-table-cell><strong>Approved</strong></uui-table-cell><uui-table-cell>${this._foundMember.isApproved ? "Yes" : "No"}</uui-table-cell></uui-table-row>
               <uui-table-row><uui-table-cell><strong>Locked Out</strong></uui-table-cell><uui-table-cell>${this._foundMember.isLockedOut ? "Yes" : "No"}</uui-table-cell></uui-table-row>
             </uui-table>
+
+            <div class="form-row" style="margin-top:16px">
+              <label for="lookupAssignGroup">Add this member to a group</label>
+              <uui-select
+                id="lookupAssignGroup"
+                label="Group"
+                .value=${this._assignGroup}
+                @change=${(e: Event) => (this._assignGroup = (e.target as HTMLSelectElement).value)}
+                .options=${this._groups.map((g) => ({
+                  name: g.name,
+                  value: g.name,
+                  selected: g.name === this._assignGroup,
+                }))}
+              ></uui-select>
+            </div>
+            <div class="btn-row">
+              <uui-button
+                look="primary"
+                label="Add ${this._foundMember.email} to the selected group"
+                ?disabled=${this._busy === "assign" || this._groups.length === 0}
+                @click=${() => this._addToGroup(this._foundMember?.email, this._assignGroup)}
+                >${this._busy === "assign" ? "Adding…" : "Add to group"}</uui-button
+              >
+            </div>
+            ${this._groups.length === 0
+              ? html`<p style="color:var(--uui-color-text-alt,#6b7280);font-size:0.85rem;margin:10px 0 0">
+                  There are no member groups yet — create one on the Groups tab.
+                </p>`
+              : ""}
+            ${this._result
+              ? html`<div class="result ${this._result.success ? "success" : "error"}" style="margin-top:12px">${this._result.message}</div>`
+              : ""}
           </uui-box>
         ` : ""}
         ${this._result && !this._foundMember

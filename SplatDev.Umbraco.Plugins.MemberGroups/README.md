@@ -56,6 +56,12 @@ The `ChangeUserPassword` and `ResetUserPassword` methods log a warning and retur
 
 ## Changelog
 
+### 2.2.4 — 2026-08-22
+- You can create a member group from the dashboard, and add a member to one by email. The dashboard shipped a helper for calling these endpoints that nothing ever called, so six of the nine operations the API exposes had no way in — the three tabs were read-only lists and a lookup box.
+- Looking a member up now leads somewhere: the result carries a group picker and an Add to group button, rather than ending at a card of facts.
+- Creating a backoffice user group no longer reports success when it failed. On Umbraco 17 the call was passing an empty user key, which the API rejects; the failure was logged as a warning and the caller was told the group had been created, with an id of 0.
+- The Member Types tab now says where member types are actually edited instead of presenting a list with no way to act on it.
+
 ### 2.2.3 — 2026-08-21
 - A failed request now says so in the dashboard. Previously the dashboard kept its previous (usually empty) state, so a refused or failed call looked identical to having no data.
 

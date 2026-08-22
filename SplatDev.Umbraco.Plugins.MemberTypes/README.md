@@ -65,6 +65,12 @@ npm run build
 
 ## Changelog
 
+### 2.2.4 — 2026-08-22
+- Creating a member type works. The service constructed the type with a null `IShortStringHelper`, and the alias setter runs the value through it — so the alias was stripped to empty and Umbraco refused the save with "cannot have an empty Alias". The endpoint returned 500 every time it was called, which is to say creating a member type had never worked.
+- The dashboard can now manage member types, which is what it always said it did. It previously rendered one table and offered no controls at all, while the API behind it had supported create, rename and delete the whole time.
+- Each member type's properties can be expanded in place, showing the alias, whether the property is required, and its description.
+- Deleting asks first, and says what goes with it — the members of that type and the values held in its properties.
+
 ### 2.2.3 — 2026-08-21
 - A failed request now says so in the dashboard. Previously the dashboard kept its previous (usually empty) state, so a refused or failed call looked identical to having no data.
 
