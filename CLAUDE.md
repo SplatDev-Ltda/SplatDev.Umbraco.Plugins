@@ -77,6 +77,8 @@ Spins up Umbraco 13 (`:5001`) and Umbraco 17 (`:5000`) baselines plus a Playwrig
 
 `.github/workflows/unlist-superseded.yml` unlists these wholesale (manual dispatch, dry-run by default). Unlisting hides an id from search and resolution without deleting it, and the Umbraco Marketplace takes its listings from NuGet so the entry goes with it. It is **not** deprecation: NuGet's deprecation flag adds a banner naming the replacement, which is what someone who already installed one needs to see, and it can only be set in the nuget.org UI — do both.
 
+`SplatDevUmbracoPluginBackup` could not be unlisted from CI: the NuGet api key answered **403 Forbidden**, because that id has no dot and a `SplatDev.*` key glob does not match it. Widen the key's scope or unlist it by hand. The workflow used to report that run as a clean success — it counted attempts, not outcomes — and now fails the job instead.
+
 Two ids in this group are deliberately left alone. `…Plugins.AdPreview` (0.0.3.5, Umbraco 7) has a v17 port in PR #118 that will publish under the same id, and `…Plugins.HideContent` (1.0.1, a `umbracoNaviHide` visual) has no current equivalent to point anyone at.
 
 **Private feed.** `nuget.config` maps `PdfCurator.*` to `https://nuget.pkg.github.com/splatdevtech/` and reads `%GITHUB_ACTOR%` / `%GITHUB_TOKEN%` from the environment. Restore of PdfCurator fails without those set.

@@ -70,6 +70,8 @@ jobs:
           fi
 
           TOTAL=0
+          FAILED=0
+          FAILED_LIST=""
           for id in ${{ github.event.inputs.packages }}; do
             lower=$(echo "$id" | tr '[:upper:]' '[:lower:]')
 
@@ -91,10 +93,20 @@ jobs:
                 echo "would unlist  $id $v"
               else
                 echo "unlisting     $id $v"
-                dotnet nuget delete "$id" "$v" \
+                # Count what actually happened, not what was attempted. This reported
+                # "Unlisted 17 version(s)" on a run where one came back 403 Forbidden,
+                # because the failure went to a warning and the loop carried on — the
+                # same shape of lie this repo keeps finding in its own dashboards.
+                if dotnet nuget delete "$id" "$v" \
                   --source https://api.nuget.org/v3/index.json \
                   --api-key "$NUGET_API_KEY" \
-                  --non-interactive || echo "::warning::Could not unlist $id $v"
+                  --non-interactive; then
+                  :
+                else
+                  echo "::warning::Could not unlist $id $v — check the api key covers this id."
+                  FAILED=$((FAILED+1))
+                  FAILED_LIST="$FAILED_LIST $id@$v"
+                fi
               fi
             done
           done
@@ -103,5 +115,14 @@ jobs:
           if [ "$DRY_RUN" = "true" ]; then
             echo "Dry run: $TOTAL version(s) would be unlisted. Re-run with dry_run unchecked to apply."
           else
-            echo "Unlisted $TOTAL version(s)."
+            echo "Attempted $TOTAL version(s); $((TOTAL-FAILED)) unlisted, $FAILED failed."
+            if [ "$FAILED" -gt 0 ]; then
+              echo "::error::Could not unlist:$FAILED_LIST"
+              echo ""
+              echo "A 403 here usually means the NuGet api key's package-id glob does not"
+              echo "cover that id — SplatDevUmbracoPluginBackup has no dot, so a"
+              echo "'SplatDev.*' glob misses it. Widen the key's scope or unlist it by"
+              echo "hand in the nuget.org UI."
+              exit 1
+            fi
           fi
