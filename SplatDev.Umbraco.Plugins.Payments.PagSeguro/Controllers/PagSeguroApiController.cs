@@ -18,7 +18,17 @@ public class PagSeguroApiController : ControllerBase
     public IActionResult GetConfig()
     {
         var config = _service.GetConfig();
-        return Ok(new { config.Email, config.Sandbox });
+        // Report whether credentials are present, never the token itself. The dashboard
+        // used to treat a 200 from this endpoint as "connected to PagSeguro", which it
+        // answers just as happily with nothing configured at all — so an untouched
+        // install claimed a live production connection.
+        return Ok(new
+        {
+            config.Email,
+            config.Sandbox,
+            Configured = !string.IsNullOrWhiteSpace(config.Email)
+                         && !string.IsNullOrWhiteSpace(config.Token),
+        });
     }
 
     [HttpPost]

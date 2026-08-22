@@ -74,6 +74,11 @@ window.location.href = paymentUrl;
 
 ## Changelog
 
+### 2.1.7 — 2026-08-22
+- The dashboard renders. It threw while loading — Lit's `css` tag rejects an interpolated plain string, and the brand colours were interpolated as strings — so the custom element was never defined and the panel came up empty on every install.
+- The status no longer claims a connection it has not made. It read "Conectado" whenever the plugin's own config endpoint answered, which it does with nothing configured at all, so an untouched install reported a live production connection. It now reports whether credentials are present: "Configurado" or "Não configurado".
+- An install with no credentials says so up front, instead of letting the first transaction fail at PagSeguro.
+
 ### 2.1.6 — 2026-08-21
 - A failed request now says so in the dashboard. Previously the dashboard kept its previous (usually empty) state, so a refused or failed call looked identical to having no data.
 

@@ -7,7 +7,7 @@ export default defineConfig({
       formats: ["es"],
       fileName: "schema2yaml-dashboard",
     },
-    outDir: "../wwwroot/App_Plugins/Schema2Yaml/dist",
+    outDir: "../App_Plugins/Schema2Yaml/dist",
     emptyOutDir: true,
     sourcemap: true,
     rollupOptions: {

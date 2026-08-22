@@ -55,6 +55,12 @@ Access the Schema2Yaml dashboard from the Umbraco Settings section. Select the e
 - Export path is relative to the application root; ensure the directory is writable
 - No incremental/delta export; always exports the full schema
 
+## Changelog
+
+### 2.0.10 — 2026-08-22
+- The backoffice dashboard now appears. Its assets lived under `wwwroot/App_Plugins/`, which is not a path Umbraco or the static-file middleware ever serves from — every request for the manifest and the bundle returned 404, so the dashboard was unreachable on any install.
+- The plugin now embeds its `App_Plugins` in the assembly, serves them from there, and registers its own package manifest, matching every other plugin in this repo. It no longer depends on a `buildTransitive` copy step that silently does nothing when it fails.
+
 ## License
 
 MIT © [SplatDev](https://github.com/SplatDev-Ltda)
