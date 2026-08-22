@@ -23,31 +23,39 @@ public class SurveysApiController : ControllerBase
 
     [HttpGet]
     public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default)
-        => Ok(await _service.GetSurveysAsync(cancellationToken));
+        => Ok((await _service.GetSurveysAsync(cancellationToken)).Select(SurveyDto.From));
 
     [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> Get(int id, CancellationToken cancellationToken = default)
     {
         var survey = await _service.GetSurveyAsync(id, cancellationToken);
-        return survey is null ? NotFound() : Ok(survey);
+        return survey is null ? NotFound() : Ok(SurveyDto.From(survey));
     }
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] Survey survey, CancellationToken cancellationToken = default)
     {
+        // Without [ApiController] a body that cannot be bound arrives as null rather than
+        // being rejected for us, and every read of it throws a NullReferenceException that
+        // surfaces as a 500 where a 400 belongs. Sending a question type this enum does not
+        // define was enough to do it.
+        if (survey is null) return BadRequest("A survey is required.");
         if (!ModelState.IsValid) return BadRequest(ModelState);
+
         var created = await _service.CreateSurveyAsync(survey, cancellationToken);
-        return CreatedAtAction(nameof(Get), new { id = created.Id }, created);
+        return CreatedAtAction(nameof(Get), new { id = created.Id }, SurveyDto.From(created));
     }
 
     [HttpPut]
     public async Task<IActionResult> Update(int id, [FromBody] Survey survey, CancellationToken cancellationToken = default)
     {
+        if (survey is null) return BadRequest("A survey is required.");
         if (id != survey.Id) return BadRequest("ID mismatch.");
         if (!ModelState.IsValid) return BadRequest(ModelState);
+
         var updated = await _service.UpdateSurveyAsync(survey, cancellationToken);
-        return updated is null ? NotFound() : Ok(updated);
+        return updated is null ? NotFound() : Ok(SurveyDto.From(updated));
     }
 
     [HttpDelete]
