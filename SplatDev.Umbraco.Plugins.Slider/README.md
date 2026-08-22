@@ -78,6 +78,13 @@ Output: `App_Plugins/Slider/dist/slider-dashboard.element.js`
 
 ## Changelog
 
+### 1.2.3 — 2026-08-22
+- The dashboard manages sliders and their slides. It listed slider names and offered no controls at all, while the API behind it had supported all of this the whole time.
+- Each slider's playback settings are editable: autoplay and its delay, looping, and the transition effect.
+- Select a slider to work on its slides — add them, reorder them with up and down, and remove them.
+- Slide images are chosen from the media library with a picker rather than typed as a URL, and the stored value is the site-relative path.
+- Deleting asks first and says what goes with it — and makes clear the media library itself is untouched.
+
 ### 1.2.2 — 2026-08-21
 - Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.
 - A failed request now raises a notification instead of leaving the dashboard looking like there is simply no data.
