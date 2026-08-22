@@ -62,6 +62,12 @@ The build output is placed at `App_Plugins/PhotoGallery/dist/photogallery-dashbo
 
 ## Changelog
 
+### 1.2.3 — 2026-08-22
+- The dashboard manages albums and photos, which is what it was for. It listed album names and offered no controls at all, while the API behind it had supported creating, renaming and deleting albums and adding and removing photos the whole time.
+- Select an album to see its photos, with thumbnails, and add or remove them there.
+- Images are chosen from the media library with a picker. Nothing asks you to type a URL, and what gets stored is the site-relative path, so the records survive the site moving domain.
+- Deleting asks first and says what goes with it — and makes clear the media library itself is untouched.
+
 ### 1.2.2 — 2026-08-21
 - Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.
 - A failed request now raises a notification instead of leaving the dashboard looking like there is simply no data.
