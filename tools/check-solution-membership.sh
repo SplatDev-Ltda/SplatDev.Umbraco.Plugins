@@ -24,8 +24,15 @@ while IFS= read -r csproj; do
 # plugins (SplatDev.Umbraco.Plugins.Yaml/SplatDev.Umbraco.Plugins.Schema2Yaml) invisible
 # to this guard while publish.yml still tried to build them — exactly the gap the guard
 # exists to close. Schema2Yaml was dropped from the v2.1.5 release that way.
-done < <(find . -maxdepth 3 \( -name "SplatDev.Umbraco.Plugins.*.csproj" -o -name "SplatDev.*.Tests.csproj" \) \
-         -not -path "*/obj/*" -not -path "*/bin/*" | sort)
+# Matches publish.yml's discovery, which is now every SplatDev.*.csproj rather than a
+# list of name patterns. The old pattern here only covered plugins and test projects, so
+# the ~50 packages outside the plugin naming — DataTypes, Messaging, Search, Logger,
+# Security — were unguarded as well as unpublished. Two of them (DigitalBookCurator.Core,
+# Messaging.ClickSend) were in fact missing from the solution and would have failed the
+# moment publish.yml started discovering them.
+done < <(find . -maxdepth 3 -name "SplatDev.*.csproj" \
+         -not -path "*/obj/*" -not -path "*/bin/*" \
+         -not -path "*/customers/*" -not -path "*/test-environments/*" | sort)
 
 if [ "$missing" -gt 0 ]; then
   echo ""
