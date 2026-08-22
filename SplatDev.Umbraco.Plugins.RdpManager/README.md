@@ -66,6 +66,13 @@ Manage RDP connections through the backoffice dashboard. Each connection stores 
 
 ## Changelog
 
+### 2.4.0 — 2026-08-22
+- Connections can be filled in from your directory. Search Active Directory, an LDAP server or Entra ID for a person and take their login and domain straight into the connection, instead of typing them and hoping they match what the host expects.
+- Accounts can be created from the dashboard, when a site allows it. The dialog takes the details a directory needs — login, names, e-mail, department, job title, telephone — and reports plainly when an account already exists, showing which one it found so you can use it.
+- Creating accounts is off unless it is switched on. It needs `Directory:AllowUserCreation` and a single container named in `Directory:CreateUsersInOrganizationalUnit`; a request naming anywhere else is refused rather than redirected. When creation is unavailable the dashboard says why rather than offering a button that fails.
+- No password is handled anywhere. Accounts are created needing one set by an administrator — on Active Directory the account is created disabled, since AD will not enable an account without a password. A password typed into a CMS form would travel through the browser and the request log to get there.
+- Directory support is provided by the new SplatDev.Directory packages, so the same lookups are available to any plugin rather than being locked inside this one.
+
 ### 2.3.2 — 2026-08-21
 - Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.
 - A failed request now raises a notification instead of leaving the dashboard looking like there is simply no data.
