@@ -24,7 +24,7 @@
     {
       "type": "localization",
       "alias": "UmbracoCms.OnOff.Localization.En",
-      "name": "OnOff — English",
+      "name": "OnOff \u2014 English",
       "meta": {
         "culture": "en",
         "localizations": {
@@ -36,6 +36,45 @@
             "onoff_disabled": "Disabled",
             "onoff_scheduled": "Scheduled"
           }
+        }
+      }
+    },
+    {
+      "type": "propertyEditorUi",
+      "alias": "SplatDev.PropertyEditorUi.OnOff",
+      "name": "On/Off Switch",
+      "element": "/App_Plugins/OnOff/dist/onoff-property-editor.element.js",
+      "elementName": "onoff-property-editor",
+      "meta": {
+        "label": "On/Off Switch",
+        "icon": "icon-power",
+        "group": "common",
+        "propertyEditorSchemaAlias": "Umbraco.TrueFalse",
+        "settings": {
+          "properties": [
+            {
+              "alias": "onText",
+              "label": "On label",
+              "description": "Shown when the switch is on.",
+              "propertyEditorUiAlias": "Umb.PropertyEditorUi.TextBox"
+            },
+            {
+              "alias": "offText",
+              "label": "Off label",
+              "description": "Shown when the switch is off.",
+              "propertyEditorUiAlias": "Umb.PropertyEditorUi.TextBox"
+            }
+          ],
+          "defaultData": [
+            {
+              "alias": "onText",
+              "value": "On"
+            },
+            {
+              "alias": "offText",
+              "value": "Off"
+            }
+          ]
         }
       }
     }

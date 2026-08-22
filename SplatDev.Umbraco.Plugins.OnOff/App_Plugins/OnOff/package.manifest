@@ -1,15 +1,25 @@
 {
-  "javascript": ["/App_Plugins/OnOff/angular/onoff.controller.js"],
-  "css": [],
+  "javascript": [
+    "/App_Plugins/OnOff/angular/onoff.controller.js"
+  ],
+  "css": [
+    "/App_Plugins/OnOff/css/onoff.css"
+  ],
   "propertyEditors": [],
   "gridEditors": [],
   "dashboards": [
     {
       "alias": "OnOff.Dashboard",
       "view": "/App_Plugins/OnOff/angular/onoff.html",
-      "sections": ["settings"],
+      "sections": [
+        "settings"
+      ],
       "tab": "Feature Toggles",
-      "access": [{"grant": "admin"}]
+      "access": [
+        {
+          "grant": "admin"
+        }
+      ]
     }
   ]
 }

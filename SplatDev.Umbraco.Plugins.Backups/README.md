@@ -174,7 +174,17 @@ MIT — see [LICENSE](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins/
 
 ## Contributing
 
-Issues and PRs welcome at [github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins).\n\n## Changelog\n\n### 3.3.1 — 2026-08-21
+Issues and PRs welcome at [github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins).
+
+## Changelog
+
+### 3.3.2 — 2026-08-22
+- Encrypting a backup no longer leaves the unencrypted copy next to it. The engine wrote the archive but kept the plain `.json` it had wrapped, so the content the key was meant to protect sat in the same folder in the clear.
+- Compressing or encrypting also no longer leaves that `.json` behind as dead weight, which had doubled the disk every backup cost.
+- One backup now lists as one row. The list enumerated files rather than backups, so a compressed or encrypted backup appeared twice under the same name with two different sizes.
+- Deleting a backup removes every file belonging to it. It removed only the first match, so a backup with a leftover file stayed in the list and appeared to survive being deleted.
+
+### 3.3.1 — 2026-08-21
 - The dashboard can now take a backup. It previously made no requests at all — it showed a hardcoded "Active" badge and a Save button that set a flag for three seconds and wrote nothing — while the API underneath supported all of this the whole time.
 - Choose what to include (content, media, database), whether to compress, whether to encrypt and with which key, which cloud providers to copy to, and whether to keep a local copy.
 - Restore from any listed backup, choosing scope, whether to overwrite existing items, and supplying the decryption key when the archive is encrypted.

@@ -57,10 +57,24 @@ public class BackupsService : IBackupsService
                     IsEncrypted = ext == ".enc"
                 };
             })
-            .OrderByDescending(b => b.CreatedAt);
+            // One backup can leave more than one file behind — the engine used to keep the
+            // .json alongside the .zip or .enc it wrapped it in, so a single backup listed
+            // twice under the same name. Show the outermost artifact per name, which is the
+            // one to restore from: encrypted wraps compressed, compressed wraps the json.
+            .GroupBy(b => b.Name, StringComparer.OrdinalIgnoreCase)
+            .Select(g => g.OrderByDescending(b => Rank(b.Extension)).First())
+            .OrderByDescending(b => b.CreatedAt)
+            .ToList();
 
         return Task.FromResult<IEnumerable<BackupInfo>>(files);
     }
+
+    private static int Rank(string extension) => extension switch
+    {
+        ".enc" => 3,
+        ".zip" => 2,
+        _ => 1,
+    };
 
     public async Task<BackupInfo> CreateBackupAsync(BackupRequest request)
     {
@@ -142,15 +156,24 @@ public class BackupsService : IBackupsService
         EnsureDirectory();
 
         var patterns = new[] { "*.json", "*.zip", "*.enc" };
+        // Delete every file the backup owns, not just the first match. A backup taken
+        // before the engine cleaned up after itself has both a .json and the .zip/.enc
+        // wrapping it, and removing one of them leaves the backup still listed — so
+        // deleting it from the dashboard appeared to do nothing.
         var found = patterns
             .SelectMany(p => Directory.GetFiles(BackupDirectory, p))
-            .FirstOrDefault(f =>
-                Path.GetFileNameWithoutExtension(f).Equals(name, StringComparison.OrdinalIgnoreCase));
+            .Where(f =>
+                Path.GetFileNameWithoutExtension(f).Equals(name, StringComparison.OrdinalIgnoreCase))
+            .ToList();
 
-        if (found is null)
+        if (found.Count == 0)
             throw new FileNotFoundException($"Backup '{name}' not found.");
 
-        File.Delete(found);
+        foreach (var file in found)
+        {
+            File.Delete(file);
+        }
+
         return Task.CompletedTask;
     }
 

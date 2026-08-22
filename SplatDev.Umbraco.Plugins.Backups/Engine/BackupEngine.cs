@@ -91,6 +91,15 @@ public class BackupEngine : IBackupEngine
             }
         }
 
+        // Compressing or encrypting writes a new artifact and leaves the .json behind.
+        // That doubles the disk every backup costs, makes a single backup list as two
+        // entries under the same name, and — when Encrypt is on — leaves the plaintext
+        // sitting next to the encrypted archive, which defeats encrypting it at all.
+        if (finalFilePath != jsonFilePath && IOFile.Exists(jsonFilePath))
+        {
+            IOFile.Delete(jsonFilePath);
+        }
+
         if (options.KeepLocal)
         {
             result.LocalPath = finalFilePath;
