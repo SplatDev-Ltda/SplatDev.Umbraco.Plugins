@@ -72,6 +72,11 @@ to run by hand.
 
 ## Changelog
 
+### 2.2.4 — 2026-08-22
+- Surveys with questions can be listed. The listing loads each survey's questions, every question carries a reference back to its survey, and the serializer looped — so the endpoint returned 500 as soon as a survey had a single question. A survey with no questions serialized fine, which is why an untouched install looked healthy.
+- Editing a survey no longer returns 500. A body the server could not read arrived as nothing at all and the first thing that touched it threw; sending a question type outside the allowed set was enough. It now answers 400 and says what was wrong.
+- The API returns a plain shape — questions, their options and a response count — rather than the database entities.
+
 ### 2.2.3 — 2026-08-21
 - README no longer tells you to scaffold EF Core migrations by hand — the plugin creates its own tables on first start, on SQL Server or SQLite.
 

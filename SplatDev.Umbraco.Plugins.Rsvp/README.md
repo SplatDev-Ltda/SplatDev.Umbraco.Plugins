@@ -70,6 +70,11 @@ Tables in the `rsvp` schema:
 
 ## Changelog
 
+### 2.2.3 — 2026-08-22
+- Registering for an event works. It returned 500 while saving the registration anyway: the response carried the attendee, which carried the event, which carried the attendees, and the serializer looped. From that point the event listing returned 500 too, for everyone — so one registration took the plugin down.
+- Event listings no longer carry the people who registered. GetEvents and GetEvent are deliberately open so a front end can show what is on, and they were returning every attendee's name, e-mail and phone number to anyone who asked — the same disclosure that was closed on GetAttendees, reachable by another route. They now carry counts and spaces remaining; the attendee list stays behind GetAttendees, which requires backoffice access.
+- A request body that cannot be read is answered with 400 and a reason, instead of a 500 from a null reference.
+
 ### 2.2.2 — 2026-08-21
 - Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.
 - A failed request now raises a notification instead of leaving the dashboard looking like there is simply no data.

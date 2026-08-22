@@ -67,6 +67,12 @@ Tables in the `quickpoll` schema:
 
 ## Changelog
 
+### 2.2.3 — 2026-08-22
+- Polls can be listed and created again. Both endpoints returned 500 with "a possible object cycle was detected": the queries load each poll's options, every option carries a reference back to its poll, and the serializer looped. Creating a poll saved it and *then* failed on the way back, so a single poll was enough to break the dashboard for good.
+- This never showed on a fresh install — a site with no polls serialized fine — so the plugin appeared healthy right up to the moment anyone used it.
+- The API now returns a plain shape with the options and their vote counts, rather than the database entities.
+- A request body that cannot be read is answered with 400 and a reason, instead of a 500 from a null reference.
+
 ### 2.2.2 — 2026-08-21
 - Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.
 - A failed request now raises a notification instead of leaving the dashboard looking like there is simply no data.

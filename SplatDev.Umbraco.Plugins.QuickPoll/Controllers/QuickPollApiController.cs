@@ -29,27 +29,32 @@ public class QuickPollApiController : ControllerBase
     public async Task<IActionResult> GetActive(CancellationToken cancellationToken = default)
     {
         var poll = await _service.GetActivePollAsync(cancellationToken);
-        return poll is null ? NotFound("No active poll found.") : Ok(poll);
+        return poll is null ? NotFound("No active poll found.") : Ok(PollDto.From(poll));
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default)
-        => Ok(await _service.GetAllPollsAsync(cancellationToken));
+        => Ok((await _service.GetAllPollsAsync(cancellationToken)).Select(PollDto.From));
 
     [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> Get(int id, CancellationToken cancellationToken = default)
     {
         var poll = await _service.GetPollAsync(id, cancellationToken);
-        return poll is null ? NotFound() : Ok(poll);
+        return poll is null ? NotFound() : Ok(PollDto.From(poll));
     }
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] Poll poll, CancellationToken cancellationToken = default)
     {
+        // Without [ApiController] a body that cannot be bound arrives as null rather than
+        // being rejected for us, and every read of it throws a NullReferenceException that
+        // surfaces as a 500 where a 400 belongs.
+        if (poll is null) return BadRequest("A poll is required.");
         if (!ModelState.IsValid) return BadRequest(ModelState);
+
         var created = await _service.CreatePollAsync(poll, cancellationToken);
-        return CreatedAtAction(nameof(Get), new { id = created.Id }, created);
+        return CreatedAtAction(nameof(Get), new { id = created.Id }, PollDto.From(created));
     }
 
     [HttpDelete]
