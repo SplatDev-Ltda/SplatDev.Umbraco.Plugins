@@ -14,6 +14,8 @@ const ENTITY_TYPES: string[] = [
 
 interface Yaml2SchemaStatus {
   lastImportSucceeded?: boolean;
+  /** A YAML file is present and waiting to be imported on the next startup. */
+  pendingImport?: boolean;
   configPath?: string;
   lastImportDate?: string;
   processedFile?: string;
@@ -145,9 +147,14 @@ export class Yaml2SchemaDashboard extends UmbElementMixin(LitElement) {
         </div>`;
     }
 
+    // "Not succeeded" is not the same as "failed": on a site that has never had a YAML
+    // file, nothing has run at all, and reporting that as an error sent people looking
+    // for a failure that never happened.
     const badge = this._status.lastImportSucceeded
       ? html`<span class="status-badge ok">Last import succeeded</span>`
-      : html`<span class="status-badge warn">Last import had errors</span>`;
+      : this._status.pendingImport
+        ? html`<span class="status-badge warn">Import pending — runs on next startup</span>`
+        : html`<span class="status-badge">No import has run</span>`;
 
     return html`
       <div class="info-card">

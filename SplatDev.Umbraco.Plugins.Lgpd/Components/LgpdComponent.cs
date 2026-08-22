@@ -32,7 +32,10 @@ public class LgpdComponent(
 
         var plan = new MigrationPlan("SplatDev.Lgpd");
         plan.From(string.Empty)
-            .To<CreateLgpdTables>("lgpd-v1");
+            .To<CreateLgpdTables>("lgpd-v1")
+            // v1 created the tables under the entity names rather than the [Table] names the
+            // DbContext queries, so it "succeeded" while leaving nothing the plugin could read.
+            .To<CreateLgpdTablesFromModel>("lgpd-v2");
 
         new Upgrader(plan).Execute(migrationPlanExecutor, coreScopeProvider, keyValueService);
     }

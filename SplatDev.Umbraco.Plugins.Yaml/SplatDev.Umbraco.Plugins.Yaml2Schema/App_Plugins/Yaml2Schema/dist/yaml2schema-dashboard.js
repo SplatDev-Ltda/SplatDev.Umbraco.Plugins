@@ -1,10 +1,10 @@
-import { LitElement as p, html as t, nothing as c, css as f, state as u, customElement as h } from "@umbraco-cms/backoffice/external/lit";
+import { LitElement as u, html as t, nothing as c, css as f, state as p, customElement as h } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin as m } from "@umbraco-cms/backoffice/element-api";
 import { UMB_AUTH_CONTEXT as b } from "@umbraco-cms/backoffice/auth";
-var v = Object.defineProperty, g = Object.getOwnPropertyDescriptor, d = (e, a, i, s) => {
-  for (var o = s > 1 ? void 0 : s ? g(a, i) : a, n = e.length - 1, l; n >= 0; n--)
+var g = Object.defineProperty, v = Object.getOwnPropertyDescriptor, d = (e, a, i, s) => {
+  for (var o = s > 1 ? void 0 : s ? v(a, i) : a, n = e.length - 1, l; n >= 0; n--)
     (l = e[n]) && (o = (s ? l(a, i, o) : l(o)) || o);
-  return s && o && v(a, i, o), o;
+  return s && o && g(a, i, o), o;
 };
 const x = "/umbraco/api/Yaml2Schema", y = [
   "Languages",
@@ -23,7 +23,7 @@ const x = "/umbraco/api/Yaml2Schema", y = [
   "Property Editors",
   "Static Assets"
 ];
-let r = class extends m(p) {
+let r = class extends m(u) {
   constructor() {
     super(), this._status = null, this._loadingStatus = !1, this._authContext = null, this._authReady = new Promise((e) => {
       this._authResolve = e;
@@ -65,7 +65,7 @@ let r = class extends m(p) {
           <div class="info-row"><span class="info-label">Import runs</span><span class="info-value">On every application startup when the YAML file is present</span></div>
           <div class="info-row"><span class="info-label">File processed</span><span class="info-value">Renamed to <code>*.done</code> after a successful import</span></div>
         </div>`;
-    const e = this._status.lastImportSucceeded ? t`<span class="status-badge ok">Last import succeeded</span>` : t`<span class="status-badge warn">Last import had errors</span>`;
+    const e = this._status.lastImportSucceeded ? t`<span class="status-badge ok">Last import succeeded</span>` : this._status.pendingImport ? t`<span class="status-badge warn">Import pending — runs on next startup</span>` : t`<span class="status-badge">No import has run</span>`;
     return t`
       <div class="info-card">
         <div class="info-row"><span class="info-label">Status</span><span>${e}</span></div>
@@ -153,10 +153,10 @@ r.styles = f`
     uui-loader-circle { margin: 12px 0; }
   `;
 d([
-  u()
+  p()
 ], r.prototype, "_status", 2);
 d([
-  u()
+  p()
 ], r.prototype, "_loadingStatus", 2);
 r = d([
   h("yaml2schema-dashboard")

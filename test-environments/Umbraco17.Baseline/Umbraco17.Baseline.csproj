@@ -28,6 +28,8 @@
     <ProjectReference Include="../../SplatDev.Payments.BancoInter/SplatDev.Payments.BancoInter.csproj" PrivateAssets="none" />
     <ProjectReference Include="../../SplatDev.Payments.MercadoPago/SplatDev.Payments.MercadoPago.csproj" PrivateAssets="none" />
     <ProjectReference Include="../../SplatDev.Payments.PagSeguro/SplatDev.Payments.PagSeguro.csproj" PrivateAssets="none" />
+    <ProjectReference Include="../../SplatDev.Payments.Getnet/SplatDev.Payments.Getnet.csproj" PrivateAssets="none" />
+    <ProjectReference Include="../../SplatDev.Payments.Santander/SplatDev.Payments.Santander.csproj" PrivateAssets="none" />
     <ProjectReference Include="../../SplatDev.Payments.Stripe/SplatDev.Payments.Stripe.csproj" PrivateAssets="none" />
     <ProjectReference Include="../../SplatDev.Reflection.Helpers/SplatDev.Reflection.Helpers.csproj" PrivateAssets="none" />
     <ProjectReference Include="../../SplatDev.Routing/SplatDev.Routing.csproj" PrivateAssets="none" />
@@ -85,6 +87,11 @@
     <ProjectReference Include="../../SplatDev.Umbraco.Plugins.Payments.MercadoPago/SplatDev.Umbraco.Plugins.Payments.MercadoPago.csproj" PrivateAssets="none" />
     <ProjectReference Include="../../SplatDev.Umbraco.Plugins.Payments.PagSeguro/SplatDev.Umbraco.Plugins.Payments.PagSeguro.csproj" PrivateAssets="none" />
     <ProjectReference Include="../../SplatDev.Umbraco.Plugins.CopyValue/SplatDev.Umbraco.Plugins.CopyValue.csproj" PrivateAssets="none" />
+    <ProjectReference Include="../../SplatDev.Umbraco.Plugins.ContentPackages/SplatDev.Umbraco.Plugins.ContentPackages.csproj" PrivateAssets="none" />
+    <ProjectReference Include="../../SplatDev.Umbraco.Plugins.Getnet/SplatDev.Umbraco.Plugins.Getnet.csproj" PrivateAssets="none" />
+    <ProjectReference Include="../../SplatDev.Umbraco.Plugins.GoogleAnalytics/SplatDev.Umbraco.Plugins.GoogleAnalytics.csproj" PrivateAssets="none" />
+    <ProjectReference Include="../../SplatDev.Umbraco.Plugins.Santander/SplatDev.Umbraco.Plugins.Santander.csproj" PrivateAssets="none" />
+    <ProjectReference Include="../../SplatDev.Umbraco.Plugins.SocialMedia.Channels.PropertyEditor/SplatDev.Umbraco.Plugins.SocialMedia.Channels.PropertyEditor.csproj" PrivateAssets="none" />
     <ProjectReference Include="../../SplatDev.Umbraco.Plugins.Lgpd/SplatDev.Umbraco.Plugins.Lgpd.csproj" PrivateAssets="none" />
     <ProjectReference Include="../../SplatDev.Umbraco.Plugins.NuGetCatalog/SplatDev.Umbraco.Plugins.NuGetCatalog.csproj" PrivateAssets="none" />
     <ProjectReference Include="../../SplatDev.Umbraco.Plugins.Yaml/SplatDev.Umbraco.Plugins.Schema2Yaml/SplatDev.Umbraco.Plugins.Schema2Yaml.csproj" PrivateAssets="none" />

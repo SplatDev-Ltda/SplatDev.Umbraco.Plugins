@@ -88,6 +88,9 @@ int count = await _copyValueService.BulkCopyAsync(mappingId, pairs, publish: fal
 
 ## Changelog
 
+### 2.2.4 — 2026-08-22
+- The mappings table is created again. The DbContext pinned one column to `nvarchar(max)` — SQL Server's spelling — which EF emitted verbatim into the SQLite DDL, so creating the table failed with `near "max": syntax error`. The migration aborted, the table was never created, and every dashboard request returned 500 with `no such table: CopyMappings` on the database Umbraco's installer offers by default.
+
 ### 2.2.3 — 2026-08-21
 - A failed request now says so in the dashboard. Previously the dashboard kept its previous (usually empty) state, so a refused or failed call looked identical to having no data.
 - README no longer tells you to scaffold EF Core migrations by hand — the plugin creates its own tables on first start, on SQL Server or SQLite.

@@ -116,6 +116,11 @@ Backoffice (`BackOfficeAccess`): `Painel`, `Historico`, `Requisicoes`,
 
 ## Changelog
 
+### 1.0.5 — 2026-08-22
+- The dashboard loads instead of returning 500. The migration built its DDL with Umbraco's `Create.Table<T>()`, which names tables after the entity, while the DbContext names them from each entity's `[Table]` attribute. The two disagreed — the migration created `Consentimento` and the plugin queried `Consentimentos` — so the migration reported success and recorded itself as done while leaving nothing the plugin could read.
+- Table creation is now generated from the EF model itself, so the names cannot drift from the queries again.
+- The tables the old migration created under the wrong names are left in place rather than dropped, in case a site put data in them by hand. They are unused; an empty one is safe to drop.
+
 ### 1.0.4 — 2026-08-21
 - A failed request now says so in the dashboard. Previously the dashboard kept its previous (usually empty) state, so a refused or failed call looked identical to having no data.
 
