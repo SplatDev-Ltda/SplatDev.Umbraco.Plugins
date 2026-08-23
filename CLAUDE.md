@@ -64,16 +64,22 @@ Spins up Umbraco 13 (`:5001`) and Umbraco 17 (`:5000`) baselines plus a Playwrig
 
 **Some package ids were replaced rather than updated, and the dead one often looks newer.** A plugin rebuilt under a conforming name left its old id on NuGet, still resolvable, sometimes at a higher version than its replacement — so a search turns up both and the stale one wins the eye:
 
-| Superseded id | Its version | Use instead | Current |
-| --- | --- | --- | --- |
-| `…Plugins.SocialMediaChannels` | 3.0.8.4 (Umbraco 7) | `…Plugins.SocialMedia.Channels` | 2.2.2 |
-| `…Plugins.SimpleAnalytics` | 2.0.0.6 (Umbraco 7) | `…Plugins.Analytics` | 2.1.5 |
-| `…Plugin.Backups13` | 13.2.0.12 | `…Plugins.Backups` | 3.3.2 |
-| `SplatDevUmbracoPluginBackup` | 9.5.4 | `…Plugins.Backups` | 3.3.2 |
-| `…Plugins.CharLimitRestrict` | 2.0.1 | `…Plugins.CharLimit` | 1.2.2 |
-| `…Plugins.OnOffButton` | 2.0.1 | `…Plugins.OnOff` | 2.2.4 |
-| `…Plugins.RestrictPage` | 2.0.1 | `…Plugins.Restricted` | 2.3.2 |
-| `…Plugins.YouTubePreview` | 2.0.1 | `…Plugins.VideoPreview` | 2.1.4 |
+Verified against the search index after v2.7.0: seven of the eight are unlisted, so only
+the last row still turns up in a search.
+
+| Superseded id | Its version | Unlisted? | Use instead | Current |
+| --- | --- | --- | --- | --- |
+| `…Plugins.SocialMediaChannels` | 3.0.8.4 (Umbraco 7) | yes | `…Plugins.SocialMedia.Channels` | 2.3.0 |
+| `…Plugins.SimpleAnalytics` | 2.0.0.6 (Umbraco 7) | yes | `…Plugins.Analytics` | 2.1.5 |
+| `…Plugin.Backups13` | 13.2.0.12 | yes | `…Plugins.Backups` | 3.3.2 |
+| `SplatDevUmbracoPluginBackup` | 9.5.4 | **no — still listed** | `…Plugins.Backups` | 3.3.2 |
+| `…Plugins.CharLimitRestrict` | 2.0.1 | yes | `…Plugins.CharLimit` | 1.4.0 |
+| `…Plugins.OnOffButton` | 2.0.1 | yes | `…Plugins.OnOff` | 2.3.0 |
+| `…Plugins.RestrictPage` | 2.0.1 | yes | `…Plugins.Restricted` | 2.5.0 |
+| `…Plugins.YouTubePreview` | 2.0.1 | yes | `…Plugins.VideoPreview` | 2.3.0 |
+
+The one still listed is the worst of the eight to leave alone: 9.5.4 sorts above the
+3.3.2 that replaced it, so it wins the search outright.
 
 `.github/workflows/unlist-superseded.yml` unlists these wholesale (manual dispatch, dry-run by default). Unlisting hides an id from search and resolution without deleting it, and the Umbraco Marketplace takes its listings from NuGet so the entry goes with it. It is **not** deprecation: NuGet's deprecation flag adds a banner naming the replacement, which is what someone who already installed one needs to see, and it can only be set in the nuget.org UI — do both.
 
@@ -82,6 +88,19 @@ Spins up Umbraco 13 (`:5001`) and Umbraco 17 (`:5000`) baselines plus a Playwrig
 Two ids in this group are deliberately left alone. `…Plugins.AdPreview` (0.0.3.5, Umbraco 7) has a v17 port in PR #118 that will publish under the same id, and `…Plugins.HideContent` (1.0.1, a `umbracoNaviHide` visual) has no current equivalent to point anyone at.
 
 **Private feed.** `nuget.config` maps `PdfCurator.*` to `https://nuget.pkg.github.com/splatdevtech/` and reads `%GITHUB_ACTOR%` / `%GITHUB_TOKEN%` from the environment. Restore of PdfCurator fails without those set.
+
+**The GitHub Packages half of `publish.yml` had never worked.** It pushed to
+`nuget.pkg.github.com/SplatDev-Ltda` while the repository lives under `splatdevtech`, and
+`GITHUB_TOKEN` is scoped to the repository's own owner and nothing else — so every push
+answered **403 Forbidden**, on v2.7.0 and every release before it. The job had no
+`permissions:` block either, so the token was read-only regardless. Both are fixed, and
+the feed owner now comes from `${{ github.repository_owner }}` so it cannot drift again.
+
+What hid it is the same defect this repo has now found three times: the step ended each
+push with `|| echo "::warning::..."`, so 72 consecutive failures left the job green. A
+step that reports success having done nothing is worse than one that fails. Count
+outcomes, not attempts, and fail the job — `publish.yml` and `unlist-superseded.yml` both
+do now.
 
 **Versioning/publish.** `<Version>` is per-`.csproj` (no central version). Pushing a `v*` tag runs `publish.yml`, which packs each publishable plugin and pushes to NuGet.org (skipping versions that already exist) and GitHub Packages. `Directory.Build.props` supplies Authors/Company/Copyright/license only — keep it that way. It used to declare `MailKit`/`MimeKit` repo-wide, which made every package depend on an email stack it never used and silently overrode Mailer's own pinned version; add package references to the project that needs them.
 
