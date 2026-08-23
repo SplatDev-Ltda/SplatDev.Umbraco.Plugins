@@ -36,12 +36,19 @@ This package configures presentation data only. It does not connect accounts, pu
 
 ## Changelog
 
+### 1.1.2 — 2026-08-23
+
+Corrects the note below. The 1.1.1 entry said NuGet never published 1.1.0. It did — it
+took a little over an hour to clear validation, and a 404 while a package is still being
+validated looks exactly like a 404 for one that was rejected. Halving the package was
+worth doing on its own; the reason given for it was wrong.
+
 ### 1.1.1 — 2026-08-23
 
 Halves the package. The icon themes were both embedded in the assembly and packed as
-loose content, so every image shipped twice and the package reached 13 MB — large enough
-that NuGet held 1.1.0 in validation and never published it. The themes are still embedded
-and still served at runtime; only the loose-file copy loses them.
+loose content, so every image shipped twice and the package reached 13 MB — big enough
+that NuGet took over an hour to validate it, against seconds for the others. The themes
+are still embedded and still served at runtime; only the loose-file copy loses them.
 
 Also drops 67 files that came along with the downloaded icon sets — `info.txt`, author
 `.xml` files, and a `Web.config` per theme folder. A `Web.config` under `App_Plugins` is

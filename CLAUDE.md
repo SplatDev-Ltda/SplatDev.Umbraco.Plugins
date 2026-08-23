@@ -89,6 +89,14 @@ Two ids in this group are deliberately left alone. `…Plugins.AdPreview` (0.0.3
 
 **Private feed.** `nuget.config` maps `PdfCurator.*` to `https://nuget.pkg.github.com/splatdevtech/` and reads `%GITHUB_ACTOR%` / `%GITHUB_TOKEN%` from the environment. Restore of PdfCurator fails without those set.
 
+**A package NuGet is still validating looks exactly like one it rejected.** Both answer
+404 from the flat container, the registration and the package page, and neither says why.
+`SocialMedia.Channels.PropertyEditor 1.1.0` took a little over an hour — it was 13 MB
+where the others are under 0.5 MB — and was written off as rejected somewhere around the
+45-minute mark, which put a wrong claim into a tag message and a changelog. Validation
+time scales with size, so give a large package hours before concluding anything, and read
+the status from the owner's nuget.org account rather than inferring it from a 404.
+
 **The GitHub Packages half of `publish.yml` had never worked.** It pushed to
 `nuget.pkg.github.com/SplatDev-Ltda` while the repository lives under `splatdevtech`, and
 `GITHUB_TOKEN` is scoped to the repository's own owner and nothing else — so every push
