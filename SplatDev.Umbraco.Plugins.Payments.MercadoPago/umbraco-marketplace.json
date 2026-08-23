@@ -18,7 +18,7 @@
   "Screenshots": [
     {
       "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Payments.MercadoPago/docs/screenshots/01-dashboard.png",
-      "Caption": "The MercadoPago dashboard in the Umbraco backoffice."
+      "Caption": "The Payments.MercadoPago dashboard in the Umbraco backoffice."
     }
   ]
 }

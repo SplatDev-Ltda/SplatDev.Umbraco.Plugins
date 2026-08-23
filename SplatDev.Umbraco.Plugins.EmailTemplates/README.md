@@ -50,6 +50,10 @@ Add to `appsettings.json`:
 
 ## Changelog
 
+### 1.3.0 — 2026-08-23
+
+The Umbraco Marketplace listing now carries this plugin's screenshots. The listing keeps its own screenshot list rather than reading the README, and this one was empty — so the entry showed no images at all.
+
 ### 1.2.4 — 2026-08-22
 - You can pick the logo from the media library instead of typing a URL, and the field still accepts a pasted URL for an image hosted elsewhere. A picked image is stored as an absolute URL on purpose — a mail client renders it on someone else's machine and has no site to resolve a relative path against.
 

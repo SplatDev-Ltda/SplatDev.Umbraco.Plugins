@@ -19,6 +19,10 @@
     {
       "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.2fa/docs/screenshots/01-dashboard.png",
       "Caption": "The 2fa dashboard in the Umbraco backoffice."
+    },
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.2fa/docs/screenshots/04-front-end.png",
+      "Caption": "2fa rendered on the front end."
     }
   ]
 }

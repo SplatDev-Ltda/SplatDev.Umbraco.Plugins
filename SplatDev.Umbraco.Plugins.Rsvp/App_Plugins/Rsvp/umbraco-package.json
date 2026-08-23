@@ -20,6 +20,19 @@
           "match": "Umb.Section.Settings"
         }
       ]
+    },
+    {
+      "type": "propertyEditorUi",
+      "alias": "SplatDev.PropertyEditorUi.RsvpPicker",
+      "name": "Event",
+      "element": "/App_Plugins/Rsvp/dist/rsvp-picker.element.js",
+      "elementName": "rsvp-picker",
+      "meta": {
+        "label": "Event",
+        "icon": "icon-calendar",
+        "group": "pickers",
+        "propertyEditorSchemaAlias": "Umbraco.Integer"
+      }
     }
   ]
 }

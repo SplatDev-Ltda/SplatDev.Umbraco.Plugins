@@ -1,45 +1,17 @@
-import { LitElement as f, html as l, css as $, state as p, customElement as y } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as E } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as w } from "@umbraco-cms/backoffice/auth";
-import { UMB_NOTIFICATION_CONTEXT as C } from "@umbraco-cms/backoffice/notification";
-function T(e) {
-  let t = null, a = null;
-  const o = e.consumeContext.bind(e), n = new Promise((s) => {
-    o(w, async (i) => {
-      var c;
-      try {
-        t = await ((c = i == null ? void 0 : i.getLatestToken) == null ? void 0 : c.call(i)) ?? null;
-      } catch {
-        t = null;
-      }
-      s();
-    }), setTimeout(s, 3e3);
-  });
-  return o(C, (s) => {
-    a = s;
-  }), async (s, i = {}) => {
-    await n;
-    const c = new Headers(i.headers);
-    t && !c.has("Authorization") && c.set("Authorization", `Bearer ${t}`);
-    const r = await fetch(s, { ...i, credentials: "same-origin", headers: c });
-    if (!r.ok) {
-      const _ = r.status === 401 || r.status === 403, v = _ ? "Not authorised" : "Could not load data", g = _ ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${r.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${r.status}. Anything shown below may be incomplete.`;
-      console.error(`[SplatDev] ${r.status} from ${String(s)} — ${g}`), a == null || a.peek("danger", { data: { headline: v, message: g } });
-    }
-    return r;
-  };
-}
-var x = Object.defineProperty, k = Object.getOwnPropertyDescriptor, m = (e) => {
+import { LitElement as p, html as l, css as _, state as c, customElement as g } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as v } from "@umbraco-cms/backoffice/element-api";
+import { c as m } from "./chunks/auth-fetch-BzMCmNwW.js";
+var f = Object.defineProperty, $ = Object.getOwnPropertyDescriptor, b = (e) => {
   throw TypeError(e);
-}, h = (e, t, a, o) => {
-  for (var n = o > 1 ? void 0 : o ? k(t, a) : t, s = e.length - 1, i; s >= 0; s--)
-    (i = e[s]) && (n = (o ? i(t, a, n) : i(n)) || n);
-  return o && n && x(t, a, n), n;
-}, S = (e, t, a) => t.has(e) || m("Cannot " + a), b = (e, t, a) => (S(e, t, "read from private field"), a ? a.call(e) : t.get(e)), D = (e, t, a) => t.has(e) ? m("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), d;
-const A = ["Confirmed", "Waitlisted", "Cancelled"], L = ["#d1fae5", "#fef3c7", "#fee2e2"], P = ["#065f46", "#92400e", "#991b1b"];
-let u = class extends E(f) {
+}, r = (e, t, a, u) => {
+  for (var i = u > 1 ? void 0 : u ? $(t, a) : t, d = e.length - 1, h; d >= 0; d--)
+    (h = e[d]) && (i = (u ? h(t, a, i) : h(i)) || i);
+  return u && i && f(t, a, i), i;
+}, E = (e, t, a) => t.has(e) || b("Cannot " + a), o = (e, t, a) => (E(e, t, "read from private field"), a ? a.call(e) : t.get(e)), y = (e, t, a) => t.has(e) ? b("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), n;
+const x = ["Confirmed", "Waitlisted", "Cancelled"], w = ["#d1fae5", "#fef3c7", "#fee2e2"], C = ["#065f46", "#92400e", "#991b1b"];
+let s = class extends v(p) {
   constructor() {
-    super(...arguments), D(this, d, T(this)), this._events = [], this._loading = !1, this._error = null, this._selectedEvent = null, this._apiBase = "/umbraco/api/rsvp";
+    super(...arguments), y(this, n, m(this)), this._events = [], this._loading = !1, this._error = null, this._selectedEvent = null, this._apiBase = "/umbraco/api/rsvp";
   }
   connectedCallback() {
     super.connectedCallback(), this._loadEvents();
@@ -47,7 +19,7 @@ let u = class extends E(f) {
   async _loadEvents() {
     this._loading = !0, this._error = null;
     try {
-      const e = await b(this, d).call(this, `${this._apiBase}/getevents`);
+      const e = await o(this, n).call(this, `${this._apiBase}/getevents`);
       if (!e.ok) throw new Error(`HTTP ${e.status}`);
       this._events = await e.json();
     } catch (e) {
@@ -58,7 +30,7 @@ let u = class extends E(f) {
   }
   async _selectEvent(e) {
     try {
-      const t = await b(this, d).call(this, `${this._apiBase}/getevent?id=${e.id}`);
+      const t = await o(this, n).call(this, `${this._apiBase}/getevent?id=${e.id}`);
       if (!t.ok) throw new Error(`HTTP ${t.status}`);
       this._selectedEvent = await t.json();
     } catch (t) {
@@ -68,7 +40,7 @@ let u = class extends E(f) {
   async _cancelRegistration(e) {
     if (confirm("Cancel this registration?"))
       try {
-        const t = await b(this, d).call(this, `${this._apiBase}/cancelregistration?attendeeId=${e}`, { method: "POST" });
+        const t = await o(this, n).call(this, `${this._apiBase}/cancelregistration?attendeeId=${e}`, { method: "POST" });
         if (!t.ok) throw new Error(`HTTP ${t.status}`);
         this._selectedEvent && await this._selectEvent(this._selectedEvent);
       } catch (t) {
@@ -79,7 +51,7 @@ let u = class extends E(f) {
     var t;
     if (confirm("Delete this event and all registrations?"))
       try {
-        await b(this, d).call(this, `${this._apiBase}/deleteevent?id=${e}`, { method: "DELETE" }), this._events = this._events.filter((a) => a.id !== e), ((t = this._selectedEvent) == null ? void 0 : t.id) === e && (this._selectedEvent = null);
+        await o(this, n).call(this, `${this._apiBase}/deleteevent?id=${e}`, { method: "DELETE" }), this._events = this._events.filter((a) => a.id !== e), ((t = this._selectedEvent) == null ? void 0 : t.id) === e && (this._selectedEvent = null);
       } catch (a) {
         this._error = `Delete failed: ${a instanceof Error ? a.message : String(a)}`;
       }
@@ -196,8 +168,8 @@ let u = class extends E(f) {
                       <uui-table-cell>${t.phone ?? "—"}</uui-table-cell>
                       <uui-table-cell>
                         <span class="badge"
-                          style="background:${L[t.status]};color:${P[t.status]}">
-                          ${A[t.status]}
+                          style="background:${w[t.status]};color:${C[t.status]}">
+                          ${x[t.status]}
                         </span>
                       </uui-table-cell>
                       <uui-table-cell>${new Date(t.registeredAt).toLocaleDateString()}</uui-table-cell>
@@ -214,8 +186,8 @@ let u = class extends E(f) {
     `;
   }
 };
-d = /* @__PURE__ */ new WeakMap();
-u.styles = $`
+n = /* @__PURE__ */ new WeakMap();
+s.styles = _`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -268,21 +240,21 @@ u.styles = $`
       margin-bottom: 16px;
     }
   `;
-h([
-  p()
-], u.prototype, "_events", 2);
-h([
-  p()
-], u.prototype, "_loading", 2);
-h([
-  p()
-], u.prototype, "_error", 2);
-h([
-  p()
-], u.prototype, "_selectedEvent", 2);
-u = h([
-  y("rsvp-dashboard")
-], u);
+r([
+  c()
+], s.prototype, "_events", 2);
+r([
+  c()
+], s.prototype, "_loading", 2);
+r([
+  c()
+], s.prototype, "_error", 2);
+r([
+  c()
+], s.prototype, "_selectedEvent", 2);
+s = r([
+  g("rsvp-dashboard")
+], s);
 export {
-  u as RsvpDashboardElement
+  s as RsvpDashboardElement
 };

@@ -49,3 +49,19 @@ public sealed class RestrictNodeRequest
     /// <summary>Group keys or names — resolved either way.</summary>
     public List<string> MemberGroups { get; set; } = [];
 }
+
+/// <summary>
+/// What the node editor needs to show and amend the protection on a single page.
+/// </summary>
+/// <remarks>
+/// Deliberately flatter than <see cref="RestrictedNode"/>: it names groups as the strings
+/// <see cref="RestrictNodeRequest"/> accepts, and it carries an explicit
+/// <see cref="Restricted"/> flag so an unprotected page is a value rather than an absence.
+/// </remarks>
+public sealed class RestrictionState
+{
+    public bool Restricted { get; set; }
+    public List<string> MemberGroups { get; set; } = [];
+    public string? LoginPage { get; set; }
+    public string? ErrorPage { get; set; }
+}

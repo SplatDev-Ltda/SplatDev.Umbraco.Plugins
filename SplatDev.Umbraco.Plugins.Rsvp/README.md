@@ -7,6 +7,12 @@ An event RSVP plugin for Umbraco 13 and Umbraco 17 with capacity management, wai
 
 ![Rsvp dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Rsvp/docs/screenshots/01-dashboard.png)
 
+![Rsvp property editor](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Rsvp/docs/screenshots/02-property-editor.png)
+
+![Rsvp data type](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Rsvp/docs/screenshots/03-data-type.png)
+
+![Rsvp on the front end](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Rsvp/docs/screenshots/04-front-end.png)
+
 <!-- screenshot:end -->
 
 ## Features
@@ -43,7 +49,11 @@ An event RSVP plugin for Umbraco 13 and Umbraco 17 with capacity management, wai
 ## Usage in Templates
 
 ```cshtml
+@* A fixed event: *@
 @await Component.InvokeAsync("Rsvp", new { eventId = 1 })
+
+@* Or the one chosen on this page with the Event property editor: *@
+@await Component.InvokeAsync("Rsvp", new { eventId = Model.Value<int>("event") })
 ```
 
 ## Building the Client
@@ -69,6 +79,15 @@ Tables in the `rsvp` schema:
 | 2 | Cancelled |
 
 ## Changelog
+
+### 2.4.0 — 2026-08-23
+
+The Razor view behind `@await Component.InvokeAsync(...)` is now compiled into the package. It was previously carried as a loose file that nothing packed, so the component threw "view not found" on every install and the front-end usage shown in this README could not have worked.
+
+The view also still referenced the package's pre-rename namespace, so it would not have compiled even had it shipped. That is fixed, and the view is now built with the project — a broken view fails the build instead of failing a visitor's request.
+
+### 2.3.0 — 2026-08-23
+- A content editor can choose which event a page shows. The view component takes a numeric id, so until now putting an event on a page meant knowing that id and writing it into a template by hand — there was no way to pick one.
 
 ### 2.2.3 — 2026-08-22
 - Registering for an event works. It returned 500 while saving the registration anyway: the response carried the attendee, which carried the event, which carried the attendees, and the serializer looped. From that point the event listing returned 500 too, for everyone — so one registration took the plugin down.

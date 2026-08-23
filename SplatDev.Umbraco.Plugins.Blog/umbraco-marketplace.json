@@ -19,6 +19,10 @@
     {
       "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Blog/docs/screenshots/01-dashboard.png",
       "Caption": "The Blog dashboard in the Umbraco backoffice."
+    },
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Blog/docs/screenshots/04-front-end.png",
+      "Caption": "Blog rendered on the front end."
     }
   ]
 }

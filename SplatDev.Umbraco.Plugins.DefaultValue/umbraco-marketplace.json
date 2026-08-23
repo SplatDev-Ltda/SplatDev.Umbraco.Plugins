@@ -19,6 +19,10 @@
     {
       "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.DefaultValue/docs/screenshots/01-dashboard.png",
       "Caption": "The DefaultValue dashboard in the Umbraco backoffice."
+    },
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.DefaultValue/docs/screenshots/04-front-end.png",
+      "Caption": "DefaultValue rendered on the front end."
     }
   ]
 }

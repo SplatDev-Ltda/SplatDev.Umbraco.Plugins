@@ -9,6 +9,8 @@ divulgação do encarregado do art. 41.
 
 ![Lgpd dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Lgpd/docs/screenshots/01-dashboard.png)
 
+![Lgpd on the front end](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Lgpd/docs/screenshots/04-front-end.png)
+
 <!-- screenshot:end -->
 
 Umbraco 13 (net8.0) e Umbraco 17 (net10.0).
@@ -115,6 +117,10 @@ Backoffice (`BackOfficeAccess`): `Painel`, `Historico`, `Requisicoes`,
 15 dias do art. 19, a justificativa obrigatória do art. 18 §4º e as dez bases do art. 7º.
 
 ## Changelog
+
+### 1.1.0 — 2026-08-23
+
+The Razor view behind `@await Component.InvokeAsync(...)` is now compiled into the package. It was previously carried as a loose file that nothing packed, so the component threw "view not found" on every install and the front-end usage shown in this README could not have worked.
 
 ### 1.0.5 — 2026-08-22
 - The dashboard loads instead of returning 500. The migration built its DDL with Umbraco's `Create.Table<T>()`, which names tables after the entity, while the DbContext names them from each entity's `[Table]` attribute. The two disagreed — the migration created `Consentimento` and the plugin queried `Consentimentos` — so the migration reported success and recorded itself as done while leaving nothing the plugin could read.

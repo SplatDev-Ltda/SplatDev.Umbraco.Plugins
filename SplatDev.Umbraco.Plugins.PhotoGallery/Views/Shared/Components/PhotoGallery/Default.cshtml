@@ -1,0 +1,68 @@
+@using SplatDev.Umbraco.Plugins.PhotoGallery.ViewComponents
+@model PhotoGalleryViewModel
+
+@if (Model.Album is null)
+{
+    <!-- SplatDev PhotoGallery: no album configured. -->
+}
+else
+{
+    @* Structure only — no colour, type or spacing opinions beyond what the markup
+       needs to be a grid rather than a bulleted list. Single-class selectors, so a
+       site stylesheet overrides any of it without needing !important. *@
+    <style>
+        .splatdev-gallery__grid {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+        .splatdev-gallery__item { margin: 0; }
+        .splatdev-gallery__link { display: block; }
+        .splatdev-gallery__image {
+            display: block;
+            width: 100%;
+            height: 100%;
+            aspect-ratio: 4 / 3;
+            object-fit: cover;
+        }
+        .splatdev-gallery__caption { margin: 0.4rem 0 0; font-size: 0.9em; }
+    </style>
+
+    <section class="splatdev-gallery" aria-label="@Model.Album.Title">
+        <header class="splatdev-gallery__header">
+            <h2 class="splatdev-gallery__title">@Model.Album.Title</h2>
+            @if (!string.IsNullOrWhiteSpace(Model.Album.Description))
+            {
+                <p class="splatdev-gallery__description">@Model.Album.Description</p>
+            }
+        </header>
+
+        @if (Model.Photos.Count == 0)
+        {
+            <p class="splatdev-gallery__empty">This album has no photos yet.</p>
+        }
+        else
+        {
+            <ul class="splatdev-gallery__grid">
+                @foreach (var photo in Model.Photos)
+                {
+                    <li class="splatdev-gallery__item">
+                        <a class="splatdev-gallery__link" href="@photo.ImageUrl">
+                            <img class="splatdev-gallery__image"
+                                 src="@(string.IsNullOrWhiteSpace(photo.ThumbnailUrl) ? photo.ImageUrl : photo.ThumbnailUrl)"
+                                 alt="@photo.Title"
+                                 loading="lazy" />
+                        </a>
+                        @if (!string.IsNullOrWhiteSpace(photo.Caption))
+                        {
+                            <p class="splatdev-gallery__caption">@photo.Caption</p>
+                        }
+                    </li>
+                }
+            </ul>
+        }
+    </section>
+}

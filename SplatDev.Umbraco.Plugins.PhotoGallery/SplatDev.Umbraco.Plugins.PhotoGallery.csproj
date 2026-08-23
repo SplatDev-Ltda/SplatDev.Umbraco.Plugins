@@ -1,15 +1,19 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <ContentTargetFolders>.</ContentTargetFolders>
     <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <!-- The views live in the assembly, not in loose files: nothing packs loose
+         .cshtml, and MVC resolves views from the consuming site's content root. -->
+    <EnableDefaultContentItems>false</EnableDefaultContentItems>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>SplatDev.Umbraco.Plugins.PhotoGallery</AssemblyName>
     <RootNamespace>SplatDev.Umbraco.Plugins.PhotoGallery</RootNamespace>
     <PackageId>SplatDev.Umbraco.Plugins.PhotoGallery</PackageId>
-    <Version>1.2.3</Version>
+    <Version>1.4.0</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <Authors>SplatDev</Authors>
@@ -52,6 +56,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="App_Plugins\**\*" />
+    <Content Include="Views\**\*.cshtml" Pack="false" />
   </ItemGroup>
 
 

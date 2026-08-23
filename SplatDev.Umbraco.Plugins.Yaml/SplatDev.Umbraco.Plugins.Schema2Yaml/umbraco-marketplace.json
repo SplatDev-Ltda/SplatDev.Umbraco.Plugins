@@ -3,7 +3,9 @@
   "Description": "Export your entire Umbraco site structure to YAML — DataTypes, DocumentTypes, Media Types, Templates, Content, Media, Languages, Dictionary Items, Members, and Users. One click in the Settings dashboard produces a portable YAML + media ZIP you can version-control and replay anywhere using the companion Yaml2Schema package. v2.x supports Umbraco 14-17 (net8.0/net9.0/net10.0). For Umbraco 13, use v1.x from the support/umbraco-13 branch.",
   "Category": "Developer Tools",
   "PackageType": "Package",
-  "LicenseTypes": ["Free"],
+  "LicenseTypes": [
+    "Free"
+  ],
   "DocumentationUrl": "https://github.com/splatdevtech/umbraco-yaml/blob/main/SplatDev.Umbraco.Plugins.Schema2Yaml/README.md",
   "IssueTrackerUrl": "https://github.com/splatdevtech/umbraco-yaml/issues",
   "AuthorDetails": {
@@ -22,8 +24,8 @@
   ],
   "Screenshots": [
     {
-      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/umbraco-yaml/main/docs/images/hero-banner.png",
-      "Caption": "Schema Export dashboard — one-click YAML + media ZIP download"
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Yaml/SplatDev.Umbraco.Plugins.Schema2Yaml/docs/screenshots/01-dashboard.png",
+      "Caption": "The Schema2Yaml dashboard in the Umbraco backoffice."
     }
   ]
 }

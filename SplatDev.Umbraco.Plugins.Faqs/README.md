@@ -7,6 +7,12 @@ FAQ management plugin for Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
 ![Faqs dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Faqs/docs/screenshots/01-dashboard.png)
 
+![Faqs property editor](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Faqs/docs/screenshots/02-property-editor.png)
+
+![Faqs data type](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Faqs/docs/screenshots/03-data-type.png)
+
+![Faqs on the front end](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Faqs/docs/screenshots/04-front-end.png)
+
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Faqs.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Faqs)
@@ -58,6 +64,9 @@ dotnet add package SplatDev.Umbraco.Plugins.Faqs
 @* Specific category only: *@
 @await Component.InvokeAsync("Faqs", new { categorySlug = "general" })
 
+@* Or the category chosen on this page with the FAQ Category property editor: *@
+@await Component.InvokeAsync("Faqs", new { categoryId = Model.Value<int>("faqCategory") })
+
 @* Search results: *@
 @await Component.InvokeAsync("Faqs", new { searchQuery = Request.Query["faqSearch"].ToString() })
 ```
@@ -80,6 +89,17 @@ npm run build
 ```
 
 ## Changelog
+
+### 2.4.0 — 2026-08-23
+
+The Razor view behind `@await Component.InvokeAsync(...)` is now compiled into the package. It was previously carried as a loose file that nothing packed, so the component threw "view not found" on every install and the front-end usage shown in this README could not have worked.
+
+The view also still referenced the package's pre-rename namespace, so it would not have compiled even had it shipped. That is fixed, and the view is now built with the project — a broken view fails the build instead of failing a visitor's request.
+
+### 2.3.0 — 2026-08-23
+- A content editor can choose which FAQ category a page shows. The view component takes a numeric id, so until now putting a set of FAQs on a page meant knowing that id and writing it into a template by hand — there was no way to pick one.
+- Creating a FAQ item through the API works. The endpoint took the entity, whose Category navigation property is not nullable, so validation rejected every request with "The Category field is required." — a caller was expected to send a whole category to attach an item to one. It now takes the category's id.
+- Categories with items can be listed. The listing loads each category's items, every item carries a reference back to its category, and the serializer looped — so the endpoint would have failed as soon as a single FAQ existed. A category with no items serialised fine, which is why it went unnoticed.
 
 ### 2.2.3 — 2026-08-21
 - A failed request now says so in the dashboard. Previously the dashboard kept its previous (usually empty) state, so a refused or failed call looked identical to having no data.

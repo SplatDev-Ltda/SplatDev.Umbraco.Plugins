@@ -8,7 +8,7 @@
     <PackageId>SplatDev.Umbraco.Plugins.WhatsApp</PackageId>
     <Product>SplatDev.Umbraco.Plugins.WhatsApp</Product>
     <Title>SplatDev.Umbraco.Plugins.WhatsApp</Title>
-    <Version>3.4.4</Version>
+    <Version>3.5.0</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <Authors>SplatDev</Authors>

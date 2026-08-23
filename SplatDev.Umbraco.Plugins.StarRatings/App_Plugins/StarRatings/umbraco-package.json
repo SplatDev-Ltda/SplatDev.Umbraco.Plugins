@@ -22,14 +22,6 @@
       ]
     },
     {
-      "type": "propertyEditorSchema",
-      "alias": "SplatDev.StarRatings",
-      "name": "Star Rating",
-      "meta": {
-        "defaultPropertyEditorUiAlias": "SplatDev.PropertyEditorUi.StarRatings"
-      }
-    },
-    {
       "type": "propertyEditorUi",
       "alias": "SplatDev.PropertyEditorUi.StarRatings",
       "name": "Star Rating",
@@ -39,7 +31,7 @@
         "label": "Star Rating",
         "icon": "icon-favorite",
         "group": "common",
-        "propertyEditorSchemaAlias": "SplatDev.StarRatings"
+        "propertyEditorSchemaAlias": "Umbraco.Label"
       }
     }
   ]

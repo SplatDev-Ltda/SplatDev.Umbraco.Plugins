@@ -4,12 +4,6 @@
   "version": "1.0.0",
   "extensions": [
     {
-      "type": "propertyEditorSchema",
-      "alias": "SplatDev.Countries",
-      "name": "Country",
-      "meta": { "defaultPropertyEditorUiAlias": "SplatDev.PropertyEditorUi.Countries" }
-    },
-    {
       "type": "propertyEditorUi",
       "alias": "SplatDev.PropertyEditorUi.Countries",
       "name": "Country",
@@ -19,7 +13,7 @@
         "label": "Country",
         "icon": "icon-globe",
         "group": "pickers",
-        "propertyEditorSchemaAlias": "SplatDev.Countries",
+        "propertyEditorSchemaAlias": "Umbraco.TextBox",
         "settings": {
           "properties": [
             {
@@ -29,7 +23,12 @@
               "propertyEditorUiAlias": "Umb.PropertyEditorUi.TextBox"
             }
           ],
-          "defaultData": [{ "alias": "storeValue", "value": "alpha2" }]
+          "defaultData": [
+            {
+              "alias": "storeValue",
+              "value": "alpha2"
+            }
+          ]
         }
       }
     }

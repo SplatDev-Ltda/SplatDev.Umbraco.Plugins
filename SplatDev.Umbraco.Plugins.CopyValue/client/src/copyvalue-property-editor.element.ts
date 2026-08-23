@@ -76,6 +76,7 @@ export class CopyValuePropertyEditorElement extends UmbElementMixin(LitElement) 
   @state() private _missing: string[] = [];
 
   #dataset?: DatasetContext;
+  readonly #values = new Map<string, unknown>();
 
   constructor() {
     super();
@@ -103,31 +104,55 @@ export class CopyValuePropertyEditorElement extends UmbElementMixin(LitElement) 
   }
 
   /**
-   * Reads the source properties so the button can say what it will produce.
+   * Watches the source properties so the button can say what it will produce.
    *
    * Showing the result before the click is the point: "copy" with no preview is a
    * button you have to press to find out what it does, and undoing it means
    * remembering what was there before.
+   *
+   * `propertyValueByAlias` resolves to an *observable* of the value, not to the value.
+   * Awaiting it once therefore handed back the observable object, which reduced to no
+   * text at all — so every configured source read as empty and the button stayed
+   * disabled on a document whose source property was plainly filled in. Subscribing
+   * also keeps the preview honest while the other property is being typed into.
    */
   async #refreshPreview(): Promise<void> {
     if (!this.#dataset || this._sources.length === 0) {
-      this._preview = "";
-      this._missing = [];
+      this.#values.clear();
+      this.#recompute();
       return;
     }
 
+    for (const alias of this._sources) {
+      try {
+        const source = await this.#dataset.propertyValueByAlias(alias);
+        if (source && typeof (source as { subscribe?: unknown }).subscribe === "function") {
+          this.observe(
+            source as Parameters<typeof this.observe>[0],
+            (value: unknown) => {
+              this.#values.set(alias, value);
+              this.#recompute();
+            },
+            `splatdev-copyvalue-${alias}`,
+          );
+        } else {
+          this.#values.set(alias, source);
+        }
+      } catch {
+        this.#values.set(alias, undefined);
+      }
+    }
+
+    this.#recompute();
+  }
+
+  /** Rebuilds the preview from the latest value seen for each source. */
+  #recompute(): void {
     const parts: string[] = [];
     const missing: string[] = [];
 
     for (const alias of this._sources) {
-      let value: unknown;
-      try {
-        value = await this.#dataset.propertyValueByAlias(alias);
-      } catch {
-        value = undefined;
-      }
-
-      const text = this.#asText(value);
+      const text = this.#asText(this.#values.get(alias));
       if (text) parts.push(text);
       else missing.push(alias);
     }

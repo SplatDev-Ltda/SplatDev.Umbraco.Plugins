@@ -7,6 +7,8 @@ Newsletter subscriber management, campaigns, and send tracking for Umbraco 13 (n
 
 ![Newsletters dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Newsletters/docs/screenshots/01-dashboard.png)
 
+![Newsletters on the front end](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Newsletters/docs/screenshots/04-front-end.png)
+
 <!-- screenshot:end -->
 
 ## Features
@@ -56,6 +58,10 @@ Wire it up to an email delivery service (SendGrid, SMTP, Mailgun, etc.) in
 `NewslettersService.cs` at the appropriate comment.
 
 ## Changelog
+
+### 2.3.0 — 2026-08-23
+
+The Razor view behind `@await Component.InvokeAsync(...)` is now compiled into the package. It was previously carried as a loose file that nothing packed, so the component threw "view not found" on every install and the front-end usage shown in this README could not have worked.
 
 ### 2.2.3 — 2026-08-21
 - A failed request now says so in the dashboard. Previously the dashboard kept its previous (usually empty) state, so a refused or failed call looked identical to having no data.

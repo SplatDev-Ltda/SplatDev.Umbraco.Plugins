@@ -1,5 +1,11 @@
 # Payments.PagSeguro
 
+<!-- screenshot:start -->
+
+![Payments.PagSeguro dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Payments.PagSeguro/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 PagSeguro payment integration for Umbraco — create checkout sessions, track transactions, and manage payment status from a backoffice dashboard.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Payments.PagSeguro.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Payments.PagSeguro)
@@ -73,6 +79,10 @@ window.location.href = paymentUrl;
 - Lower-level API calls are delegated to the `SplatDev.Payments.PagSeguro` library
 
 ## Changelog
+
+### 2.2.0 — 2026-08-23
+
+The Umbraco Marketplace listing now carries this plugin's screenshots. The listing keeps its own screenshot list rather than reading the README, and this one was empty — so the entry showed no images at all.
 
 ### 2.1.7 — 2026-08-22
 - The dashboard renders. It threw while loading — Lit's `css` tag rejects an interpolated plain string, and the brand colours were interpolated as strings — so the custom element was never defined and the panel came up empty on every install.

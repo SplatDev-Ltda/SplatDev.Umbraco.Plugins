@@ -1,24 +1,24 @@
-import { LitElement as E, html as p, nothing as C, css as A, property as v, state as h, customElement as k } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as P } from "@umbraco-cms/backoffice/element-api";
-import { UmbChangeEvent as g } from "@umbraco-cms/backoffice/event";
-import { UMB_PROPERTY_DATASET_CONTEXT as B } from "@umbraco-cms/backoffice/property";
-var V = Object.defineProperty, L = Object.getOwnPropertyDescriptor, b = (t) => {
+import { LitElement as A, html as p, nothing as k, css as P, property as g, state as c, customElement as B } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as V } from "@umbraco-cms/backoffice/element-api";
+import { UmbChangeEvent as x } from "@umbraco-cms/backoffice/event";
+import { UMB_PROPERTY_DATASET_CONTEXT as L } from "@umbraco-cms/backoffice/property";
+var S = Object.defineProperty, T = Object.getOwnPropertyDescriptor, $ = (t) => {
   throw TypeError(t);
-}, o = (t, e, r, a) => {
-  for (var s = a > 1 ? void 0 : a ? L(e, r) : e, d = t.length - 1, f; d >= 0; d--)
-    (f = t[d]) && (s = (a ? f(e, r, s) : f(s)) || s);
-  return a && s && V(e, r, s), s;
-}, y = (t, e, r) => e.has(t) || b("Cannot " + r), m = (t, e, r) => (y(t, e, "read from private field"), e.get(t)), w = (t, e, r) => e.has(t) ? b("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, r), S = (t, e, r, a) => (y(t, e, "write to private field"), e.set(t, r), r), l = (t, e, r) => (y(t, e, "access private method"), r), u, n, c, _, x, $;
-let i = class extends P(E) {
+}, a = (t, e, i, n) => {
+  for (var l = n > 1 ? void 0 : n ? T(e, i) : e, v = t.length - 1, y; v >= 0; v--)
+    (y = t[v]) && (l = (n ? y(e, i, l) : y(l)) || l);
+  return n && l && S(e, i, l), l;
+}, b = (t, e, i) => e.has(t) || $("Cannot " + i), h = (t, e, i) => (b(t, e, "read from private field"), e.get(t)), m = (t, e, i) => e.has(t) ? $("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, i), M = (t, e, i, n) => (b(t, e, "write to private field"), e.set(t, i), i), o = (t, e, i) => (b(t, e, "access private method"), i), f, u, s, _, d, w, E, C;
+let r = class extends V(A) {
   constructor() {
-    super(), w(this, n), this.value = "", this.readonly = !1, this._sources = [], this._separator = " ", this._buttonLabel = "Copy from", this._overwrite = !1, this._preview = "", this._missing = [], w(this, u), this.consumeContext(B, (t) => {
-      S(this, u, t), l(this, n, c).call(this);
+    super(), m(this, s), this.value = "", this.readonly = !1, this._sources = [], this._separator = " ", this._buttonLabel = "Copy from", this._overwrite = !1, this._preview = "", this._missing = [], m(this, f), m(this, u, /* @__PURE__ */ new Map()), this.consumeContext(L, (t) => {
+      M(this, f, t), o(this, s, _).call(this);
     });
   }
   set config(t) {
     if (!t) return;
     const e = t.getValueByAlias("sourceAliases") ?? "";
-    this._sources = e.split(",").map((r) => r.trim()).filter(Boolean), this._separator = t.getValueByAlias("separator") ?? " ", this._buttonLabel = t.getValueByAlias("buttonLabel") || "Copy from", this._overwrite = t.getValueByAlias("overwrite") ?? !1, l(this, n, c).call(this);
+    this._sources = e.split(",").map((i) => i.trim()).filter(Boolean), this._separator = t.getValueByAlias("separator") ?? " ", this._buttonLabel = t.getValueByAlias("buttonLabel") || "Copy from", this._overwrite = t.getValueByAlias("overwrite") ?? !1, o(this, s, _).call(this);
   }
   render() {
     const t = this._sources.length > 0;
@@ -28,28 +28,28 @@ let i = class extends P(E) {
           label="Value"
           .value=${this.value ?? ""}
           ?readonly=${this.readonly}
-          @input=${l(this, n, $)}
+          @input=${o(this, s, C)}
         ></uui-input>
         <uui-button
           look="secondary"
           label=${this._buttonLabel}
           ?disabled=${this.readonly || !t || !this._preview}
-          @click=${l(this, n, x)}
+          @click=${o(this, s, E)}
           >${this._buttonLabel}</uui-button
         >
       </div>
 
       ${t ? p`
             <p class="hint">
-              Copies from ${this._sources.map((e, r) => p`${r ? ", " : ""}<code>${e}</code>`)}.
+              Copies from ${this._sources.map((e, i) => p`${i ? ", " : ""}<code>${e}</code>`)}.
             </p>
             ${this._preview ? p`<div class="preview">${this._preview}</div>` : p`<div class="preview empty">
                   Nothing to copy yet — ${this._sources.length === 1 ? "that property is" : "those properties are"} empty.
                 </div>`}
             ${this._missing.length > 0 && this._preview ? p`<p class="hint">
-                  Skipped ${this._missing.map((e, r) => p`${r ? ", " : ""}<code>${e}</code>`)} —
+                  Skipped ${this._missing.map((e, i) => p`${i ? ", " : ""}<code>${e}</code>`)} —
                   empty or not on this item.
-                </p>` : C}
+                </p>` : k}
           ` : p`<div class="warn">
             No source properties are set. Add them to this data type's
             <code>sourceAliases</code> — a comma-separated list of property aliases on the
@@ -58,50 +58,61 @@ let i = class extends P(E) {
     `;
   }
 };
+f = /* @__PURE__ */ new WeakMap();
 u = /* @__PURE__ */ new WeakMap();
-n = /* @__PURE__ */ new WeakSet();
-c = async function() {
-  if (!m(this, u) || this._sources.length === 0) {
-    this._preview = "", this._missing = [];
+s = /* @__PURE__ */ new WeakSet();
+_ = async function() {
+  if (!h(this, f) || this._sources.length === 0) {
+    h(this, u).clear(), o(this, s, d).call(this);
     return;
   }
-  const t = [], e = [];
-  for (const r of this._sources) {
-    let a;
+  for (const t of this._sources)
     try {
-      a = await m(this, u).propertyValueByAlias(r);
+      const e = await h(this, f).propertyValueByAlias(t);
+      e && typeof e.subscribe == "function" ? this.observe(
+        e,
+        (i) => {
+          h(this, u).set(t, i), o(this, s, d).call(this);
+        },
+        `splatdev-copyvalue-${t}`
+      ) : h(this, u).set(t, e);
     } catch {
-      a = void 0;
+      h(this, u).set(t, void 0);
     }
-    const s = l(this, n, _).call(this, a);
-    s ? t.push(s) : e.push(r);
+  o(this, s, d).call(this);
+};
+d = function() {
+  const t = [], e = [];
+  for (const i of this._sources) {
+    const n = o(this, s, w).call(this, h(this, u).get(i));
+    n ? t.push(n) : e.push(i);
   }
   this._preview = t.join(this._separator), this._missing = e;
 };
-_ = function(t) {
+w = function(t) {
   if (t == null) return "";
   if (typeof t == "string") return t.trim();
   if (typeof t == "number" || typeof t == "boolean") return String(t);
-  if (Array.isArray(t)) return t.map((e) => l(this, n, _).call(this, e)).filter(Boolean).join(this._separator);
+  if (Array.isArray(t)) return t.map((e) => o(this, s, w).call(this, e)).filter(Boolean).join(this._separator);
   if (typeof t == "object") {
     const e = t;
-    for (const r of ["name", "value", "url", "mediaKey"])
-      if (typeof e[r] == "string") return e[r].trim();
+    for (const i of ["name", "value", "url", "mediaKey"])
+      if (typeof e[i] == "string") return e[i].trim();
   }
   return "";
 };
-x = async function() {
-  this.readonly || (await l(this, n, c).call(this), this._preview && (this.value && !this._overwrite && !window.confirm(
+E = async function() {
+  this.readonly || (await o(this, s, _).call(this), this._preview && (this.value && !this._overwrite && !window.confirm(
     `Replace what is already here?
 
 Current: ${this.value}
 New: ${this._preview}`
-  ) || (this.value = this._preview, this.dispatchEvent(new g()))));
+  ) || (this.value = this._preview, this.dispatchEvent(new x()))));
 };
-$ = function(t) {
-  this.value = t.target.value, this.dispatchEvent(new g());
+C = function(t) {
+  this.value = t.target.value, this.dispatchEvent(new x());
 };
-i.styles = A`
+r.styles = P`
     :host { display: block; }
     .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
     uui-input { flex: 1 1 260px; }
@@ -134,38 +145,38 @@ i.styles = A`
       border-radius: 3px;
     }
   `;
-o([
-  v({ type: String })
-], i.prototype, "value", 2);
-o([
-  v({ type: Boolean })
-], i.prototype, "readonly", 2);
-o([
-  h()
-], i.prototype, "_sources", 2);
-o([
-  h()
-], i.prototype, "_separator", 2);
-o([
-  h()
-], i.prototype, "_buttonLabel", 2);
-o([
-  h()
-], i.prototype, "_overwrite", 2);
-o([
-  h()
-], i.prototype, "_preview", 2);
-o([
-  h()
-], i.prototype, "_missing", 2);
-o([
-  v({ attribute: !1 })
-], i.prototype, "config", 1);
-i = o([
-  k("copyvalue-property-editor")
-], i);
-const z = i;
+a([
+  g({ type: String })
+], r.prototype, "value", 2);
+a([
+  g({ type: Boolean })
+], r.prototype, "readonly", 2);
+a([
+  c()
+], r.prototype, "_sources", 2);
+a([
+  c()
+], r.prototype, "_separator", 2);
+a([
+  c()
+], r.prototype, "_buttonLabel", 2);
+a([
+  c()
+], r.prototype, "_overwrite", 2);
+a([
+  c()
+], r.prototype, "_preview", 2);
+a([
+  c()
+], r.prototype, "_missing", 2);
+a([
+  g({ attribute: !1 })
+], r.prototype, "config", 1);
+r = a([
+  B("copyvalue-property-editor")
+], r);
+const D = r;
 export {
-  i as CopyValuePropertyEditorElement,
-  z as default
+  r as CopyValuePropertyEditorElement,
+  D as default
 };

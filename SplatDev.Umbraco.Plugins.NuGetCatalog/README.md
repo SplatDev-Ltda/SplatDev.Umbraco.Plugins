@@ -8,6 +8,10 @@ latest version and a one-line summary per package.
 
 ![NuGetCatalog dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.NuGetCatalog/docs/screenshots/01-dashboard.png)
 
+![NuGetCatalog screenshot](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.NuGetCatalog/docs/screenshots/01-packages.png)
+
+![NuGetCatalog screenshot](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.NuGetCatalog/docs/screenshots/02-manage.png)
+
 <!-- screenshot:end -->
 
 ## Package
@@ -88,6 +92,12 @@ under different URL forms.
 ## What it does not do
 
 Reads nuget.org only. No publishing, unlisting, or per-version charts.
+
+## Changelog
+
+### 1.2.0 — 2026-08-23
+
+The Umbraco Marketplace listing now shows every screenshot for this plugin, not just the dashboard. The listing keeps its own screenshot list rather than reading the README.
 
 ## License
 

@@ -7,6 +7,10 @@ Video thumbnail preview for Umbraco — extract video metadata and auto-generate
 
 ![VideoPreview dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.VideoPreview/docs/screenshots/01-dashboard.png)
 
+![VideoPreview property editor](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.VideoPreview/docs/screenshots/02-property-editor.png)
+
+![VideoPreview data type](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.VideoPreview/docs/screenshots/03-data-type.png)
+
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.VideoPreview.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.VideoPreview)
@@ -65,6 +69,12 @@ fetch('/umbraco/api/videopreview/GetVideoInfo?url=https://www.youtube.com/watch?
 - No support for custom thumbnail sizes or video platform configuration
 
 ## Changelog
+
+### 2.3.0 — 2026-08-23
+
+The property editor can now be used. Its manifest declared a property editor schema with no server-side editor behind it, so Umbraco refused to create a data type for it with "The targeted property editor was not found". It now stores its value with a schema the server actually provides.
+
+The Umbraco Marketplace listing now carries this plugin's screenshots. The listing keeps its own screenshot list rather than reading the README, and this one was empty — so the entry showed no images at all.
 
 ### 2.2.0 — 2026-08-23
 - A video URL is now a property editor that shows the thumbnail the site will actually use. The plugin turned YouTube, Vimeo and Dailymotion links into thumbnails and shipped that as a dashboard you paste a URL into — a page's video URL was an ordinary text field, and whether it resolved to anything was discovered later, on the front end.

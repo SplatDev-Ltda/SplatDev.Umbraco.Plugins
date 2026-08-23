@@ -120,3 +120,8 @@ SplatDev.Umbraco.Plugins.WhatsApp/client/node_modules/
 
 # Playwright screenshots captured into the repo root
 wa-*.png
+
+# node_modules is symlinked between plugin clients by build-all-plugins.sh to save
+# disk. A trailing-slash pattern does not match a symlink, so 59 of them were tracked as
+# links into an absolute path on one developer machine.
+**/client/node_modules

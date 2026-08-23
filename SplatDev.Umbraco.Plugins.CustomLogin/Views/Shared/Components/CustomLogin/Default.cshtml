@@ -1,47 +1,43 @@
-@using UmbracoCms.Plugins.CustomLogin.Models
+@using SplatDev.Umbraco.Plugins.CustomLogin.Models
 @model CustomLoginSettings
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@Model.BrandName - Sign In</title>
+@*
+    A view component renders a fragment into someone else's page, so this must not be a
+    document. It used to emit a whole page — doctype, root element, head and body — plus a
+    universal `margin: 0; padding: 0` reset and a flex layout on the body element. Invoked
+    the way the README documents, that flattened every margin on the host site and turned
+    its body into a flex row, which is how one component relaid out an entire page.
+
+    Every rule below is therefore scoped to a .splatdev-login-* class, and nothing here
+    selects a bare element outside the component's own subtree.
+*@
+
+<div class="splatdev-login">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background-color: @Model.BackgroundColor;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
-        .login-card {
+        .splatdev-login { display: flex; justify-content: center; }
+        .splatdev-login *, .splatdev-login *::before, .splatdev-login *::after { box-sizing: border-box; }
+        .splatdev-login__card {
             background: #fff;
             border-radius: 8px;
-            box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.12);
             padding: 2.5rem 2rem;
             width: 100%;
             max-width: 420px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
-        .login-logo {
-            display: block;
-            margin: 0 auto 1.5rem;
-            max-height: 64px;
-        }
-        .login-brand { text-align: center; font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; }
-        .login-field { margin-bottom: 1rem; }
-        .login-field label { display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.375rem; }
-        .login-field input {
+        .splatdev-login__logo { display: block; margin: 0 auto 1.5rem; max-height: 64px; }
+        .splatdev-login__brand { text-align: center; font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; }
+        .splatdev-login__field { margin-bottom: 1rem; }
+        .splatdev-login__field label { display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.375rem; }
+        .splatdev-login__field input {
             width: 100%;
             padding: 0.625rem 0.75rem;
             border: 1px solid #d1d5db;
             border-radius: 6px;
             font-size: 1rem;
         }
-        .login-field input:focus { outline: 2px solid @Model.AccentColor; border-color: @Model.AccentColor; }
-        .login-btn {
+        .splatdev-login__field input:focus { outline: 2px solid @Model.AccentColor; border-color: @Model.AccentColor; }
+        .splatdev-login__submit {
             width: 100%;
             padding: 0.75rem;
             background: @Model.AccentColor;
@@ -53,19 +49,14 @@
             cursor: pointer;
             margin-top: 0.5rem;
         }
-        .login-btn:hover { opacity: 0.9; }
-        .login-support {
-            text-align: center;
-            margin-top: 1.5rem;
-            font-size: 0.8rem;
-            color: #6b7280;
-        }
-        .login-support a { color: @Model.AccentColor; text-decoration: none; }
+        .splatdev-login__submit:hover { opacity: 0.9; }
+        .splatdev-login__support { text-align: center; margin-top: 1.5rem; font-size: 0.8rem; color: #6b7280; }
+        .splatdev-login__support a { color: @Model.AccentColor; text-decoration: none; }
         @if (Model.EnableSso)
         {
             <text>
-        .login-sso-divider { text-align: center; margin: 1rem 0; color: #9ca3af; font-size: 0.85rem; }
-        .login-sso-btn {
+        .splatdev-login__divider { text-align: center; margin: 1rem 0; color: #9ca3af; font-size: 0.85rem; }
+        .splatdev-login__sso {
             width: 100%;
             padding: 0.625rem;
             border: 1px solid #d1d5db;
@@ -77,41 +68,39 @@
             </text>
         }
     </style>
-</head>
-<body>
-    <div class="login-card">
+
+    <div class="splatdev-login__card">
         @if (!string.IsNullOrEmpty(Model.LogoUrl))
         {
-            <img src="@Model.LogoUrl" alt="@Model.BrandName logo" class="login-logo" />
+            <img src="@Model.LogoUrl" alt="@Model.BrandName logo" class="splatdev-login__logo" />
         }
-        <div class="login-brand">@Model.BrandName</div>
+        <div class="splatdev-login__brand">@Model.BrandName</div>
 
         <form method="post" action="/umbraco/api/customlogin/Login">
-            <div class="login-field">
-                <label for="username">Username or email</label>
-                <input id="username" name="username" type="text" autocomplete="username" required />
+            <div class="splatdev-login__field">
+                <label for="splatdev-login-username">Username or email</label>
+                <input id="splatdev-login-username" name="username" type="text" autocomplete="username" required />
             </div>
-            <div class="login-field">
-                <label for="password">Password</label>
-                <input id="password" name="password" type="password" autocomplete="current-password" required />
+            <div class="splatdev-login__field">
+                <label for="splatdev-login-password">Password</label>
+                <input id="splatdev-login-password" name="password" type="password" autocomplete="current-password" required />
             </div>
-            <button type="submit" class="login-btn">Sign In</button>
+            <button type="submit" class="splatdev-login__submit">Sign In</button>
         </form>
 
         @if (Model.EnableSso)
         {
-            <div class="login-sso-divider">or</div>
-            <button class="login-sso-btn" onclick="location.href='/umbraco/oauth/sso'">
+            <div class="splatdev-login__divider">or</div>
+            <button type="button" class="splatdev-login__sso" onclick="location.href='/umbraco/oauth/sso'">
                 Sign in with SSO
             </button>
         }
 
         @if (!string.IsNullOrEmpty(Model.SupportEmail))
         {
-            <p class="login-support">
+            <p class="splatdev-login__support">
                 Need help? <a href="mailto:@Model.SupportEmail">@Model.SupportEmail</a>
             </p>
         }
     </div>
-</body>
-</html>
+</div>

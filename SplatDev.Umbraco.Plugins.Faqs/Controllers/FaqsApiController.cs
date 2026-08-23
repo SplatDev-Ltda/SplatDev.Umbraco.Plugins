@@ -26,7 +26,7 @@ public class FaqsApiController : ControllerBase
     public async Task<IActionResult> GetCategories([FromQuery] bool publishedOnly = true)
     {
         var categories = await _service.GetCategoriesAsync(publishedOnly);
-        return Ok(categories);
+        return Ok(categories.Select(FaqCategoryDto.From));
     }
 
     [AllowAnonymous]
@@ -40,7 +40,7 @@ public class FaqsApiController : ControllerBase
 
         var category = await _service.GetCategoryBySlugAsync(slug, publishedOnly);
         if (category is null) return NotFound();
-        return Ok(category);
+        return Ok(FaqCategoryDto.From(category));
     }
 
     [AllowAnonymous]
@@ -51,7 +51,7 @@ public class FaqsApiController : ControllerBase
     {
         var items = await _service.GetItemsAsync(categoryId, publishedOnly);
         var total = await _service.GetTotalItemCountAsync(publishedOnly);
-        return Ok(new { items, total });
+        return Ok(new { items = items.Select(FaqItemDto.From), total });
     }
 
     [AllowAnonymous]
@@ -60,7 +60,7 @@ public class FaqsApiController : ControllerBase
     {
         var item = await _service.GetItemByIdAsync(id);
         if (item is null) return NotFound();
-        return Ok(item);
+        return Ok(FaqItemDto.From(item));
     }
 
     [AllowAnonymous]
@@ -73,27 +73,31 @@ public class FaqsApiController : ControllerBase
             return BadRequest("Search query is required.");
 
         var results = await _service.SearchAsync(q, publishedOnly);
-        return Ok(results);
+        return Ok(results.Select(FaqItemDto.From));
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateItem([FromBody] FaqItem item)
+    public async Task<IActionResult> CreateItem([FromBody] FaqItemRequest request)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        // Taking the entity here made this endpoint impossible to call: FaqItem.Category
+        // is a non-nullable navigation property, so validation demanded it and every
+        // request came back 400 "The Category field is required." A caller identifies the
+        // category by id, not by sending a copy of it.
+        if (request is null) return BadRequest("An item is required.");
+        if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        var created = await _service.CreateItemAsync(item);
-        return Ok(created);
+        var created = await _service.CreateItemAsync(request.ToEntity());
+        return Ok(FaqItemDto.From(created));
     }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateItem([FromBody] FaqItem item)
+    public async Task<IActionResult> UpdateItem([FromBody] FaqItemRequest request)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        if (request is null) return BadRequest("An item is required.");
+        if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        var updated = await _service.UpdateItemAsync(item);
-        return Ok(updated);
+        var updated = await _service.UpdateItemAsync(request.ToEntity());
+        return Ok(FaqItemDto.From(updated));
     }
 
     [HttpDelete]
@@ -111,13 +115,13 @@ public class FaqsApiController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateCategory([FromBody] FaqCategory category)
+    public async Task<IActionResult> CreateCategory([FromBody] FaqCategoryRequest request)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        if (request is null) return BadRequest("A category is required.");
+        if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        var created = await _service.CreateCategoryAsync(category);
-        return Ok(created);
+        var created = await _service.CreateCategoryAsync(request.ToEntity());
+        return Ok(FaqCategoryDto.From(created));
     }
 
     [HttpDelete]

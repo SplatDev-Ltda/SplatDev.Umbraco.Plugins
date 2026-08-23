@@ -1,5 +1,19 @@
 # SplatDev.Umbraco.Plugins.WhatsApp
 
+<!-- screenshot:start -->
+
+![WhatsApp screenshot](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/01-inbox.png)
+
+![WhatsApp screenshot](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/02-contacts.png)
+
+![WhatsApp screenshot](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/03-send.png)
+
+![WhatsApp screenshot](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/04-templates.png)
+
+![WhatsApp screenshot](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/05-status.png)
+
+<!-- screenshot:end -->
+
 WhatsApp Business **Cloud API** integration for Umbraco — a backoffice inbox, template and
 free-form sending, and an inbound webhook receiver.
 
@@ -180,6 +194,12 @@ dotnet test --filter "Category=Integration"
 | Send fails with code `132000` | Template variable count doesn't match the body. |
 | Templates view is empty | `BusinessAccountId` not set, or the token lacks `whatsapp_business_management`. |
 | Webhooks return 401 | `AppSecret` doesn't match the Meta app secret. |
+
+## Changelog
+
+### 3.5.0 — 2026-08-23
+
+The Umbraco Marketplace listing now shows every screenshot for this plugin, not just the dashboard. The listing keeps its own screenshot list rather than reading the README.
 
 ## License
 

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
     <ContentTargetFolders>.</ContentTargetFolders>
     <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
@@ -6,12 +6,15 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>SplatDev.Umbraco.Plugins.AdminBar</PackageId>
-    <Version>2.2.0</Version>
+    <Version>2.3.0</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <Authors>SplatDev</Authors>
     <Description>Fixed admin bar injected at the top of the page for logged-in backoffice users. Provides Edit Page, Preview and Publish shortcuts. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).</Description>
     <PackageTags>umbraco umbraco-marketplace admin-bar toolbar preview publish</PackageTags>
+    <!-- The views live in the assembly, not in loose files: nothing packs loose
+         .cshtml, and MVC resolves views from the consuming site's content root. -->
+    <EnableDefaultContentItems>false</EnableDefaultContentItems>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <Company>SplatDev Ltda</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -38,9 +41,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="App_Plugins\**\*" />
-    <None Include="Views\**\*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <Content Include="Views\**\*.cshtml" Pack="false" />
   </ItemGroup>
 
   <ItemGroup>

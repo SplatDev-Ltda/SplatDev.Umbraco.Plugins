@@ -1,5 +1,11 @@
 # SplatDev.Umbraco.DataTypes.BrazilStates
 
+<!-- screenshot:start -->
+
+![BrazilStates data type](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.DataTypes.BrazilStates/docs/screenshots/03-data-type.png)
+
+<!-- screenshot:end -->
+
 A pre-configured Umbraco data type providing a dropdown of Brazil's 27 federative units — the 26 states plus the Distrito Federal.
 
 ## Package
@@ -61,6 +67,10 @@ see them. If you need the two-letter UF codes (SP, RJ, MG …) instead, open an 
 storing the code while displaying the name needs a different property editor.
 
 ## Changelog
+
+### 1.2.0 — 2026-08-23
+
+Adds screenshots of the data type this package installs, on the README and on the Umbraco Marketplace listing. The listing keeps its own screenshot list rather than reading the README, and this one was empty.
 
 ### 1.1.0 — 2026-08-23
 - The Brazil States data type is created on Umbraco 17. The Umbraco 17 half of this package was an empty stub carrying a TODO, so installing it there created nothing at all while Umbraco 13 worked — the package shipped, compiled, and did nothing.

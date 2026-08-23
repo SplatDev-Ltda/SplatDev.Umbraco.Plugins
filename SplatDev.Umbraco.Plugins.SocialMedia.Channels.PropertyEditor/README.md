@@ -1,5 +1,13 @@
 # SocialMedia.Channels Property Editor
 
+<!-- screenshot:start -->
+
+![SocialMedia.Channels.PropertyEditor property editor](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.SocialMedia.Channels.PropertyEditor/docs/screenshots/02-property-editor.png)
+
+![SocialMedia.Channels.PropertyEditor data type](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.SocialMedia.Channels.PropertyEditor/docs/screenshots/03-data-type.png)
+
+<!-- screenshot:end -->
+
 A distinct Umbraco 17 property editor for configuring social profile links and presentation. Editors choose a theme, set the background treatment, toggle labels, and enter channel URLs on a document property. It is the Umbraco 17 port of the original v7/v8 `SocialMediaChannels` editor; it is **not** the separate publishing dashboard package.
 
 The persisted value remains JSON-compatible with the legacy editor (`Name`, `Theme`, `Thumbnail`, `Folder`, `Bg`), so values can be saved and reopened without losing configured channels.
@@ -25,6 +33,16 @@ The package embeds and serves its `App_Plugins/SocialMediaChannels` manifest and
 ## Scope and limitations
 
 This package configures presentation data only. It does not connect accounts, publish posts, schedule content, or replace `SplatDev.Umbraco.Plugins.SocialMedia.Channels` (the separate dashboard product).
+
+## Changelog
+
+### 1.1.0 — 2026-08-23
+
+The property editor can now be used. It declared a property editor schema that had no
+server-side editor behind it, and its UI pointed at a third alias that matched neither —
+so Umbraco refused to create a data type for it with "The targeted property editor was
+not found", and the editor had never been usable on any install. It now stores its value
+with Umbraco's own text schema, and the dead schema declaration is gone.
 
 ## License
 

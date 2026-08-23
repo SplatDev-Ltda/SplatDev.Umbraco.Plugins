@@ -7,6 +7,12 @@ A full-featured survey builder plugin for Umbraco 13 and Umbraco 17.
 
 ![Surveys dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Surveys/docs/screenshots/01-dashboard.png)
 
+![Surveys property editor](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Surveys/docs/screenshots/02-property-editor.png)
+
+![Surveys data type](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Surveys/docs/screenshots/03-data-type.png)
+
+![Surveys on the front end](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Surveys/docs/screenshots/04-front-end.png)
+
 <!-- screenshot:end -->
 
 ## Features
@@ -42,7 +48,11 @@ A full-featured survey builder plugin for Umbraco 13 and Umbraco 17.
 ## Usage in Templates
 
 ```cshtml
+@* A fixed survey: *@
 @await Component.InvokeAsync("Survey", new { surveyId = 1 })
+
+@* Or the one chosen on this page with the Survey property editor: *@
+@await Component.InvokeAsync("Survey", new { surveyId = Model.Value<int>("survey") })
 ```
 
 ## Building the Client
@@ -71,6 +81,15 @@ it is configured with — SQL Server or SQLite. There is nothing to scaffold and
 to run by hand.
 
 ## Changelog
+
+### 2.4.0 — 2026-08-23
+
+The Razor view behind `@await Component.InvokeAsync(...)` is now compiled into the package. It was previously carried as a loose file that nothing packed, so the component threw "view not found" on every install and the front-end usage shown in this README could not have worked.
+
+The view also still referenced the package's pre-rename namespace, so it would not have compiled even had it shipped. That is fixed, and the view is now built with the project — a broken view fails the build instead of failing a visitor's request.
+
+### 2.3.0 — 2026-08-23
+- A content editor can choose which survey a page shows. The view component takes a numeric id, so until now putting a survey on a page meant knowing that id and writing it into a template by hand — there was no way to pick one.
 
 ### 2.2.4 — 2026-08-22
 - Surveys with questions can be listed. The listing loads each survey's questions, every question carries a reference back to its survey, and the serializer looped — so the endpoint returned 500 as soon as a survey had a single question. A survey with no questions serialized fine, which is why an untouched install looked healthy.

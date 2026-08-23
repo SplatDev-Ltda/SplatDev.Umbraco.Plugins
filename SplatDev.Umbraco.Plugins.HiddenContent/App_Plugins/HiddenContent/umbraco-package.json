@@ -22,14 +22,6 @@
       ]
     },
     {
-      "type": "propertyEditorSchema",
-      "alias": "SplatDev.HiddenContent",
-      "name": "Hide From Navigation",
-      "meta": {
-        "defaultPropertyEditorUiAlias": "SplatDev.PropertyEditorUi.HiddenContent"
-      }
-    },
-    {
       "type": "propertyEditorUi",
       "alias": "SplatDev.PropertyEditorUi.HiddenContent",
       "name": "Hide From Navigation",
@@ -39,7 +31,7 @@
         "label": "Hide From Navigation",
         "icon": "icon-eye-off",
         "group": "common",
-        "propertyEditorSchemaAlias": "SplatDev.HiddenContent"
+        "propertyEditorSchemaAlias": "Umbraco.TextBox"
       }
     }
   ]

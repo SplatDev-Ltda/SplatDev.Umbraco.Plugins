@@ -7,6 +7,12 @@ Photo gallery plugin for Umbraco — stores gallery albums and photos with EF Co
 
 ![PhotoGallery dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.PhotoGallery/docs/screenshots/01-dashboard.png)
 
+![PhotoGallery property editor](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.PhotoGallery/docs/screenshots/02-property-editor.png)
+
+![PhotoGallery data type](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.PhotoGallery/docs/screenshots/03-data-type.png)
+
+![PhotoGallery on the front end](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.PhotoGallery/docs/screenshots/04-front-end.png)
+
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.PhotoGallery.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.PhotoGallery)
@@ -60,7 +66,31 @@ The build output is placed at `App_Plugins/PhotoGallery/dist/photogallery-dashbo
 - `Controllers/` — Back-end API endpoints for album/photo CRUD
 - `Services/` — Gallery business logic with EF Core
 
+## Rendering an album
+
+```cshtml
+@* The first album — the usual case on a site with one: *@
+@await Component.InvokeAsync("PhotoGallery")
+
+@* A specific album by id: *@
+@await Component.InvokeAsync("PhotoGallery", new { albumId = 1 })
+
+@* Or the one chosen on this page with the Album property editor: *@
+@await Component.InvokeAsync("PhotoGallery", new { albumId = Model.Value<int>("album") })
+```
+
+The markup carries `splatdev-gallery__*` class names and no styles of its own, so it
+inherits your site's design. Thumbnails are used where a photo has one and each links to
+the full image; photos below the fold load lazily.
+
 ## Changelog
+
+### 1.4.0 — 2026-08-23
+
+Adds a view component so the album chosen with the property editor can actually be rendered on a page. Until now the picker stored an id nothing consumed.
+
+### 1.3.0 — 2026-08-23
+- A content editor can choose which album a page shows. The plugin stored albums in its own tables with no way for a page to reference one, so an album could be filled and never appear anywhere.
 
 ### 1.2.3 — 2026-08-22
 - The dashboard manages albums and photos, which is what it was for. It listed album names and offered no controls at all, while the API behind it had supported creating, renaming and deleting albums and adding and removing photos the whole time.

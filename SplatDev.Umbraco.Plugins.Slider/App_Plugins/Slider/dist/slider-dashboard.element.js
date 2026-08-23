@@ -1,109 +1,81 @@
-import { LitElement as P, nothing as k, html as d, css as j, state as c, customElement as K } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as R } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as M } from "@umbraco-cms/backoffice/auth";
-import { UMB_NOTIFICATION_CONTEXT as F } from "@umbraco-cms/backoffice/notification";
-function q(e) {
-  let t = null, i = null;
-  const n = e.consumeContext.bind(e), u = new Promise((l) => {
-    n(M, async (o) => {
-      var p;
-      try {
-        t = await ((p = o == null ? void 0 : o.getLatestToken) == null ? void 0 : p.call(o)) ?? null;
-      } catch {
-        t = null;
-      }
-      l();
-    }), setTimeout(l, 3e3);
-  });
-  return n(F, (l) => {
-    i = l;
-  }), async (l, o = {}) => {
-    await u;
-    const p = new Headers(o.headers);
-    t && !p.has("Authorization") && p.set("Authorization", `Bearer ${t}`);
-    const m = await fetch(l, { ...o, credentials: "same-origin", headers: p });
-    if (!m.ok) {
-      const b = m.status === 401 || m.status === 403, v = b ? "Not authorised" : "Could not load data", $ = b ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${m.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${m.status}. Anything shown below may be incomplete.`;
-      console.error(`[SplatDev] ${m.status} from ${String(l)} — ${$}`), i == null || i.peek("danger", { data: { headline: v, message: $ } });
-    }
-    return m;
-  };
-}
-async function J(e, t) {
-  var i, n, u, l, o;
+import { LitElement as P, nothing as v, html as a, css as K, state as u, customElement as R } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as j } from "@umbraco-cms/backoffice/element-api";
+import { c as F } from "./chunks/auth-fetch-BzMCmNwW.js";
+async function M(t, e) {
+  var i, r, n, h, p;
   try {
-    const p = await e(`/umbraco/management/api/v1/media/${encodeURIComponent(t)}`);
-    if (p.ok) {
-      const b = (n = (i = (await p.json()).values) == null ? void 0 : i.find(($) => $.alias === "umbracoFile")) == null ? void 0 : n.value, v = typeof b == "string" ? b : b == null ? void 0 : b.src;
-      if (v) return v;
+    const f = await t(`/umbraco/management/api/v1/media/${encodeURIComponent(e)}`);
+    if (f.ok) {
+      const g = (r = (i = (await f.json()).values) == null ? void 0 : i.find((z) => z.alias === "umbracoFile")) == null ? void 0 : r.value, k = typeof g == "string" ? g : g == null ? void 0 : g.src;
+      if (k) return k;
     }
   } catch {
   }
   try {
-    const p = await e(
-      `/umbraco/management/api/v1/media/urls?id=${encodeURIComponent(t)}`
+    const f = await t(
+      `/umbraco/management/api/v1/media/urls?id=${encodeURIComponent(e)}`
     );
-    if (!p.ok) return null;
-    const m = await p.json();
-    return ((o = (l = (u = m == null ? void 0 : m[0]) == null ? void 0 : u.urlInfos) == null ? void 0 : l[0]) == null ? void 0 : o.url) ?? null;
+    if (!f.ok) return null;
+    const b = await f.json();
+    return ((p = (h = (n = b == null ? void 0 : b[0]) == null ? void 0 : n.urlInfos) == null ? void 0 : h[0]) == null ? void 0 : p.url) ?? null;
   } catch {
     return null;
   }
 }
-var W = Object.defineProperty, B = Object.getOwnPropertyDescriptor, T = (e) => {
-  throw TypeError(e);
-}, h = (e, t, i, n) => {
-  for (var u = n > 1 ? void 0 : n ? B(t, i) : t, l = e.length - 1, o; l >= 0; l--)
-    (o = e[l]) && (u = (n ? o(t, i, u) : o(u)) || u);
-  return n && u && W(t, i, u), u;
-}, C = (e, t, i) => t.has(e) || T("Cannot " + i), _ = (e, t, i) => (C(e, t, "read from private field"), i ? i.call(e) : t.get(e)), S = (e, t, i) => t.has(e) ? T("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, i), a = (e, t, i) => (C(e, t, "access private method"), i), f, s, w, g, E, y, O, L, U, N, A, x, D, I, z;
-const G = ["slide", "fade", "cube", "coverflow", "flip"];
-let r = class extends R(P) {
+var J = Object.defineProperty, W = Object.getOwnPropertyDescriptor, S = (t) => {
+  throw TypeError(t);
+}, d = (t, e, i, r) => {
+  for (var n = r > 1 ? void 0 : r ? W(e, i) : e, h = t.length - 1, p; h >= 0; h--)
+    (p = t[h]) && (n = (r ? p(e, i, n) : p(n)) || n);
+  return r && n && J(e, i, n), n;
+}, C = (t, e, i) => e.has(t) || S("Cannot " + i), _ = (t, e, i) => (C(t, e, "read from private field"), i ? i.call(t) : e.get(t)), w = (t, e, i) => e.has(t) ? S("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, i), l = (t, e, i) => (C(t, e, "access private method"), i), c, s, x, m, T, y, E, L, O, U, D, $, N, A, I;
+const q = ["slide", "fade", "cube", "coverflow", "flip"];
+let o = class extends j(P) {
   constructor() {
-    super(...arguments), S(this, s), S(this, f, q(this)), this._sliders = [], this._slides = [], this._selected = null, this._loading = !1, this._busy = "", this._loadError = null, this._message = null, this._newName = "", this._editingId = null, this._edit = {}, this._slideTitle = "", this._slideSubtitle = "", this._slideLinkUrl = "", this._slideLinkText = "", this._slideKeys = [], this._api = "/umbraco/api/slider";
+    super(...arguments), w(this, s), w(this, c, F(this)), this._sliders = [], this._slides = [], this._selected = null, this._loading = !1, this._busy = "", this._loadError = null, this._message = null, this._newName = "", this._editingId = null, this._edit = {}, this._slideTitle = "", this._slideSubtitle = "", this._slideLinkUrl = "", this._slideLinkText = "", this._slideKeys = [], this._api = "/umbraco/api/slider";
   }
   connectedCallback() {
-    super.connectedCallback(), a(this, s, g).call(this);
+    super.connectedCallback(), l(this, s, m).call(this);
   }
   render() {
-    return d`
+    return a`
       <h1>Sliders</h1>
       <p class="description">
         The sliders this site defines, how each one plays, and the slides it shows.
         Select a slider to work on its slides.
       </p>
 
-      ${this._loadError ? d`<div class="splatdev-load-error" role="alert">${this._loadError}</div>` : k}
-      ${this._message ? d`<div class="msg ${this._message.ok ? "ok" : ""}" role="status">${this._message.text}</div>` : k}
+      ${this._loadError ? a`<div class="splatdev-load-error" role="alert">${this._loadError}</div>` : v}
+      ${this._message ? a`<div class="msg ${this._message.ok ? "ok" : ""}" role="status">${this._message.text}</div>` : v}
 
       <uui-box headline="Sliders (${this._sliders.length})">
-        ${this._loading ? d`<uui-loader></uui-loader>` : this._sliders.length === 0 ? d`<p class="empty">No sliders yet. Create one below.</p>` : d`
+        ${this._loading ? a`<uui-loader></uui-loader>` : this._sliders.length === 0 ? a`<p class="empty">No sliders yet. Create one below.</p>` : a`
                 <table>
                   <thead>
                     <tr><th>Name</th><th>Effect</th><th>Autoplay</th><th>Loop</th><th>Slides</th><th></th></tr>
                   </thead>
                   <tbody>
                     ${this._sliders.map(
-      (e) => {
-        var t, i, n;
-        return this._editingId === e.id ? d`<tr class="selected">${a(this, s, z).call(this, e)}</tr>` : d`
-                            <tr class=${((t = this._selected) == null ? void 0 : t.id) === e.id ? "selected" : ""}>
-                              <td><strong>${e.name}</strong></td>
-                              <td><code>${e.effect}</code></td>
+      (t) => {
+        var e, i, r;
+        return this._editingId === t.id ? a`<tr class="selected">${l(this, s, I).call(this, t)}</tr>` : a`
+                            <tr class=${((e = this._selected) == null ? void 0 : e.id) === t.id ? "selected" : ""}>
+                              <td><strong>${t.name}</strong></td>
+                              <td><code>${t.effect}</code></td>
                               <td>
-                                ${e.autoplay ? d`<span class="tag on">on · ${e.autoplayDelay}ms</span>` : d`<span class="tag">off</span>`}
+                                ${t.autoplay ? a`<span class="tag on">on · ${t.autoplayDelay}ms</span>` : a`<span class="tag">off</span>`}
                               </td>
-                              <td>${e.loop ? d`<span class="tag on">on</span>` : d`<span class="tag">off</span>`}</td>
-                              <td class="num">${((i = e.slides) == null ? void 0 : i.length) ?? 0}</td>
+                              <td>${t.loop ? a`<span class="tag on">on</span>` : a`<span class="tag">off</span>`}</td>
+                              <td class="num">${((i = t.slides) == null ? void 0 : i.length) ?? 0}</td>
                               <td class="right">
-                                <uui-button compact look="secondary" label="Open ${e.name}"
-                                  @click=${() => a(this, s, E).call(this, e)}
-                                  >${((n = this._selected) == null ? void 0 : n.id) === e.id ? "Close" : "Slides"}</uui-button>
-                                <uui-button compact look="secondary" label="Settings for ${e.name}"
-                                  @click=${() => a(this, s, L).call(this, e)}>Settings</uui-button>
-                                <uui-button compact look="secondary" color="danger" label="Delete ${e.name}"
-                                  ?disabled=${this._busy === `delete:${e.id}`}
-                                  @click=${() => a(this, s, N).call(this, e)}>Delete</uui-button>
+                                <uui-button compact look="secondary" label="Open ${t.name}"
+                                  @click=${() => l(this, s, T).call(this, t)}
+                                  >${((r = this._selected) == null ? void 0 : r.id) === t.id ? "Close" : "Slides"}</uui-button>
+                                <uui-button compact look="secondary" label="Settings for ${t.name}"
+                                  @click=${() => l(this, s, L).call(this, t)}>Settings</uui-button>
+                                <uui-button compact look="secondary" color="danger" label="Delete ${t.name}"
+                                  ?disabled=${this._busy === `delete:${t.id}`}
+                                  @click=${() => l(this, s, U).call(this, t)}>Delete</uui-button>
                               </td>
                             </tr>
                           `;
@@ -114,7 +86,7 @@ let r = class extends R(P) {
               `}
       </uui-box>
 
-      ${a(this, s, I).call(this)}
+      ${l(this, s, A).call(this)}
 
       <uui-box headline="Create a slider">
         <div class="field">
@@ -123,106 +95,106 @@ let r = class extends R(P) {
             label="Slider name"
             placeholder="e.g. Homepage hero"
             .value=${this._newName}
-            @input=${(e) => this._newName = e.target.value}
+            @input=${(t) => this._newName = t.target.value}
           ></uui-input>
           <p class="hint">Starts with autoplay on, a 5 second delay, looping, and the slide effect — all changeable under Settings.</p>
         </div>
         <div class="actions">
           <uui-button look="primary" color="positive" label="Create slider"
-            ?disabled=${this._busy === "create"} @click=${a(this, s, O)}
+            ?disabled=${this._busy === "create"} @click=${l(this, s, E)}
             >${this._busy === "create" ? "Creating…" : "Create slider"}</uui-button>
         </div>
       </uui-box>
     `;
   }
 };
-f = /* @__PURE__ */ new WeakMap();
+c = /* @__PURE__ */ new WeakMap();
 s = /* @__PURE__ */ new WeakSet();
-w = function(e) {
-  return e.ok ? (this._loadError = null, !0) : (this._loadError = e.status === 401 || e.status === 403 ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete." : `The request did not succeed — the server returned ${e.status}${e.statusText ? ` ${e.statusText}` : ""}.`, !1);
+x = function(t) {
+  return t.ok ? (this._loadError = null, !0) : (this._loadError = t.status === 401 || t.status === 403 ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete." : `The request did not succeed — the server returned ${t.status}${t.statusText ? ` ${t.statusText}` : ""}.`, !1);
 };
-g = async function() {
+m = async function() {
   this._loading = !0;
   try {
-    const e = await _(this, f).call(this, `${this._api}/GetSliders`);
-    a(this, s, w).call(this, e) && (this._sliders = await e.json(), this._selected && (this._selected = this._sliders.find((t) => t.id === this._selected.id) ?? null));
+    const t = await _(this, c).call(this, `${this._api}/GetSliders`);
+    l(this, s, x).call(this, t) && (this._sliders = await t.json(), this._selected && (this._selected = this._sliders.find((e) => e.id === this._selected.id) ?? null));
   } catch {
     this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), this._sliders = [];
   } finally {
     this._loading = !1;
   }
 };
-E = async function(e) {
-  var t;
-  if (((t = this._selected) == null ? void 0 : t.id) === e.id) {
+T = async function(t) {
+  var e;
+  if (((e = this._selected) == null ? void 0 : e.id) === t.id) {
     this._selected = null, this._slides = [];
     return;
   }
-  this._selected = e, this._slides = [], await a(this, s, y).call(this);
+  this._selected = t, this._slides = [], await l(this, s, y).call(this);
 };
 y = async function() {
   if (this._selected)
     try {
-      const e = await _(this, f).call(this, `${this._api}/GetSlides?sliderId=${this._selected.id}`);
-      a(this, s, w).call(this, e) && (this._slides = await e.json());
+      const t = await _(this, c).call(this, `${this._api}/GetSlides?sliderId=${this._selected.id}`);
+      l(this, s, x).call(this, t) && (this._slides = await t.json());
     } catch {
       this._loadError ?? (this._loadError = "Could not load the slides in that slider.");
     }
 };
-O = async function() {
-  const e = this._newName.trim();
-  if (!e) {
+E = async function() {
+  const t = this._newName.trim();
+  if (!t) {
     this._message = { ok: !1, text: "A slider needs a name." };
     return;
   }
   this._busy = "create";
   try {
-    (await _(this, f).call(this, `${this._api}/CreateSlider`, {
+    (await _(this, c).call(this, `${this._api}/CreateSlider`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: e, autoplay: !0, autoplayDelay: 5e3, loop: !0, effect: "slide" })
-    })).ok ? (this._message = { ok: !0, text: `Created ${e}.` }, this._newName = "", await a(this, s, g).call(this)) : this._message = { ok: !1, text: "Could not create that slider." };
+      body: JSON.stringify({ name: t, autoplay: !0, autoplayDelay: 5e3, loop: !0, effect: "slide" })
+    })).ok ? (this._message = { ok: !0, text: `Created ${t}.` }, this._newName = "", await l(this, s, m).call(this)) : this._message = { ok: !1, text: "Could not create that slider." };
   } catch {
     this._message = { ok: !1, text: "Could not create that slider." };
   } finally {
     this._busy = "";
   }
 };
-L = function(e) {
-  this._editingId = e.id, this._edit = { ...e, slides: [] }, this._message = null;
+L = function(t) {
+  this._editingId = t.id, this._edit = { ...t, slides: [] }, this._message = null;
 };
-U = async function() {
-  const e = this._edit;
-  if (!e.id) return;
-  const t = (e.name ?? "").trim();
-  if (!t) {
+O = async function() {
+  const t = this._edit;
+  if (!t.id) return;
+  const e = (t.name ?? "").trim();
+  if (!e) {
     this._message = { ok: !1, text: "A slider needs a name." };
     return;
   }
-  this._busy = `edit:${e.id}`;
+  this._busy = `edit:${t.id}`;
   try {
-    (await _(this, f).call(this, `${this._api}/UpdateSlider`, {
+    (await _(this, c).call(this, `${this._api}/UpdateSlider`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...e, name: t, slides: [] })
-    })).ok ? (this._message = { ok: !0, text: `Updated ${t}.` }, this._editingId = null, await a(this, s, g).call(this)) : this._message = { ok: !1, text: "Could not update that slider." };
+      body: JSON.stringify({ ...t, name: e, slides: [] })
+    })).ok ? (this._message = { ok: !0, text: `Updated ${e}.` }, this._editingId = null, await l(this, s, m).call(this)) : this._message = { ok: !1, text: "Could not update that slider." };
   } catch {
     this._message = { ok: !1, text: "Could not update that slider." };
   } finally {
     this._busy = "";
   }
 };
-N = async function(e) {
-  var i, n;
-  const t = ((i = e.slides) == null ? void 0 : i.length) ?? 0;
+U = async function(t) {
+  var i, r;
+  const e = ((i = t.slides) == null ? void 0 : i.length) ?? 0;
   if (window.confirm(
-    `Delete the slider "${e.name}"?
+    `Delete the slider "${t.name}"?
 
-${t > 0 ? `Its ${t} slide${t === 1 ? "" : "s"} go with it. ` : ""}The media library is untouched. This cannot be undone.`
+${e > 0 ? `Its ${e} slide${e === 1 ? "" : "s"} go with it. ` : ""}The media library is untouched. This cannot be undone.`
   )) {
-    this._busy = `delete:${e.id}`;
+    this._busy = `delete:${t.id}`;
     try {
-      (await _(this, f).call(this, `${this._api}/DeleteSlider?id=${e.id}`, { method: "DELETE" })).ok ? (this._message = { ok: !0, text: `Deleted ${e.name}.` }, ((n = this._selected) == null ? void 0 : n.id) === e.id && (this._selected = null, this._slides = []), await a(this, s, g).call(this)) : this._message = { ok: !1, text: "Could not delete that slider." };
+      (await _(this, c).call(this, `${this._api}/DeleteSlider?id=${t.id}`, { method: "DELETE" })).ok ? (this._message = { ok: !0, text: `Deleted ${t.name}.` }, ((r = this._selected) == null ? void 0 : r.id) === t.id && (this._selected = null, this._slides = []), await l(this, s, m).call(this)) : this._message = { ok: !1, text: "Could not delete that slider." };
     } catch {
       this._message = { ok: !1, text: "Could not delete that slider." };
     } finally {
@@ -230,50 +202,50 @@ ${t > 0 ? `Its ${t} slide${t === 1 ? "" : "s"} go with it. ` : ""}The media libr
     }
   }
 };
-A = async function() {
+D = async function() {
   if (!this._selected) return;
-  const e = this._slideKeys[0], t = e ? await J(_(this, f), e) : null;
-  if (!t) {
+  const t = this._slideKeys[0], e = t ? await M(_(this, c), t) : null;
+  if (!e) {
     this._message = { ok: !1, text: "Choose an image from the media library first." };
     return;
   }
   this._busy = "slide";
   try {
-    (await _(this, f).call(this, `${this._api}/AddSlide`, {
+    (await _(this, c).call(this, `${this._api}/AddSlide`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         sliderId: this._selected.id,
         title: this._slideTitle.trim() || "Untitled",
         subtitle: this._slideSubtitle.trim() || null,
-        imageUrl: t,
+        imageUrl: e,
         linkUrl: this._slideLinkUrl.trim() || null,
         linkText: this._slideLinkText.trim() || null,
         sortOrder: this._slides.length
       })
-    })).ok ? (this._message = { ok: !0, text: "Slide added." }, this._slideTitle = this._slideSubtitle = this._slideLinkUrl = this._slideLinkText = "", this._slideKeys = [], await a(this, s, y).call(this), await a(this, s, g).call(this)) : this._message = { ok: !1, text: "Could not add that slide." };
+    })).ok ? (this._message = { ok: !0, text: "Slide added." }, this._slideTitle = this._slideSubtitle = this._slideLinkUrl = this._slideLinkText = "", this._slideKeys = [], await l(this, s, y).call(this), await l(this, s, m).call(this)) : this._message = { ok: !1, text: "Could not add that slide." };
   } catch {
     this._message = { ok: !1, text: "Could not add that slide." };
   } finally {
     this._busy = "";
   }
 };
-x = async function(e, t) {
-  const i = [...this._slides].sort((l, o) => l.sortOrder - o.sortOrder), n = i.findIndex((l) => l.id === e.id), u = i[n + t];
-  if (u) {
-    this._busy = `move:${e.id}`;
+$ = async function(t, e) {
+  const i = [...this._slides].sort((h, p) => h.sortOrder - p.sortOrder), r = i.findIndex((h) => h.id === t.id), n = i[r + e];
+  if (n) {
+    this._busy = `move:${t.id}`;
     try {
-      const l = { ...e, sortOrder: u.sortOrder }, o = { ...u, sortOrder: e.sortOrder };
-      for (const p of [l, o])
-        if (!(await _(this, f).call(this, `${this._api}/UpdateSlide`, {
+      const h = { ...t, sortOrder: n.sortOrder }, p = { ...n, sortOrder: t.sortOrder };
+      for (const f of [h, p])
+        if (!(await _(this, c).call(this, `${this._api}/UpdateSlide`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(p)
+          body: JSON.stringify(f)
         })).ok) {
           this._message = { ok: !1, text: "Could not reorder the slides." };
           break;
         }
-      await a(this, s, y).call(this);
+      await l(this, s, y).call(this);
     } catch {
       this._message = { ok: !1, text: "Could not reorder the slides." };
     } finally {
@@ -281,13 +253,13 @@ x = async function(e, t) {
     }
   }
 };
-D = async function(e) {
-  if (window.confirm(`Remove the slide "${e.title}"?
+N = async function(t) {
+  if (window.confirm(`Remove the slide "${t.title}"?
 
 The image stays in the media library.`)) {
-    this._busy = `slide:${e.id}`;
+    this._busy = `slide:${t.id}`;
     try {
-      (await _(this, f).call(this, `${this._api}/DeleteSlide?id=${e.id}`, { method: "DELETE" })).ok ? (this._message = { ok: !0, text: "Slide removed." }, await a(this, s, y).call(this), await a(this, s, g).call(this)) : this._message = { ok: !1, text: "Could not remove that slide." };
+      (await _(this, c).call(this, `${this._api}/DeleteSlide?id=${t.id}`, { method: "DELETE" })).ok ? (this._message = { ok: !0, text: "Slide removed." }, await l(this, s, y).call(this), await l(this, s, m).call(this)) : this._message = { ok: !1, text: "Could not remove that slide." };
     } catch {
       this._message = { ok: !1, text: "Could not remove that slide." };
     } finally {
@@ -295,38 +267,38 @@ The image stays in the media library.`)) {
     }
   }
 };
-I = function() {
-  if (!this._selected) return k;
-  const e = [...this._slides].sort((t, i) => t.sortOrder - i.sortOrder);
-  return d`
-      <uui-box headline="Slides in ${this._selected.name} (${e.length})">
-        ${e.length === 0 ? d`<p class="empty">This slider has no slides yet. Add one below.</p>` : d`
+A = function() {
+  if (!this._selected) return v;
+  const t = [...this._slides].sort((e, i) => e.sortOrder - i.sortOrder);
+  return a`
+      <uui-box headline="Slides in ${this._selected.name} (${t.length})">
+        ${t.length === 0 ? a`<p class="empty">This slider has no slides yet. Add one below.</p>` : a`
               <table>
                 <thead>
                   <tr><th></th><th>Title</th><th>Link</th><th>Order</th><th></th></tr>
                 </thead>
                 <tbody>
-                  ${e.map(
-    (t, i) => d`
+                  ${t.map(
+    (e, i) => a`
                       <tr>
-                        <td><img class="thumb" src=${t.imageUrl} alt=${t.title} loading="lazy" /></td>
+                        <td><img class="thumb" src=${e.imageUrl} alt=${e.title} loading="lazy" /></td>
                         <td>
-                          <strong>${t.title}</strong>
-                          ${t.subtitle ? d`<div class="muted">${t.subtitle}</div>` : k}
+                          <strong>${e.title}</strong>
+                          ${e.subtitle ? a`<div class="muted">${e.subtitle}</div>` : v}
                         </td>
-                        <td class="muted">${t.linkUrl ? d`<code>${t.linkUrl}</code>` : "—"}</td>
+                        <td class="muted">${e.linkUrl ? a`<code>${e.linkUrl}</code>` : "—"}</td>
                         <td class="num">
-                          <uui-button compact look="secondary" label="Move ${t.title} up"
-                            ?disabled=${i === 0 || this._busy === `move:${t.id}`}
-                            @click=${() => a(this, s, x).call(this, t, -1)}>↑</uui-button>
-                          <uui-button compact look="secondary" label="Move ${t.title} down"
-                            ?disabled=${i === e.length - 1 || this._busy === `move:${t.id}`}
-                            @click=${() => a(this, s, x).call(this, t, 1)}>↓</uui-button>
+                          <uui-button compact look="secondary" label="Move ${e.title} up"
+                            ?disabled=${i === 0 || this._busy === `move:${e.id}`}
+                            @click=${() => l(this, s, $).call(this, e, -1)}>↑</uui-button>
+                          <uui-button compact look="secondary" label="Move ${e.title} down"
+                            ?disabled=${i === t.length - 1 || this._busy === `move:${e.id}`}
+                            @click=${() => l(this, s, $).call(this, e, 1)}>↓</uui-button>
                         </td>
                         <td class="right">
-                          <uui-button compact look="secondary" color="danger" label="Remove ${t.title}"
-                            ?disabled=${this._busy === `slide:${t.id}`}
-                            @click=${() => a(this, s, D).call(this, t)}>Remove</uui-button>
+                          <uui-button compact look="secondary" color="danger" label="Remove ${e.title}"
+                            ?disabled=${this._busy === `slide:${e.id}`}
+                            @click=${() => l(this, s, N).call(this, e)}>Remove</uui-button>
                         </td>
                       </tr>
                     `
@@ -340,8 +312,8 @@ I = function() {
           <umb-input-media
             .selection=${this._slideKeys}
             max="1"
-            @change=${(t) => {
-    const i = t.target;
+            @change=${(e) => {
+    const i = e.target;
     this._slideKeys = i.selection ?? [];
   }}
           ></umb-input-media>
@@ -351,48 +323,48 @@ I = function() {
           <div>
             <span class="field-label">Title</span>
             <uui-input label="Slide title" .value=${this._slideTitle}
-              @input=${(t) => this._slideTitle = t.target.value}></uui-input>
+              @input=${(e) => this._slideTitle = e.target.value}></uui-input>
           </div>
           <div>
             <span class="field-label">Subtitle</span>
             <uui-input label="Slide subtitle" placeholder="Optional" .value=${this._slideSubtitle}
-              @input=${(t) => this._slideSubtitle = t.target.value}></uui-input>
+              @input=${(e) => this._slideSubtitle = e.target.value}></uui-input>
           </div>
           <div>
             <span class="field-label">Link URL</span>
             <uui-input label="Link URL" placeholder="Optional, e.g. /offers" .value=${this._slideLinkUrl}
-              @input=${(t) => this._slideLinkUrl = t.target.value}></uui-input>
+              @input=${(e) => this._slideLinkUrl = e.target.value}></uui-input>
           </div>
           <div>
             <span class="field-label">Link text</span>
             <uui-input label="Link text" placeholder="Optional, e.g. See offers" .value=${this._slideLinkText}
-              @input=${(t) => this._slideLinkText = t.target.value}></uui-input>
+              @input=${(e) => this._slideLinkText = e.target.value}></uui-input>
           </div>
         </div>
         <div class="actions">
           <uui-button look="primary" color="positive" label="Add slide"
             ?disabled=${this._busy === "slide" || this._slideKeys.length === 0}
-            @click=${a(this, s, A)}>${this._busy === "slide" ? "Adding…" : "Add slide"}</uui-button>
+            @click=${l(this, s, D)}>${this._busy === "slide" ? "Adding…" : "Add slide"}</uui-button>
         </div>
       </uui-box>
     `;
 };
-z = function(e) {
-  return d`
+I = function(t) {
+  return a`
       <td colspan="6">
         <div class="grid">
           <div>
             <span class="field-label">Name</span>
             <uui-input label="Name" .value=${this._edit.name ?? ""}
-              @input=${(t) => this._edit = { ...this._edit, name: t.target.value }}></uui-input>
+              @input=${(e) => this._edit = { ...this._edit, name: e.target.value }}></uui-input>
           </div>
           <div>
             <span class="field-label">Effect</span>
             <uui-select
               label="Effect"
               .value=${this._edit.effect ?? "slide"}
-              @change=${(t) => this._edit = { ...this._edit, effect: t.target.value }}
-              .options=${G.map((t) => ({ name: t, value: t, selected: t === (this._edit.effect ?? "slide") }))}
+              @change=${(e) => this._edit = { ...this._edit, effect: e.target.value }}
+              .options=${q.map((e) => ({ name: e, value: e, selected: e === (this._edit.effect ?? "slide") }))}
             ></uui-select>
           </div>
           <div>
@@ -401,7 +373,7 @@ z = function(e) {
               type="number"
               label="Autoplay delay in milliseconds"
               .value=${String(this._edit.autoplayDelay ?? 5e3)}
-              @input=${(t) => this._edit = { ...this._edit, autoplayDelay: Number(t.target.value) || 0 }}
+              @input=${(e) => this._edit = { ...this._edit, autoplayDelay: Number(e.target.value) || 0 }}
             ></uui-input>
           </div>
         </div>
@@ -409,25 +381,25 @@ z = function(e) {
           <uui-toggle
             label="Autoplay"
             ?checked=${this._edit.autoplay ?? !1}
-            @change=${(t) => this._edit = { ...this._edit, autoplay: t.target.checked }}
+            @change=${(e) => this._edit = { ...this._edit, autoplay: e.target.checked }}
             >Autoplay</uui-toggle
           >
           <uui-toggle
             label="Loop"
             ?checked=${this._edit.loop ?? !1}
-            @change=${(t) => this._edit = { ...this._edit, loop: t.target.checked }}
+            @change=${(e) => this._edit = { ...this._edit, loop: e.target.checked }}
             >Loop</uui-toggle
           >
         </div>
         <div class="actions">
-          <uui-button look="primary" color="positive" label="Save ${e.name}"
-            ?disabled=${this._busy === `edit:${e.id}`} @click=${a(this, s, U)}>Save</uui-button>
+          <uui-button look="primary" color="positive" label="Save ${t.name}"
+            ?disabled=${this._busy === `edit:${t.id}`} @click=${l(this, s, O)}>Save</uui-button>
           <uui-button look="secondary" label="Cancel" @click=${() => this._editingId = null}>Cancel</uui-button>
         </div>
       </td>
     `;
 };
-r.styles = j`
+o.styles = K`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 6px; }
     p.description { color: var(--uui-color-text-alt, #6b7280); margin: 0 0 22px; max-width: 66ch; }
@@ -482,56 +454,56 @@ r.styles = j`
       color: var(--uui-color-positive-contrast, #12492a);
     }
   `;
-h([
-  c()
-], r.prototype, "_sliders", 2);
-h([
-  c()
-], r.prototype, "_slides", 2);
-h([
-  c()
-], r.prototype, "_selected", 2);
-h([
-  c()
-], r.prototype, "_loading", 2);
-h([
-  c()
-], r.prototype, "_busy", 2);
-h([
-  c()
-], r.prototype, "_loadError", 2);
-h([
-  c()
-], r.prototype, "_message", 2);
-h([
-  c()
-], r.prototype, "_newName", 2);
-h([
-  c()
-], r.prototype, "_editingId", 2);
-h([
-  c()
-], r.prototype, "_edit", 2);
-h([
-  c()
-], r.prototype, "_slideTitle", 2);
-h([
-  c()
-], r.prototype, "_slideSubtitle", 2);
-h([
-  c()
-], r.prototype, "_slideLinkUrl", 2);
-h([
-  c()
-], r.prototype, "_slideLinkText", 2);
-h([
-  c()
-], r.prototype, "_slideKeys", 2);
-r = h([
-  K("slider-dashboard")
-], r);
-const V = r;
+d([
+  u()
+], o.prototype, "_sliders", 2);
+d([
+  u()
+], o.prototype, "_slides", 2);
+d([
+  u()
+], o.prototype, "_selected", 2);
+d([
+  u()
+], o.prototype, "_loading", 2);
+d([
+  u()
+], o.prototype, "_busy", 2);
+d([
+  u()
+], o.prototype, "_loadError", 2);
+d([
+  u()
+], o.prototype, "_message", 2);
+d([
+  u()
+], o.prototype, "_newName", 2);
+d([
+  u()
+], o.prototype, "_editingId", 2);
+d([
+  u()
+], o.prototype, "_edit", 2);
+d([
+  u()
+], o.prototype, "_slideTitle", 2);
+d([
+  u()
+], o.prototype, "_slideSubtitle", 2);
+d([
+  u()
+], o.prototype, "_slideLinkUrl", 2);
+d([
+  u()
+], o.prototype, "_slideLinkText", 2);
+d([
+  u()
+], o.prototype, "_slideKeys", 2);
+o = d([
+  R("slider-dashboard")
+], o);
+const B = o;
 export {
-  r as SliderDashboardElement,
-  V as default
+  o as SliderDashboardElement,
+  B as default
 };

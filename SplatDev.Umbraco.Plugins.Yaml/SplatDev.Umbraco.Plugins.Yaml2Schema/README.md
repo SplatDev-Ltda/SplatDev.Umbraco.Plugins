@@ -72,6 +72,10 @@ documentTypes:
 
 ## Changelog
 
+### 1.1.0 — 2026-08-23
+
+The Umbraco Marketplace listing now carries this plugin's dashboard screenshot. The listing keeps its own screenshot list rather than reading the README, and this one was empty, so the entry showed no images at all.
+
 ### 1.0.42 — 2026-08-22
 - The Status panel shows real state. The dashboard has always called `GET /umbraco/api/Yaml2Schema/Status`, but no controller existed, so the call 404'd on every load and the panel fell back to hardcoded text describing the plugin in general — it claimed an import runs on startup whether or not a YAML file was present, and never showed that one had. The endpoint now reports the configured path, whether an import is pending, and when the last one completed.
 

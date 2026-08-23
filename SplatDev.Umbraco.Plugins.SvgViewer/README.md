@@ -7,6 +7,10 @@ SVG file viewer plugin for Umbraco — renders inline SVG files from the Umbraco
 
 ![SvgViewer dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.SvgViewer/docs/screenshots/01-dashboard.png)
 
+![SvgViewer property editor](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.SvgViewer/docs/screenshots/02-property-editor.png)
+
+![SvgViewer data type](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.SvgViewer/docs/screenshots/03-data-type.png)
+
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.SvgViewer.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.SvgViewer)
@@ -37,6 +41,12 @@ builder.CreateUmbracoBuilder()
 ```
 
 ## Changelog
+
+### 1.2.0 — 2026-08-23
+
+The property editor can now be used. Its manifest declared a property editor schema with no server-side editor behind it, so Umbraco refused to create a data type for it with "The targeted property editor was not found". It now stores its value with a schema the server actually provides.
+
+The Umbraco Marketplace listing now shows every screenshot for this plugin, not just the dashboard. The listing keeps its own screenshot list rather than reading the README.
 
 ### 1.1.6 — 2026-08-22
 - You pick the SVG from the media library instead of pasting a GUID. The field asked for `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` — a media key, which the backoffice never shows you — so using it meant going and finding one first. The picker is filtered to vector graphics, since that is all this viewer renders.

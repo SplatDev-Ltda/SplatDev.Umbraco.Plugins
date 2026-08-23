@@ -7,6 +7,12 @@ Hidden Content plugin for Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
 ![HiddenContent dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.HiddenContent/docs/screenshots/01-dashboard.png)
 
+![HiddenContent property editor](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.HiddenContent/docs/screenshots/02-property-editor.png)
+
+![HiddenContent data type](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.HiddenContent/docs/screenshots/03-data-type.png)
+
+![HiddenContent on the front end](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.HiddenContent/docs/screenshots/04-front-end.png)
+
 <!-- screenshot:end -->
 
 ## Features
@@ -42,6 +48,10 @@ This plugin uses Umbraco's `IContentService` — no additional database tables n
 HideNodeAsync sets `umbracoNaviHide = "1"` and publishes. ShowNodeAsync sets it to `"0"` and publishes. Standard Umbraco navigation helpers and sitemap generators respect this property automatically.
 
 ## Changelog
+
+### 2.5.0 — 2026-08-23
+
+The Razor view behind `@await Component.InvokeAsync(...)` is now compiled into the package. It was previously carried as a loose file that nothing packed, so the component threw "view not found" on every install and the front-end usage shown in this README could not have worked.
 
 ### 2.4.0 — 2026-08-23
 - A page can be hidden from navigation on the page itself. The plugin shipped a dashboard listing hidden nodes, so hiding one meant leaving it, finding it in a list, and coming back.

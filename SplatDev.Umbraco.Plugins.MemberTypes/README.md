@@ -7,6 +7,8 @@ Member type management plugin for Umbraco CMS — create, edit, and manage custo
 
 ![MemberTypes dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.MemberTypes/docs/screenshots/01-dashboard.png)
 
+![MemberTypes on the front end](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.MemberTypes/docs/screenshots/04-front-end.png)
+
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.MemberTypes.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.MemberTypes)
@@ -64,6 +66,10 @@ npm run build
 - Client dashboard requires manual build step after package installation; assets are not pre-built in the NuGet package
 
 ## Changelog
+
+### 2.3.0 — 2026-08-23
+
+The Razor view behind `@await Component.InvokeAsync(...)` is now compiled into the package. It was previously carried as a loose file that nothing packed, so the component threw "view not found" on every install and the front-end usage shown in this README could not have worked.
 
 ### 2.2.4 — 2026-08-22
 - Creating a member type works. The service constructed the type with a null `IShortStringHelper`, and the alias setter runs the value through it — so the alias was stripped to empty and Umbraco refused the save with "cannot have an empty Alias". The endpoint returned 500 every time it was called, which is to say creating a member type had never worked.

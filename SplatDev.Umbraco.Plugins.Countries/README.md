@@ -1,5 +1,13 @@
 # Countries
 
+<!-- screenshot:start -->
+
+![Countries property editor](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Countries/docs/screenshots/02-property-editor.png)
+
+![Countries data type](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Countries/docs/screenshots/03-data-type.png)
+
+<!-- screenshot:end -->
+
 Umbraco countries data plugin — seeds and maintains a `countries` database table with ISO country codes, names, and nationality data. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Countries.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Countries)
@@ -84,6 +92,12 @@ var results = db.Fetch<Country>("WHERE enShortName LIKE @0", $"%{query}%");
 | `CountrySchemaMigrationComposer` | Registers the migration plan via Umbraco's `Upgrader` |
 
 ## Changelog
+
+### 2.2.0 — 2026-08-23
+
+The property editor can now be used. Its manifest declared a property editor schema with no server-side editor behind it, so Umbraco refused to create a data type for it with "The targeted property editor was not found". It now stores its value with a schema the server actually provides.
+
+The Umbraco Marketplace listing now carries this plugin's screenshots. The listing keeps its own screenshot list rather than reading the README, and this one was empty — so the entry showed no images at all.
 
 ### 2.1.0 — 2026-08-23
 - The country list is actually populated. The migration read from `C:\Temp\countries.csv` — a hardcoded absolute path on someone's machine. No install has that file, and on Linux the drive letter is not even meaningful, so the read threw, the migration never completed, and Umbraco retried and failed it on every boot with the table left empty.

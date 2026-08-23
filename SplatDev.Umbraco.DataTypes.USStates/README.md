@@ -1,5 +1,11 @@
 # SplatDev.Umbraco.DataTypes.USStates
 
+<!-- screenshot:start -->
+
+![USStates data type](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.DataTypes.USStates/docs/screenshots/03-data-type.png)
+
+<!-- screenshot:end -->
+
 A pre-configured Umbraco data type that provides a dropdown list of all 50 US states, including DC and US territories.
 
 ## Package
@@ -47,6 +53,10 @@ The data type uses the `Umbraco.DropDownListFlexible` property editor with pre-p
 - The data type is auto-created once. Deleting and re-creating requires re-running the installer.
 
 ## Changelog
+
+### 2.2.0 — 2026-08-23
+
+Adds screenshots of the data type this package installs, on the README and on the Umbraco Marketplace listing. The listing keeps its own screenshot list rather than reading the README, and this one was empty.
 
 ### 2.1.0 — 2026-08-23
 - The US States data type is created on Umbraco 17. The Umbraco 17 half of this package was an empty stub carrying a TODO, so installing it there created nothing at all while Umbraco 13 worked — the package shipped, compiled, and did nothing.

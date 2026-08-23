@@ -83,6 +83,10 @@ Set `Environment: sandbox` for testing, `production` for live transactions.
 
 ## Changelog
 
+### 1.3.0 — 2026-08-23
+
+The Umbraco Marketplace listing now carries this plugin's screenshots. The listing keeps its own screenshot list rather than reading the README, and this one was empty — so the entry showed no images at all.
+
 ### 1.2.2 — 2026-08-21
 - Pix settlement callbacks work again. The webhook sat behind the backoffice authorization added in 1.2.0, so Banco Inter's server — which has no backoffice session — was answered with 401 and a charge stayed pending even after the payer had paid.
 - The webhook is now gated on a shared secret (`BancoInter:WebhookSecret`) supplied on the callback URL, and refuses everything while that secret is unset rather than defaulting to open. It marks transactions as settled, so an anonymous caller must not be able to reach it.

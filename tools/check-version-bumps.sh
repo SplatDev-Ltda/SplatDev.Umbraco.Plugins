@@ -16,8 +16,21 @@ TAG="${1:-$(git describe --tags --abbrev=0 --match 'v*' 2>/dev/null)}"
 echo "Comparing against $TAG"
 missing=0
 
+# Map each changed file to the nearest ancestor holding a .csproj, rather than taking the
+# first path segment. Nested plugins live at SplatDev.Umbraco.Plugins.Yaml/SplatDev.Umbraco
+# .Plugins.Schema2Yaml, whose first segment is a directory with no project in it — so the
+# prefix form resolved them to the parent, found no .csproj and skipped them silently.
+# That is the same depth blind spot that dropped Schema2Yaml from v2.1.5, and publish.yml
+# discovers at -maxdepth 3, so this must look at least that deep.
 for dir in $(git diff --name-only "$TAG"..HEAD 2>/dev/null \
-             | grep -oP '^SplatDev\.Umbraco\.Plugins\.[A-Za-z.]+' | sort -u); do
+             | grep '^SplatDev\.' \
+             | while read -r f; do
+                 d=$(dirname "$f")
+                 while [ "$d" != "." ] && [ -n "$d" ]; do
+                   if ls "$d"/*.csproj >/dev/null 2>&1; then echo "$d"; break; fi
+                   d=$(dirname "$d")
+                 done
+               done | sort -u); do
   # Test projects carry no <Version> and ship nothing.
   case "$dir" in *.Tests) continue;; esac
   # Excluded from publishing anyway.
@@ -30,8 +43,17 @@ for dir in $(git diff --name-only "$TAG"..HEAD 2>/dev/null \
   # Removing a development node_modules symlink from source control is the case that
   # prompted this: nothing under node_modules is packed, so bumping would publish an
   # identical package purely to satisfy this check.
+  #
+  # client/ is the same case. No .csproj includes it — the backoffice bundle reaches the
+  # package as the built output committed under App_Plugins/, so editing a .ts without
+  # rebuilding ships nothing and rebuilding shows up as an App_Plugins change that this
+  # check still catches. docs/screenshots/ likewise: READMEs reference those images by
+  # absolute URL rather than packing them. docs/ is not excluded wholesale, because
+  # WhatsApp packs its icon from docs/brand/.
   shipping=$(git diff --name-only "$TAG"..HEAD -- "$dir" 2>/dev/null \
-             | grep -vE '(^|/)node_modules(/|$)' | wc -l)
+             | grep -vE '(^|/)node_modules(/|$)' \
+             | grep -vE '(^|/)client/' \
+             | grep -vE '(^|/)docs/screenshots/' | wc -l)
   [ "$shipping" -eq 0 ] && continue
 
   now=$(grep -oP '(?<=<Version>)[^<]+' "$csproj" | head -1)

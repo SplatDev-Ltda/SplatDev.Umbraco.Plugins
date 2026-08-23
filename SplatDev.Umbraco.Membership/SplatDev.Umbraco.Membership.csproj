@@ -7,7 +7,7 @@
 		<Nullable>enable</Nullable>
 		<PackageId>SplatDev.Umbraco.Membership</PackageId>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<Version>2.0.2</Version>
+		<Version>2.0.3</Version>
 		<Authors>SplatDev</Authors>
 		<Description>Membership extensions for Umbraco 13 (net8.0) and Umbraco 17 (net10.0)</Description>
 		<PackageTags>umbraco umbraco-marketplace membership</PackageTags>

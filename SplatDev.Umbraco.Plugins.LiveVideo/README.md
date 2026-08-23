@@ -7,6 +7,10 @@ Live video embed for Umbraco — generate embed URLs for YouTube Live, Twitch, a
 
 ![LiveVideo dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.LiveVideo/docs/screenshots/01-dashboard.png)
 
+![LiveVideo property editor](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.LiveVideo/docs/screenshots/02-property-editor.png)
+
+![LiveVideo data type](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.LiveVideo/docs/screenshots/03-data-type.png)
+
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.LiveVideo.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.LiveVideo)
@@ -62,6 +66,12 @@ Supported platforms: `youtube`, `twitch`, `vimeo`.
 - No support for custom embed parameters (width, height, autoplay, mute)
 
 ## Changelog
+
+### 2.3.0 — 2026-08-23
+
+The property editor can now be used. Its manifest declared a property editor schema with no server-side editor behind it, so Umbraco refused to create a data type for it with "The targeted property editor was not found". It now stores its value with a schema the server actually provides.
+
+The Umbraco Marketplace listing now carries this plugin's screenshots. The listing keeps its own screenshot list rather than reading the README, and this one was empty — so the entry showed no images at all.
 
 ### 2.2.0 — 2026-08-23
 - Choosing a stream is now a property on the page, with the embed resolved before you publish. The endpoint takes a platform and a channel and only a dashboard called it, so a page's stream lived in a plain text field with the platform implied.

@@ -7,6 +7,8 @@ Fully customizable Umbraco login page with branding support, SSO integration hoo
 
 ![CustomLogin dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.CustomLogin/docs/screenshots/01-dashboard.png)
 
+![CustomLogin on the front end](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.CustomLogin/docs/screenshots/04-front-end.png)
+
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.CustomLogin.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.CustomLogin)
@@ -65,6 +67,14 @@ npm run build
 ```
 
 ## Changelog
+
+### 2.3.0 — 2026-08-23
+
+The sign-in component no longer emits a whole HTML document. It rendered a doctype, a root element, a head and a body, along with a universal margin/padding reset and a flex layout applied to the body element — so dropping it onto one of your pages flattened every margin on that page and relaid the whole thing out. Its styles are now scoped to the component's own class names, which were renamed to the `splatdev-login__*` prefix; if you had overridden the old `.login-card`, `.login-field`, `.login-btn` or `.login-support` classes, update those selectors.
+
+The Razor view behind `@await Component.InvokeAsync(...)` is now compiled into the package. It was previously carried as a loose file that nothing packed, so the component threw "view not found" on every install and the front-end usage shown in this README could not have worked.
+
+The view also still referenced the package's pre-rename namespace, so it would not have compiled even had it shipped. That is fixed, and the view is now built with the project — a broken view fails the build instead of failing a visitor's request.
 
 ### 2.2.4 — 2026-08-22
 - You pick the logo from the media library instead of typing a URL. What gets stored is the file's site-relative path, so the login screen keeps working when the site moves domain.

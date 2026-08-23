@@ -36,11 +36,27 @@ public class RestrictedApiController : ControllerBase
     /// The protection on one node, so the editor can load an existing rule into the form
     /// and amend it instead of retyping it.
     /// </summary>
+    /// <remarks>
+    /// An unprotected node is the ordinary case, not a failure, so it answers 200 with
+    /// <c>restricted: false</c> rather than 404. Returning 404 made every unrestricted
+    /// page log an error in the editor and left the caller unable to tell "no rule here"
+    /// apart from "the request did not arrive".
+    ///
+    /// The group names are flattened to strings because that is what protection is set
+    /// with — <see cref="RestrictNodeRequest.MemberGroups"/> is a list of names — so the
+    /// value read back can be posted straight back without a translation step.
+    /// </remarks>
     [HttpGet]
     public async Task<IActionResult> GetRestriction([FromQuery] string node)
     {
         var found = await _service.GetRestrictedNodeAsync(node);
-        return found is null ? NotFound() : Ok(found);
+        return Ok(new RestrictionState
+        {
+            Restricted = found is not null,
+            MemberGroups = found?.MemberGroups.Select(g => g.Name).ToList() ?? [],
+            LoginPage = found?.LoginPage?.Name,
+            ErrorPage = found?.ErrorPage?.Name,
+        });
     }
 
     [HttpPost]

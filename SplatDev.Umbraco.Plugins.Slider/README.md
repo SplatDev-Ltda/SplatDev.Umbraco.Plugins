@@ -7,6 +7,12 @@ Image slider plugin for Umbraco — stores slide data with EF Core, renders via 
 
 ![Slider dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Slider/docs/screenshots/01-dashboard.png)
 
+![Slider property editor](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Slider/docs/screenshots/02-property-editor.png)
+
+![Slider data type](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Slider/docs/screenshots/03-data-type.png)
+
+![Slider on the front end](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Slider/docs/screenshots/04-front-end.png)
+
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Slider.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Slider)
@@ -76,7 +82,32 @@ Output: `App_Plugins/Slider/dist/slider-dashboard.element.js`
 | `/umbraco/api/slider/UpdateSlide` | PUT | Update slide properties |
 | `/umbraco/api/slider/DeleteSlide` | DELETE | Remove a slide |
 
+## Rendering a slider
+
+```cshtml
+@* The first slider — the usual case on a site with one: *@
+@await Component.InvokeAsync("Slider")
+
+@* A specific slider by id: *@
+@await Component.InvokeAsync("Slider", new { sliderId = 1 })
+
+@* Or the one chosen on this page with the Slider property editor: *@
+@await Component.InvokeAsync("Slider", new { sliderId = Model.Value<int>("slider") })
+```
+
+The markup carries `splatdev-slider__*` class names and no styles of its own, so it
+inherits your site's design rather than fighting it. Autoplay, delay and looping come
+from the slider's own settings; autoplay pauses on hover, while the tab is hidden, and
+for visitors who ask for reduced motion.
+
 ## Changelog
+
+### 1.4.0 — 2026-08-23
+
+Adds a view component so the slider chosen with the property editor can actually be rendered on a page. Until now the picker stored an id nothing consumed.
+
+### 1.3.0 — 2026-08-23
+- A content editor can choose which slider a page shows. The plugin stored sliders in its own tables with no way for a page to reference one, so a slider could be built and never appear anywhere.
 
 ### 1.2.3 — 2026-08-22
 - The dashboard manages sliders and their slides. It listed slider names and offered no controls at all, while the API behind it had supported all of this the whole time.

@@ -1,0 +1,147 @@
+@using SplatDev.Umbraco.Plugins.Slider.ViewComponents
+@model SliderViewModel
+
+@if (Model.Slider is null)
+{
+    <!-- SplatDev Slider: no slider exists, or the requested id did not match one. -->
+}
+else if (Model.Slides.Count == 0)
+{
+    @* Naming the slider matters: "nothing here" and "this slider has no slides yet" send
+       someone to two different places to fix it. *@
+    <!-- SplatDev Slider: "@Model.Slider.Name" has no slides yet. -->
+}
+else
+{
+    var id = $"splatdev-slider-{Model.Slider.Id}";
+
+    @* Structure only — no colour or type opinions. Without it the caption's spans run
+       together on one line and the nav dots are unclickable specks, so the component
+       ships unusable. Single-class selectors, overridable without !important. *@
+    <style>
+        .splatdev-slider { position: relative; }
+        .splatdev-slider__slide { margin: 0; }
+        .splatdev-slider__image { display: block; width: 100%; height: auto; }
+        .splatdev-slider__caption { display: flex; flex-direction: column; gap: 0.25rem; padding: 0.6rem 0; }
+        .splatdev-slider__title { font-weight: 700; }
+        .splatdev-slider__nav { display: flex; gap: 0.5rem; justify-content: center; padding: 0.25rem 0; }
+        .splatdev-slider__dot {
+            width: 0.7rem;
+            height: 0.7rem;
+            padding: 0;
+            border: 1px solid currentColor;
+            border-radius: 50%;
+            background: transparent;
+            cursor: pointer;
+        }
+        .splatdev-slider__dot.is-active { background: currentColor; }
+    </style>
+
+    <div class="splatdev-slider"
+         id="@id"
+         data-autoplay="@Model.Slider.Autoplay.ToString().ToLowerInvariant()"
+         data-delay="@Model.Slider.AutoplayDelay"
+         data-loop="@Model.Slider.Loop.ToString().ToLowerInvariant()"
+         data-effect="@Model.Slider.Effect"
+         role="region"
+         aria-roledescription="carousel"
+         aria-label="@Model.Slider.Name">
+
+        <div class="splatdev-slider__track">
+            @for (var i = 0; i < Model.Slides.Count; i++)
+            {
+                var slide = Model.Slides[i];
+                <figure class="splatdev-slider__slide@(i == 0 ? " is-active" : "")"
+                        role="group"
+                        aria-roledescription="slide"
+                        aria-label="Slide @(i + 1) of @Model.Slides.Count"
+                        hidden="@(i != 0)">
+                    @if (!string.IsNullOrWhiteSpace(slide.ImageUrl))
+                    {
+                        <img class="splatdev-slider__image" src="@slide.ImageUrl" alt="@slide.Title" loading="@(i == 0 ? "eager" : "lazy")" />
+                    }
+                    <figcaption class="splatdev-slider__caption">
+                        <span class="splatdev-slider__title">@slide.Title</span>
+                        @if (!string.IsNullOrWhiteSpace(slide.Subtitle))
+                        {
+                            <span class="splatdev-slider__subtitle">@slide.Subtitle</span>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(slide.LinkUrl))
+                        {
+                            <a class="splatdev-slider__link" href="@slide.LinkUrl">@(string.IsNullOrWhiteSpace(slide.LinkText) ? "Read more" : slide.LinkText)</a>
+                        }
+                    </figcaption>
+                </figure>
+            }
+        </div>
+
+        @if (Model.Slides.Count > 1)
+        {
+            <nav class="splatdev-slider__nav" aria-label="Slides">
+                @for (var i = 0; i < Model.Slides.Count; i++)
+                {
+                    <button type="button"
+                            class="splatdev-slider__dot@(i == 0 ? " is-active" : "")"
+                            data-index="@i"
+                            aria-label="Go to slide @(i + 1)"></button>
+                }
+            </nav>
+        }
+    </div>
+
+    <script>
+        // Inlined rather than shipped as a separate asset: a plugin that needs the host
+        // site to reference a script file is a plugin that renders nothing until someone
+        // reads the README, and the behaviour here is small enough not to warrant that.
+        (function () {
+            var root = document.getElementById("@id");
+            if (!root || root.dataset.splatdevReady) return;
+            root.dataset.splatdevReady = "1";
+
+            var slides = Array.prototype.slice.call(root.querySelectorAll(".splatdev-slider__slide"));
+            var dots = Array.prototype.slice.call(root.querySelectorAll(".splatdev-slider__dot"));
+            if (slides.length < 2) return;
+
+            var current = 0;
+            var loop = root.dataset.loop === "true";
+            var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+            function show(next) {
+                if (next >= slides.length) { if (!loop) return; next = 0; }
+                if (next < 0) { if (!loop) return; next = slides.length - 1; }
+                slides[current].hidden = true;
+                slides[current].classList.remove("is-active");
+                if (dots[current]) dots[current].classList.remove("is-active");
+                current = next;
+                slides[current].hidden = false;
+                slides[current].classList.add("is-active");
+                if (dots[current]) dots[current].classList.add("is-active");
+            }
+
+            dots.forEach(function (dot) {
+                dot.addEventListener("click", function () {
+                    stop();
+                    show(parseInt(dot.dataset.index, 10));
+                });
+            });
+
+            var timer = null;
+            function stop() { if (timer) { clearInterval(timer); timer = null; } }
+            function start() {
+                if (reduced || root.dataset.autoplay !== "true") return;
+                var delay = parseInt(root.dataset.delay, 10);
+                if (!delay || delay < 500) delay = 5000;
+                timer = setInterval(function () { show(current + 1); }, delay);
+            }
+
+            // Pausing on hover and when the tab is hidden keeps an autoplaying carousel
+            // from moving under someone who is reading it.
+            root.addEventListener("mouseenter", stop);
+            root.addEventListener("mouseleave", start);
+            document.addEventListener("visibilitychange", function () {
+                if (document.hidden) { stop(); } else { start(); }
+            });
+            start();
+        })();
+    </script>
+}

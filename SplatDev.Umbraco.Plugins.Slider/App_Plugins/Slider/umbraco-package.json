@@ -20,6 +20,19 @@
           "match": "Umb.Section.Settings"
         }
       ]
+    },
+    {
+      "type": "propertyEditorUi",
+      "alias": "SplatDev.PropertyEditorUi.SliderPicker",
+      "name": "Slider",
+      "element": "/App_Plugins/Slider/dist/slider-picker.element.js",
+      "elementName": "slider-picker",
+      "meta": {
+        "label": "Slider",
+        "icon": "icon-slideshow",
+        "group": "pickers",
+        "propertyEditorSchemaAlias": "Umbraco.Integer"
+      }
     }
   ]
 }
