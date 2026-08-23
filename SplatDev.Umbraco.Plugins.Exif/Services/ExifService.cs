@@ -18,10 +18,60 @@ public class ExifService : IExifService
         _env = env;
     }
 
+    /// <summary>
+    /// Resolves a caller-supplied path and refuses anything outside the site.
+    /// </summary>
+    /// <remarks>
+    /// The path arrives from a query string. Adding [Authorize] closed this to anonymous
+    /// callers, but an authenticated backoffice user could still name any path the worker
+    /// process can reach — another site's media on a shared host, a backup directory, a
+    /// home directory — and learn from the response whether it existed. Reading is now
+    /// confined to the site's own web and content roots.
+    ///
+    /// GetFullPath resolves "..", so a traversal collapses to its real target before the
+    /// comparison rather than sneaking through it.
+    /// </remarks>
+    private string? ResolveInsideSite(string filePath)
+    {
+        if (string.IsNullOrWhiteSpace(filePath)) return null;
+
+        var roots = new[] { _env.WebRootPath, _env.ContentRootPath }
+            .Where(r => !string.IsNullOrWhiteSpace(r))
+            .Select(r => Path.GetFullPath(r).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar))
+            .ToList();
+
+        if (roots.Count == 0) return null;
+
+        string full;
+        try
+        {
+            full = Path.IsPathRooted(filePath)
+                ? Path.GetFullPath(filePath)
+                : Path.GetFullPath(Path.Combine(roots[0], filePath.TrimStart('/', '\\')));
+        }
+        catch
+        {
+            // A malformed path is not worth distinguishing from one that is out of bounds.
+            return null;
+        }
+
+        foreach (var root in roots)
+        {
+            if (full.Equals(root, StringComparison.OrdinalIgnoreCase)) return full;
+            if (full.StartsWith(root + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
+                return full;
+        }
+
+        return null;
+    }
+
     public Task<ExifData?> ReadExifAsync(string filePath)
     {
-        if (!File.Exists(filePath))
+        var resolved = ResolveInsideSite(filePath);
+        if (resolved is null || !File.Exists(resolved))
             return Task.FromResult<ExifData?>(null);
+
+        filePath = resolved;
 
         try
         {

@@ -66,6 +66,9 @@ npm run build
 
 ## Changelog
 
+### 2.2.4 — 2026-08-22
+- You pick the logo from the media library instead of typing a URL. What gets stored is the file's site-relative path, so the login screen keeps working when the site moves domain.
+
 ### 2.2.3 — 2026-08-21
 - A failed request now says so in the dashboard. Previously the dashboard kept its previous (usually empty) state, so a refused or failed call looked identical to having no data.
 

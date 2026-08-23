@@ -29,6 +29,14 @@ const EXIF_FIELDS: { key: keyof ExifData; label: string; suffix?: string }[] = [
   { key: "gpsLongitude", label: "GPS Longitude" },
 ];
 
+/**
+ * Umbraco's built-in Image media type.
+ *
+ * The picker is filtered to it because EXIF is image metadata: offering the whole media
+ * library would let someone choose a PDF and get nothing back with no explanation.
+ */
+const IMAGE_MEDIA_TYPE = "CC07B313-0843-4AA8-BBDA-871C8DA728C8";
+
 @customElement("exif-dashboard")
 export class ExifDashboardElement extends UmbElementMixin(LitElement) {
   readonly #fetch = createAuthFetch(this);
@@ -172,12 +180,16 @@ export class ExifDashboardElement extends UmbElementMixin(LitElement) {
             <h3>Look up by Media Key</h3>
             <div class="lookup-form">
               <uui-form-layout-item>
-                <uui-label slot="label">Media Key (GUID)</uui-label>
-                <uui-input
-                  .value=${this._mediaKey}
-                  @input=${this._handleMediaKeyInput}
-                  placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-                ></uui-input>
+                <uui-label slot="label">Image</uui-label>
+                <umb-input-media
+                  .selection=${this._mediaKey ? [this._mediaKey] : []}
+                  .allowedContentTypeIds=${[IMAGE_MEDIA_TYPE]}
+                  max="1"
+                  @change=${(e: Event) => {
+                    const el = e.target as unknown as { selection?: string[] };
+                    this._mediaKey = el.selection?.[0] ?? "";
+                  }}
+                ></umb-input-media>
               </uui-form-layout-item>
               <uui-button
                 look="primary"
