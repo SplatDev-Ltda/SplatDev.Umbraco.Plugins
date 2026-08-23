@@ -1,0 +1,28 @@
+<div ng-controller="SplatDev.CopyValuePropertyEditorController as vm" class="copyvalue-editor">
+    <div class="umb-editor-row" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <input type="text" class="umb-property-editor-tiny" style="flex:1 1 260px;"
+               ng-model="model.value" ng-readonly="vm.readonly" />
+        <button type="button" class="btn btn-default"
+                ng-click="vm.copy()"
+                ng-disabled="vm.readonly || !vm.sources.length || !vm.preview">
+            {{vm.buttonLabel}}
+        </button>
+    </div>
+
+    <div ng-if="!vm.sources.length" class="alert alert-warning" style="margin-top:8px;">
+        No source properties are set. Add them to this data type's <code>sourceAliases</code>
+        — a comma-separated list of property aliases on the same item — and this button will
+        fill the field from them.
+    </div>
+
+    <div ng-if="vm.sources.length">
+        <p class="umb-property-editor-tiny" style="margin:6px 0 0;color:#6b7280;font-size:.83rem;">
+            Copies from <code ng-repeat="a in vm.sources">{{a}}<span ng-if="!$last">, </span></code>.
+        </p>
+        <div style="margin-top:8px;padding:8px 10px;border-radius:3px;background:#f6f8fa;font-size:.86rem;word-break:break-word;"
+             ng-class="{'text-muted': !vm.preview}">
+            <span ng-if="vm.preview">{{vm.preview}}</span>
+            <em ng-if="!vm.preview">Nothing to copy yet — those properties are empty.</em>
+        </div>
+    </div>
+</div>

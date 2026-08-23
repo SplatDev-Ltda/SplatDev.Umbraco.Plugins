@@ -1,15 +1,35 @@
 {
-  "javascript": ["/App_Plugins/CopyValue/angular/copyvalue.controller.js"],
+  "javascript": [
+    "/App_Plugins/CopyValue/angular/copyvalue.controller.js",
+    "/App_Plugins/CopyValue/angular/copyvalue.propertyeditor.controller.js"
+  ],
   "css": [],
-  "propertyEditors": [],
+  "propertyEditors": [
+    {
+      "alias": "SplatDev.CopyValue",
+      "name": "Copy Value",
+      "editor": {
+        "view": "/App_Plugins/CopyValue/angular/copyvalue.propertyeditor.html",
+        "valueType": "STRING"
+      },
+      "icon": "icon-documents",
+      "group": "Common"
+    }
+  ],
   "gridEditors": [],
   "dashboards": [
     {
       "alias": "CopyValue.Dashboard",
       "view": "/App_Plugins/CopyValue/angular/copyvalue.html",
-      "sections": ["settings"],
+      "sections": [
+        "settings"
+      ],
       "tab": "Copy Value",
-      "access": [{"grant": "admin"}]
+      "access": [
+        {
+          "grant": "admin"
+        }
+      ]
     }
   ]
 }
