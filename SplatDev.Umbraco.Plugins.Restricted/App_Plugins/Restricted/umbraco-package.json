@@ -20,6 +20,41 @@
           "match": "Umb.Section.Content"
         }
       ]
+    },
+    {
+      "type": "propertyEditorUi",
+      "alias": "SplatDev.PropertyEditorUi.Restricted",
+      "name": "Restrict Page",
+      "element": "/App_Plugins/Restricted/dist/restricted-property-editor.element.js",
+      "elementName": "restricted-property-editor",
+      "meta": {
+        "label": "Restrict Page",
+        "icon": "icon-lock",
+        "group": "common",
+        "propertyEditorSchemaAlias": "Umbraco.TextBox",
+        "settings": {
+          "properties": [
+            {
+              "alias": "memberGroups",
+              "label": "Default member groups",
+              "description": "Comma-separated group names used when no group is chosen on the page.",
+              "propertyEditorUiAlias": "Umb.PropertyEditorUi.TextBox"
+            },
+            {
+              "alias": "loginPage",
+              "label": "Login page",
+              "description": "Where an unauthenticated visitor is sent. Leave empty for Umbraco's default.",
+              "propertyEditorUiAlias": "Umb.PropertyEditorUi.TextBox"
+            },
+            {
+              "alias": "errorPage",
+              "label": "No-access page",
+              "description": "Where a signed-in member without access is sent.",
+              "propertyEditorUiAlias": "Umb.PropertyEditorUi.TextBox"
+            }
+          ]
+        }
+      }
     }
   ]
 }

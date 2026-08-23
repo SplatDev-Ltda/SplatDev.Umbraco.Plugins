@@ -46,35 +46,9 @@ public class BrazilStatesDataType(IServiceScopeFactory scopeFactory)
             Configuration = new DropDownFlexibleConfiguration()
             {
                 Multiple = false,
-                Items = [
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "Acre" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "Alagoas" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "Amapá" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "Amazonas" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "Bahia" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "Ceará" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "Distrito Federal" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "Espírito Santo" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "Goiás" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "Maranhão" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "Mato Grosso" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "Mato Grosso do Sul" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "Minas Gerais" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "Pará" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "Paraíba" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "Paraná" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "Pernambuco" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "Piauí" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "Rio de Janeiro" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "Rio Grande do Norte" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "Rio Grande do Sul" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "Rondônia" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "Roraima" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "Santa Catarina" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "São Paulo" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "Sergipe" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "Tocantins" }
-                ]
+                Items = BrazilStateNames.All
+                                .Select(name => new ValueListConfiguration.ValueListItem { Id = ++counter, Value = name })
+                                .ToList()
             }
         });
     }
@@ -82,16 +56,63 @@ public class BrazilStatesDataType(IServiceScopeFactory scopeFactory)
 #else
 using Microsoft.Extensions.DependencyInjection;
 
+using Umbraco.Cms.Core;
+using Umbraco.Cms.Core.Models;
+using Umbraco.Cms.Core.PropertyEditors;
+using Umbraco.Cms.Core.Serialization;
+using Umbraco.Cms.Core.Services;
+
 namespace SplatDev.Umbraco.DataTypes.BrazilStates;
 
-// Umbraco 17 uses Management API for data type creation — needs Umbraco 17 implementation
+/// <summary>
+/// Creates the Brazil States data type on Umbraco 17.
+/// </summary>
+/// <remarks>
+/// This branch used to be an empty stub:
+///
+///     // TODO: Implement via Umbraco 17 Management API
+///     public void Install() { }
+///
+/// So the package compiled, shipped and did nothing on Umbraco 17 — installing it
+/// created no data type, while the Umbraco 13 branch worked. The comment was also
+/// mistaken about needing the Management API: IDataTypeService is still the server-side
+/// way to do this, it just returns an attempt and takes the acting user's key now.
+/// </remarks>
 public class BrazilStatesDataType(IServiceScopeFactory scopeFactory)
 {
     private readonly IServiceScopeFactory _scopeFactory = scopeFactory;
+    private const string DataTypeName = "Brazil States";
 
     public void Install()
     {
-        // TODO: Implement via Umbraco 17 Management API
+        using var scope = _scopeFactory.CreateScope();
+        var dataTypeService = scope.ServiceProvider.GetRequiredService<IDataTypeService>();
+
+        // Creating it twice would fail on every boot, and Umbraco would report the error
+        // each time rather than settle.
+        var existing = dataTypeService.GetAsync(DataTypeName).GetAwaiter().GetResult();
+        if (existing is not null) return;
+
+        var editors = scope.ServiceProvider.GetRequiredService<PropertyEditorCollection>();
+        if (!editors.TryGet(Constants.PropertyEditors.Aliases.DropDownListFlexible, out var editor) || editor is null)
+        {
+            return;
+        }
+
+        var serializer = scope.ServiceProvider.GetRequiredService<IConfigurationEditorJsonSerializer>();
+
+        var dataType = new DataType(editor, serializer)
+        {
+            Name = DataTypeName,
+            DatabaseType = ValueStorageType.Ntext,
+            ConfigurationData = new Dictionary<string, object>
+            {
+                ["items"] = BrazilStateNames.All,
+                ["multiple"] = false,
+            },
+        };
+
+        dataTypeService.CreateAsync(dataType, Constants.Security.SuperUserKey).GetAwaiter().GetResult();
     }
 }
 #endif

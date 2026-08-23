@@ -8,7 +8,7 @@
       "alias": "UmbracoCms.CharLimit",
       "name": "Character Limit",
       "meta": {
-        "defaultPropertyEditorUiAlias": "Umb.PropertyEditorUi.TextBox"
+        "defaultPropertyEditorUiAlias": "SplatDev.PropertyEditorUi.CharLimit"
       }
     },
     {
@@ -28,6 +28,41 @@
           "match": "Umb.Section.Settings"
         }
       ]
+    },
+    {
+      "type": "propertyEditorUi",
+      "alias": "SplatDev.PropertyEditorUi.CharLimit",
+      "name": "Character Limit",
+      "element": "/App_Plugins/CharLimit/charlimit-property-editor.element.js",
+      "elementName": "charlimit-property-editor",
+      "meta": {
+        "label": "Character Limit",
+        "icon": "icon-cursor-text",
+        "group": "common",
+        "propertyEditorSchemaAlias": "UmbracoCms.CharLimit",
+        "settings": {
+          "properties": [
+            {
+              "alias": "maxChars",
+              "label": "Maximum characters",
+              "description": "The limit the field enforces.",
+              "propertyEditorUiAlias": "Umb.PropertyEditorUi.Integer"
+            },
+            {
+              "alias": "showCountdown",
+              "label": "Show remaining count",
+              "description": "Shows how many characters are left as you type.",
+              "propertyEditorUiAlias": "Umb.PropertyEditorUi.Toggle"
+            }
+          ],
+          "defaultData": [
+            {
+              "alias": "showCountdown",
+              "value": true
+            }
+          ]
+        }
+      }
     }
   ]
 }

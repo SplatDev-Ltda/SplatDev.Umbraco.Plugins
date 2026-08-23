@@ -62,6 +62,11 @@ storing the code while displaying the name needs a different property editor.
 
 ## Changelog
 
+### 1.1.0 — 2026-08-23
+- The Brazil States data type is created on Umbraco 17. The Umbraco 17 half of this package was an empty stub carrying a TODO, so installing it there created nothing at all while Umbraco 13 worked — the package shipped, compiled, and did nothing.
+- The comment claiming this needed the Management API was mistaken: IDataTypeService is still the way to do it server-side, it just returns an attempt and takes the acting user's key now.
+- The list of names now lives in one place used by both Umbraco versions, so they cannot drift apart.
+
 ### 1.0.1 — 2026-08-22
 - This package's README now reaches NuGet. The publish workflow discovered packages by a list of name patterns, and this one matched none of them, so it was never built or pushed by CI — the version on NuGet was placed there by hand before the README was wired up, and no release could refresh it. Discovery is now by prefix, so the package ships whenever the repo is tagged.
 

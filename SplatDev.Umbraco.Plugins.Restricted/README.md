@@ -62,6 +62,11 @@ This plugin uses Umbraco's own public access infrastructure — no additional da
 
 ## Changelog
 
+### 2.4.0 — 2026-08-23
+- You can restrict or unrestrict a page from the page itself. The plugin shipped a dashboard listing restricted nodes and nothing on the node, so protecting a page meant leaving it, finding it in a list somewhere else, and coming back.
+- The button writes Umbraco's own public access — the same entries the dashboard creates — so the page is protected everywhere, not only where this plugin renders. Choose the member group on the page, or set defaults on the data type.
+- Unrestricting asks first, since that is the direction that exposes something.
+
 ### 2.3.2 — 2026-08-21
 - Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.
 - A failed request now raises a notification instead of leaving the dashboard looking like there is simply no data.

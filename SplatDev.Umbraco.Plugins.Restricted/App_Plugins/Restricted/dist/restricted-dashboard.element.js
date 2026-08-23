@@ -1,52 +1,24 @@
-import { LitElement as N, html as o, css as O, state as d, customElement as S, nothing as $ } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as z } from "@umbraco-cms/backoffice/element-api";
+import { LitElement as E, html as s, css as R, state as u, customElement as C, nothing as f } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as T } from "@umbraco-cms/backoffice/element-api";
 import "@umbraco-cms/backoffice/document";
 import "@umbraco-cms/backoffice/member-group";
-import { UMB_AUTH_CONTEXT as D } from "@umbraco-cms/backoffice/auth";
-import { UMB_NOTIFICATION_CONTEXT as M } from "@umbraco-cms/backoffice/notification";
-function U(e) {
-  let t = null, i = null;
-  const n = e.consumeContext.bind(e), c = new Promise((u) => {
-    n(D, async (s) => {
-      var g;
-      try {
-        t = await ((g = s == null ? void 0 : s.getLatestToken) == null ? void 0 : g.call(s)) ?? null;
-      } catch {
-        t = null;
-      }
-      u();
-    }), setTimeout(u, 3e3);
-  });
-  return n(M, (u) => {
-    i = u;
-  }), async (u, s = {}) => {
-    await c;
-    const g = new Headers(s.headers);
-    t && !g.has("Authorization") && g.set("Authorization", `Bearer ${t}`);
-    const p = await fetch(u, { ...s, credentials: "same-origin", headers: g });
-    if (!p.ok) {
-      const v = p.status === 401 || p.status === 403, R = v ? "Not authorised" : "Could not load data", w = v ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${p.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${p.status}. Anything shown below may be incomplete.`;
-      console.error(`[SplatDev] ${p.status} from ${String(u)} — ${w}`), i == null || i.peek("danger", { data: { headline: R, message: w } });
-    }
-    return p;
-  };
-}
-var q = Object.defineProperty, G = Object.getOwnPropertyDescriptor, P = (e) => {
+import { c as A } from "./chunks/auth-fetch-BzMCmNwW.js";
+var D = Object.defineProperty, O = Object.getOwnPropertyDescriptor, v = (e) => {
   throw TypeError(e);
-}, h = (e, t, i, n) => {
-  for (var c = n > 1 ? void 0 : n ? G(t, i) : t, u = e.length - 1, s; u >= 0; u--)
-    (s = e[u]) && (c = (n ? s(t, i, c) : s(c)) || c);
-  return n && c && q(t, i, c), c;
-}, k = (e, t, i) => t.has(e) || P("Cannot " + i), f = (e, t, i) => (k(e, t, "read from private field"), i ? i.call(e) : t.get(e)), y = (e, t, i) => t.has(e) ? P("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, i), l = (e, t, i) => (k(e, t, "access private method"), i), b, a, _, m, x, T, E, C, A;
-let r = class extends z(N) {
+}, r = (e, t, i, n) => {
+  for (var c = n > 1 ? void 0 : n ? O(t, i) : t, g = e.length - 1, m; g >= 0; g--)
+    (m = e[g]) && (c = (n ? m(t, i, c) : m(c)) || c);
+  return n && c && D(t, i, c), c;
+}, x = (e, t, i) => t.has(e) || v("Cannot " + i), b = (e, t, i) => (x(e, t, "read from private field"), i ? i.call(e) : t.get(e)), _ = (e, t, i) => t.has(e) ? v("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, i), l = (e, t, i) => (x(e, t, "access private method"), i), p, a, d, h, y, $, w, P, k;
+let o = class extends T(E) {
   constructor() {
-    super(...arguments), y(this, a), y(this, b, U(this)), this._restricted = [], this._loading = !0, this._saving = !1, this._node = [], this._loginPage = [], this._errorPage = [], this._groups = [], this._result = null, this._api = "/umbraco/api/restricted";
+    super(...arguments), _(this, a), _(this, p, A(this)), this._restricted = [], this._loading = !0, this._saving = !1, this._node = [], this._loginPage = [], this._errorPage = [], this._groups = [], this._result = null, this._api = "/umbraco/api/restricted";
   }
   connectedCallback() {
-    super.connectedCallback(), l(this, a, _).call(this);
+    super.connectedCallback(), l(this, a, d).call(this);
   }
   render() {
-    return o`
+    return s`
       <h1>Restricted content</h1>
       <p class="description">
         Require membership of a group to view a page. Protection applies to the page and
@@ -54,10 +26,10 @@ let r = class extends z(N) {
         content tree.
       </p>
 
-      ${l(this, a, C).call(this)}
+      ${l(this, a, P).call(this)}
 
       <uui-box headline="Protected pages" style="margin-top:16px;">
-        ${this._loading ? o`<uui-loader></uui-loader>` : this._restricted.length === 0 ? o`<p class="empty">Nothing is protected yet.</p>` : o`
+        ${this._loading ? s`<uui-loader></uui-loader>` : this._restricted.length === 0 ? s`<p class="empty">Nothing is protected yet.</p>` : s`
                 <uui-table>
                   <uui-table-head>
                     <uui-table-head-cell>Page</uui-table-head-cell>
@@ -66,31 +38,31 @@ let r = class extends z(N) {
                     <uui-table-head-cell>Access denied</uui-table-head-cell>
                     <uui-table-head-cell></uui-table-head-cell>
                   </uui-table-head>
-                  ${this._restricted.map((e) => l(this, a, A).call(this, e))}
+                  ${this._restricted.map((e) => l(this, a, k).call(this, e))}
                 </uui-table>
               `}
       </uui-box>
     `;
   }
 };
-b = /* @__PURE__ */ new WeakMap();
+p = /* @__PURE__ */ new WeakMap();
 a = /* @__PURE__ */ new WeakSet();
-_ = async function() {
+d = async function() {
   this._loading = !0;
   try {
-    const e = await f(this, b).call(this, `${this._api}/GetRestrictedNodes`, { credentials: "same-origin" });
+    const e = await b(this, p).call(this, `${this._api}/GetRestrictedNodes`, { credentials: "same-origin" });
     e.ok && (this._restricted = await e.json());
   } finally {
     this._loading = !1;
   }
 };
-m = function(e) {
+h = function(e) {
   return (e.target.selection ?? String(e.target.value ?? "").split(",")).filter(Boolean);
 };
-x = async function() {
+y = async function() {
   this._saving = !0, this._result = null;
   try {
-    const e = await f(this, b).call(this, `${this._api}/RestrictNode`, {
+    const e = await b(this, p).call(this, `${this._api}/RestrictNode`, {
       method: "POST",
       credentials: "same-origin",
       headers: { "Content-Type": "application/json" },
@@ -101,32 +73,32 @@ x = async function() {
         memberGroups: this._groups
       })
     });
-    this._result = await e.json(), e.ok && (this._node = [], this._groups = [], await l(this, a, _).call(this));
+    this._result = await e.json(), e.ok && (this._node = [], this._groups = [], await l(this, a, d).call(this));
   } catch (e) {
     this._result = { success: !1, message: `The request failed: ${e.message}` };
   } finally {
     this._saving = !1;
   }
 };
-T = async function(e) {
+$ = async function(e) {
   if (confirm(`Make "${e.node.name}" public again? Everything beneath it becomes public too.`)) {
     this._result = null;
     try {
-      const t = await f(this, b).call(this, `${this._api}/UnrestrictNode?node=${encodeURIComponent(e.node.key)}`, {
+      const t = await b(this, p).call(this, `${this._api}/UnrestrictNode?node=${encodeURIComponent(e.node.key)}`, {
         method: "DELETE",
         credentials: "same-origin"
       });
-      this._result = await t.json(), await l(this, a, _).call(this);
+      this._result = await t.json(), await l(this, a, d).call(this);
     } catch (t) {
       this._result = { success: !1, message: `The request failed: ${t.message}` };
     }
   }
 };
-E = function(e) {
+w = function(e) {
   this._node = [e.node.key], this._loginPage = e.loginPage ? [e.loginPage.key] : [], this._errorPage = e.errorPage ? [e.errorPage.key] : [], this._groups = e.memberGroups.filter((t) => t.key !== "00000000-0000-0000-0000-000000000000").map((t) => t.key), this._result = null, this.scrollIntoView({ behavior: "smooth", block: "start" });
 };
-C = function() {
-  return o`
+P = function() {
+  return s`
       <uui-box headline="Protect a page">
         <div class="field">
           <label for="node">Page to protect</label>
@@ -135,7 +107,7 @@ C = function() {
             id="node"
             max="1"
             .selection=${this._node}
-            @change=${(e) => this._node = l(this, a, m).call(this, e)}>
+            @change=${(e) => this._node = l(this, a, h).call(this, e)}>
           </umb-input-document>
         </div>
 
@@ -145,7 +117,7 @@ C = function() {
           <umb-input-member-group
             id="groups"
             .selection=${this._groups}
-            @change=${(e) => this._groups = l(this, a, m).call(this, e)}>
+            @change=${(e) => this._groups = l(this, a, h).call(this, e)}>
           </umb-input-member-group>
         </div>
 
@@ -156,7 +128,7 @@ C = function() {
             id="login"
             max="1"
             .selection=${this._loginPage}
-            @change=${(e) => this._loginPage = l(this, a, m).call(this, e)}>
+            @change=${(e) => this._loginPage = l(this, a, h).call(this, e)}>
           </umb-input-document>
         </div>
 
@@ -167,7 +139,7 @@ C = function() {
             id="error"
             max="1"
             .selection=${this._errorPage}
-            @change=${(e) => this._errorPage = l(this, a, m).call(this, e)}>
+            @change=${(e) => this._errorPage = l(this, a, h).call(this, e)}>
           </umb-input-document>
         </div>
 
@@ -175,51 +147,51 @@ C = function() {
           <uui-button
             look="primary"
             ?disabled=${this._saving || this._node.length === 0}
-            @click=${l(this, a, x)}>
+            @click=${l(this, a, y)}>
             ${this._saving ? "Saving…" : "Protect page"}
           </uui-button>
         </div>
 
-        ${this._result ? o`<div class="msg ${this._result.success ? "success" : "error"}">
+        ${this._result ? s`<div class="msg ${this._result.success ? "success" : "error"}">
                    ${this._result.message}
-                 </div>` : $}
+                 </div>` : f}
       </uui-box>
     `;
 };
-A = function(e) {
+k = function(e) {
   var t, i;
-  return o`
+  return s`
       <uui-table-row>
         <uui-table-cell>
           <strong>${e.node.name}</strong>
-          ${e.node.path ? o`<div class="crumb">${e.node.path}</div>` : $}
+          ${e.node.path ? s`<div class="crumb">${e.node.path}</div>` : f}
         </uui-table-cell>
         <uui-table-cell>
           <div class="groups">
-            ${e.memberGroups.map((n) => n.key === "00000000-0000-0000-0000-000000000000" ? o`<uui-tag look="warning" title="This group no longer exists">
+            ${e.memberGroups.map((n) => n.key === "00000000-0000-0000-0000-000000000000" ? s`<uui-tag look="warning" title="This group no longer exists">
                          ${n.name}
-                       </uui-tag>` : o`<uui-tag look="secondary">${n.name}</uui-tag>`)}
+                       </uui-tag>` : s`<uui-tag look="secondary">${n.name}</uui-tag>`)}
           </div>
         </uui-table-cell>
         <uui-table-cell>
-          ${((t = e.loginPage) == null ? void 0 : t.name) ?? o`<span class="missing">missing</span>`}
+          ${((t = e.loginPage) == null ? void 0 : t.name) ?? s`<span class="missing">missing</span>`}
         </uui-table-cell>
         <uui-table-cell>
-          ${((i = e.errorPage) == null ? void 0 : i.name) ?? o`<span class="missing">missing</span>`}
+          ${((i = e.errorPage) == null ? void 0 : i.name) ?? s`<span class="missing">missing</span>`}
         </uui-table-cell>
         <uui-table-cell style="text-align:right;white-space:nowrap;">
-          <uui-button look="secondary" compact label="Edit" @click=${() => l(this, a, E).call(this, e)}>
+          <uui-button look="secondary" compact label="Edit" @click=${() => l(this, a, w).call(this, e)}>
             Edit
           </uui-button>
           <uui-button look="secondary" color="danger" compact label="Remove"
-            @click=${() => l(this, a, T).call(this, e)}>
+            @click=${() => l(this, a, $).call(this, e)}>
             Remove
           </uui-button>
         </uui-table-cell>
       </uui-table-row>
     `;
 };
-r.styles = O`
+o.styles = R`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
     p.description { color: var(--uui-color-text-alt, #6b7280); margin: 0 0 24px; max-width: 60ch; }
@@ -236,35 +208,35 @@ r.styles = O`
     .empty { color: var(--uui-color-text-alt, #6b7280); padding: 16px 0; }
     uui-table { width: 100%; }
   `;
-h([
-  d()
-], r.prototype, "_restricted", 2);
-h([
-  d()
-], r.prototype, "_loading", 2);
-h([
-  d()
-], r.prototype, "_saving", 2);
-h([
-  d()
-], r.prototype, "_node", 2);
-h([
-  d()
-], r.prototype, "_loginPage", 2);
-h([
-  d()
-], r.prototype, "_errorPage", 2);
-h([
-  d()
-], r.prototype, "_groups", 2);
-h([
-  d()
-], r.prototype, "_result", 2);
-r = h([
-  S("restricted-dashboard")
-], r);
-const H = r;
+r([
+  u()
+], o.prototype, "_restricted", 2);
+r([
+  u()
+], o.prototype, "_loading", 2);
+r([
+  u()
+], o.prototype, "_saving", 2);
+r([
+  u()
+], o.prototype, "_node", 2);
+r([
+  u()
+], o.prototype, "_loginPage", 2);
+r([
+  u()
+], o.prototype, "_errorPage", 2);
+r([
+  u()
+], o.prototype, "_groups", 2);
+r([
+  u()
+], o.prototype, "_result", 2);
+o = r([
+  C("restricted-dashboard")
+], o);
+const W = o;
 export {
-  r as RestrictedDashboardElement,
-  H as default
+  o as RestrictedDashboardElement,
+  W as default
 };
