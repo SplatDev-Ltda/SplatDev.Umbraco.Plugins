@@ -24,7 +24,7 @@
     {
       "type": "localization",
       "alias": "UmbracoCms.CopyValue.Localization.En",
-      "name": "CopyValue — English",
+      "name": "CopyValue \u2014 English",
       "meta": {
         "culture": "en",
         "localizations": {
@@ -35,6 +35,61 @@
             "copyvalue_source": "Source",
             "copyvalue_target": "Target"
           }
+        }
+      }
+    },
+    {
+      "type": "propertyEditorUi",
+      "alias": "SplatDev.PropertyEditorUi.CopyValue",
+      "name": "Copy Value",
+      "element": "/App_Plugins/CopyValue/dist/copyvalue-property-editor.element.js",
+      "elementName": "copyvalue-property-editor",
+      "meta": {
+        "label": "Copy Value",
+        "icon": "icon-documents",
+        "group": "common",
+        "propertyEditorSchemaAlias": "Umbraco.TextBox",
+        "settings": {
+          "properties": [
+            {
+              "alias": "sourceAliases",
+              "label": "Copy from",
+              "description": "Property aliases on the same item to copy from, comma separated. Several are joined with the separator below.",
+              "propertyEditorUiAlias": "Umb.PropertyEditorUi.TextBox"
+            },
+            {
+              "alias": "separator",
+              "label": "Separator",
+              "description": "Placed between values when copying from more than one property.",
+              "propertyEditorUiAlias": "Umb.PropertyEditorUi.TextBox"
+            },
+            {
+              "alias": "buttonLabel",
+              "label": "Button label",
+              "description": "Wording on the button.",
+              "propertyEditorUiAlias": "Umb.PropertyEditorUi.TextBox"
+            },
+            {
+              "alias": "overwrite",
+              "label": "Overwrite without asking",
+              "description": "Off by default: copying over an existing value asks first.",
+              "propertyEditorUiAlias": "Umb.PropertyEditorUi.Toggle"
+            }
+          ],
+          "defaultData": [
+            {
+              "alias": "separator",
+              "value": " "
+            },
+            {
+              "alias": "buttonLabel",
+              "value": "Copy from"
+            },
+            {
+              "alias": "overwrite",
+              "value": false
+            }
+          ]
         }
       }
     }

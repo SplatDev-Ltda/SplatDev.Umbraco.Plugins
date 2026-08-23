@@ -36,73 +36,9 @@ public class USStatesDataType(IServiceScopeFactory scopeFactory)
             Configuration = new DropDownFlexibleConfiguration()
             {
                 Multiple = false,
-                Items = [
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "ALABAMA" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "ALASKA" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "AMERICAN SAMOA" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "ARIZONA" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "ARKANSAS" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "CALIFORNIA" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "CAROLINE ISLANDS" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "COLORADO" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "CONNECTICUT" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "DELAWARE" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "DISTRICT OF COLUMBIA" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "FEDERATED STATE" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "FLORIDA" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "GEORGIA" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "GUAM" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "HAWAII" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "IDAHO" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "ILLINOIS" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "INDIANA" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "IOWA" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "KANSAS" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "KENTUCKY" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "LOUISIANA" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "MAINE" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "MARIANA ISLANDS" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "MARSHALL ISLANDS" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "MARYLAND" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "MASSACHUSETTS" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "MICHIGAN" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "MINNESOTA" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "MISSISSIPPI" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "MISSOURI" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "MONTANA" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "NEBRASKA" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "NEVADA" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "NEW HAMPSHIRE" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "NEW JERSEY" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "NEW MEXICO" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "NEW YORK" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "NORTH CAROLINA" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "NORTH DAKOTA" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "NORTHWEST TERRITORIES" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "NUNAVUT" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "OHIO" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "OKLAHOMA" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "OREGON" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "PENNSYLVANIA" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "PUERTO RICO" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "RHODE ISLAND" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "SOUTH CAROLINA" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "SOUTH DAKOTA" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "TENNESSEE" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "TEXAS" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "UTAH" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "VERMONT" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "VIRGIN ISLANDS" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "VIRGINIA" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "WASHINGTON" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "WEST VIRGINIA" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "WISCONSIN" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "WYOMING" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "YUKON TERRITORY" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "ARMED FORCES - EUROPE" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "ARMED FORCES - AMERICAS" },
-                    new ValueListConfiguration.ValueListItem { Id = ++counter, Value = "ARMED FORCES - PACIFIC" }
-                ]
+                Items = UsStateNames.All
+                                .Select(name => new ValueListConfiguration.ValueListItem { Id = ++counter, Value = name })
+                                .ToList()
             }
         });
     }
@@ -110,16 +46,63 @@ public class USStatesDataType(IServiceScopeFactory scopeFactory)
 #else
 using Microsoft.Extensions.DependencyInjection;
 
+using Umbraco.Cms.Core;
+using Umbraco.Cms.Core.Models;
+using Umbraco.Cms.Core.PropertyEditors;
+using Umbraco.Cms.Core.Serialization;
+using Umbraco.Cms.Core.Services;
+
 namespace SplatDev.Umbraco.DataTypes.USStates;
 
-// Umbraco 17 uses Management API for data type creation — needs Umbraco 17 implementation
+/// <summary>
+/// Creates the US States data type on Umbraco 17.
+/// </summary>
+/// <remarks>
+/// This branch used to be an empty stub:
+///
+///     // TODO: Implement via Umbraco 17 Management API
+///     public void Install() { }
+///
+/// So the package compiled, shipped and did nothing on Umbraco 17 — installing it
+/// created no data type, while the Umbraco 13 branch worked. The comment was also
+/// mistaken about needing the Management API: IDataTypeService is still the server-side
+/// way to do this, it just returns an attempt and takes the acting user's key now.
+/// </remarks>
 public class USStatesDataType(IServiceScopeFactory scopeFactory)
 {
     private readonly IServiceScopeFactory _scopeFactory = scopeFactory;
+    private const string DataTypeName = "US States";
 
     public void Install()
     {
-        // TODO: Implement via Umbraco 17 Management API
+        using var scope = _scopeFactory.CreateScope();
+        var dataTypeService = scope.ServiceProvider.GetRequiredService<IDataTypeService>();
+
+        // Creating it twice would fail on every boot, and Umbraco would report the error
+        // each time rather than settle.
+        var existing = dataTypeService.GetAsync(DataTypeName).GetAwaiter().GetResult();
+        if (existing is not null) return;
+
+        var editors = scope.ServiceProvider.GetRequiredService<PropertyEditorCollection>();
+        if (!editors.TryGet(Constants.PropertyEditors.Aliases.DropDownListFlexible, out var editor) || editor is null)
+        {
+            return;
+        }
+
+        var serializer = scope.ServiceProvider.GetRequiredService<IConfigurationEditorJsonSerializer>();
+
+        var dataType = new DataType(editor, serializer)
+        {
+            Name = DataTypeName,
+            DatabaseType = ValueStorageType.Ntext,
+            ConfigurationData = new Dictionary<string, object>
+            {
+                ["items"] = UsStateNames.All,
+                ["multiple"] = false,
+            },
+        };
+
+        dataTypeService.CreateAsync(dataType, Constants.Security.SuperUserKey).GetAwaiter().GetResult();
     }
 }
 #endif

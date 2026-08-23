@@ -39,6 +39,7 @@
     <ProjectReference Include="../../SplatDev.Umbraco.Authorization.Ldap/SplatDev.Umbraco.Authorization.Ldap.csproj" PrivateAssets="none" />
     <ProjectReference Include="../../SplatDev.Umbraco.Common/SplatDev.Umbraco.Common.csproj" PrivateAssets="none" />
     <ProjectReference Include="../../SplatDev.Umbraco.DataTypes.USStates/SplatDev.Umbraco.DataTypes.USStates.csproj" PrivateAssets="none" />
+    <ProjectReference Include="../../SplatDev.Umbraco.DataTypes.BrazilStates/SplatDev.Umbraco.DataTypes.BrazilStates.csproj" PrivateAssets="none" />
     <ProjectReference Include="../../SplatDev.Umbraco.EntityFramework/SplatDev.Umbraco.EntityFramework.csproj" PrivateAssets="none" />
     <ProjectReference Include="../../SplatDev.Umbraco.Examine/SplatDev.Umbraco.Examine.csproj" PrivateAssets="none" />
     <ProjectReference Include="../../SplatDev.Umbraco.Markup/SplatDev.Umbraco.Markup.csproj" PrivateAssets="none" />

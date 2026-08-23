@@ -63,6 +63,11 @@ Add a CharLimit data type to any text property on a document type. The property 
 
 ## Changelog
 
+### 1.3.0 — 2026-08-23
+- The character limit is enforced on Umbraco 17. The package registered its schema there but no editor UI for it, and the schema pointed at Umbraco's plain text box — so a Character Limit property rendered as an ordinary text box with no limit and no counter. The plugin's whole purpose did nothing on 17, quietly, while continuing to work on 13.
+- Behaviour matches the Umbraco 13 editor rather than improving on it, so a site upgrading does not find the field behaving differently: same maximum, same countdown, same wording.
+- A data type configured on Umbraco 13 keeps its settings — the limit is read whether it was stored as a number or a string.
+
 ### 1.2.2 — 2026-08-21
 - Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.
 - A failed request now raises a notification instead of leaving the dashboard looking like there is simply no data.

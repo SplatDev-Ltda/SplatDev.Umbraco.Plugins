@@ -88,6 +88,13 @@ int count = await _copyValueService.BulkCopyAsync(mappingId, pairs, publish: fal
 
 ## Changelog
 
+### 2.3.0 — 2026-08-23
+- The Copy Value property editor exists. The plugin is named for it and had never registered one: `package.manifest` carried `"propertyEditors": []` — an empty array — and the Umbraco 17 manifest registered only a dashboard, so there was no Copy Value editor to choose when creating a data type on either version.
+- It puts a button on a property that fills it from one or more **other properties on the same item**, chosen by alias in the data type. Several sources are joined with a separator you set.
+- The values are read live from the item being edited, so it works before anything is saved — you copy a title into a meta description while writing it, not after publishing.
+- It shows what it will produce before you press it, and asks before replacing a value that is already there unless the data type says otherwise.
+- This is separate from the dashboard, which copies values between two content *nodes*. The editor copies between properties of one node.
+
 ### 2.2.4 — 2026-08-22
 - The mappings table is created again. The DbContext pinned one column to `nvarchar(max)` — SQL Server's spelling — which EF emitted verbatim into the SQLite DDL, so creating the table failed with `near "max": syntax error`. The migration aborted, the table was never created, and every dashboard request returned 500 with `no such table: CopyMappings` on the database Umbraco's installer offers by default.
 
