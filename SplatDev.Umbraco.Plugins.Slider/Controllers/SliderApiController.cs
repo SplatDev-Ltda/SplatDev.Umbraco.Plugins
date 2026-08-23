@@ -24,23 +24,23 @@ public class SliderApiController : ControllerBase
     [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetSliders()
-        => Ok(await _service.GetSlidersAsync());
+        => Ok((await _service.GetSlidersAsync()).Select(SliderDto.From));
 
     [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetSlider(int id)
     {
         var slider = await _service.GetSliderAsync(id);
-        return slider is null ? NotFound() : Ok(slider);
+        return slider is null ? NotFound() : Ok(SliderDto.From(slider));
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateSlider([FromBody] SliderConfig slider)
-        => Ok(await _service.CreateSliderAsync(slider));
+        => Ok(SliderDto.From(await _service.CreateSliderAsync(slider)));
 
     [HttpPut]
     public async Task<IActionResult> UpdateSlider([FromBody] SliderConfig slider)
-        => Ok(await _service.UpdateSliderAsync(slider));
+        => Ok(SliderDto.From(await _service.UpdateSliderAsync(slider)));
 
     [HttpDelete]
     public async Task<IActionResult> DeleteSlider(int id)
@@ -52,15 +52,15 @@ public class SliderApiController : ControllerBase
     [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetSlides(int sliderId)
-        => Ok(await _service.GetSlidesAsync(sliderId));
+        => Ok((await _service.GetSlidesAsync(sliderId)).Select(SlideDto.From));
 
     [HttpPost]
     public async Task<IActionResult> AddSlide([FromBody] Slide slide)
-        => Ok(await _service.AddSlideAsync(slide));
+        => Ok(SlideDto.From(await _service.AddSlideAsync(slide)));
 
     [HttpPut]
     public async Task<IActionResult> UpdateSlide([FromBody] Slide slide)
-        => Ok(await _service.UpdateSlideAsync(slide));
+        => Ok(SlideDto.From(await _service.UpdateSlideAsync(slide)));
 
     [HttpDelete]
     public async Task<IActionResult> DeleteSlide(int id)

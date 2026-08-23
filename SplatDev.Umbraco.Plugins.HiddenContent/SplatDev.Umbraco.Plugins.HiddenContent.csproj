@@ -1,11 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
     <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <!-- The views live in the assembly, not in loose files: nothing packs loose
+         .cshtml, and MVC resolves views from the consuming site's content root. -->
+    <EnableDefaultContentItems>false</EnableDefaultContentItems>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>SplatDev.Umbraco.Plugins.HiddenContent</PackageId>
-    <Version>2.4.0</Version>
+    <Version>2.5.0</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <Authors>SplatDev</Authors>
@@ -36,9 +40,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="App_Plugins\**\*" />
-    <None Include="Views\**\*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <Content Include="Views\**\*.cshtml" Pack="false" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,12 +1,19 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
     <ContentTargetFolders>.</ContentTargetFolders>
     <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+    <!-- The Razor SDK globs Content by default, which collides with the explicit
+         App_Plugins Content item below. The explicit item is the one that matters:
+         it sets the PackagePath the backoffice assets have to land at. -->
+    <EnableDefaultContentItems>false</EnableDefaultContentItems>
+    <!-- Without this a Razor class library compiles Blazor components only, and the
+         ViewComponent's Default.cshtml is silently left out of the assembly. -->
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>SplatDev.Umbraco.Plugins.Faqs</PackageId>
-    <Version>2.2.3</Version>
+    <Version>2.4.0</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <Authors>SplatDev</Authors>
@@ -43,9 +50,10 @@
 
   <ItemGroup>
     <EmbeddedResource Include="App_Plugins\**\*" />
-    <None Include="Views\**\*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <!-- Compiled into the assembly, so a consumer gets the view by referencing the
+         package. Copying loose .cshtml files into the consuming site does not work:
+         nothing packs them, and MVC resolves views from the content root, not bin. -->
+    <Content Include="Views\**\*.cshtml" Pack="false" />
   </ItemGroup>
 
   <ItemGroup>

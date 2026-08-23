@@ -12,10 +12,15 @@ public class FaqsViewComponent : ViewComponent
         _service = service;
     }
 
+    /// <param name="categoryId">
+    /// A category by id, which is what the FAQ Category property editor stores. Without
+    /// it the picker chose a value nothing on the front end could act on.
+    /// </param>
     public async Task<IViewComponentResult> InvokeAsync(
         string? categorySlug = null,
         bool publishedOnly = true,
-        string? searchQuery = null)
+        string? searchQuery = null,
+        int? categoryId = null)
     {
         if (!string.IsNullOrWhiteSpace(searchQuery))
         {
@@ -24,6 +29,13 @@ public class FaqsViewComponent : ViewComponent
             ViewBag.Categories = await _service.GetCategoriesAsync(publishedOnly);
             ViewBag.IsSearch = true;
             return View(results);
+        }
+
+        if (categoryId is > 0)
+        {
+            ViewBag.Categories = await _service.GetCategoriesAsync(publishedOnly);
+            ViewBag.IsSearch = false;
+            return View(await _service.GetItemsAsync(categoryId, publishedOnly));
         }
 
         if (!string.IsNullOrWhiteSpace(categorySlug))

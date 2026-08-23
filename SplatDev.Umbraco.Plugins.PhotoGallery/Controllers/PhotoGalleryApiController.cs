@@ -24,23 +24,23 @@ public class PhotoGalleryApiController : ControllerBase
     [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetAlbums()
-        => Ok(await _service.GetAlbumsAsync());
+        => Ok((await _service.GetAlbumsAsync()).Select(AlbumDto.From));
 
     [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetAlbum(int id)
     {
         var album = await _service.GetAlbumAsync(id);
-        return album is null ? NotFound() : Ok(album);
+        return album is null ? NotFound() : Ok(AlbumDto.From(album));
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateAlbum([FromBody] Album album)
-        => Ok(await _service.CreateAlbumAsync(album));
+        => Ok(AlbumDto.From(await _service.CreateAlbumAsync(album)));
 
     [HttpPut]
     public async Task<IActionResult> UpdateAlbum([FromBody] Album album)
-        => Ok(await _service.UpdateAlbumAsync(album));
+        => Ok(AlbumDto.From(await _service.UpdateAlbumAsync(album)));
 
     [HttpDelete]
     public async Task<IActionResult> DeleteAlbum(int id)
@@ -52,11 +52,11 @@ public class PhotoGalleryApiController : ControllerBase
     [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetPhotos(int albumId)
-        => Ok(await _service.GetPhotosAsync(albumId));
+        => Ok((await _service.GetPhotosAsync(albumId)).Select(PhotoDto.From));
 
     [HttpPost]
     public async Task<IActionResult> AddPhoto([FromBody] Photo photo)
-        => Ok(await _service.AddPhotoAsync(photo));
+        => Ok(PhotoDto.From(await _service.AddPhotoAsync(photo)));
 
     [HttpDelete]
     public async Task<IActionResult> DeletePhoto(int id)
