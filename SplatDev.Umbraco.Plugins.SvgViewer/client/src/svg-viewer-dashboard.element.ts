@@ -12,6 +12,16 @@ interface SvgInfo {
   height: number;
 }
 
+/**
+ * Umbraco's built-in Vector Graphics media type.
+ *
+ * The picker is filtered to it because this viewer only renders SVG: offering the whole
+ * media library would let someone choose a JPEG and get an empty panel back. Read from
+ * the database rather than assumed — it is stable across installs, being one of
+ * Umbraco's own types.
+ */
+const VECTOR_GRAPHICS_MEDIA_TYPE = "C4B1EFCF-A9D5-41C4-9621-E9D273B52A9C";
+
 @customElement("svg-viewer-dashboard")
 export class SvgViewerDashboard extends UmbElementMixin(LitElement) {
   readonly #fetch = createAuthFetch(this);
@@ -150,12 +160,16 @@ export class SvgViewerDashboard extends UmbElementMixin(LitElement) {
       <uui-box headline="SVG Viewer">
         <div class="controls">
           <uui-form-layout-item>
-            <uui-label slot="label">Media Key</uui-label>
-            <uui-input
-              .value=${this._mediaKey}
-              @input=${(e: InputEvent) => (this._mediaKey = (e.target as HTMLInputElement).value)}
-              placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-            ></uui-input>
+            <uui-label slot="label">SVG</uui-label>
+            <umb-input-media
+              .selection=${this._mediaKey ? [this._mediaKey] : []}
+              .allowedContentTypeIds=${[VECTOR_GRAPHICS_MEDIA_TYPE]}
+              max="1"
+              @change=${(e: Event) => {
+                const el = e.target as unknown as { selection?: string[] };
+                this._mediaKey = el.selection?.[0] ?? "";
+              }}
+            ></umb-input-media>
           </uui-form-layout-item>
           <uui-button look="primary" label="Load" @click=${this._loadSingle} ?disabled=${this._loading}
             >Load</uui-button

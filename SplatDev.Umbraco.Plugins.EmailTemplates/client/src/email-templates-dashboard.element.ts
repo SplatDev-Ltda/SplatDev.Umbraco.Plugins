@@ -8,6 +8,7 @@ import {
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
 import { createAuthFetch } from "./auth-fetch";
+import { absoluteMediaUrlForKey } from "./media-url";
 
 interface EmailTemplate {
   id: number;
@@ -34,6 +35,9 @@ interface EmailStyle {
 
 const API_TEMPLATES = "/umbraco/management/api/v1/email-templates";
 const API_STYLE = "/umbraco/management/api/v1/email-style";
+
+const IMAGE_MEDIA_TYPE = "CC07B313-0843-4AA8-BBDA-871C8DA728C8";
+const VECTOR_GRAPHICS_MEDIA_TYPE = "C4B1EFCF-A9D5-41C4-9621-E9D273B52A9C";
 
 @customElement("email-templates-dashboard")
 export class EmailTemplatesDashboardElement extends UmbElementMixin(LitElement) {
@@ -594,16 +598,27 @@ export class EmailTemplatesDashboardElement extends UmbElementMixin(LitElement) 
           </div>
 
           <div class="form-field">
-            <label for="style-logo">Logo URL</label>
+            <label for="style-logo">Logo</label>
+            <umb-input-media
+              .selection=${this._logoKeys}
+              .allowedContentTypeIds=${[IMAGE_MEDIA_TYPE, VECTOR_GRAPHICS_MEDIA_TYPE]}
+              max="1"
+              @change=${this._pickLogo}
+            ></umb-input-media>
             <uui-input
               id="style-logo"
               .value=${this._styleForm.logoUrl}
               placeholder="https://example.com/logo.png"
-              @input=${(e: InputEvent) =>
-                (this._styleForm.logoUrl = (
-                  e.target as HTMLInputElement
-                ).value)}
+              @input=${(e: InputEvent) => {
+                this._logoKeys = [];
+                this._styleForm.logoUrl = (e.target as HTMLInputElement).value;
+              }}
             ></uui-input>
+            <small>
+              Pick from the media library, or paste a URL if the image is hosted
+              elsewhere. It must be absolute — a mail client renders this on someone
+              else's machine and has no site to resolve a relative path against.
+            </small>
           </div>
 
           <div class="form-field">
@@ -708,6 +723,21 @@ export class EmailTemplatesDashboardElement extends UmbElementMixin(LitElement) 
     return false;
   }
 
+
+  @state() private _logoKeys: string[] = [];
+
+  /** Fills the logo URL from the media library, absolute so mail clients can load it. */
+  private _pickLogo = async (e: Event): Promise<void> => {
+    const el = e.target as unknown as { selection?: string[] };
+    this._logoKeys = el.selection ?? [];
+    const key = this._logoKeys[0];
+    if (!key) {
+      this._styleForm = { ...this._styleForm, logoUrl: "" };
+      return;
+    }
+    const url = await absoluteMediaUrlForKey(this.#fetch, key);
+    if (url) this._styleForm = { ...this._styleForm, logoUrl: url };
+  };
 
   override render() {
     return html`

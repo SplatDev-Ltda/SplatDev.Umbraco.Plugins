@@ -1,44 +1,45 @@
-import { LitElement as f, html as u, unsafeHTML as y, css as w, state as h, customElement as b } from "@umbraco-cms/backoffice/external/lit";
+import { LitElement as y, html as u, unsafeHTML as w, css as b, state as h, customElement as x } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin as $ } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as S } from "@umbraco-cms/backoffice/auth";
-import { UMB_NOTIFICATION_CONTEXT as k } from "@umbraco-cms/backoffice/notification";
-function z(e) {
+import { UMB_AUTH_CONTEXT as C } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as S } from "@umbraco-cms/backoffice/notification";
+function A(e) {
   let t = null, a = null;
-  const n = e.consumeContext.bind(e), s = new Promise((r) => {
-    n(S, async (i) => {
+  const n = e.consumeContext.bind(e), r = new Promise((s) => {
+    n(C, async (i) => {
       var d;
       try {
         t = await ((d = i == null ? void 0 : i.getLatestToken) == null ? void 0 : d.call(i)) ?? null;
       } catch {
         t = null;
       }
-      r();
-    }), setTimeout(r, 3e3);
+      s();
+    }), setTimeout(s, 3e3);
   });
-  return n(k, (r) => {
-    a = r;
-  }), async (r, i = {}) => {
-    await s;
+  return n(S, (s) => {
+    a = s;
+  }), async (s, i = {}) => {
+    await r;
     const d = new Headers(i.headers);
     t && !d.has("Authorization") && d.set("Authorization", `Bearer ${t}`);
-    const l = await fetch(r, { ...i, credentials: "same-origin", headers: d });
+    const l = await fetch(s, { ...i, credentials: "same-origin", headers: d });
     if (!l.ok) {
-      const g = l.status === 401 || l.status === 403, _ = g ? "Not authorised" : "Could not load data", m = g ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${l.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${l.status}. Anything shown below may be incomplete.`;
-      console.error(`[SplatDev] ${l.status} from ${String(r)} — ${m}`), a == null || a.peek("danger", { data: { headline: _, message: m } });
+      const m = l.status === 401 || l.status === 403, f = m ? "Not authorised" : "Could not load data", g = m ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${l.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${l.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${l.status} from ${String(s)} — ${g}`), a == null || a.peek("danger", { data: { headline: f, message: g } });
     }
     return l;
   };
 }
-var C = Object.defineProperty, T = Object.getOwnPropertyDescriptor, x = (e) => {
+var E = Object.defineProperty, T = Object.getOwnPropertyDescriptor, _ = (e) => {
   throw TypeError(e);
 }, c = (e, t, a, n) => {
-  for (var s = n > 1 ? void 0 : n ? T(t, a) : t, r = e.length - 1, i; r >= 0; r--)
-    (i = e[r]) && (s = (n ? i(t, a, s) : i(s)) || s);
-  return n && s && C(t, a, s), s;
-}, A = (e, t, a) => t.has(e) || x("Cannot " + a), v = (e, t, a) => (A(e, t, "read from private field"), a ? a.call(e) : t.get(e)), E = (e, t, a) => t.has(e) ? x("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), p;
-let o = class extends $(f) {
+  for (var r = n > 1 ? void 0 : n ? T(t, a) : t, s = e.length - 1, i; s >= 0; s--)
+    (i = e[s]) && (r = (n ? i(t, a, r) : i(r)) || r);
+  return n && r && E(t, a, r), r;
+}, k = (e, t, a) => t.has(e) || _("Cannot " + a), v = (e, t, a) => (k(e, t, "read from private field"), a ? a.call(e) : t.get(e)), z = (e, t, a) => t.has(e) ? _("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), p;
+const G = "C4B1EFCF-A9D5-41C4-9621-E9D273B52A9C";
+let o = class extends $(y) {
   constructor() {
-    super(...arguments), E(this, p, z(this)), this._mediaKey = "", this._items = [], this._loading = !1, this._error = "";
+    super(...arguments), z(this, p, A(this)), this._mediaKey = "", this._items = [], this._loading = !1, this._error = "";
   }
   async _loadSingle() {
     this._error = "", this._items = [], this._loading = !0;
@@ -70,7 +71,7 @@ let o = class extends $(f) {
         ${this._items.map(
       (e) => u`
             <div class="svg-card">
-              <div class="svg-preview">${y(e.sanitizedContent)}</div>
+              <div class="svg-preview">${w(e.sanitizedContent)}</div>
               <div class="svg-meta">
                 <strong>${e.fileName}</strong>
                 ${e.width && e.height ? u` &mdash; ${e.width}&times;${e.height}` : ""}
@@ -92,12 +93,17 @@ let o = class extends $(f) {
       <uui-box headline="SVG Viewer">
         <div class="controls">
           <uui-form-layout-item>
-            <uui-label slot="label">Media Key</uui-label>
-            <uui-input
-              .value=${this._mediaKey}
-              @input=${(e) => this._mediaKey = e.target.value}
-              placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-            ></uui-input>
+            <uui-label slot="label">SVG</uui-label>
+            <umb-input-media
+              .selection=${this._mediaKey ? [this._mediaKey] : []}
+              .allowedContentTypeIds=${[G]}
+              max="1"
+              @change=${(e) => {
+      var a;
+      const t = e.target;
+      this._mediaKey = ((a = t.selection) == null ? void 0 : a[0]) ?? "";
+    }}
+            ></umb-input-media>
           </uui-form-layout-item>
           <uui-button look="primary" label="Load" @click=${this._loadSingle} ?disabled=${this._loading}
             >Load</uui-button
@@ -112,7 +118,7 @@ let o = class extends $(f) {
   }
 };
 p = /* @__PURE__ */ new WeakMap();
-o.styles = w`
+o.styles = b`
     :host {
       display: block;
       padding: var(--uui-size-space-5, 20px);
@@ -182,11 +188,11 @@ c([
   h()
 ], o.prototype, "_error", 2);
 o = c([
-  b("svg-viewer-dashboard")
+  x("svg-viewer-dashboard")
 ], o);
-const N = o;
+const I = o;
 export {
   o as SvgViewerDashboard,
-  N as default
+  I as default
 };
 //# sourceMappingURL=svg-viewer-dashboard.js.map

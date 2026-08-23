@@ -3,6 +3,7 @@ import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
 import { createAuthFetch } from "./auth-fetch";
+import { mediaUrlForKey } from "./media-url";
 
 interface CustomLoginSettings {
   brandName: string;
@@ -12,6 +13,9 @@ interface CustomLoginSettings {
   supportEmail: string;
   enableSso: boolean;
 }
+
+const IMAGE_MEDIA_TYPE = "CC07B313-0843-4AA8-BBDA-871C8DA728C8";
+const VECTOR_GRAPHICS_MEDIA_TYPE = "C4B1EFCF-A9D5-41C4-9621-E9D273B52A9C";
 
 @customElement("customlogin-dashboard")
 export class CustomLoginDashboardElement extends UmbElementMixin(LitElement) {
@@ -108,6 +112,28 @@ export class CustomLoginDashboardElement extends UmbElementMixin(LitElement) {
     }
   }
 
+  @state() private _logoKeys: string[] = [];
+
+  /**
+   * Stores the picked image's URL.
+   *
+   * The setting is a URL because the login screen renders it directly, so the picker's
+   * media key is resolved to the file's site-relative path. Relative rather than
+   * absolute: the login screen is served from this same site, and an absolute URL would
+   * bake in the host and break the moment the site moves domain.
+   */
+  private _pickLogo = async (e: Event): Promise<void> => {
+    const el = e.target as unknown as { selection?: string[] };
+    this._logoKeys = el.selection ?? [];
+    const key = this._logoKeys[0];
+    if (!key) {
+      this._set("logoUrl", "");
+      return;
+    }
+    const url = await mediaUrlForKey(this.#fetch, key);
+    if (url) this._set("logoUrl", url);
+  };
+
   private _set<K extends keyof CustomLoginSettings>(key: K, value: CustomLoginSettings[K]) {
     this._settings = { ...this._settings, [key]: value };
   }
@@ -155,10 +181,22 @@ export class CustomLoginDashboardElement extends UmbElementMixin(LitElement) {
             placeholder="My Company" />
         </div>
         <div class="field-row">
-          <label>Logo URL</label>
-          <input type="url" .value=${this._settings.logoUrl}
-            @input=${(e: InputEvent) => this._set("logoUrl", (e.target as HTMLInputElement).value)}
-            placeholder="https://example.com/logo.png" />
+          <label>Logo</label>
+          <div>
+            <umb-input-media
+              .selection=${this._logoKeys}
+              .allowedContentTypeIds=${[IMAGE_MEDIA_TYPE, VECTOR_GRAPHICS_MEDIA_TYPE]}
+              max="1"
+              @change=${this._pickLogo}
+            ></umb-input-media>
+            ${this._settings.logoUrl
+              ? html`<p class="hint">
+                  Using <code>${this._settings.logoUrl}</code>
+                  <uui-button compact look="secondary" label="Clear the logo"
+                    @click=${() => { this._logoKeys = []; this._set("logoUrl", ""); }}>Clear</uui-button>
+                </p>`
+              : html`<p class="hint">No logo chosen — the default Umbraco logo is shown.</p>`}
+          </div>
         </div>
         <div class="field-row">
           <label>Background Color</label>

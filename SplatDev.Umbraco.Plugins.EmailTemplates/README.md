@@ -50,6 +50,9 @@ Add to `appsettings.json`:
 
 ## Changelog
 
+### 1.2.4 — 2026-08-22
+- You can pick the logo from the media library instead of typing a URL, and the field still accepts a pasted URL for an image hosted elsewhere. A picked image is stored as an absolute URL on purpose — a mail client renders it on someone else's machine and has no site to resolve a relative path against.
+
 ### 1.2.3 — 2026-08-21
 - A failed request now says so in the dashboard. Previously the dashboard kept its previous (usually empty) state, so a refused or failed call looked identical to having no data.
 
