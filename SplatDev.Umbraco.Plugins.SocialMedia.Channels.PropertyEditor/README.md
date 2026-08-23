@@ -36,6 +36,17 @@ This package configures presentation data only. It does not connect accounts, pu
 
 ## Changelog
 
+### 1.1.1 — 2026-08-23
+
+Halves the package. The icon themes were both embedded in the assembly and packed as
+loose content, so every image shipped twice and the package reached 13 MB — large enough
+that NuGet held 1.1.0 in validation and never published it. The themes are still embedded
+and still served at runtime; only the loose-file copy loses them.
+
+Also drops 67 files that came along with the downloaded icon sets — `info.txt`, author
+`.xml` files, and a `Web.config` per theme folder. A `Web.config` under `App_Plugins` is
+not inert on IIS: it applies to that folder.
+
 ### 1.1.0 — 2026-08-23
 
 The property editor can now be used. It declared a property editor schema that had no

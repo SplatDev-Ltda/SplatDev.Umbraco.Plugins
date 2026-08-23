@@ -11,6 +11,12 @@ env:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    # Pushing to GitHub Packages needs packages:write. Without this block the job gets
+    # the repository's default token permissions, which are read-only, and every push
+    # answers 403.
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - uses: actions/checkout@v4
@@ -144,12 +150,34 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # The feed owner has to be the owner of this repository: GITHUB_TOKEN is scoped
+          # to it and nothing else. This was hardcoded to SplatDev-Ltda while the repo
+          # lives under splatdevtech, so every push answered 403 for v2.7.0 and every
+          # release before it.
+          OWNER="${{ github.repository_owner }}"
+          FEED="https://nuget.pkg.github.com/$OWNER/index.json"
+          echo "Pushing to $FEED"
+
+          PUSHED=(); FAILED=()
           for pkg in ./nupkgs/*.nupkg; do
-            echo "Pushing $pkg to GitHub Packages..."
-            dotnet nuget push "$pkg" \
-              --api-key "$GITHUB_TOKEN" \
-              --source https://nuget.pkg.github.com/SplatDev-Ltda/index.json \
-              --skip-duplicate \
-              --no-symbols \
-              || echo "::warning::GitHub Packages push failed for $pkg (may need org config)"
+            filename=$(basename "$pkg")
+            if dotnet nuget push "$pkg" \
+                 --api-key "$GITHUB_TOKEN" \
+                 --source "$FEED" \
+                 --skip-duplicate \
+                 --no-symbols; then
+              PUSHED+=("$filename")
+            else
+              FAILED+=("$filename")
+            fi
           done
+
+          # Counting outcomes rather than attempts. This step used to swallow every
+          # failure into a ::warning:: and let the job report success, so the entire
+          # GitHub Packages half of the release did nothing and nobody could tell.
+          echo "=== GitHub Packages Summary ==="
+          echo "Pushed (${#PUSHED[@]})"
+          if [ ${#FAILED[@]} -gt 0 ]; then
+            echo "::error::GitHub Packages push failed for ${#FAILED[@]} package(s): ${FAILED[*]}"
+            exit 1
+          fi
