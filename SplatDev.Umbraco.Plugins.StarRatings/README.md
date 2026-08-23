@@ -50,6 +50,10 @@ npm run build
 
 ## Changelog
 
+### 2.3.0 — 2026-08-23
+- A page's rating is visible while editing it. The plugin only had a dashboard of top-rated content, so the rating for the page in front of you was somewhere else entirely.
+- The editor is deliberately read-only. The ratings belong to visitors, and a box an editor could type a number into would be a box for falsifying them — the average shown to the public would stop meaning what it says.
+
 ### 2.2.3 — 2026-08-21
 - README no longer tells you to scaffold EF Core migrations by hand — the plugin creates its own tables on first start, on SQL Server or SQLite.
 

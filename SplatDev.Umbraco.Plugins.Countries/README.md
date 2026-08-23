@@ -83,6 +83,14 @@ var results = db.Fetch<Country>("WHERE enShortName LIKE @0", $"%{query}%");
 | `CountryMigration` | Creates table and bulk-inserts from CSV (skips if exists) |
 | `CountrySchemaMigrationComposer` | Registers the migration plan via Umbraco's `Upgrader` |
 
+## Changelog
+
+### 2.1.0 — 2026-08-23
+- The country list is actually populated. The migration read from `C:\Temp\countries.csv` — a hardcoded absolute path on someone's machine. No install has that file, and on Linux the drive letter is not even meaningful, so the read threw, the migration never completed, and Umbraco retried and failed it on every boot with the table left empty.
+- The CSV that ships beside the code was never referenced by the project either, so pointing at it on disk would not have helped: it was not in the package. The list now travels inside the assembly.
+- There is a Country property editor. The plugin created a countries table and gave nobody a way to use it — no controller, no UI, no data type — so editors typed country names by hand, which is how a site ends up with USA, U.S.A. and United States in one field.
+- Which code is stored is configurable: two-letter, three-letter, numeric or the name.
+
 ## License
 
 MIT © [SplatDev](https://github.com/splatdevtech)

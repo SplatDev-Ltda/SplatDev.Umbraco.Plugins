@@ -19,6 +19,27 @@
         "pathname": "live-video",
         "label": "Live Video"
       }
+    },
+    {
+      "type": "propertyEditorSchema",
+      "alias": "SplatDev.LiveVideo",
+      "name": "Live Video",
+      "meta": {
+        "defaultPropertyEditorUiAlias": "SplatDev.PropertyEditorUi.LiveVideo"
+      }
+    },
+    {
+      "type": "propertyEditorUi",
+      "alias": "SplatDev.PropertyEditorUi.LiveVideo",
+      "name": "Live Video",
+      "element": "/App_Plugins/LiveVideo/dist/livevideo-property-editor.element.js",
+      "elementName": "livevideo-property-editor",
+      "meta": {
+        "label": "Live Video",
+        "icon": "icon-video",
+        "group": "media",
+        "propertyEditorSchemaAlias": "SplatDev.LiveVideo"
+      }
     }
   ]
 }

@@ -61,6 +61,12 @@ Supported platforms: `youtube`, `twitch`, `vimeo`.
 - No caching of embed URLs or platform availability checks
 - No support for custom embed parameters (width, height, autoplay, mute)
 
+## Changelog
+
+### 2.2.0 — 2026-08-23
+- Choosing a stream is now a property on the page, with the embed resolved before you publish. The endpoint takes a platform and a channel and only a dashboard called it, so a page's stream lived in a plain text field with the platform implied.
+- The value is stored as `platform:channel`, which stays unambiguous when the two are edited separately.
+
 ## License
 
 MIT © [SplatDev](https://github.com/SplatDev-Ltda)

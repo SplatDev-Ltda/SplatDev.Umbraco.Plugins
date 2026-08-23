@@ -1,11 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
 		<TargetFrameworks>net8.0;net10.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<PackageId>SplatDev.Umbraco.Plugins.Countries</PackageId>
-		<Version>2.0.2</Version>
+		<Version>2.1.0</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
 		<Authors>SplatDev</Authors>
@@ -14,12 +15,14 @@
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.11" />
 		<PackageReference Include="Umbraco.Cms.Core" Version="13.12.0" />
 		<PackageReference Include="Umbraco.Cms.Infrastructure" Version="13.12.0" />
 		<PackageReference Include="Umbraco.Cms.Web.Common" Version="13.12.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.6" />
 		<PackageReference Include="Umbraco.Cms.Core" Version="17.3.4" />
 		<PackageReference Include="Umbraco.Cms.Infrastructure" Version="17.3.4" />
 		<PackageReference Include="Umbraco.Cms.Web.Common" Version="17.3.4" />
@@ -35,4 +38,12 @@
     <None Include="icon.png" Pack="true" PackagePath="\" />
     <None Include="umbraco-marketplace.json" Pack="true" PackagePath="\" Condition="Exists('umbraco-marketplace.json')" />
   </ItemGroup>
+  <!-- The country list travels inside the assembly. It used to be read from a hardcoded
+       C:\Temp path that no install has, and the copy in this folder was not packed at all. -->
+  <ItemGroup>
+    <EmbeddedResource Include="App_Data\countries.csv" />
+    <EmbeddedResource Include="App_Plugins\**\*" />
+    <Content Include="App_Plugins\**\*" Pack="true" PackagePath="App_Plugins" />
+  </ItemGroup>
+
 </Project>

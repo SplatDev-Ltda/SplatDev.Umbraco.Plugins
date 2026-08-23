@@ -1,0 +1,37 @@
+{
+  "$schema": "../../umbraco-package-schema.json",
+  "name": "SplatDev Countries",
+  "version": "1.0.0",
+  "extensions": [
+    {
+      "type": "propertyEditorSchema",
+      "alias": "SplatDev.Countries",
+      "name": "Country",
+      "meta": { "defaultPropertyEditorUiAlias": "SplatDev.PropertyEditorUi.Countries" }
+    },
+    {
+      "type": "propertyEditorUi",
+      "alias": "SplatDev.PropertyEditorUi.Countries",
+      "name": "Country",
+      "element": "/App_Plugins/Countries/dist/countries-property-editor.element.js",
+      "elementName": "countries-property-editor",
+      "meta": {
+        "label": "Country",
+        "icon": "icon-globe",
+        "group": "pickers",
+        "propertyEditorSchemaAlias": "SplatDev.Countries",
+        "settings": {
+          "properties": [
+            {
+              "alias": "storeValue",
+              "label": "Value to store",
+              "description": "alpha2 (US), alpha3 (USA), name (United States) or numeric (840).",
+              "propertyEditorUiAlias": "Umb.PropertyEditorUi.TextBox"
+            }
+          ],
+          "defaultData": [{ "alias": "storeValue", "value": "alpha2" }]
+        }
+      }
+    }
+  ]
+}

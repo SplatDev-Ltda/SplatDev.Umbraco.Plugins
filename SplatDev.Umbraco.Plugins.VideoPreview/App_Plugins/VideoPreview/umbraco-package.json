@@ -19,6 +19,27 @@
         "pathname": "video-preview",
         "label": "Video Preview"
       }
+    },
+    {
+      "type": "propertyEditorSchema",
+      "alias": "SplatDev.VideoPreview",
+      "name": "Video Preview",
+      "meta": {
+        "defaultPropertyEditorUiAlias": "SplatDev.PropertyEditorUi.VideoPreview"
+      }
+    },
+    {
+      "type": "propertyEditorUi",
+      "alias": "SplatDev.PropertyEditorUi.VideoPreview",
+      "name": "Video Preview",
+      "element": "/App_Plugins/VideoPreview/dist/videopreview-property-editor.element.js",
+      "elementName": "videopreview-property-editor",
+      "meta": {
+        "label": "Video Preview",
+        "icon": "icon-video",
+        "group": "media",
+        "propertyEditorSchemaAlias": "SplatDev.VideoPreview"
+      }
     }
   ]
 }
