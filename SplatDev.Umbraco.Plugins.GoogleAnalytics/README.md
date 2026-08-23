@@ -47,6 +47,12 @@ The service reads the following keys:
 - `POST /umbraco/api/analytics/SaveSettings`
 - `GET /umbraco/api/analytics/GetPageViews?measurementId=...` (currently returns an empty collection; no GA Data API credentials are used)
 
+## Changelog
+
+### 2.2.0 — 2026-08-23
+
+The Umbraco Marketplace listing now carries this plugin's screenshots. The listing keeps its own screenshot list rather than reading the README, and this one was empty — so the entry showed no images at all.
+
 ## License
 
 MIT © [SplatDev](https://github.com/SplatDev-Ltda)

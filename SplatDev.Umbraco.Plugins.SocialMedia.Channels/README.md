@@ -77,6 +77,10 @@ fetch('/umbraco/api/SocialChannelsApi/SchedulePost', {
 
 ## Changelog
 
+### 2.3.0 — 2026-08-23
+
+The Umbraco Marketplace listing now carries this plugin's screenshots. The listing keeps its own screenshot list rather than reading the README, and this one was empty — so the entry showed no images at all.
+
 ### 2.2.2 — 2026-08-21
 - Access tokens are no longer sent to the browser. GetChannels and AddChannel returned the stored entity, which carries AccessToken and RefreshToken, so every connected account's OAuth credentials were serialised into the dashboard's JSON. They now return a summary that says whether a token exists and whether it has expired, and nothing more.
 - The dashboard reaches all six operations it always had: list, connect and disconnect a channel, and list, schedule and remove a post. It previously made no requests at all.

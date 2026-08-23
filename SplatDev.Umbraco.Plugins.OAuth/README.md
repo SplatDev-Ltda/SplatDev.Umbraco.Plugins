@@ -84,6 +84,12 @@ Authentication happens via browser redirects — the OAuth flow is handled by AS
 - No API endpoints for front-end consumption; authentication is strictly browser-based
 - Member account linking (connecting multiple social accounts to one Umbraco member) is not supported
 
+## Changelog
+
+### 2.2.0 — 2026-08-23
+
+Rebuilds the backoffice bundle so the shipped JavaScript matches the source it is built from.
+
 ## License
 
 MIT © [SplatDev](https://github.com/SplatDev-Ltda)

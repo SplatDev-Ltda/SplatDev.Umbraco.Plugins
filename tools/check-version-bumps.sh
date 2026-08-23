@@ -30,8 +30,17 @@ for dir in $(git diff --name-only "$TAG"..HEAD 2>/dev/null \
   # Removing a development node_modules symlink from source control is the case that
   # prompted this: nothing under node_modules is packed, so bumping would publish an
   # identical package purely to satisfy this check.
+  #
+  # client/ is the same case. No .csproj includes it — the backoffice bundle reaches the
+  # package as the built output committed under App_Plugins/, so editing a .ts without
+  # rebuilding ships nothing and rebuilding shows up as an App_Plugins change that this
+  # check still catches. docs/screenshots/ likewise: READMEs reference those images by
+  # absolute URL rather than packing them. docs/ is not excluded wholesale, because
+  # WhatsApp packs its icon from docs/brand/.
   shipping=$(git diff --name-only "$TAG"..HEAD -- "$dir" 2>/dev/null \
-             | grep -vE '(^|/)node_modules(/|$)' | wc -l)
+             | grep -vE '(^|/)node_modules(/|$)' \
+             | grep -vE '(^|/)client/' \
+             | grep -vE '(^|/)docs/screenshots/' | wc -l)
   [ "$shipping" -eq 0 ] && continue
 
   now=$(grep -oP '(?<=<Version>)[^<]+' "$csproj" | head -1)

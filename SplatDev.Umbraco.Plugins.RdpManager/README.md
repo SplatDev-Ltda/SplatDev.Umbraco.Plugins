@@ -66,6 +66,10 @@ Manage RDP connections through the backoffice dashboard. Each connection stores 
 
 ## Changelog
 
+### 2.5.0 — 2026-08-23
+
+The Umbraco Marketplace listing now carries this plugin's screenshots. The listing keeps its own screenshot list rather than reading the README, and this one was empty — so the entry showed no images at all.
+
 ### 2.4.0 — 2026-08-22
 - Connections can be filled in from your directory. Search Active Directory, an LDAP server or Entra ID for a person and take their login and domain straight into the connection, instead of typing them and hoping they match what the host expects.
 - Accounts can be created from the dashboard, when a site allows it. The dialog takes the details a directory needs — login, names, e-mail, department, job title, telephone — and reports plainly when an account already exists, showing which one it found so you can use it.

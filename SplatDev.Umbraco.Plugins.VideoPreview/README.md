@@ -70,6 +70,12 @@ fetch('/umbraco/api/videopreview/GetVideoInfo?url=https://www.youtube.com/watch?
 
 ## Changelog
 
+### 2.3.0 — 2026-08-23
+
+The property editor can now be used. Its manifest declared a property editor schema with no server-side editor behind it, so Umbraco refused to create a data type for it with "The targeted property editor was not found". It now stores its value with a schema the server actually provides.
+
+The Umbraco Marketplace listing now carries this plugin's screenshots. The listing keeps its own screenshot list rather than reading the README, and this one was empty — so the entry showed no images at all.
+
 ### 2.2.0 — 2026-08-23
 - A video URL is now a property editor that shows the thumbnail the site will actually use. The plugin turned YouTube, Vimeo and Dailymotion links into thumbnails and shipped that as a dashboard you paste a URL into — a page's video URL was an ordinary text field, and whether it resolved to anything was discovered later, on the front end.
 - A link the plugin does not understand says so while you are editing, instead of silently producing no thumbnail.

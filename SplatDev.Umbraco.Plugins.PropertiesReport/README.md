@@ -52,6 +52,12 @@ var contentTypeReport = _propertiesReportService.GetByContentType("article");
 - No caching; iterates all content types on every request
 - Unordered property scan (O(n*m) complexity across groups)
 
+## Changelog
+
+### 2.3.0 — 2026-08-23
+
+The Umbraco Marketplace listing now carries this plugin's screenshots. The listing keeps its own screenshot list rather than reading the README, and this one was empty — so the entry showed no images at all.
+
 ## License
 
 MIT © [SplatDev](https://github.com/SplatDev-Ltda)

@@ -80,6 +80,10 @@ window.location.href = paymentUrl;
 
 ## Changelog
 
+### 2.2.0 — 2026-08-23
+
+The Umbraco Marketplace listing now carries this plugin's screenshots. The listing keeps its own screenshot list rather than reading the README, and this one was empty — so the entry showed no images at all.
+
 ### 2.1.7 — 2026-08-22
 - The dashboard renders. It threw while loading — Lit's `css` tag rejects an interpolated plain string, and the brand colours were interpolated as strings — so the custom element was never defined and the panel came up empty on every install.
 - The status no longer claims a connection it has not made. It read "Conectado" whenever the plugin's own config endpoint answered, which it does with nothing configured at all, so an untouched install reported a live production connection. It now reports whether credentials are present: "Configurado" or "Não configurado".

@@ -67,6 +67,12 @@ Supported platforms: `youtube`, `twitch`, `vimeo`.
 
 ## Changelog
 
+### 2.3.0 — 2026-08-23
+
+The property editor can now be used. Its manifest declared a property editor schema with no server-side editor behind it, so Umbraco refused to create a data type for it with "The targeted property editor was not found". It now stores its value with a schema the server actually provides.
+
+The Umbraco Marketplace listing now carries this plugin's screenshots. The listing keeps its own screenshot list rather than reading the README, and this one was empty — so the entry showed no images at all.
+
 ### 2.2.0 — 2026-08-23
 - Choosing a stream is now a property on the page, with the embed resolved before you publish. The endpoint takes a platform and a channel and only a dashboard called it, so a page's stream lived in a plain text field with the platform implied.
 - The value is stored as `platform:channel`, which stays unambiguous when the two are edited separately.

@@ -93,6 +93,12 @@ var results = db.Fetch<Country>("WHERE enShortName LIKE @0", $"%{query}%");
 
 ## Changelog
 
+### 2.2.0 — 2026-08-23
+
+The property editor can now be used. Its manifest declared a property editor schema with no server-side editor behind it, so Umbraco refused to create a data type for it with "The targeted property editor was not found". It now stores its value with a schema the server actually provides.
+
+The Umbraco Marketplace listing now carries this plugin's screenshots. The listing keeps its own screenshot list rather than reading the README, and this one was empty — so the entry showed no images at all.
+
 ### 2.1.0 — 2026-08-23
 - The country list is actually populated. The migration read from `C:\Temp\countries.csv` — a hardcoded absolute path on someone's machine. No install has that file, and on Linux the drive letter is not even meaningful, so the read threw, the migration never completed, and Umbraco retried and failed it on every boot with the table left empty.
 - The CSV that ships beside the code was never referenced by the project either, so pointing at it on disk would not have helped: it was not in the package. The list now travels inside the assembly.

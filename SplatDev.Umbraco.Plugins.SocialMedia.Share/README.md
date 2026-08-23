@@ -71,6 +71,10 @@ fetch('/umbraco/api/ShareApi/GetShareLinks?pageUrl=' + encodeURIComponent(locati
 
 ## Changelog
 
+### 2.2.0 — 2026-08-23
+
+The Umbraco Marketplace listing now carries this plugin's screenshots. The listing keeps its own screenshot list rather than reading the README, and this one was empty — so the entry showed no images at all.
+
 ### 2.1.4 — 2026-08-21
 - README now shows a screenshot of the dashboard.
 

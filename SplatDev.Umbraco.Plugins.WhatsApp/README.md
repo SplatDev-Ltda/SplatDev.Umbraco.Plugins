@@ -195,6 +195,12 @@ dotnet test --filter "Category=Integration"
 | Templates view is empty | `BusinessAccountId` not set, or the token lacks `whatsapp_business_management`. |
 | Webhooks return 401 | `AppSecret` doesn't match the Meta app secret. |
 
+## Changelog
+
+### 3.5.0 — 2026-08-23
+
+The Umbraco Marketplace listing now shows every screenshot for this plugin, not just the dashboard. The listing keeps its own screenshot list rather than reading the README.
+
 ## License
 
 MIT © [SplatDev](https://github.com/SplatDev-Ltda)
