@@ -3,14 +3,17 @@ import { defineConfig } from "vite";
 export default defineConfig({
   build: {
     lib: {
-      entry: "src/star-ratings-dashboard.element.ts",
+      entry: {
+        "star-ratings-dashboard.element": "src/star-ratings-dashboard.element.ts",
+        "starratings-property-editor.element": "src/starratings-property-editor.element.ts",
+      },
       formats: ["es"],
-      fileName: () => "star-ratings-dashboard.element.js",
     },
     outDir: "../App_Plugins/StarRatings/dist",
     emptyOutDir: true,
     rollupOptions: {
       external: [/^@umbraco/],
+      output: { entryFileNames: "[name].js", chunkFileNames: "chunks/[name]-[hash].js" },
     },
   },
 });

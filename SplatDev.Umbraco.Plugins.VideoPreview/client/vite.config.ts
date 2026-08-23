@@ -3,14 +3,17 @@ import { defineConfig } from "vite";
 export default defineConfig({
   build: {
     lib: {
-      entry: "src/dashboard.element.ts",
+      entry: {
+        "dashboard": "src/dashboard.element.ts",
+        "videopreview-property-editor.element": "src/videopreview-property-editor.element.ts",
+      },
       formats: ["es"],
-      fileName: () => "dashboard.js",
     },
     outDir: "../App_Plugins/VideoPreview/dist",
     emptyOutDir: true,
     rollupOptions: {
       external: [/^@umbraco/],
+      output: { entryFileNames: "[name].js", chunkFileNames: "chunks/[name]-[hash].js" },
     },
   },
 });

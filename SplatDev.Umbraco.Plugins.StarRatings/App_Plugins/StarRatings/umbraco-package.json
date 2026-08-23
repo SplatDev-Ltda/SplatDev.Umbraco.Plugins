@@ -20,6 +20,27 @@
           "match": "Umb.Section.Settings"
         }
       ]
+    },
+    {
+      "type": "propertyEditorSchema",
+      "alias": "SplatDev.StarRatings",
+      "name": "Star Rating",
+      "meta": {
+        "defaultPropertyEditorUiAlias": "SplatDev.PropertyEditorUi.StarRatings"
+      }
+    },
+    {
+      "type": "propertyEditorUi",
+      "alias": "SplatDev.PropertyEditorUi.StarRatings",
+      "name": "Star Rating",
+      "element": "/App_Plugins/StarRatings/dist/starratings-property-editor.element.js",
+      "elementName": "starratings-property-editor",
+      "meta": {
+        "label": "Star Rating",
+        "icon": "icon-favorite",
+        "group": "common",
+        "propertyEditorSchemaAlias": "SplatDev.StarRatings"
+      }
     }
   ]
 }

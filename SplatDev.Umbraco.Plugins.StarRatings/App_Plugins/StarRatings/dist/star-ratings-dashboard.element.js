@@ -1,44 +1,16 @@
-import { LitElement as m, html as c, css as v, state as h, customElement as y } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as w } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as $ } from "@umbraco-cms/backoffice/auth";
-import { UMB_NOTIFICATION_CONTEXT as T } from "@umbraco-cms/backoffice/notification";
-function C(e) {
-  let t = null, a = null;
-  const l = e.consumeContext.bind(e), s = new Promise((o) => {
-    l($, async (r) => {
-      var u;
-      try {
-        t = await ((u = r == null ? void 0 : r.getLatestToken) == null ? void 0 : u.call(r)) ?? null;
-      } catch {
-        t = null;
-      }
-      o();
-    }), setTimeout(o, 3e3);
-  });
-  return l(T, (o) => {
-    a = o;
-  }), async (o, r = {}) => {
-    await s;
-    const u = new Headers(r.headers);
-    t && !u.has("Authorization") && u.set("Authorization", `Bearer ${t}`);
-    const i = await fetch(o, { ...r, credentials: "same-origin", headers: u });
-    if (!i.ok) {
-      const b = i.status === 401 || i.status === 403, f = b ? "Not authorised" : "Could not load data", _ = b ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${i.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${i.status}. Anything shown below may be incomplete.`;
-      console.error(`[SplatDev] ${i.status} from ${String(o)} — ${_}`), a == null || a.peek("danger", { data: { headline: f, message: _ } });
-    }
-    return i;
-  };
-}
-var R = Object.defineProperty, k = Object.getOwnPropertyDescriptor, g = (e) => {
-  throw TypeError(e);
-}, d = (e, t, a, l) => {
-  for (var s = l > 1 ? void 0 : l ? k(t, a) : t, o = e.length - 1, r; o >= 0; o--)
-    (r = e[o]) && (s = (l ? r(t, a, s) : r(s)) || s);
-  return l && s && R(t, a, s), s;
-}, E = (e, t, a) => t.has(e) || g("Cannot " + a), x = (e, t, a) => (E(e, t, "read from private field"), a ? a.call(e) : t.get(e)), A = (e, t, a) => t.has(e) ? g("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), p;
-let n = class extends w(m) {
+import { LitElement as p, html as o, css as _, state as u, customElement as b } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as g } from "@umbraco-cms/backoffice/element-api";
+import { c as v } from "./chunks/auth-fetch-BzMCmNwW.js";
+var f = Object.defineProperty, m = Object.getOwnPropertyDescriptor, h = (t) => {
+  throw TypeError(t);
+}, i = (t, e, a, s) => {
+  for (var r = s > 1 ? void 0 : s ? m(e, a) : e, n = t.length - 1, c; n >= 0; n--)
+    (c = t[n]) && (r = (s ? c(e, a, r) : c(r)) || r);
+  return s && r && f(e, a, r), r;
+}, y = (t, e, a) => e.has(t) || h("Cannot " + a), x = (t, e, a) => (y(t, e, "read from private field"), a ? a.call(t) : e.get(t)), w = (t, e, a) => e.has(t) ? h("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, a), d;
+let l = class extends g(p) {
   constructor() {
-    super(...arguments), A(this, p, C(this)), this._loading = !1, this._topRated = [], this._error = null, this._count = 10;
+    super(...arguments), w(this, d, v(this)), this._loading = !1, this._topRated = [], this._error = null, this._count = 10;
   }
   connectedCallback() {
     super.connectedCallback(), this._load();
@@ -46,21 +18,21 @@ let n = class extends w(m) {
   async _load() {
     this._loading = !0, this._error = null;
     try {
-      const e = await x(this, p).call(this, `/umbraco/api/starratings/GetTopRated?count=${this._count}`);
-      if (!e.ok) throw new Error(`HTTP ${e.status}`);
-      this._topRated = await e.json();
-    } catch (e) {
-      this._error = e instanceof Error ? e.message : "Unknown error";
+      const t = await x(this, d).call(this, `/umbraco/api/starratings/GetTopRated?count=${this._count}`);
+      if (!t.ok) throw new Error(`HTTP ${t.status}`);
+      this._topRated = await t.json();
+    } catch (t) {
+      this._error = t instanceof Error ? t.message : "Unknown error";
     } finally {
       this._loading = !1;
     }
   }
-  _renderStars(e) {
-    const t = Math.round(e);
-    return "★".repeat(t) + "☆".repeat(5 - t);
+  _renderStars(t) {
+    const e = Math.round(t);
+    return "★".repeat(e) + "☆".repeat(5 - e);
   }
   render() {
-    return c`
+    return o`
       <h1>Star Ratings</h1>
       <p class="description">Top-rated content across your Umbraco site.</p>
 
@@ -74,7 +46,7 @@ let n = class extends w(m) {
           >${this._loading ? "Loading…" : "Refresh"}</uui-button>
         </div>
 
-        ${this._error ? c`<uui-tag color="danger">${this._error}</uui-tag>` : this._loading ? c`<uui-loader></uui-loader>` : this._topRated.length === 0 ? c`<div class="empty-state">No ratings recorded yet.</div>` : c`
+        ${this._error ? o`<uui-tag color="danger">${this._error}</uui-tag>` : this._loading ? o`<uui-loader></uui-loader>` : this._topRated.length === 0 ? o`<div class="empty-state">No ratings recorded yet.</div>` : o`
               <uui-table>
                 <uui-table-head>
                   <uui-table-head-cell>Content Key</uui-table-head-cell>
@@ -83,14 +55,14 @@ let n = class extends w(m) {
                   <uui-table-head-cell>Votes</uui-table-head-cell>
                 </uui-table-head>
                 ${this._topRated.map(
-      (e) => c`
+      (t) => o`
                     <uui-table-row>
-                      <uui-table-cell>${e.contentKey}</uui-table-cell>
+                      <uui-table-cell>${t.contentKey}</uui-table-cell>
                       <uui-table-cell>
-                        <span class="stars">${this._renderStars(e.averageRating)}</span>
+                        <span class="stars">${this._renderStars(t.averageRating)}</span>
                       </uui-table-cell>
-                      <uui-table-cell>${e.averageRating.toFixed(1)} / 5</uui-table-cell>
-                      <uui-table-cell>${e.totalVotes}</uui-table-cell>
+                      <uui-table-cell>${t.averageRating.toFixed(1)} / 5</uui-table-cell>
+                      <uui-table-cell>${t.totalVotes}</uui-table-cell>
                     </uui-table-row>
                   `
     )}
@@ -100,8 +72,8 @@ let n = class extends w(m) {
     `;
   }
 };
-p = /* @__PURE__ */ new WeakMap();
-n.styles = v`
+d = /* @__PURE__ */ new WeakMap();
+l.styles = _`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -141,21 +113,21 @@ n.styles = v`
       width: 100%;
     }
   `;
-d([
-  h()
-], n.prototype, "_loading", 2);
-d([
-  h()
-], n.prototype, "_topRated", 2);
-d([
-  h()
-], n.prototype, "_error", 2);
-d([
-  h()
-], n.prototype, "_count", 2);
-n = d([
-  y("star-ratings-dashboard")
-], n);
+i([
+  u()
+], l.prototype, "_loading", 2);
+i([
+  u()
+], l.prototype, "_topRated", 2);
+i([
+  u()
+], l.prototype, "_error", 2);
+i([
+  u()
+], l.prototype, "_count", 2);
+l = i([
+  b("star-ratings-dashboard")
+], l);
 export {
-  n as StarRatingsDashboardElement
+  l as StarRatingsDashboardElement
 };

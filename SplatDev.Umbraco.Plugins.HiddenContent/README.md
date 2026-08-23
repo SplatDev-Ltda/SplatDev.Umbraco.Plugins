@@ -43,6 +43,11 @@ HideNodeAsync sets `umbracoNaviHide = "1"` and publishes. ShowNodeAsync sets it 
 
 ## Changelog
 
+### 2.4.0 — 2026-08-23
+- A page can be hidden from navigation on the page itself. The plugin shipped a dashboard listing hidden nodes, so hiding one meant leaving it, finding it in a list, and coming back.
+- It calls the plugin's own endpoints rather than writing umbracoNaviHide directly, so whatever the plugin does around hiding happens here too.
+- The editor says plainly that hiding is not access control — the page stays published and reachable by its URL.
+
 ### 2.3.3 — 2026-08-21
 - A failed request now says so in the dashboard. Previously the dashboard kept its previous (usually empty) state, so a refused or failed call looked identical to having no data.
 

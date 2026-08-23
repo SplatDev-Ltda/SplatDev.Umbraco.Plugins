@@ -66,6 +66,10 @@ fetch('/umbraco/api/videopreview/GetVideoInfo?url=https://www.youtube.com/watch?
 
 ## Changelog
 
+### 2.2.0 — 2026-08-23
+- A video URL is now a property editor that shows the thumbnail the site will actually use. The plugin turned YouTube, Vimeo and Dailymotion links into thumbnails and shipped that as a dashboard you paste a URL into — a page's video URL was an ordinary text field, and whether it resolved to anything was discovered later, on the front end.
+- A link the plugin does not understand says so while you are editing, instead of silently producing no thumbnail.
+
 ### 2.1.4 — 2026-08-21
 - README now shows a screenshot of the dashboard.
 
