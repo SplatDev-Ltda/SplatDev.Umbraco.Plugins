@@ -1,44 +1,16 @@
-import { LitElement as y, html as d, css as v, state as p, customElement as w } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as $ } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as x } from "@umbraco-cms/backoffice/auth";
-import { UMB_NOTIFICATION_CONTEXT as k } from "@umbraco-cms/backoffice/notification";
-function S(e) {
-  let t = null, a = null;
-  const i = e.consumeContext.bind(e), r = new Promise((l) => {
-    i(x, async (s) => {
-      var u;
-      try {
-        t = await ((u = s == null ? void 0 : s.getLatestToken) == null ? void 0 : u.call(s)) ?? null;
-      } catch {
-        t = null;
-      }
-      l();
-    }), setTimeout(l, 3e3);
-  });
-  return i(k, (l) => {
-    a = l;
-  }), async (l, s = {}) => {
-    await r;
-    const u = new Headers(s.headers);
-    t && !u.has("Authorization") && u.set("Authorization", `Bearer ${t}`);
-    const o = await fetch(l, { ...s, credentials: "same-origin", headers: u });
-    if (!o.ok) {
-      const b = o.status === 401 || o.status === 403, _ = b ? "Not authorised" : "Could not load data", f = b ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${o.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${o.status}. Anything shown below may be incomplete.`;
-      console.error(`[SplatDev] ${o.status} from ${String(l)} — ${f}`), a == null || a.peek("danger", { data: { headline: _, message: f } });
-    }
-    return o;
-  };
-}
-var T = Object.defineProperty, A = Object.getOwnPropertyDescriptor, m = (e) => {
+import { LitElement as b, html as r, css as _, state as d, customElement as f } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as g } from "@umbraco-cms/backoffice/element-api";
+import { c as v } from "./chunks/auth-fetch-BzMCmNwW.js";
+var y = Object.defineProperty, m = Object.getOwnPropertyDescriptor, p = (e) => {
   throw TypeError(e);
-}, h = (e, t, a, i) => {
-  for (var r = i > 1 ? void 0 : i ? A(t, a) : t, l = e.length - 1, s; l >= 0; l--)
-    (s = e[l]) && (r = (i ? s(t, a, r) : s(r)) || r);
-  return i && r && T(t, a, r), r;
-}, C = (e, t, a) => t.has(e) || m("Cannot " + a), g = (e, t, a) => (C(e, t, "read from private field"), a ? a.call(e) : t.get(e)), E = (e, t, a) => t.has(e) ? m("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), c;
-let n = class extends $(y) {
+}, u = (e, t, a, s) => {
+  for (var l = s > 1 ? void 0 : s ? m(t, a) : t, n = e.length - 1, c; n >= 0; n--)
+    (c = e[n]) && (l = (s ? c(t, a, l) : c(l)) || l);
+  return s && l && y(t, a, l), l;
+}, x = (e, t, a) => t.has(e) || p("Cannot " + a), h = (e, t, a) => (x(e, t, "read from private field"), a ? a.call(e) : t.get(e)), $ = (e, t, a) => t.has(e) ? p("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), o;
+let i = class extends g(b) {
   constructor() {
-    super(...arguments), E(this, c, S(this)), this._surveys = [], this._loading = !1, this._error = null, this._apiBase = "/umbraco/api/surveys";
+    super(...arguments), $(this, o, v(this)), this._surveys = [], this._loading = !1, this._error = null, this._apiBase = "/umbraco/api/surveys";
   }
   connectedCallback() {
     super.connectedCallback(), this._loadSurveys();
@@ -46,7 +18,7 @@ let n = class extends $(y) {
   async _loadSurveys() {
     this._loading = !0, this._error = null;
     try {
-      const e = await g(this, c).call(this, `${this._apiBase}/getall`);
+      const e = await h(this, o).call(this, `${this._apiBase}/getall`);
       if (!e.ok) throw new Error(`HTTP ${e.status}`);
       this._surveys = await e.json();
     } catch (e) {
@@ -58,7 +30,7 @@ let n = class extends $(y) {
   async _deleteSurvey(e) {
     if (confirm("Delete this survey and all its responses?"))
       try {
-        await g(this, c).call(this, `${this._apiBase}/delete?id=${e}`, { method: "DELETE" }), this._surveys = this._surveys.filter((t) => t.id !== e);
+        await h(this, o).call(this, `${this._apiBase}/delete?id=${e}`, { method: "DELETE" }), this._surveys = this._surveys.filter((t) => t.id !== e);
       } catch (t) {
         this._error = `Delete failed: ${t instanceof Error ? t.message : String(t)}`;
       }
@@ -67,7 +39,7 @@ let n = class extends $(y) {
     return e.responses && Array.isArray(e.responses) ? e.responses.length : 0;
   }
   render() {
-    return d`
+    return r`
       <div class="dashboard-header">
         <h1>Surveys</h1>
         <p class="description">
@@ -86,12 +58,12 @@ let n = class extends $(y) {
         </uui-button>
       </div>
 
-      ${this._error ? d`<uui-box>
+      ${this._error ? r`<uui-box>
             <p style="color:var(--uui-color-danger)">${this._error}</p>
           </uui-box>` : ""}
 
       <uui-box headline="Survey List">
-        ${this._surveys.length > 0 ? d`
+        ${this._surveys.length > 0 ? r`
               <uui-table>
                 <uui-table-head>
                   <uui-table-head-cell>Title</uui-table-head-cell>
@@ -102,7 +74,7 @@ let n = class extends $(y) {
                   <uui-table-head-cell>Actions</uui-table-head-cell>
                 </uui-table-head>
                 ${this._surveys.map(
-      (e) => d`
+      (e) => r`
                     <uui-table-row>
                       <uui-table-cell>${e.title}</uui-table-cell>
                       <uui-table-cell>
@@ -129,7 +101,7 @@ let n = class extends $(y) {
                   `
     )}
               </uui-table>
-            ` : d`
+            ` : r`
               <div class="empty-state">
                 <uui-icon name="document"></uui-icon>
                 <p>No surveys found. Create your first survey via the API.</p>
@@ -139,8 +111,8 @@ let n = class extends $(y) {
     `;
   }
 };
-c = /* @__PURE__ */ new WeakMap();
-n.styles = v`
+o = /* @__PURE__ */ new WeakMap();
+i.styles = _`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -196,18 +168,18 @@ n.styles = v`
       color: #991b1b;
     }
   `;
-h([
-  p()
-], n.prototype, "_surveys", 2);
-h([
-  p()
-], n.prototype, "_loading", 2);
-h([
-  p()
-], n.prototype, "_error", 2);
-n = h([
-  w("surveys-dashboard")
-], n);
+u([
+  d()
+], i.prototype, "_surveys", 2);
+u([
+  d()
+], i.prototype, "_loading", 2);
+u([
+  d()
+], i.prototype, "_error", 2);
+i = u([
+  f("surveys-dashboard")
+], i);
 export {
-  n as SurveysDashboardElement
+  i as SurveysDashboardElement
 };

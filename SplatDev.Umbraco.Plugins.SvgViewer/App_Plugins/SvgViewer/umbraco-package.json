@@ -23,14 +23,6 @@
       ]
     },
     {
-      "type": "propertyEditorSchema",
-      "alias": "svgCustomView",
-      "name": "Custom SVG Viewer",
-      "meta": {
-        "defaultPropertyEditorUiAlias": "SplatDev.SvgViewer.PropertyEditorUi"
-      }
-    },
-    {
       "type": "propertyEditorUi",
       "alias": "SplatDev.SvgViewer.PropertyEditorUi",
       "name": "SVG Viewer Property Editor UI",
@@ -38,7 +30,7 @@
       "elementName": "svg-viewer-property-editor",
       "meta": {
         "label": "Custom SVG Viewer",
-        "propertyEditorSchemaAlias": "svgCustomView",
+        "propertyEditorSchemaAlias": "Umbraco.TextBox",
         "icon": "icon-umb-media",
         "group": "common",
         "supportsReadOnly": true

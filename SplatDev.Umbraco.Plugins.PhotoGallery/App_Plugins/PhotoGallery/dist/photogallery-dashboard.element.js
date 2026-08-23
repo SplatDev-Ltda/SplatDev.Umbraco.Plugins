@@ -1,81 +1,53 @@
-import { LitElement as z, nothing as w, html as n, css as R, state as u, customElement as j } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as G } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as L } from "@umbraco-cms/backoffice/auth";
-import { UMB_NOTIFICATION_CONTEXT as q } from "@umbraco-cms/backoffice/notification";
-function F(t) {
-  let e = null, i = null;
-  const d = t.consumeContext.bind(t), r = new Promise((l) => {
-    d(L, async (c) => {
-      var p;
-      try {
-        e = await ((p = c == null ? void 0 : c.getLatestToken) == null ? void 0 : p.call(c)) ?? null;
-      } catch {
-        e = null;
-      }
-      l();
-    }), setTimeout(l, 3e3);
-  });
-  return d(q, (l) => {
-    i = l;
-  }), async (l, c = {}) => {
-    await r;
-    const p = new Headers(c.headers);
-    e && !p.has("Authorization") && p.set("Authorization", `Bearer ${e}`);
-    const m = await fetch(l, { ...c, credentials: "same-origin", headers: p });
-    if (!m.ok) {
-      const f = m.status === 401 || m.status === 403, y = f ? "Not authorised" : "Could not load data", v = f ? `The backoffice token was ${e ? "sent but rejected" : "not available"} (${m.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${m.status}. Anything shown below may be incomplete.`;
-      console.error(`[SplatDev] ${m.status} from ${String(l)} — ${v}`), i == null || i.peek("danger", { data: { headline: y, message: v } });
-    }
-    return m;
-  };
-}
-async function M(t, e) {
-  var i, d, r, l, c;
+import { LitElement as R, nothing as v, html as l, css as G, state as h, customElement as j } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as N } from "@umbraco-cms/backoffice/element-api";
+import { c as L } from "./chunks/auth-fetch-BzMCmNwW.js";
+async function F(t, e) {
+  var i, d, r, u, m;
   try {
-    const p = await t(`/umbraco/management/api/v1/media/${encodeURIComponent(e)}`);
-    if (p.ok) {
-      const f = (d = (i = (await p.json()).values) == null ? void 0 : i.find((v) => v.alias === "umbracoFile")) == null ? void 0 : d.value, y = typeof f == "string" ? f : f == null ? void 0 : f.src;
-      if (y) return y;
+    const b = await t(`/umbraco/management/api/v1/media/${encodeURIComponent(e)}`);
+    if (b.ok) {
+      const f = (d = (i = (await b.json()).values) == null ? void 0 : i.find((z) => z.alias === "umbracoFile")) == null ? void 0 : d.value, w = typeof f == "string" ? f : f == null ? void 0 : f.src;
+      if (w) return w;
     }
   } catch {
   }
   try {
-    const p = await t(
+    const b = await t(
       `/umbraco/management/api/v1/media/urls?id=${encodeURIComponent(e)}`
     );
-    if (!p.ok) return null;
-    const m = await p.json();
-    return ((c = (l = (r = m == null ? void 0 : m[0]) == null ? void 0 : r.urlInfos) == null ? void 0 : l[0]) == null ? void 0 : c.url) ?? null;
+    if (!b.ok) return null;
+    const g = await b.json();
+    return ((m = (u = (r = g == null ? void 0 : g[0]) == null ? void 0 : r.urlInfos) == null ? void 0 : u[0]) == null ? void 0 : m.url) ?? null;
   } catch {
     return null;
   }
 }
-var B = Object.defineProperty, J = Object.getOwnPropertyDescriptor, T = (t) => {
+var q = Object.defineProperty, J = Object.getOwnPropertyDescriptor, C = (t) => {
   throw TypeError(t);
-}, h = (t, e, i, d) => {
-  for (var r = d > 1 ? void 0 : d ? J(e, i) : e, l = t.length - 1, c; l >= 0; l--)
-    (c = t[l]) && (r = (d ? c(e, i, r) : c(r)) || r);
-  return d && r && B(e, i, r), r;
-}, D = (t, e, i) => e.has(t) || T("Cannot " + i), b = (t, e, i) => (D(t, e, "read from private field"), i ? i.call(t) : e.get(t)), C = (t, e, i) => e.has(t) ? T("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, i), o = (t, e, i) => (D(t, e, "access private method"), i), _, s, $, g, A, x, E, P, O, I, U, k, S, K, N;
-let a = class extends G(z) {
+}, n = (t, e, i, d) => {
+  for (var r = d > 1 ? void 0 : d ? J(e, i) : e, u = t.length - 1, m; u >= 0; u--)
+    (m = t[u]) && (r = (d ? m(e, i, r) : m(r)) || r);
+  return d && r && q(e, i, r), r;
+}, T = (t, e, i) => e.has(t) || C("Cannot " + i), p = (t, e, i) => (T(t, e, "read from private field"), i ? i.call(t) : e.get(t)), k = (t, e, i) => e.has(t) ? C("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, i), o = (t, e, i) => (T(t, e, "access private method"), i), c, s, y, _, D, $, E, P, A, O, I, x, U, K, S;
+let a = class extends N(R) {
   constructor() {
-    super(...arguments), C(this, s), C(this, _, F(this)), this._albums = [], this._photos = [], this._selected = null, this._loading = !1, this._busy = "", this._loadError = null, this._message = null, this._newTitle = "", this._newDescription = "", this._newCoverKeys = [], this._editingId = null, this._editTitle = "", this._editDescription = "", this._photoTitle = "", this._photoCaption = "", this._photoKeys = [], this._api = "/umbraco/api/photogallery";
+    super(...arguments), k(this, s), k(this, c, L(this)), this._albums = [], this._photos = [], this._selected = null, this._loading = !1, this._busy = "", this._loadError = null, this._message = null, this._newTitle = "", this._newDescription = "", this._newCoverKeys = [], this._editingId = null, this._editTitle = "", this._editDescription = "", this._photoTitle = "", this._photoCaption = "", this._photoKeys = [], this._api = "/umbraco/api/photogallery";
   }
   connectedCallback() {
-    super.connectedCallback(), o(this, s, g).call(this);
+    super.connectedCallback(), o(this, s, _).call(this);
   }
   render() {
-    return n`
+    return l`
       <h1>Photo Gallery</h1>
       <p class="description">
         Albums and the photos in them. Select an album to see and edit its photos.
       </p>
 
-      ${this._loadError ? n`<div class="splatdev-load-error" role="alert">${this._loadError}</div>` : w}
-      ${this._message ? n`<div class="msg ${this._message.ok ? "ok" : ""}" role="status">${this._message.text}</div>` : w}
+      ${this._loadError ? l`<div class="splatdev-load-error" role="alert">${this._loadError}</div>` : v}
+      ${this._message ? l`<div class="msg ${this._message.ok ? "ok" : ""}" role="status">${this._message.text}</div>` : v}
 
       <uui-box headline="Albums (${this._albums.length})">
-        ${this._loading ? n`<uui-loader></uui-loader>` : this._albums.length === 0 ? n`<p class="empty">No albums yet. Create one below.</p>` : n`
+        ${this._loading ? l`<uui-loader></uui-loader>` : this._albums.length === 0 ? l`<p class="empty">No albums yet. Create one below.</p>` : l`
                 <table>
                   <thead>
                     <tr><th></th><th>Title</th><th>Description</th><th>Photos</th><th>Created</th><th></th></tr>
@@ -84,43 +56,43 @@ let a = class extends G(z) {
                     ${this._albums.map((t) => {
       var i, d, r;
       const e = this._editingId === t.id;
-      return n`
+      return l`
                         <tr class=${((i = this._selected) == null ? void 0 : i.id) === t.id ? "selected" : ""}>
                           <td>
-                            ${t.coverImageUrl ? n`<img class="thumb" src=${t.coverImageUrl} alt="" loading="lazy" />` : n`<div class="thumb"></div>`}
+                            ${t.coverImageUrl ? l`<img class="thumb" src=${t.coverImageUrl} alt="" loading="lazy" />` : l`<div class="thumb"></div>`}
                           </td>
                           <td>
-                            ${e ? n`<uui-input
+                            ${e ? l`<uui-input
                                   label="Title"
                                   .value=${this._editTitle}
-                                  @input=${(l) => this._editTitle = l.target.value}
-                                ></uui-input>` : n`<strong>${t.title}</strong>`}
+                                  @input=${(u) => this._editTitle = u.target.value}
+                                ></uui-input>` : l`<strong>${t.title}</strong>`}
                           </td>
                           <td>
-                            ${e ? n`<uui-input
+                            ${e ? l`<uui-input
                                   label="Description"
                                   .value=${this._editDescription}
-                                  @input=${(l) => this._editDescription = l.target.value}
-                                ></uui-input>` : n`<span class="muted">${t.description || "—"}</span>`}
+                                  @input=${(u) => this._editDescription = u.target.value}
+                                ></uui-input>` : l`<span class="muted">${t.description || "—"}</span>`}
                           </td>
                           <td class="num">${((d = t.photos) == null ? void 0 : d.length) ?? 0}</td>
                           <td class="num muted">${o(this, s, K).call(this, t.createdAt)}</td>
                           <td class="right">
-                            ${e ? n`
+                            ${e ? l`
                                   <uui-button compact look="primary" color="positive" label="Save ${t.title}"
                                     ?disabled=${this._busy === `edit:${t.id}`}
-                                    @click=${() => o(this, s, O).call(this, t)}>Save</uui-button>
+                                    @click=${() => o(this, s, A).call(this, t)}>Save</uui-button>
                                   <uui-button compact look="secondary" label="Cancel"
                                     @click=${() => this._editingId = null}>Cancel</uui-button>
-                                ` : n`
+                                ` : l`
                                   <uui-button compact look="secondary" label="Open ${t.title}"
-                                    @click=${() => o(this, s, A).call(this, t)}
+                                    @click=${() => o(this, s, D).call(this, t)}
                                     >${((r = this._selected) == null ? void 0 : r.id) === t.id ? "Close" : "Photos"}</uui-button>
                                   <uui-button compact look="secondary" label="Rename ${t.title}"
                                     @click=${() => o(this, s, P).call(this, t)}>Rename</uui-button>
                                   <uui-button compact look="secondary" color="danger" label="Delete ${t.title}"
                                     ?disabled=${this._busy === `delete:${t.id}`}
-                                    @click=${() => o(this, s, I).call(this, t)}>Delete</uui-button>
+                                    @click=${() => o(this, s, O).call(this, t)}>Delete</uui-button>
                                 `}
                           </td>
                         </tr>
@@ -131,7 +103,7 @@ let a = class extends G(z) {
               `}
       </uui-box>
 
-      ${o(this, s, N).call(this)}
+      ${o(this, s, S).call(this)}
 
       <uui-box headline="Create an album">
         <div class="grid">
@@ -180,23 +152,23 @@ let a = class extends G(z) {
     `;
   }
 };
-_ = /* @__PURE__ */ new WeakMap();
+c = /* @__PURE__ */ new WeakMap();
 s = /* @__PURE__ */ new WeakSet();
-$ = function(t) {
+y = function(t) {
   return t.ok ? (this._loadError = null, !0) : (this._loadError = t.status === 401 || t.status === 403 ? "You are not authorised to do that. The request was refused, so anything shown below may be incomplete." : `The request did not succeed — the server returned ${t.status}${t.statusText ? ` ${t.statusText}` : ""}.`, !1);
 };
-g = async function() {
+_ = async function() {
   this._loading = !0;
   try {
-    const t = await b(this, _).call(this, `${this._api}/GetAlbums`);
-    o(this, s, $).call(this, t) && (this._albums = await t.json(), this._selected && (this._selected = this._albums.find((e) => e.id === this._selected.id) ?? null));
+    const t = await p(this, c).call(this, `${this._api}/GetAlbums`);
+    o(this, s, y).call(this, t) && (this._albums = await t.json(), this._selected && (this._selected = this._albums.find((e) => e.id === this._selected.id) ?? null));
   } catch {
     this._loadError ?? (this._loadError = "The request failed. See the browser console for details."), this._albums = [];
   } finally {
     this._loading = !1;
   }
 };
-A = async function(t) {
+D = async function(t) {
   var e;
   if (((e = this._selected) == null ? void 0 : e.id) === t.id) {
     this._selected = null, this._photos = [];
@@ -204,15 +176,15 @@ A = async function(t) {
   }
   this._selected = t, this._photos = [];
   try {
-    const i = await b(this, _).call(this, `${this._api}/GetPhotos?albumId=${t.id}`);
-    o(this, s, $).call(this, i) && (this._photos = await i.json());
+    const i = await p(this, c).call(this, `${this._api}/GetPhotos?albumId=${t.id}`);
+    o(this, s, y).call(this, i) && (this._photos = await i.json());
   } catch {
     this._loadError ?? (this._loadError = "Could not load the photos in that album.");
   }
 };
-x = async function(t) {
+$ = async function(t) {
   const e = t[0];
-  return e ? M(b(this, _), e) : null;
+  return e ? F(p(this, c), e) : null;
 };
 E = async function() {
   const t = this._newTitle.trim();
@@ -222,8 +194,8 @@ E = async function() {
   }
   this._busy = "album";
   try {
-    const e = await o(this, s, x).call(this, this._newCoverKeys);
-    (await b(this, _).call(this, `${this._api}/CreateAlbum`, {
+    const e = await o(this, s, $).call(this, this._newCoverKeys);
+    (await p(this, c).call(this, `${this._api}/CreateAlbum`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -231,7 +203,7 @@ E = async function() {
         description: this._newDescription.trim() || null,
         coverImageUrl: e
       })
-    })).ok ? (this._message = { ok: !0, text: `Created ${t}.` }, this._newTitle = this._newDescription = "", this._newCoverKeys = [], await o(this, s, g).call(this)) : this._message = { ok: !1, text: "Could not create that album." };
+    })).ok ? (this._message = { ok: !0, text: `Created ${t}.` }, this._newTitle = this._newDescription = "", this._newCoverKeys = [], await o(this, s, _).call(this)) : this._message = { ok: !1, text: "Could not create that album." };
   } catch {
     this._message = { ok: !1, text: "Could not create that album." };
   } finally {
@@ -241,7 +213,7 @@ E = async function() {
 P = function(t) {
   this._editingId = t.id, this._editTitle = t.title, this._editDescription = t.description ?? "", this._message = null;
 };
-O = async function(t) {
+A = async function(t) {
   const e = this._editTitle.trim();
   if (!e) {
     this._message = { ok: !1, text: "An album needs a title." };
@@ -249,7 +221,7 @@ O = async function(t) {
   }
   this._busy = `edit:${t.id}`;
   try {
-    (await b(this, _).call(this, `${this._api}/UpdateAlbum`, {
+    (await p(this, c).call(this, `${this._api}/UpdateAlbum`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -258,14 +230,14 @@ O = async function(t) {
         description: this._editDescription.trim() || null,
         photos: []
       })
-    })).ok ? (this._message = { ok: !0, text: `Updated ${e}.` }, this._editingId = null, await o(this, s, g).call(this)) : this._message = { ok: !1, text: "Could not update that album." };
+    })).ok ? (this._message = { ok: !0, text: `Updated ${e}.` }, this._editingId = null, await o(this, s, _).call(this)) : this._message = { ok: !1, text: "Could not update that album." };
   } catch {
     this._message = { ok: !1, text: "Could not update that album." };
   } finally {
     this._busy = "";
   }
 };
-I = async function(t) {
+O = async function(t) {
   var d, r;
   const e = ((d = t.photos) == null ? void 0 : d.length) ?? 0;
   if (window.confirm(
@@ -275,7 +247,7 @@ ${e > 0 ? `Its ${e} photo${e === 1 ? "" : "s"} go with it. ` : ""}The media libr
   )) {
     this._busy = `delete:${t.id}`;
     try {
-      (await b(this, _).call(this, `${this._api}/DeleteAlbum?id=${t.id}`, { method: "DELETE" })).ok ? (this._message = { ok: !0, text: `Deleted ${t.title}.` }, ((r = this._selected) == null ? void 0 : r.id) === t.id && (this._selected = null, this._photos = []), await o(this, s, g).call(this)) : this._message = { ok: !1, text: "Could not delete that album." };
+      (await p(this, c).call(this, `${this._api}/DeleteAlbum?id=${t.id}`, { method: "DELETE" })).ok ? (this._message = { ok: !0, text: `Deleted ${t.title}.` }, ((r = this._selected) == null ? void 0 : r.id) === t.id && (this._selected = null, this._photos = []), await o(this, s, _).call(this)) : this._message = { ok: !1, text: "Could not delete that album." };
     } catch {
       this._message = { ok: !1, text: "Could not delete that album." };
     } finally {
@@ -283,16 +255,16 @@ ${e > 0 ? `Its ${e} photo${e === 1 ? "" : "s"} go with it. ` : ""}The media libr
     }
   }
 };
-U = async function() {
+I = async function() {
   if (!this._selected) return;
-  const t = await o(this, s, x).call(this, this._photoKeys);
+  const t = await o(this, s, $).call(this, this._photoKeys);
   if (!t) {
     this._message = { ok: !1, text: "Choose an image from the media library first." };
     return;
   }
   this._busy = "photo";
   try {
-    (await b(this, _).call(this, `${this._api}/AddPhoto`, {
+    (await p(this, c).call(this, `${this._api}/AddPhoto`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -302,31 +274,31 @@ U = async function() {
         caption: this._photoCaption.trim() || null,
         sortOrder: this._photos.length
       })
-    })).ok ? (this._message = { ok: !0, text: "Photo added." }, this._photoTitle = this._photoCaption = "", this._photoKeys = [], await o(this, s, k).call(this)) : this._message = { ok: !1, text: "Could not add that photo." };
+    })).ok ? (this._message = { ok: !0, text: "Photo added." }, this._photoTitle = this._photoCaption = "", this._photoKeys = [], await o(this, s, x).call(this)) : this._message = { ok: !1, text: "Could not add that photo." };
   } catch {
     this._message = { ok: !1, text: "Could not add that photo." };
   } finally {
     this._busy = "";
   }
 };
-k = async function() {
+x = async function() {
   if (this._selected) {
     try {
-      const t = await b(this, _).call(this, `${this._api}/GetPhotos?albumId=${this._selected.id}`);
-      o(this, s, $).call(this, t) && (this._photos = await t.json());
+      const t = await p(this, c).call(this, `${this._api}/GetPhotos?albumId=${this._selected.id}`);
+      o(this, s, y).call(this, t) && (this._photos = await t.json());
     } catch {
       this._loadError ?? (this._loadError = "Could not reload the photos in that album.");
     }
-    await o(this, s, g).call(this);
+    await o(this, s, _).call(this);
   }
 };
-S = async function(t) {
+U = async function(t) {
   if (window.confirm(`Remove "${t.title}" from this album?
 
 The file stays in the media library.`)) {
     this._busy = `photo:${t.id}`;
     try {
-      (await b(this, _).call(this, `${this._api}/DeletePhoto?id=${t.id}`, { method: "DELETE" })).ok ? (this._message = { ok: !0, text: "Photo removed." }, await o(this, s, k).call(this)) : this._message = { ok: !1, text: "Could not remove that photo." };
+      (await p(this, c).call(this, `${this._api}/DeletePhoto?id=${t.id}`, { method: "DELETE" })).ok ? (this._message = { ok: !0, text: "Photo removed." }, await o(this, s, x).call(this)) : this._message = { ok: !1, text: "Could not remove that photo." };
     } catch {
       this._message = { ok: !1, text: "Could not remove that photo." };
     } finally {
@@ -338,17 +310,17 @@ K = function(t) {
   const e = new Date(t);
   return Number.isNaN(e.getTime()) ? t : e.toLocaleDateString();
 };
-N = function() {
-  return this._selected ? n`
+S = function() {
+  return this._selected ? l`
       <uui-box headline="Photos in ${this._selected.title} (${this._photos.length})">
-        ${this._photos.length === 0 ? n`<p class="empty">This album has no photos yet. Add one below.</p>` : n`
+        ${this._photos.length === 0 ? l`<p class="empty">This album has no photos yet. Add one below.</p>` : l`
               <table>
                 <thead>
                   <tr><th></th><th>Title</th><th>Caption</th><th>Order</th><th></th></tr>
                 </thead>
                 <tbody>
                   ${this._photos.map(
-    (t) => n`
+    (t) => l`
                       <tr>
                         <td>
                           <img class="thumb" src=${t.thumbnailUrl || t.imageUrl} alt=${t.title} loading="lazy" />
@@ -363,7 +335,7 @@ N = function() {
                             color="danger"
                             label="Remove ${t.title}"
                             ?disabled=${this._busy === `photo:${t.id}`}
-                            @click=${() => o(this, s, S).call(this, t)}
+                            @click=${() => o(this, s, U).call(this, t)}
                             >Remove</uui-button
                           >
                         </td>
@@ -412,14 +384,14 @@ N = function() {
             color="positive"
             label="Add photo"
             ?disabled=${this._busy === "photo" || this._photoKeys.length === 0}
-            @click=${o(this, s, U)}
+            @click=${o(this, s, I)}
             >${this._busy === "photo" ? "Adding…" : "Add photo"}</uui-button
           >
         </div>
       </uui-box>
-    ` : w;
+    ` : v;
 };
-a.styles = R`
+a.styles = G`
     :host { display: block; padding: var(--uui-size-layout-1, 24px); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 6px; }
     p.description { color: var(--uui-color-text-alt, #6b7280); margin: 0 0 22px; max-width: 66ch; }
@@ -467,59 +439,59 @@ a.styles = R`
       color: var(--uui-color-positive-contrast, #12492a);
     }
   `;
-h([
-  u()
+n([
+  h()
 ], a.prototype, "_albums", 2);
-h([
-  u()
+n([
+  h()
 ], a.prototype, "_photos", 2);
-h([
-  u()
+n([
+  h()
 ], a.prototype, "_selected", 2);
-h([
-  u()
+n([
+  h()
 ], a.prototype, "_loading", 2);
-h([
-  u()
+n([
+  h()
 ], a.prototype, "_busy", 2);
-h([
-  u()
+n([
+  h()
 ], a.prototype, "_loadError", 2);
-h([
-  u()
+n([
+  h()
 ], a.prototype, "_message", 2);
-h([
-  u()
+n([
+  h()
 ], a.prototype, "_newTitle", 2);
-h([
-  u()
+n([
+  h()
 ], a.prototype, "_newDescription", 2);
-h([
-  u()
+n([
+  h()
 ], a.prototype, "_newCoverKeys", 2);
-h([
-  u()
+n([
+  h()
 ], a.prototype, "_editingId", 2);
-h([
-  u()
+n([
+  h()
 ], a.prototype, "_editTitle", 2);
-h([
-  u()
+n([
+  h()
 ], a.prototype, "_editDescription", 2);
-h([
-  u()
+n([
+  h()
 ], a.prototype, "_photoTitle", 2);
-h([
-  u()
+n([
+  h()
 ], a.prototype, "_photoCaption", 2);
-h([
-  u()
+n([
+  h()
 ], a.prototype, "_photoKeys", 2);
-a = h([
+a = n([
   j("photogallery-dashboard")
 ], a);
-const Q = a;
+const B = a;
 export {
   a as PhotoGalleryDashboardElement,
-  Q as default
+  B as default
 };

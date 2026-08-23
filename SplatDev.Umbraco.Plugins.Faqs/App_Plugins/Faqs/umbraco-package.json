@@ -24,7 +24,7 @@
     {
       "type": "localization",
       "alias": "UmbracoCms.Faqs.Localization.En",
-      "name": "FAQs — English",
+      "name": "FAQs \u2014 English",
       "meta": {
         "culture": "en",
         "localizations": {
@@ -36,6 +36,19 @@
             "faqs_search": "Search FAQs"
           }
         }
+      }
+    },
+    {
+      "type": "propertyEditorUi",
+      "alias": "SplatDev.PropertyEditorUi.FaqsPicker",
+      "name": "FAQ Category",
+      "element": "/App_Plugins/Faqs/dist/faqs-picker.element.js",
+      "elementName": "faqs-picker",
+      "meta": {
+        "label": "FAQ Category",
+        "icon": "icon-help-alt",
+        "group": "pickers",
+        "propertyEditorSchemaAlias": "Umbraco.Integer"
       }
     }
   ]

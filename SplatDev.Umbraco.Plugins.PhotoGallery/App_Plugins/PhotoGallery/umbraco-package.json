@@ -20,6 +20,19 @@
           "match": "Umb.Section.Settings"
         }
       ]
+    },
+    {
+      "type": "propertyEditorUi",
+      "alias": "SplatDev.PropertyEditorUi.PhotoGalleryPicker",
+      "name": "Album",
+      "element": "/App_Plugins/PhotoGallery/dist/photogallery-picker.element.js",
+      "elementName": "photogallery-picker",
+      "meta": {
+        "label": "Album",
+        "icon": "icon-pictures",
+        "group": "pickers",
+        "propertyEditorSchemaAlias": "Umbraco.Integer"
+      }
     }
   ]
 }

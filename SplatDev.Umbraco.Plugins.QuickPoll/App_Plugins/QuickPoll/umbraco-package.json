@@ -20,6 +20,19 @@
           "match": "Umb.Section.Settings"
         }
       ]
+    },
+    {
+      "type": "propertyEditorUi",
+      "alias": "SplatDev.PropertyEditorUi.QuickPollPicker",
+      "name": "Poll",
+      "element": "/App_Plugins/QuickPoll/dist/quickpoll-picker.element.js",
+      "elementName": "quickpoll-picker",
+      "meta": {
+        "label": "Poll",
+        "icon": "icon-bar-chart",
+        "group": "pickers",
+        "propertyEditorSchemaAlias": "Umbraco.Integer"
+      }
     }
   ]
 }

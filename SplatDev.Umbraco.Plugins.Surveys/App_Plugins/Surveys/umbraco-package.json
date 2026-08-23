@@ -20,6 +20,19 @@
           "match": "Umb.Section.Settings"
         }
       ]
+    },
+    {
+      "type": "propertyEditorUi",
+      "alias": "SplatDev.PropertyEditorUi.SurveysPicker",
+      "name": "Survey",
+      "element": "/App_Plugins/Surveys/dist/surveys-picker.element.js",
+      "elementName": "surveys-picker",
+      "meta": {
+        "label": "Survey",
+        "icon": "icon-list",
+        "group": "pickers",
+        "propertyEditorSchemaAlias": "Umbraco.Integer"
+      }
     }
   ]
 }
