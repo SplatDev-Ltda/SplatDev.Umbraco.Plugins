@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<PackageId>SplatDev.Umbraco.DataTypes.BrazilStates</PackageId>
-		<Version>1.1.0</Version>
+		<Version>1.2.0</Version>
 		<Authors>SplatDev</Authors>
 		<Description>Brazil States data type for Umbraco 13 (net8.0) and Umbraco 17 (net10.0) — a dropdown of the 26 states plus the Distrito Federal</Description>
 		<PackageTags>umbraco umbraco-marketplace datatype brazil brazil-states estados</PackageTags>

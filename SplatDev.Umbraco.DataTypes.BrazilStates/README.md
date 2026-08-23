@@ -68,6 +68,10 @@ storing the code while displaying the name needs a different property editor.
 
 ## Changelog
 
+### 1.2.0 — 2026-08-23
+
+Adds screenshots of the data type this package installs, on the README and on the Umbraco Marketplace listing. The listing keeps its own screenshot list rather than reading the README, and this one was empty.
+
 ### 1.1.0 — 2026-08-23
 - The Brazil States data type is created on Umbraco 17. The Umbraco 17 half of this package was an empty stub carrying a TODO, so installing it there created nothing at all while Umbraco 13 worked — the package shipped, compiled, and did nothing.
 - The comment claiming this needed the Management API was mistaken: IDataTypeService is still the way to do it server-side, it just returns an attempt and takes the acting user's key now.

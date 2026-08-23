@@ -16,8 +16,21 @@ TAG="${1:-$(git describe --tags --abbrev=0 --match 'v*' 2>/dev/null)}"
 echo "Comparing against $TAG"
 missing=0
 
+# Map each changed file to the nearest ancestor holding a .csproj, rather than taking the
+# first path segment. Nested plugins live at SplatDev.Umbraco.Plugins.Yaml/SplatDev.Umbraco
+# .Plugins.Schema2Yaml, whose first segment is a directory with no project in it — so the
+# prefix form resolved them to the parent, found no .csproj and skipped them silently.
+# That is the same depth blind spot that dropped Schema2Yaml from v2.1.5, and publish.yml
+# discovers at -maxdepth 3, so this must look at least that deep.
 for dir in $(git diff --name-only "$TAG"..HEAD 2>/dev/null \
-             | grep -oP '^SplatDev\.Umbraco\.Plugins\.[A-Za-z.]+' | sort -u); do
+             | grep '^SplatDev\.' \
+             | while read -r f; do
+                 d=$(dirname "$f")
+                 while [ "$d" != "." ] && [ -n "$d" ]; do
+                   if ls "$d"/*.csproj >/dev/null 2>&1; then echo "$d"; break; fi
+                   d=$(dirname "$d")
+                 done
+               done | sort -u); do
   # Test projects carry no <Version> and ship nothing.
   case "$dir" in *.Tests) continue;; esac
   # Excluded from publishing anyway.

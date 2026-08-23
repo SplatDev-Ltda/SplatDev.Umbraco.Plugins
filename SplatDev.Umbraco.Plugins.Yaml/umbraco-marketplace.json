@@ -3,7 +3,9 @@
   "Description": "Define your entire Umbraco structure — DataTypes, DocumentTypes, Templates, Content, Media, Languages, Dictionary Items, Members, and Users — in a single YAML file. The plugin reads it on startup and builds everything automatically. Infrastructure-as-Code for Umbraco 17.",
   "Category": "Developer Tools",
   "PackageType": "Package",
-  "LicenseTypes": ["Free"],
+  "LicenseTypes": [
+    "Free"
+  ],
   "DocumentationUrl": "https://github.com/splatdevtech/umbraco-yaml/blob/main/docs/yaml-authoring-guide.md",
   "IssueTrackerUrl": "https://github.com/splatdevtech/umbraco-yaml/issues",
   "AuthorDetails": {
@@ -22,11 +24,11 @@
   ],
   "Screenshots": [
     {
-      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/umbraco-yaml/main/docs/images/hero-banner.png",
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Yaml/docs/images/hero-banner.png",
       "Caption": "YAML configuration — Umbraco structures, created automatically at startup"
     },
     {
-      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/umbraco-yaml/main/docs/images/demo-how-it-works.png",
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Yaml/docs/images/demo-how-it-works.png",
       "Caption": "How it works: 4-step process from YAML file to live Umbraco site"
     }
   ]

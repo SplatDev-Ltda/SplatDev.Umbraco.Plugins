@@ -57,6 +57,10 @@ Access the Schema2Yaml dashboard from the Umbraco Settings section. Select the e
 
 ## Changelog
 
+### 2.1.0 — 2026-08-23
+
+Fixes the Umbraco Marketplace listing, which pointed its screenshot at a different repository and returned 404 — so the entry showed a broken image.
+
 ### 2.0.10 — 2026-08-22
 - The backoffice dashboard now appears. Its assets lived under `wwwroot/App_Plugins/`, which is not a path Umbraco or the static-file middleware ever serves from — every request for the manifest and the bundle returned 404, so the dashboard was unreachable on any install.
 - The plugin now embeds its `App_Plugins` in the assembly, serves them from there, and registers its own package manifest, matching every other plugin in this repo. It no longer depends on a `buildTransitive` copy step that silently does nothing when it fails.
