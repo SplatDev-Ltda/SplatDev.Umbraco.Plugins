@@ -1,6 +1,6 @@
 {
   "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
-  "Description": "Document type properties report for Umbraco \u2014 list all properties across content types. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).",
+  "Description": "Document type properties report for Umbraco — list all properties across content types. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).",
   "Category": "Developer Tools",
   "PackageType": "Package",
   "LicenseTypes": [
@@ -10,10 +10,15 @@
   "IssueTrackerUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/issues",
   "AuthorDetails": {
     "Name": "SplatDev",
-    "Description": "SplatDev Ltda \u2014 building Umbraco plugins and tools for agencies and developers.",
+    "Description": "SplatDev Ltda — building Umbraco plugins and tools for agencies and developers.",
     "Url": "https://github.com/splatdevtech",
     "ImageUrl": "https://github.com/splatdevtech.png",
     "SyncContributorsFromRepository": true
   },
-  "Screenshots": []
+  "Screenshots": [
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.PropertiesReport/docs/screenshots/01-dashboard.png",
+      "Caption": "The PropertiesReport dashboard in the Umbraco backoffice."
+    }
+  ]
 }

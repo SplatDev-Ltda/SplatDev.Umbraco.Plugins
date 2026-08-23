@@ -19,6 +19,10 @@
     {
       "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.PasswordSettings/docs/screenshots/01-dashboard.png",
       "Caption": "The PasswordSettings dashboard in the Umbraco backoffice."
+    },
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.PasswordSettings/docs/screenshots/04-front-end.png",
+      "Caption": "PasswordSettings rendered on the front end."
     }
   ]
 }

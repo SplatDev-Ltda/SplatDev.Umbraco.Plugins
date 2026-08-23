@@ -11,7 +11,21 @@
     "url": "https://splatdev.com"
   },
   "versions": [
-    { "umbracoMajorVersion": 13 },
-    { "umbracoMajorVersion": 17 }
+    {
+      "umbracoMajorVersion": 13
+    },
+    {
+      "umbracoMajorVersion": 17
+    }
+  ],
+  "Screenshots": [
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Lgpd/docs/screenshots/01-dashboard.png",
+      "Caption": "The Lgpd dashboard in the Umbraco backoffice."
+    },
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Lgpd/docs/screenshots/04-front-end.png",
+      "Caption": "Lgpd rendered on the front end."
+    }
   ]
 }

@@ -1,5 +1,19 @@
 # SplatDev.Umbraco.Plugins.WhatsApp
 
+<!-- screenshot:start -->
+
+![WhatsApp screenshot](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/01-inbox.png)
+
+![WhatsApp screenshot](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/02-contacts.png)
+
+![WhatsApp screenshot](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/03-send.png)
+
+![WhatsApp screenshot](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/04-templates.png)
+
+![WhatsApp screenshot](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/05-status.png)
+
+<!-- screenshot:end -->
+
 WhatsApp Business **Cloud API** integration for Umbraco — a backoffice inbox, template and
 free-form sending, and an inbound webhook receiver.
 

@@ -19,6 +19,10 @@
     {
       "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.CustomLogin/docs/screenshots/01-dashboard.png",
       "Caption": "The CustomLogin dashboard in the Umbraco backoffice."
+    },
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.CustomLogin/docs/screenshots/04-front-end.png",
+      "Caption": "CustomLogin rendered on the front end."
     }
   ]
 }

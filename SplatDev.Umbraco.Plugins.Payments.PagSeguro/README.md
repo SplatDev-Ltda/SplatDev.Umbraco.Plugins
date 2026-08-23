@@ -1,5 +1,11 @@
 # Payments.PagSeguro
 
+<!-- screenshot:start -->
+
+![Payments.PagSeguro dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Payments.PagSeguro/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 PagSeguro payment integration for Umbraco — create checkout sessions, track transactions, and manage payment status from a backoffice dashboard.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Payments.PagSeguro.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Payments.PagSeguro)

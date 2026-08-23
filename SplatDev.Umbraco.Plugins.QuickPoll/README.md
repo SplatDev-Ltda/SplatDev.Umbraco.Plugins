@@ -7,6 +7,12 @@ A lightweight quick poll plugin for Umbraco 13 and Umbraco 17.
 
 ![QuickPoll dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.QuickPoll/docs/screenshots/01-dashboard.png)
 
+![QuickPoll property editor](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.QuickPoll/docs/screenshots/02-property-editor.png)
+
+![QuickPoll data type](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.QuickPoll/docs/screenshots/03-data-type.png)
+
+![QuickPoll on the front end](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.QuickPoll/docs/screenshots/04-front-end.png)
+
 <!-- screenshot:end -->
 
 ## Features
@@ -48,6 +54,9 @@ A lightweight quick poll plugin for Umbraco 13 and Umbraco 17.
 
 @* Show specific poll *@
 @await Component.InvokeAsync("QuickPoll", new { pollId = 1 })
+
+@* Or the one chosen on this page with the Poll property editor: *@
+@await Component.InvokeAsync("QuickPoll", new { pollId = Model.Value<int>("poll") })
 ```
 
 ## Building the Client
@@ -66,6 +75,15 @@ Tables in the `quickpoll` schema:
 - `PollVotes` - Individual vote records (unique index on PollId + VoterIp)
 
 ## Changelog
+
+### 2.4.0 — 2026-08-23
+
+The Razor view behind `@await Component.InvokeAsync(...)` is now compiled into the package. It was previously carried as a loose file that nothing packed, so the component threw "view not found" on every install and the front-end usage shown in this README could not have worked.
+
+The view also still referenced the package's pre-rename namespace, so it would not have compiled even had it shipped. That is fixed, and the view is now built with the project — a broken view fails the build instead of failing a visitor's request.
+
+### 2.3.0 — 2026-08-23
+- A content editor can choose which poll a page shows. The view component takes a numeric id, so until now putting a poll on a page meant knowing that id and writing it into a template by hand — there was no way to pick one.
 
 ### 2.2.3 — 2026-08-22
 - Polls can be listed and created again. Both endpoints returned 500 with "a possible object cycle was detected": the queries load each poll's options, every option carries a reference back to its poll, and the serializer looped. Creating a poll saved it and *then* failed on the way back, so a single poll was enough to break the dashboard for good.

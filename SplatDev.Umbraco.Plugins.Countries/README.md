@@ -1,5 +1,13 @@
 # Countries
 
+<!-- screenshot:start -->
+
+![Countries property editor](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Countries/docs/screenshots/02-property-editor.png)
+
+![Countries data type](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Countries/docs/screenshots/03-data-type.png)
+
+<!-- screenshot:end -->
+
 Umbraco countries data plugin — seeds and maintains a `countries` database table with ISO country codes, names, and nationality data. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Countries.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Countries)

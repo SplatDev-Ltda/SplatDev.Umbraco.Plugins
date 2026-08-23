@@ -7,6 +7,8 @@ Member group management plugin for Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
 ![MemberGroups dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.MemberGroups/docs/screenshots/01-dashboard.png)
 
+![MemberGroups on the front end](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.MemberGroups/docs/screenshots/04-front-end.png)
+
 <!-- screenshot:end -->
 
 Upgraded from Umbraco 8 (net472) to modern SDK-style multi-targeting.
@@ -55,6 +57,10 @@ Password operations must use the Umbraco Users API or `IMemberService.SavePasswo
 The `ChangeUserPassword` and `ResetUserPassword` methods log a warning and return guidance.
 
 ## Changelog
+
+### 2.3.0 — 2026-08-23
+
+The Razor view behind `@await Component.InvokeAsync(...)` is now compiled into the package. It was previously carried as a loose file that nothing packed, so the component threw "view not found" on every install and the front-end usage shown in this README could not have worked.
 
 ### 2.2.4 — 2026-08-22
 - You can create a member group from the dashboard, and add a member to one by email. The dashboard shipped a helper for calling these endpoints that nothing ever called, so six of the nine operations the API exposes had no way in — the three tabs were read-only lists and a lookup box.

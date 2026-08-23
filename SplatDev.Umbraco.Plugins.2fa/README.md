@@ -7,6 +7,8 @@ TOTP two-factor authentication for Umbraco **members**, with single-use backup c
 
 ![2fa dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.2fa/docs/screenshots/01-dashboard.png)
 
+![2fa on the front end](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.2fa/docs/screenshots/04-front-end.png)
+
 <!-- screenshot:end -->
 
 - **Umbraco 13** (net8.0)
@@ -119,6 +121,10 @@ npx vite build
 ```
 
 ## Changelog
+
+### 3.2.0 — 2026-08-23
+
+The Razor view behind `@await Component.InvokeAsync(...)` is now compiled into the package. It was previously carried as a loose file that nothing packed, so the component threw "view not found" on every install and the front-end usage shown in this README could not have worked.
 
 ### 3.1.3 — 2026-08-21
 - README no longer tells you to scaffold EF Core migrations by hand — the plugin creates its own tables on first start, on SQL Server or SQLite.

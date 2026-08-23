@@ -7,6 +7,12 @@ Content restriction plugin for Umbraco — member-only content gates using Umbra
 
 ![Restricted dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Restricted/docs/screenshots/01-dashboard.png)
 
+![Restricted property editor](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Restricted/docs/screenshots/02-property-editor.png)
+
+![Restricted data type](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Restricted/docs/screenshots/03-data-type.png)
+
+![Restricted on the front end](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Restricted/docs/screenshots/04-front-end.png)
+
 <!-- screenshot:end -->
 
 ## Compatibility
@@ -61,6 +67,10 @@ This plugin uses Umbraco's own public access infrastructure — no additional da
 - Redirect behavior (login vs error page) must be configured per-node
 
 ## Changelog
+
+### 2.5.0 — 2026-08-23
+
+The Razor view behind `@await Component.InvokeAsync(...)` is now compiled into the package. It was previously carried as a loose file that nothing packed, so the component threw "view not found" on every install and the front-end usage shown in this README could not have worked.
 
 ### 2.4.0 — 2026-08-23
 - You can restrict or unrestrict a page from the page itself. The plugin shipped a dashboard listing restricted nodes and nothing on the node, so protecting a page meant leaving it, finding it in a list somewhere else, and coming back.

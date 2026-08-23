@@ -1,5 +1,11 @@
 # SplatDev.Umbraco.DataTypes.USStates
 
+<!-- screenshot:start -->
+
+![USStates data type](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.DataTypes.USStates/docs/screenshots/03-data-type.png)
+
+<!-- screenshot:end -->
+
 A pre-configured Umbraco data type that provides a dropdown list of all 50 US states, including DC and US territories.
 
 ## Package

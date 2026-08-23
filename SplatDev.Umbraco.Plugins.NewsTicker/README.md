@@ -7,6 +7,8 @@ A scrolling news ticker plugin for Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
 ![NewsTicker dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.NewsTicker/docs/screenshots/01-dashboard.png)
 
+![NewsTicker on the front end](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.NewsTicker/docs/screenshots/04-front-end.png)
+
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.NewsTicker.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.NewsTicker)
@@ -74,6 +76,12 @@ The plugin creates a `NewsTickerItems` table via EF Core. Run migrations or call
 | DELETE | `/umbraco/api/newsticker/items/{id}` | Delete an item |
 
 ## Changelog
+
+### 2.3.0 — 2026-08-23
+
+The Razor view behind `@await Component.InvokeAsync(...)` is now compiled into the package. It was previously carried as a loose file that nothing packed, so the component threw "view not found" on every install and the front-end usage shown in this README could not have worked.
+
+The view also still referenced the package's pre-rename namespace, so it would not have compiled even had it shipped. That is fixed, and the view is now built with the project — a broken view fails the build instead of failing a visitor's request.
 
 ### 2.2.3 — 2026-08-21
 - A failed request now says so in the dashboard. Previously the dashboard kept its previous (usually empty) state, so a refused or failed call looked identical to having no data.

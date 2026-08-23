@@ -19,6 +19,18 @@
     {
       "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.CopyValue/docs/screenshots/01-dashboard.png",
       "Caption": "The CopyValue dashboard in the Umbraco backoffice."
+    },
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.CopyValue/docs/screenshots/02-property-editor.png",
+      "Caption": "The CopyValue property editor on a document."
+    },
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.CopyValue/docs/screenshots/03-data-type.png",
+      "Caption": "Setting up the CopyValue data type."
+    },
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.CopyValue/docs/screenshots/04-front-end.png",
+      "Caption": "CopyValue rendered on the front end."
     }
   ]
 }

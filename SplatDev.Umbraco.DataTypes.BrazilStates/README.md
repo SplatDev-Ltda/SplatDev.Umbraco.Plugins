@@ -1,5 +1,11 @@
 # SplatDev.Umbraco.DataTypes.BrazilStates
 
+<!-- screenshot:start -->
+
+![BrazilStates data type](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.DataTypes.BrazilStates/docs/screenshots/03-data-type.png)
+
+<!-- screenshot:end -->
+
 A pre-configured Umbraco data type providing a dropdown of Brazil's 27 federative units — the 26 states plus the Distrito Federal.
 
 ## Package

@@ -7,6 +7,8 @@ Custom member login plugin for Umbraco — login form with username/email authen
 
 ![MemberLogin dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.MemberLogin/docs/screenshots/01-dashboard.png)
 
+![MemberLogin on the front end](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.MemberLogin/docs/screenshots/04-front-end.png)
+
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.MemberLogin.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.MemberLogin)
@@ -60,6 +62,10 @@ The view component renders the login form and sets `ViewBag` properties for stat
 - View component only sets `ViewBag` properties; does not perform authentication server-side (delegates to API)
 
 ## Changelog
+
+### 2.2.0 — 2026-08-23
+
+The Razor view behind `@await Component.InvokeAsync(...)` is now compiled into the package. It was previously carried as a loose file that nothing packed, so the component threw "view not found" on every install and the front-end usage shown in this README could not have worked.
 
 ### 2.1.5 — 2026-08-21
 - Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.

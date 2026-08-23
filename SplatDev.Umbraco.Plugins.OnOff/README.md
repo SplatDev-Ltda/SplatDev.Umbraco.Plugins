@@ -7,6 +7,12 @@ Feature toggle system for Umbraco CMS. Enable, disable and schedule site feature
 
 ![OnOff dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.OnOff/docs/screenshots/01-dashboard.png)
 
+![OnOff property editor](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.OnOff/docs/screenshots/02-property-editor.png)
+
+![OnOff data type](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.OnOff/docs/screenshots/03-data-type.png)
+
+![OnOff on the front end](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.OnOff/docs/screenshots/04-front-end.png)
+
 <!-- screenshot:end -->
 
 ## Supports
@@ -55,6 +61,12 @@ to run by hand.
 | POST | `/umbraco/api/onoff/ApplyScheduled` | Trigger scheduled changes |
 
 ## Changelog
+
+### 2.3.0 — 2026-08-23
+
+The Razor view behind `@await Component.InvokeAsync(...)` is now compiled into the package. It was previously carried as a loose file that nothing packed, so the component threw "view not found" on every install and the front-end usage shown in this README could not have worked.
+
+The view also still referenced the package's pre-rename namespace, so it would not have compiled even had it shipped. That is fixed, and the view is now built with the project — a broken view fails the build instead of failing a visitor's request.
 
 ### 2.2.4 — 2026-08-22
 - The on/off switch is now an actual property editor you can pick when creating a data type. The plugin had always shipped the switch's markup and styling but never registered it, so on Umbraco 17 there was no editor to choose at all.
