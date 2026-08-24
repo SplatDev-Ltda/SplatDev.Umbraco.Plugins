@@ -75,4 +75,5 @@ EXPOSE 5001
 HEALTHCHECK --interval=20s --timeout=5s --start-period=120s --retries=6 \
     CMD curl -sf http://127.0.0.1:5001/umbraco || exit 1
 
+USER app
 ENTRYPOINT ["dotnet", "Umbraco13.Baseline.dll"]
