@@ -65,6 +65,16 @@ Add a CharLimit data type to any text property on a document type. The property 
 
 ## Changelog
 
+### 1.5.0 — 2026-08-24
+
+Restores what this plugin was on Umbraco 7 and 8. Umbraco 17 can cap a textbox on its own, so a plugin that only does that has no reason to exist — what this one always had was the counter bar that changes colour as the field fills: green while there is room, olive past halfway, crimson once the limit is reached, with a matching icon and the remaining count spelled out. That, the `icon-stop-hand` identity and the Common group had all been lost in the rewrite.
+
+The `limit` prevalue is back. The rewrite had renamed it to `maxChars`, which silently orphaned the configuration of every data type carried over from Umbraco 7 or 8 — the editor read a key that was not there and fell back to a default, so the field looked configured and was not. Both keys are read, `limit` first, so migrated and newer data types both keep their setting.
+
+A limit of 100 or more now renders a multi-line box rather than a single-line field, as it did originally; the threshold is configurable. Pasting past the limit is clamped, not just blocked by `maxlength`, which browsers apply inconsistently to paste.
+
+The Dutch and Brazilian Portuguese translations are back alongside English.
+
 ### 1.4.2 — 2026-08-24
 
 Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.

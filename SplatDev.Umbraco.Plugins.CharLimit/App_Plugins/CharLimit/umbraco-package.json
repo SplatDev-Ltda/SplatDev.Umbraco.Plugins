@@ -32,13 +32,13 @@
     {
       "type": "propertyEditorUi",
       "alias": "SplatDev.PropertyEditorUi.CharLimit",
-      "name": "Character Limit",
+      "name": "Char Limit Restrict",
       "element": "/App_Plugins/CharLimit/charlimit-property-editor.element.js",
       "elementName": "charlimit-property-editor",
       "meta": {
-        "label": "Character Limit",
-        "icon": "icon-cursor-text",
-        "group": "common",
+        "label": "Char Limit Restrict",
+        "icon": "icon-stop-hand",
+        "group": "Common",
         "propertyEditorSchemaAlias": "UmbracoCms.CharLimit",
         "settings": {
           "properties": [
@@ -61,6 +61,57 @@
               "value": true
             }
           ]
+        }
+      }
+    },
+    {
+      "type": "localization",
+      "alias": "SplatDev.Localization.CharLimit.en-us",
+      "name": "Char Limit Restrict (en-us)",
+      "meta": {
+        "culture": "en-us"
+      },
+      "value": {
+        "charLimit": {
+          "youHave": "You have",
+          "charactersLeft": "characters left",
+          "only": "Only",
+          "charactersAllowed": "characters allowed!",
+          "noLimit": "No limit is set on this data type."
+        }
+      }
+    },
+    {
+      "type": "localization",
+      "alias": "SplatDev.Localization.CharLimit.nl-nl",
+      "name": "Char Limit Restrict (nl-nl)",
+      "meta": {
+        "culture": "nl-nl"
+      },
+      "value": {
+        "charLimit": {
+          "youHave": "Je hebt nog",
+          "charactersLeft": "karakters over",
+          "only": "Niet meer dan",
+          "charactersAllowed": "karakters toegestaan!",
+          "noLimit": "Voor dit datatype is geen limiet ingesteld."
+        }
+      }
+    },
+    {
+      "type": "localization",
+      "alias": "SplatDev.Localization.CharLimit.pt-br",
+      "name": "Char Limit Restrict (pt-br)",
+      "meta": {
+        "culture": "pt-br"
+      },
+      "value": {
+        "charLimit": {
+          "youHave": "Você tem",
+          "charactersLeft": "caracteres sobrando",
+          "only": "Somente",
+          "charactersAllowed": "caracteres permitidos!",
+          "noLimit": "Nenhum limite definido para este tipo de dados."
         }
       }
     }
