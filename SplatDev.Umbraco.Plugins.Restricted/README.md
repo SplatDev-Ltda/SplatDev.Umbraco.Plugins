@@ -66,6 +66,10 @@ This plugin uses Umbraco's own public access infrastructure — no additional da
 
 ## Changelog
 
+### 2.5.3 — 2026-08-24
+
+Restores the Common group and the Brazilian Portuguese translation that shipped with the Umbraco 8 package.
+
 ### 2.5.2 — 2026-08-24
 
 Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.

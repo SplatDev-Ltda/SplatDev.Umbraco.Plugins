@@ -1,15 +1,15 @@
-import { LitElement as A, html as p, nothing as k, css as P, property as g, state as c, customElement as B } from "@umbraco-cms/backoffice/external/lit";
+import { LitElement as C, html as p, nothing as k, css as B, property as g, state as c, customElement as P } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin as V } from "@umbraco-cms/backoffice/element-api";
 import { UmbChangeEvent as x } from "@umbraco-cms/backoffice/event";
 import { UMB_PROPERTY_DATASET_CONTEXT as L } from "@umbraco-cms/backoffice/property";
 var S = Object.defineProperty, T = Object.getOwnPropertyDescriptor, $ = (t) => {
   throw TypeError(t);
 }, a = (t, e, i, n) => {
-  for (var l = n > 1 ? void 0 : n ? T(e, i) : e, v = t.length - 1, y; v >= 0; v--)
-    (y = t[v]) && (l = (n ? y(e, i, l) : y(l)) || l);
+  for (var l = n > 1 ? void 0 : n ? T(e, i) : e, y = t.length - 1, v; y >= 0; y--)
+    (v = t[y]) && (l = (n ? v(e, i, l) : v(l)) || l);
   return n && l && S(e, i, l), l;
-}, b = (t, e, i) => e.has(t) || $("Cannot " + i), h = (t, e, i) => (b(t, e, "read from private field"), e.get(t)), m = (t, e, i) => e.has(t) ? $("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, i), M = (t, e, i, n) => (b(t, e, "write to private field"), e.set(t, i), i), o = (t, e, i) => (b(t, e, "access private method"), i), f, u, s, _, d, w, E, C;
-let r = class extends V(A) {
+}, b = (t, e, i) => e.has(t) || $("Cannot " + i), h = (t, e, i) => (b(t, e, "read from private field"), e.get(t)), m = (t, e, i) => e.has(t) ? $("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, i), M = (t, e, i, n) => (b(t, e, "write to private field"), e.set(t, i), i), o = (t, e, i) => (b(t, e, "access private method"), i), f, u, s, _, d, w, E, A;
+let r = class extends V(C) {
   constructor() {
     super(), m(this, s), this.value = "", this.readonly = !1, this._sources = [], this._separator = " ", this._buttonLabel = "Copy from", this._overwrite = !1, this._preview = "", this._missing = [], m(this, f), m(this, u, /* @__PURE__ */ new Map()), this.consumeContext(L, (t) => {
       M(this, f, t), o(this, s, _).call(this);
@@ -17,7 +17,7 @@ let r = class extends V(A) {
   }
   set config(t) {
     if (!t) return;
-    const e = t.getValueByAlias("sourceAliases") ?? "";
+    const e = t.getValueByAlias("sourceAliases") ?? t.getValueByAlias("from") ?? "";
     this._sources = e.split(",").map((i) => i.trim()).filter(Boolean), this._separator = t.getValueByAlias("separator") ?? " ", this._buttonLabel = t.getValueByAlias("buttonLabel") || "Copy from", this._overwrite = t.getValueByAlias("overwrite") ?? !1, o(this, s, _).call(this);
   }
   render() {
@@ -28,7 +28,7 @@ let r = class extends V(A) {
           label="Value"
           .value=${this.value ?? ""}
           ?readonly=${this.readonly}
-          @input=${o(this, s, C)}
+          @input=${o(this, s, A)}
         ></uui-input>
         <uui-button
           look="secondary"
@@ -109,10 +109,10 @@ Current: ${this.value}
 New: ${this._preview}`
   ) || (this.value = this._preview, this.dispatchEvent(new x()))));
 };
-C = function(t) {
+A = function(t) {
   this.value = t.target.value, this.dispatchEvent(new x());
 };
-r.styles = P`
+r.styles = B`
     :host { display: block; }
     .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
     uui-input { flex: 1 1 260px; }
@@ -173,7 +173,7 @@ a([
   g({ attribute: !1 })
 ], r.prototype, "config", 1);
 r = a([
-  B("copyvalue-property-editor")
+  P("copyvalue-property-editor")
 ], r);
 const D = r;
 export {

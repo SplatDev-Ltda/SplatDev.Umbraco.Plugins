@@ -47,6 +47,10 @@ HideNodeAsync sets `umbracoNaviHide = "1"` and publishes. ShowNodeAsync sets it 
 
 ## Changelog
 
+### 2.5.3 — 2026-08-24
+
+Restores the `icon-document-dashed-line` icon and the Common group this plugin had on Umbraco 7 and 8, and the Brazilian Portuguese translation that shipped with it.
+
 ### 2.5.2 — 2026-08-24
 
 Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.

@@ -29,9 +29,25 @@
       "elementName": "hiddencontent-property-editor",
       "meta": {
         "label": "Hide From Navigation",
-        "icon": "icon-eye-off",
-        "group": "common",
+        "icon": "icon-document-dashed-line",
+        "group": "Common",
         "propertyEditorSchemaAlias": "Umbraco.TextBox"
+      }
+    },
+    {
+      "type": "localization",
+      "alias": "SplatDev.Localization.HiddenContent.pt-br",
+      "name": "HiddenContent (pt-br)",
+      "meta": {
+        "culture": "pt-br"
+      },
+      "value": {
+        "hiddenContent": {
+          "hide": "Ocultar da navegação",
+          "show": "Mostrar na navegação",
+          "hidden": "Oculto",
+          "visible": "Visível"
+        }
       }
     }
   ]

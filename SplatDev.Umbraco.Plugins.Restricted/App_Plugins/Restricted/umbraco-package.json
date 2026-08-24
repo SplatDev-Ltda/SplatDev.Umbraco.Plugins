@@ -30,7 +30,7 @@
       "meta": {
         "label": "Restrict Page",
         "icon": "icon-lock",
-        "group": "common",
+        "group": "Common",
         "propertyEditorSchemaAlias": "Umbraco.TextBox",
         "settings": {
           "properties": [
@@ -53,6 +53,22 @@
               "propertyEditorUiAlias": "Umb.PropertyEditorUi.TextBox"
             }
           ]
+        }
+      }
+    },
+    {
+      "type": "localization",
+      "alias": "SplatDev.Localization.Restricted.pt-br",
+      "name": "Restricted (pt-br)",
+      "meta": {
+        "culture": "pt-br"
+      },
+      "value": {
+        "restricted": {
+          "restrict": "Restringir página",
+          "unrestrict": "Remover restrição",
+          "restricted": "Restrita",
+          "open": "Aberta"
         }
       }
     }
