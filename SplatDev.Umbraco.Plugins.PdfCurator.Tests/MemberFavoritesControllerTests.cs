@@ -7,7 +7,6 @@ using SplatDev.Umbraco.Plugins.PdfCurator.Controllers.Member;
 using SplatDev.Umbraco.Plugins.PdfCurator.Entities;
 using SplatDev.Umbraco.Plugins.PdfCurator.Migrations;
 
-using PdfCurator.Core.Data;
 
 using Umbraco.Cms.Core.Security;
 
@@ -24,22 +23,6 @@ public class MemberFavoritesControllerTests
     }
 
     private static readonly Guid MemberKey = Guid.NewGuid();
-
-    private static Mock<IDbContextFactory<CuratorDbContext>> CreateCuratorDbFactory(CuratorDbContext db)
-    {
-        var factory = new Mock<IDbContextFactory<CuratorDbContext>>();
-        factory.Setup(f => f.CreateDbContextAsync(It.IsAny<CancellationToken>()))
-            .ReturnsAsync(db);
-        return factory;
-    }
-
-    private static CuratorDbContext CreateCuratorInMemoryDb()
-    {
-        var options = new DbContextOptionsBuilder<CuratorDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options;
-        return new CuratorDbContext(options);
-    }
 
     private static Mock<IDbContextFactory<MemberDbContext>> CreateDbFactory(MemberDbContext db)
     {
@@ -59,8 +42,7 @@ public class MemberFavoritesControllerTests
 
     private static MemberFavoritesController CreateController(
         MemberDbContext db,
-        bool authenticated = true,
-        CuratorDbContext? curatorDb = null)
+        bool authenticated = true)
     {
         var memberManagerMock = new Mock<IMemberManager>();
         if (authenticated)
@@ -79,10 +61,8 @@ public class MemberFavoritesControllerTests
                 .ReturnsAsync((MemberIdentityUser?)null);
         }
 
-        curatorDb ??= CreateCuratorInMemoryDb();
         return new MemberFavoritesController(
             CreateDbFactory(db).Object,
-            CreateCuratorDbFactory(curatorDb).Object,
             memberManagerMock.Object);
     }
 

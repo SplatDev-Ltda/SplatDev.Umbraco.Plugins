@@ -9,9 +9,14 @@ set -uo pipefail
 SLN="SplatDev.Core.sln"
 missing=0
 
-# PdfCurator restores from a private feed; adding it breaks restore without GITHUB_TOKEN.
 # SplatDev.Umbraco.Plugins.Tests targets .NET Framework 4.7.2 and cannot build on the CI SDK.
-EXCLUDE='PdfCurator|^SplatDev\.Umbraco\.Plugins\.Tests$|BackupManager|FormsClone|CodeFirst'
+#
+# PdfCurator used to be excluded here too, on the grounds that its private feed breaks
+# restore without GITHUB_TOKEN. That was already untrue — the plugin itself has been in
+# the solution for some time and build.yml supplies the token — and the exclusion hid
+# SplatDev.Umbraco.Plugins.PdfCurator.Tests, which was absent from the solution and so
+# never built by CI. It had not compiled on net8.0 for months and nothing said so.
+EXCLUDE='^SplatDev\.Umbraco\.Plugins\.Tests$|BackupManager|FormsClone|CodeFirst'
 
 while IFS= read -r csproj; do
   name=$(basename "$csproj" .csproj)
