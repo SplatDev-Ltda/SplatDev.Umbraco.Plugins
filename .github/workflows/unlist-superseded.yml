@@ -119,10 +119,16 @@ jobs:
             if [ "$FAILED" -gt 0 ]; then
               echo "::error::Could not unlist:$FAILED_LIST"
               echo ""
-              echo "A 403 here usually means the NuGet api key's package-id glob does not"
-              echo "cover that id — SplatDevUmbracoPluginBackup has no dot, so a"
-              echo "'SplatDev.*' glob misses it. Widen the key's scope or unlist it by"
-              echo "hand in the nuget.org UI."
+              echo "A 403 here almost always means the package is owned by a different"
+              echo "nuget.org account than the one the api key was issued under. A key is"
+              echo "scoped to a single package owner, and no glob widens that."
+              echo ""
+              echo "Check who owns it before touching the key:"
+              echo "  curl -s \"https://azuresearch-usnc.nuget.org/query?q=packageid:<id>\" | jq '.data[0].owners'"
+              echo ""
+              echo "SplatDevUmbracoPluginBackup is owned by 'Shuchita' while this key is"
+              echo "issued under 'SplatDev'. Add SplatDev as a co-owner from that account,"
+              echo "or unlist it from there."
               exit 1
             fi
           fi
