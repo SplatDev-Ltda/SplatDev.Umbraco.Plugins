@@ -20,11 +20,41 @@ public class AnalyticsVisit
     public int Id { get; set; }
 
     /// <summary>
-    /// The visitor's address. Stored whole by default, matching the v8 plugin; set
-    /// <c>StoreFullIpAddress</c> to false to keep only the network part.
+    /// A stable, non-reversible id for the visitor: SHA-256 over the address, the user
+    /// agent and a per-site salt, truncated. Unique and returning-visitor counts are based
+    /// on this rather than on the address.
     /// </summary>
-    [Required, MaxLength(45)]
-    public string IpAddress { get; set; } = string.Empty;
+    /// <remarks>
+    /// Hashing is what lets the plugin recognise a returning visitor without keeping
+    /// anything that identifies one. The salt matters: without it, an address range is
+    /// small enough to hash exhaustively and reverse.
+    /// </remarks>
+    [Required, MaxLength(64)]
+    public string VisitorId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The visitor's address, stored only when the site asks for it. Empty by default —
+    /// <see cref="VisitorId"/> covers what the dashboard needs, and a full address is
+    /// personal data in most jurisdictions.
+    /// </summary>
+    [MaxLength(45)]
+    public string? IpAddress { get; set; }
+
+    /// <summary>Where the visitor arrived from, when the browser says.</summary>
+    [MaxLength(1024)]
+    public string? Referrer { get; set; }
+
+    /// <summary>Browser family from the user agent, e.g. Chrome.</summary>
+    [MaxLength(64)]
+    public string? Browser { get; set; }
+
+    /// <summary>Operating system from the user agent, e.g. Windows.</summary>
+    [MaxLength(64)]
+    public string? OperatingSystem { get; set; }
+
+    /// <summary>Desktop, Mobile or Tablet, from the user agent.</summary>
+    [MaxLength(16)]
+    public string? Device { get; set; }
 
     /// <summary>The Umbraco content node visited, or 0 for a page outside the tree.</summary>
     public int ContentNodeId { get; set; }

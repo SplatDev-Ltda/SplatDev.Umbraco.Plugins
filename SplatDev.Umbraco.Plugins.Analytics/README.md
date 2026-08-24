@@ -70,8 +70,10 @@ the filter is working rather than take it on trust.
 
 | Setting | Default | What it does |
 | --- | --- | --- |
-| `IpSource` | `Client` | `Client` has the browser fetch its own address from a public lookup service and report it, which is what this plugin did on Umbraco 7 and 8. `Server` reads it from the connection instead — no third-party request from your visitors, and it cannot be spoofed by editing the payload. Behind a proxy, `Server` needs forwarded headers configured or every visit records the proxy. |
-| `StoreFullIpAddress` | `true` | Off, the host part is zeroed before storing — still enough to tell visitors apart for returning-visitor counts, without keeping something that identifies one. |
+| `RecordingMode` | `Both` | `Middleware` records server-side on every page — no template change, and an ad blocker cannot stop it, but it sees nothing the browser knows. `Beacon` uses the tracking component, which reports screen size and closes the visit with an exit url. `Both` runs the middleware and lets the beacon fill in the rest. |
+| `StoreIpAddress` | `None` | What is kept of the address alongside the hashed visitor id. `None` keeps nothing, `Anonymised` zeroes the host bits, `Full` keeps the whole address as the Umbraco 7/8 plugin did. |
+| `VisitorIdSalt` | generated | Salt mixed into the visitor id hash. Set it to keep visitors recognisable across restarts; changing it makes every visitor look new. |
+| `IpSource` | `Client` | Where the beacon takes the address from. `Client` asks a public lookup service from the visitor's browser, as the Umbraco 7/8 plugin did; `Server` reads it from the connection — no third-party request, and unspoofable. Behind a proxy, `Server` needs forwarded headers configured. |
 | `RetentionDays` | `0` | Delete visits older than this. Zero keeps everything, which is what the old plugin did. |
 | `RecordBots` | `true` | Store automated requests, flagged. Off, they are dropped entirely. |
 | `IgnoreBackofficeUsers` | `true` | Don't count your own editors browsing the site. |
@@ -80,11 +82,18 @@ the filter is working rather than take it on trust.
 
 ### A note on visitor addresses
 
-The defaults reproduce the Umbraco 7/8 behaviour: the address is fetched by the visitor's
-browser from a public service and stored whole. That means every visitor's browser
-contacts a third party, and a full address is personal data in most jurisdictions. If
-that matters for your site, set `IpSource` to `Server` and `StoreFullIpAddress` to
-`false` — the dashboard works the same either way.
+**No address is stored by default.** Each visit carries a `VisitorId` — SHA-256 over the
+address, the user agent and a per-site salt — which is what unique and returning-visitor
+counts are built on. It identifies a visitor to the dashboard without being reversible to
+a person, and the salt is what makes that true: without one, an address range is small
+enough to hash exhaustively and compare.
+
+Set `StoreIpAddress` to `Anonymised` or `Full` if something downstream genuinely needs the
+address. The dashboard works the same either way.
+
+The beacon still asks a public lookup service for the address by default, matching the
+Umbraco 7/8 behaviour. Set `IpSource` to `Server`, or `RecordingMode` to `Middleware`, and
+no third-party request is made from your visitors'"'"' browsers at all.
 
 ## API
 
@@ -96,7 +105,7 @@ All statistics endpoints require backoffice authentication.
 | GET | `/umbraco/api/analyticsstats/visits?page=1&pageSize=20` | Paged visits |
 | GET | `/umbraco/api/analyticsstats/by-entry-url?take=10` | Top entry pages |
 | GET | `/umbraco/api/analyticsstats/by-exit-url?take=10` | Top exit pages |
-| GET | `/umbraco/api/analyticsstats/results-by?filter=country` | Grouped by `entryUrl`, `exitUrl`, `country`, `city`, `resolution` or `ip` |
+| GET | `/umbraco/api/analyticsstats/results-by?filter=country` | Grouped by `entryUrl`, `exitUrl`, `country`, `city`, `resolution`, `referrer`, `browser`, `os`, `device` or `visitor` |
 | GET | `/umbraco/api/analyticsstats/visits-by-node?nodeId=1234` | Visits to one node |
 | POST | `/umbraco/api/analyticsstats/purge` | Runs the retention sweep now |
 
@@ -109,6 +118,12 @@ On Umbraco 13 these are reached at `/umbraco/backoffice/api/AnalyticsApi/...` an
 ## Changelog
 
 ### 3.0.0 — 2026-08-24
+
+Records visits server-side as well as from the page. `RecordingMode` chooses: middleware needs no template change and cannot be blocked by an ad blocker; the beacon reports screen size and closes the visit with an exit url; `Both` runs the middleware and lets the beacon fill in the rest.
+
+**No visitor address is stored by default.** Each visit carries a salted, non-reversible `VisitorId` instead, which is what unique and returning-visitor counts are built on. Keep the address with `StoreIpAddress` if something downstream needs it.
+
+Also records the referrer, and parses browser, operating system and device from the user agent, all of which the dashboard can group by.
 
 The plugin does something again. Versions 2.x were a compatibility shim that forwarded to
 `SplatDev.Umbraco.Plugins.GoogleAnalytics` and contained no analytics of their own, so the

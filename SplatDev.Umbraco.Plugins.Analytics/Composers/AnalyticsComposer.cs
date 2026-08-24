@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SplatDev.Umbraco.Plugins.Analytics.Configuration;
@@ -5,6 +6,7 @@ using SplatDev.Umbraco.Plugins.Analytics.Data;
 using SplatDev.Umbraco.Plugins.Analytics.Services;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
+using Umbraco.Cms.Web.Common.ApplicationBuilder;
 using Umbraco.Extensions;
 
 namespace SplatDev.Umbraco.Plugins.Analytics.Composers;
@@ -34,6 +36,16 @@ public class AnalyticsComposer : IComposer
         });
 
         builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
+        builder.Services.AddSingleton<IVisitorIdentity, VisitorIdentity>();
+
+        // Recording server-side needs the middleware in Umbraco's pipeline, after routing
+        // has resolved the content node.
+        builder.Services.AddTransient<Middleware.AnalyticsMiddleware>();
+        builder.Services.Configure<UmbracoPipelineOptions>(options =>
+            options.AddFilter(new UmbracoPipelineFilter("SplatDevAnalytics")
+            {
+                PostPipeline = app => app.UseMiddleware<Middleware.AnalyticsMiddleware>(),
+            }));
         builder.Services.AddSingleton<IGeoLookup, Ip2LocationGeoLookup>();
         builder.Services.AddHostedService<AnalyticsRetentionService>();
 

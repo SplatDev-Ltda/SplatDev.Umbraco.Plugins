@@ -21,11 +21,27 @@ public class AnalyticsOptions
     public IpSource IpSource { get; set; } = IpSource.Client;
 
     /// <summary>
-    /// Store the address whole. Off, the last octet of IPv4 (or the last 80 bits of IPv6)
-    /// is zeroed before saving, which still distinguishes visitors well enough for
-    /// recurring-visit counts while keeping the stored value out of scope as an identifier.
+    /// What, if anything, of the visitor's address is kept alongside the hashed visitor id.
     /// </summary>
-    public bool StoreFullIpAddress { get; set; } = true;
+    /// <remarks>
+    /// <c>None</c> is the default: the hashed <c>VisitorId</c> already carries what the
+    /// dashboard needs — unique and returning-visitor counts — and a full address is
+    /// personal data in most jurisdictions. Keep it only if something downstream needs it.
+    /// </remarks>
+    public IpStorage StoreIpAddress { get; set; } = IpStorage.None;
+
+    /// <summary>
+    /// Salt mixed into the visitor id hash. Generated per site on first run if unset.
+    /// </summary>
+    /// <remarks>
+    /// Without a salt the hash is reversible in practice: an address range is small enough
+    /// to hash exhaustively and compare. Changing it makes every existing visitor look new,
+    /// so it is written once and left alone.
+    /// </remarks>
+    public string? VisitorIdSalt { get; set; }
+
+    /// <summary>How visits are recorded.</summary>
+    public RecordingMode RecordingMode { get; set; } = RecordingMode.Both;
 
     /// <summary>
     /// Path to an IP2Location BIN file. Unset, no geo lookup happens and the country and
@@ -48,6 +64,42 @@ public class AnalyticsOptions
 
     /// <summary>How long after the last activity a visit still counts as real-time.</summary>
     public int RealTimeWindowMinutes { get; set; } = 5;
+}
+
+/// <summary>What is kept of the visitor's address.</summary>
+public enum IpStorage
+{
+    /// <summary>Nothing. The hashed visitor id is all that is stored.</summary>
+    None,
+
+    /// <summary>The network part only — the host bits are zeroed.</summary>
+    Anonymised,
+
+    /// <summary>The whole address, as the Umbraco 7/8 plugin did.</summary>
+    Full,
+}
+
+/// <summary>How visits reach the database.</summary>
+public enum RecordingMode
+{
+    /// <summary>
+    /// Server-side, on every HTML page request. Needs no template change and cannot be
+    /// blocked by an ad blocker, but sees nothing the browser knows — no screen size, and
+    /// no exit url.
+    /// </summary>
+    Middleware,
+
+    /// <summary>
+    /// The tracking component, which reports screen size and closes the visit with an exit
+    /// url when the visitor leaves. Requires the component in your templates.
+    /// </summary>
+    Beacon,
+
+    /// <summary>
+    /// Middleware records the visit; the beacon fills in what only the browser knows. The
+    /// beacon matches its own visit rather than creating a second one.
+    /// </summary>
+    Both,
 }
 
 /// <summary>Where the visitor's address is taken from.</summary>

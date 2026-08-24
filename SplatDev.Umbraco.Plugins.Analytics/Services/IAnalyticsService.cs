@@ -11,8 +11,8 @@ public interface IAnalyticsService
     Task<AnalyticsVisit> RecordVisitAsync(RecordVisitRequest request, string ipAddress, string? userAgent, bool isBot, CancellationToken ct = default);
     Task<bool> RecordExitAsync(RecordExitRequest request, CancellationToken ct = default);
 
-    Task<bool> AlreadyVisitedAsync(int nodeId, string ipAddress, CancellationToken ct = default);
-    Task<AnalyticsVisit?> GetCurrentVisitAsync(int nodeId, string ipAddress, CancellationToken ct = default);
+    Task<bool> AlreadyVisitedAsync(int nodeId, string visitorId, CancellationToken ct = default);
+    Task<AnalyticsVisit?> GetCurrentVisitAsync(int nodeId, string visitorId, CancellationToken ct = default);
 
     Task<int> GetTotalVisitsAsync(bool includeBots = false, CancellationToken ct = default);
     Task<int> GetUniqueVisitorsAsync(bool includeBots = false, CancellationToken ct = default);

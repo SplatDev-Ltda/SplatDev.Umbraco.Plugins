@@ -17,7 +17,8 @@ public class AnalyticsDbContext : DbContext
         // grows without bound on a busy site.
         visit.HasIndex(v => v.VisitStarted);
         visit.HasIndex(v => v.ContentNodeId);
-        visit.HasIndex(v => new { v.IpAddress, v.ContentNodeId });
+        visit.HasIndex(v => new { v.VisitorId, v.ContentNodeId });
+        visit.HasIndex(v => v.VisitorId);
 
         // No provider-specific column types here. CopyValue pinned nvarchar(max), which was
         // emitted verbatim into SQLite DDL and failed with `near "max": syntax error`,

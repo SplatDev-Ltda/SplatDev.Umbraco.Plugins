@@ -41,7 +41,10 @@ public class AnalyticsServiceTests : IDisposable
     {
         var options = new AnalyticsOptions();
         configure?.Invoke(options);
-        return new AnalyticsService(_db, Options.Create(options), new NoGeoLookup());
+        // A fixed salt keeps visitor ids stable across the service instances a test builds.
+        options.VisitorIdSalt ??= "test-salt";
+        var opts = Options.Create(options);
+        return new AnalyticsService(_db, opts, new NoGeoLookup(), new VisitorIdentity(opts));
     }
 
     private sealed class NoGeoLookup : IGeoLookup
@@ -60,7 +63,9 @@ public class AnalyticsServiceTests : IDisposable
         var visit = await service.RecordVisitAsync(Visit(), "203.0.113.5", "Mozilla/5.0", isBot: false);
 
         Assert.True(visit.Id > 0);
-        Assert.Equal("203.0.113.5", visit.IpAddress);
+        // The address is not stored by default — the hashed visitor id stands in for it.
+        Assert.Null(visit.IpAddress);
+        Assert.False(string.IsNullOrWhiteSpace(visit.VisitorId));
         Assert.False(visit.RecurringVisit);
         Assert.Equal(1, await service.GetTotalVisitsAsync());
     }
@@ -77,12 +82,71 @@ public class AnalyticsServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ByDefault_NoAddressIsStoredAtAll()
+    {
+        var service = Build();
+        var visit = await service.RecordVisitAsync(Visit(), "203.0.113.45", "Mozilla/5.0", isBot: false);
+
+        Assert.Null(visit.IpAddress);
+        Assert.False(string.IsNullOrWhiteSpace(visit.VisitorId));
+        // The id must not be the address, nor contain it.
+        Assert.DoesNotContain("203.0.113", visit.VisitorId);
+    }
+
+    [Fact]
     public async Task AnonymisedAddress_DropsTheHostPart()
     {
-        var service = Build(o => o.StoreFullIpAddress = false);
+        var service = Build(o => o.StoreIpAddress = IpStorage.Anonymised);
         var visit = await service.RecordVisitAsync(Visit(), "203.0.113.45", "Mozilla/5.0", isBot: false);
 
         Assert.Equal("203.0.113.0", visit.IpAddress);
+    }
+
+    [Fact]
+    public async Task FullAddress_IsKeptOnlyWhenAskedFor()
+    {
+        var service = Build(o => o.StoreIpAddress = IpStorage.Full);
+        var visit = await service.RecordVisitAsync(Visit(), "203.0.113.45", "Mozilla/5.0", isBot: false);
+
+        Assert.Equal("203.0.113.45", visit.IpAddress);
+    }
+
+    [Fact]
+    public async Task SameVisitor_GetsTheSameIdAndDifferentVisitorsDoNot()
+    {
+        var service = Build();
+        var a1 = await service.RecordVisitAsync(Visit(), "203.0.113.1", "Mozilla/5.0", isBot: false);
+        var a2 = await service.RecordVisitAsync(Visit(nodeId: 2), "203.0.113.1", "Mozilla/5.0", isBot: false);
+        var b = await service.RecordVisitAsync(Visit(), "203.0.113.2", "Mozilla/5.0", isBot: false);
+
+        Assert.Equal(a1.VisitorId, a2.VisitorId);
+        Assert.NotEqual(a1.VisitorId, b.VisitorId);
+    }
+
+    [Fact]
+    public async Task UserAgent_IsParsedIntoBrowserOsAndDevice()
+    {
+        var service = Build();
+        var visit = await service.RecordVisitAsync(Visit(),
+            "203.0.113.1",
+            "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Version/17.0 Mobile Safari/604.1",
+            isBot: false);
+
+        Assert.Equal("Safari", visit.Browser);
+        Assert.Equal("iOS", visit.OperatingSystem);
+        Assert.Equal("Mobile", visit.Device);
+    }
+
+    [Fact]
+    public async Task Referrer_IsRecordedAndCanBeGroupedOn()
+    {
+        var service = Build();
+        var r = Visit();
+        r.Referrer = "https://example.com/blog";
+        await service.RecordVisitAsync(r, "203.0.113.1", "Mozilla/5.0", isBot: false);
+
+        var byReferrer = await service.GetResultsByAsync("referrer");
+        Assert.Equal("https://example.com/blog", Assert.Single(byReferrer).Filter);
     }
 
     [Fact]
@@ -214,4 +278,31 @@ public class BotDetectorTests
     [InlineData("Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Version/17.0 Mobile Safari/604.1")]
     public void LeavesRealBrowsersAlone(string userAgent) =>
         Assert.False(BotDetector.IsBot(userAgent));
+}
+
+public class UserAgentParserTests
+{
+    [Theory]
+    [InlineData("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/121.0 Safari/537.36", "Chrome", "Windows", "Desktop")]
+    [InlineData("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 Version/17.0 Safari/605.1.15", "Safari", "macOS", "Desktop")]
+    [InlineData("Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 Chrome/121.0 Mobile Safari/537.36", "Chrome", "Android", "Mobile")]
+    [InlineData("Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Version/17.0 Safari/604.1", "Safari", "iOS", "Tablet")]
+    [InlineData("Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 Chrome/121.0 Safari/537.36 Edg/121.0", "Edge", "Windows", "Desktop")]
+    [InlineData("Mozilla/5.0 (Windows NT 10.0; rv:121.0) Gecko/20100101 Firefox/121.0", "Firefox", "Windows", "Desktop")]
+    public void ParsesTheCommonAgents(string ua, string browser, string os, string device)
+    {
+        // Order matters in the parser: Edge and Opera also say Chrome, Chrome also says
+        // Safari, and every Android agent also says Linux.
+        Assert.Equal(browser, UserAgentParser.Browser(ua));
+        Assert.Equal(os, UserAgentParser.OperatingSystem(ua));
+        Assert.Equal(device, UserAgentParser.Device(ua));
+    }
+
+    [Fact]
+    public void HandlesAnEmptyAgent()
+    {
+        Assert.Null(UserAgentParser.Browser(null));
+        Assert.Null(UserAgentParser.OperatingSystem(""));
+        Assert.Null(UserAgentParser.Device(null));
+    }
 }

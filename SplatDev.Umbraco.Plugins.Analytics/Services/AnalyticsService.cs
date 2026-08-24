@@ -17,22 +17,32 @@ public class AnalyticsService : IAnalyticsService
     private static readonly JsonSerializerOptions JsonOptions =
         new(JsonSerializerDefaults.Web);
 
-    public AnalyticsService(AnalyticsDbContext db, IOptions<AnalyticsOptions> options, IGeoLookup geo)
+    private readonly IVisitorIdentity _identity;
+
+    public AnalyticsService(AnalyticsDbContext db, IOptions<AnalyticsOptions> options, IGeoLookup geo, IVisitorIdentity identity)
     {
         _db = db;
         _options = options.Value;
         _geo = geo;
+        _identity = identity;
     }
 
     public async Task<AnalyticsVisit> RecordVisitAsync(
         RecordVisitRequest request, string ipAddress, string? userAgent, bool isBot, CancellationToken ct = default)
     {
-        var stored = _options.StoreFullIpAddress ? ipAddress : Anonymise(ipAddress);
-        var recurring = await AlreadyVisitedAsync(request.NodeId, stored, ct);
+        // Recurring detection keys off the hashed id, not the address, so it still works
+        // when nothing of the address is kept.
+        var visitorId = _identity.Compute(ipAddress, userAgent);
+        var recurring = await AlreadyVisitedAsync(request.NodeId, visitorId, ct);
 
         var visit = new AnalyticsVisit
         {
-            IpAddress = stored,
+            VisitorId = visitorId,
+            IpAddress = _identity.StorableAddress(ipAddress),
+            Referrer = Trim(request.Referrer, 1024),
+            Browser = Trim(UserAgentParser.Browser(userAgent), 64),
+            OperatingSystem = Trim(UserAgentParser.OperatingSystem(userAgent), 64),
+            Device = Trim(UserAgentParser.Device(userAgent), 16),
             ContentNodeId = request.NodeId,
             EntryUrl = Trim(request.EntryUrl, 2048),
             Resolution = Trim(request.Resolution, 32),
@@ -70,11 +80,11 @@ public class AnalyticsService : IAnalyticsService
         return true;
     }
 
-    public Task<bool> AlreadyVisitedAsync(int nodeId, string ipAddress, CancellationToken ct = default) =>
-        _db.Visits.AsNoTracking().AnyAsync(v => v.ContentNodeId == nodeId && v.IpAddress == ipAddress, ct);
+    public Task<bool> AlreadyVisitedAsync(int nodeId, string visitorId, CancellationToken ct = default) =>
+        _db.Visits.AsNoTracking().AnyAsync(v => v.ContentNodeId == nodeId && v.VisitorId == visitorId, ct);
 
-    public Task<AnalyticsVisit?> GetCurrentVisitAsync(int nodeId, string ipAddress, CancellationToken ct = default) =>
-        _db.Visits.Where(v => v.ContentNodeId == nodeId && v.IpAddress == ipAddress && v.VisitFinished == null)
+    public Task<AnalyticsVisit?> GetCurrentVisitAsync(int nodeId, string visitorId, CancellationToken ct = default) =>
+        _db.Visits.Where(v => v.ContentNodeId == nodeId && v.VisitorId == visitorId && v.VisitFinished == null)
                   .OrderByDescending(v => v.VisitStarted)
                   .FirstOrDefaultAsync(ct);
 
@@ -85,7 +95,7 @@ public class AnalyticsService : IAnalyticsService
         Query(includeBots).CountAsync(ct);
 
     public async Task<int> GetUniqueVisitorsAsync(bool includeBots = false, CancellationToken ct = default) =>
-        await Query(includeBots).Select(v => v.IpAddress).Distinct().CountAsync(ct);
+        await Query(includeBots).Select(v => v.VisitorId).Distinct().CountAsync(ct);
 
     public Task<int> GetRecurringVisitsAsync(bool includeBots = false, CancellationToken ct = default) =>
         Query(includeBots).CountAsync(v => v.RecurringVisit, ct);
@@ -150,7 +160,11 @@ public class AnalyticsService : IAnalyticsService
             "country" => TopBy(v => v.Country, take, ct),
             "city" => TopBy(v => v.City, take, ct),
             "resolution" => TopBy(v => v.Resolution, take, ct),
-            "ip" or "ipaddress" => TopBy(v => v.IpAddress, take, ct),
+            "referrer" => TopBy(v => v.Referrer, take, ct),
+            "browser" => TopBy(v => v.Browser, take, ct),
+            "os" or "operatingsystem" => TopBy(v => v.OperatingSystem, take, ct),
+            "device" => TopBy(v => v.Device, take, ct),
+            "visitor" => TopBy(v => v.VisitorId, take, ct),
             _ => Task.FromResult(Array.Empty<VisitFilter>()),
         };
 
@@ -184,7 +198,7 @@ public class AnalyticsService : IAnalyticsService
 
         var query = Query(includeBots);
         if (!string.IsNullOrWhiteSpace(ipAddress))
-            query = query.Where(v => v.IpAddress.Contains(ipAddress));
+            query = query.Where(v => v.VisitorId.Contains(ipAddress) || (v.IpAddress != null && v.IpAddress.Contains(ipAddress)));
 
         var found = await query.CountAsync(ct);
         var rows = await query
@@ -232,7 +246,12 @@ public class AnalyticsService : IAnalyticsService
     {
         Id = v.Id,
         ContentNodeId = v.ContentNodeId,
+        VisitorId = v.VisitorId,
         IpAddress = v.IpAddress,
+        Referrer = v.Referrer,
+        Browser = v.Browser,
+        OperatingSystem = v.OperatingSystem,
+        Device = v.Device,
         EntryUrl = v.EntryUrl,
         ExitUrl = v.ExitUrl,
         Resolution = v.Resolution,
@@ -244,7 +263,7 @@ public class AnalyticsService : IAnalyticsService
         VisitFinished = v.VisitFinished,
         RecurringVisit = v.RecurringVisit,
         IsBot = v.IsBot,
-        Browser = Deserialise(v.BrowserInfo),
+        BrowserDetails = Deserialise(v.BrowserInfo),
         VisitLength = Duration(v.VisitStarted, v.VisitFinished),
     };
 
@@ -267,21 +286,4 @@ public class AnalyticsService : IAnalyticsService
     private static string? Trim(string? value, int max) =>
         string.IsNullOrEmpty(value) || value.Length <= max ? value : value[..max];
 
-    /// <summary>
-    /// Drops the host part of the address, keeping enough to tell visitors apart without
-    /// storing something that identifies one.
-    /// </summary>
-    private static string Anonymise(string ipAddress)
-    {
-        if (!IPAddress.TryParse(ipAddress, out var parsed))
-            return ipAddress;
-
-        var bytes = parsed.GetAddressBytes();
-        // IPv4 loses the last octet; IPv6 keeps only its /48 routing prefix.
-        var keep = bytes.Length == 4 ? 3 : 6;
-        for (var i = keep; i < bytes.Length; i++)
-            bytes[i] = 0;
-
-        return new IPAddress(bytes).ToString();
-    }
 }

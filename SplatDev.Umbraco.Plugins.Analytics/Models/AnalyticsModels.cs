@@ -84,7 +84,12 @@ public class AnalyticsVisitDto
     public int Id { get; set; }
     public int ContentNodeId { get; set; }
     public string? NodeName { get; set; }
+    public string? VisitorId { get; set; }
     public string? IpAddress { get; set; }
+    public string? Referrer { get; set; }
+    public string? Browser { get; set; }
+    public string? OperatingSystem { get; set; }
+    public string? Device { get; set; }
     public string? EntryUrl { get; set; }
     public string? ExitUrl { get; set; }
     public string? Resolution { get; set; }
@@ -96,7 +101,7 @@ public class AnalyticsVisitDto
     public DateTime? VisitFinished { get; set; }
     public bool RecurringVisit { get; set; }
     public bool IsBot { get; set; }
-    public BrowserInfo? Browser { get; set; }
+    public BrowserInfo? BrowserDetails { get; set; }
 
     /// <summary>How long the visitor stayed, or null while the visit is still open.</summary>
     public string? VisitLength { get; set; }
@@ -120,6 +125,7 @@ public class RecordVisitRequest
     public string? EntryUrl { get; set; }
     public string? Resolution { get; set; }
     public string? IpAddress { get; set; }
+    public string? Referrer { get; set; }
     public BrowserInfo? Browser { get; set; }
 }
 
