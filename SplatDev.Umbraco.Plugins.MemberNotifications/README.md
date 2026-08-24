@@ -1,5 +1,8 @@
 # MemberNotifications
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Member-facing in-app notification system for Umbraco 17 (net10.0). Stores notifications per member key with read/unread state via IScopeProvider and NPoco.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.MemberNotifications.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.MemberNotifications)
@@ -29,6 +32,10 @@ builder.CreateUmbracoBuilder()
 ```
 
 ## Changelog
+
+### 1.2.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.2.1 — 2026-08-24
 

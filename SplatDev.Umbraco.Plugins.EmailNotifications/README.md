@@ -4,9 +4,6 @@ Email template engine, Mailgun mail provider, newsletter campaigns, and member n
 
 
 <!-- screenshot:start -->
-
-![EmailNotifications dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.EmailNotifications/docs/screenshots/01-dashboard.png)
-
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.EmailNotifications.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.EmailNotifications)
@@ -51,6 +48,10 @@ Add to `appsettings.json`:
 ```
 
 ## Changelog
+
+### 1.3.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.3.1 — 2026-08-24
 

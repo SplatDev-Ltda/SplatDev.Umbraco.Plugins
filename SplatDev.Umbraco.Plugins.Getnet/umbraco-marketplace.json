@@ -6,5 +6,6 @@
   },
   "Category": "Commerce",
   "Description": "Umbraco 17 plugin for the Getnet payment integration (SplatDev.Payments.Getnet).",
-  "PackageType": "Package"
+  "PackageType": "Package",
+  "Screenshots": []
 }

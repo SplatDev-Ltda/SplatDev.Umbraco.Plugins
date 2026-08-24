@@ -11,7 +11,7 @@
 
   <PropertyGroup>
     <PackageId>SplatDev.Directory.EntraId</PackageId>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Description>Entra ID provider for SplatDev.Directory, over Microsoft Graph. Searches people, reads an account and optionally creates one.</Description>
     <PackageTags>umbraco;directory;entra;azuread;graph</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>

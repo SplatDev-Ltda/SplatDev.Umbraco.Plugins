@@ -1,5 +1,8 @@
 # Form Builder — Umbraco Forms Plugin
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 A complete form-building plugin for Umbraco CMS, modeled after the commercial Umbraco Forms package. Provides drag-and-drop form creation, entry management, workflows, data sources, email templates, theme support, reCAPTCHA integration, and multi-language localization — all inside the Umbraco backoffice.
 
 ## Features

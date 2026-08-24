@@ -1,5 +1,8 @@
 # SplatDev.Umbraco.2FA
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Two-factor authentication (2FA) utilities and extensions for Umbraco CMS.
 
 ## Package
@@ -46,6 +49,10 @@ builder.Services.AddTwoFactorAuthentication();
 - No `client/` folder or Bellissima dashboard (intentional — headless library).
 
 ## Changelog
+
+### 2.0.5 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 2.0.4 — 2026-08-24
 

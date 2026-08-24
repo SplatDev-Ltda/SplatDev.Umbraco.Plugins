@@ -17,10 +17,6 @@
   },
   "Screenshots": [
     {
-      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.NewsTicker/docs/screenshots/01-dashboard.png",
-      "Caption": "The NewsTicker dashboard in the Umbraco backoffice."
-    },
-    {
       "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.NewsTicker/docs/screenshots/04-front-end.png",
       "Caption": "NewsTicker rendered on the front end."
     }

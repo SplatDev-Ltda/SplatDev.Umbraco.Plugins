@@ -5,8 +5,6 @@ Character limit property editor for Umbraco — enforces max length on text prop
 
 <!-- screenshot:start -->
 
-![CharLimit dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.CharLimit/docs/screenshots/01-dashboard.png)
-
 ![CharLimit property editor](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.CharLimit/docs/screenshots/02-property-editor.png)
 
 ![CharLimit data type](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.CharLimit/docs/screenshots/03-data-type.png)
@@ -66,6 +64,10 @@ Add a CharLimit data type to any text property on a document type. The property 
 - Different `DataEditor` attribute signatures are used via conditional compilation for net8.0 vs net10.0
 
 ## Changelog
+
+### 1.4.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.4.1 — 2026-08-24
 

@@ -4,9 +4,6 @@ GDPR compliance plugin for Umbraco — cookie consent banner, data export, and r
 
 
 <!-- screenshot:start -->
-
-![Gdrp dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Gdrp/docs/screenshots/01-dashboard.png)
-
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Gdrp.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Gdrp)
@@ -69,6 +66,10 @@ After registration, the plugin injects a cookie consent banner on the front-end 
 - Cookie consent categories are predefined; custom categories require source modification
 
 ## Changelog
+
+### 2.4.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 2.4.1 — 2026-08-24
 

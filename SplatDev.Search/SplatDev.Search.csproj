@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>SplatDev.Search</PackageId>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Authors>SplatDev</Authors>
     <Company>SplatDev Ltda</Company>
     <Description>Provider-agnostic search abstractions for SplatDev packages — interfaces for indexing, querying, faceting, and autocomplete across Elasticsearch, OpenSearch, Meilisearch, and other backends.</Description>

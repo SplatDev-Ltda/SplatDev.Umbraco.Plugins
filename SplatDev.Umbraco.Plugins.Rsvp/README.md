@@ -5,8 +5,6 @@ An event RSVP plugin for Umbraco 13 and Umbraco 17 with capacity management, wai
 
 <!-- screenshot:start -->
 
-![Rsvp dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Rsvp/docs/screenshots/01-dashboard.png)
-
 ![Rsvp property editor](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Rsvp/docs/screenshots/02-property-editor.png)
 
 ![Rsvp data type](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Rsvp/docs/screenshots/03-data-type.png)
@@ -79,6 +77,10 @@ Tables in the `rsvp` schema:
 | 2 | Cancelled |
 
 ## Changelog
+
+### 2.4.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 2.4.1 — 2026-08-24
 

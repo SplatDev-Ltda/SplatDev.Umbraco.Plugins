@@ -4,9 +4,6 @@ Umbraco exception handling middleware plugin — configures production error pag
 
 
 <!-- screenshot:start -->
-
-![ExceptionManager dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.ExceptionManager/docs/screenshots/01-dashboard.png)
-
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.ExceptionManager.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.ExceptionManager)
@@ -51,6 +48,10 @@ The `ExceptionComposer` hooks into the Umbraco pipeline via `UmbracoPipelineFilt
 - Does not support custom error page paths or status-code-specific error pages
 
 ## Changelog
+
+### 2.1.9 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 2.1.8 — 2026-08-24
 

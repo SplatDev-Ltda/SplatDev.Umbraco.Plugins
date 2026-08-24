@@ -7,7 +7,7 @@
     <PackageId>SplatDev.DigitalBookCurator.Core</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Authors>SplatDev</Authors>
     <Company>SplatDev Ltda</Company>
     <Description>Core library for the Digital Book Curator - PDF/eBook management with EF Core persistence</Description>

@@ -1,5 +1,8 @@
 # SplatDev.Umbraco.QueryStringFilters
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 ASP.NET Core middleware that sanitizes query strings on incoming requests — strips dangerous characters from paths and filters parameters against a hardcoded allowlist. Designed to mitigate query string injection attacks on Umbraco 13 and Umbraco 17 front-end sites.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.QueryStringFilters.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.QueryStringFilters)
@@ -111,6 +114,10 @@ No external NuGet dependencies. The package relies only on the ASP.NET Core shar
 **SplatDev.Umbraco.QueryStringFilters** — part of the [SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins) suite. Licensed under MIT. &copy; SplatDev Ltda.
 
 ## Changelog
+
+### 2.0.5 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 2.0.4 — 2026-08-24
 

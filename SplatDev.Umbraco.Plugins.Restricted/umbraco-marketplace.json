@@ -17,10 +17,6 @@
   },
   "Screenshots": [
     {
-      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Restricted/docs/screenshots/01-dashboard.png",
-      "Caption": "The Restricted dashboard in the Umbraco backoffice."
-    },
-    {
       "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Restricted/docs/screenshots/02-property-editor.png",
       "Caption": "The Restricted property editor on a document."
     },

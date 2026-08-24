@@ -22,14 +22,5 @@
       "GroupTitle": "Umbraco YAML Toolkit"
     }
   ],
-  "Screenshots": [
-    {
-      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Yaml/docs/images/hero-banner.png",
-      "Caption": "YAML configuration — Umbraco structures, created automatically at startup"
-    },
-    {
-      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Yaml/docs/images/demo-how-it-works.png",
-      "Caption": "How it works: 4-step process from YAML file to live Umbraco site"
-    }
-  ]
+  "Screenshots": []
 }

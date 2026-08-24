@@ -1,5 +1,8 @@
 # SplatDev.DigitalBookCurator.Core
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Standalone domain library for e-book and PDF management backed by EF Core + Sqlite.
 
 ## Install
@@ -89,6 +92,10 @@ The Umbraco backoffice consumer is `SplatDev.Umbraco.Plugins.PdfCurator` (tracke
 Built by [SplatDev](https://splatdev.com)
 
 ## Changelog
+
+### 1.0.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.0.1 — 2026-08-24
 

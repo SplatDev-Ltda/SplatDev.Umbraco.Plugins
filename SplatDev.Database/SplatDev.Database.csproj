@@ -7,7 +7,7 @@
     <PackageId>SplatDev.Database</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Authors>SplatDev</Authors>
     <Company>SplatDev Ltda</Company>
     <Description>Generic database service abstractions using NPoco for .NET applications</Description>

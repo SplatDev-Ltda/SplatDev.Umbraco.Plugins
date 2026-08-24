@@ -1,5 +1,8 @@
 # UmbracoCms.Plugins
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Base/shared constants library for UmbracoCms plugin development.
 
 ## What it provides
@@ -38,6 +41,10 @@ This is a **headless library** — no backoffice dashboard, property editors, or
 This is a **headless library** — no backoffice dashboard, property editors, or UI components. It operates purely as a shared constants/helpers package registered via DI composition.
 
 ## Changelog
+
+### 2.0.4 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 2.0.3 — 2026-08-24
 

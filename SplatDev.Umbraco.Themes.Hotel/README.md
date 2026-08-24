@@ -1,5 +1,8 @@
 # UmbracoCms.Themes.Hotel
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Hotel/hospitality theme for Umbraco – rooms, booking, gallery, amenities, reviews, location map.
 
 ## Features
@@ -75,6 +78,10 @@ On first startup the theme auto-installs its Umbraco schema (data types, documen
 Include `/css/hotel-theme.css` in your layout or reference it directly. Customise via CSS custom properties defined in `:root`. The theme uses `Playfair Display` (serif) for headings and `Inter` for body text – load these from Google Fonts for best results.
 
 ## Changelog
+
+### 1.0.5 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.0.4 — 2026-08-24
 

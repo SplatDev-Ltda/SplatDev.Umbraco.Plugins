@@ -5,8 +5,6 @@ A full-featured survey builder plugin for Umbraco 13 and Umbraco 17.
 
 <!-- screenshot:start -->
 
-![Surveys dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Surveys/docs/screenshots/01-dashboard.png)
-
 ![Surveys property editor](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Surveys/docs/screenshots/02-property-editor.png)
 
 ![Surveys data type](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Surveys/docs/screenshots/03-data-type.png)
@@ -81,6 +79,10 @@ it is configured with — SQL Server or SQLite. There is nothing to scaffold and
 to run by hand.
 
 ## Changelog
+
+### 2.4.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 2.4.1 — 2026-08-24
 

@@ -1,5 +1,8 @@
 # SplatDev.Umbraco.NPoco
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 NPoco database layer for Umbraco — provides `BaseEntityRepository<T>` with automatic `IScopeProvider` integration, ambient scope management, SuperUser identity fallback, event-driven auditing, and bulk CRUD operations. Built on top of Umbraco's native NPoco infrastructure.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.NPoco.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.NPoco)
@@ -166,6 +169,10 @@ NPoco is included implicitly via Umbraco.Cms.Infrastructure — no additional NP
 **SplatDev.Umbraco.NPoco** — part of the [SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins) suite. Licensed under MIT. &copy; SplatDev Ltda.
 
 ## Changelog
+
+### 2.0.5 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 2.0.4 — 2026-08-24
 

@@ -1,5 +1,8 @@
 # SplatDev.Directory.Ldap
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Active Directory and generic LDAP provider for [`SplatDev.Directory`](https://www.nuget.org/packages/SplatDev.Directory).
 
 Active Directory is an LDAP server with its own attribute names, so one provider serves
@@ -41,6 +44,10 @@ configuration block.
   rather than changing the shape of the filter.
 
 ## Changelog
+
+### 1.0.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.0.1 — 2026-08-24
 

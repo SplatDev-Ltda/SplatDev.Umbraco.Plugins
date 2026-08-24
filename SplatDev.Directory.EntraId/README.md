@@ -1,5 +1,8 @@
 # SplatDev.Directory.EntraId
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Entra ID provider for [`SplatDev.Directory`](https://www.nuget.org/packages/SplatDev.Directory), over Microsoft Graph.
 
 Talks to Graph over HTTP with a token from MSAL rather than taking the Graph SDK as a
@@ -44,6 +47,10 @@ belong to one.
 - Search uses Graph's `$search` with `ConsistencyLevel: eventual`.
 
 ## Changelog
+
+### 1.0.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.0.1 — 2026-08-24
 

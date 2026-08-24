@@ -1,5 +1,8 @@
 # SplatDev.Umbraco.Membership
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Membership utilities for Umbraco 13 and Umbraco 17 — assign members to groups and manage opt-in preferences via `IMemberService`.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Membership.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Membership)
@@ -93,6 +96,10 @@ public class RegistrationService
 **SplatDev.Umbraco.Membership** — part of the [SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins) suite. Licensed under MIT. &copy; SplatDev Ltda.
 
 ## Changelog
+
+### 2.0.5 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 2.0.4 — 2026-08-24
 

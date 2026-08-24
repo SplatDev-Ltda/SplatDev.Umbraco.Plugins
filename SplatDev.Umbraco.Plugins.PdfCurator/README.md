@@ -1,5 +1,8 @@
 # Book Library (PdfCurator)
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Umbraco 17 backoffice section for managing PDF digital books, documents, and publications. Provides a dedicated **Book Library** section with Dashboard, Library, Review, and Reports views — all built as pluggable Lit web components ready for the full PdfCurator component suite.
 
 Built on top of the `SplatDev.DigitalBookCurator.Core` library which handles PDF parsing, metadata extraction, and digital book storage.
@@ -150,6 +153,10 @@ Localized in English (`en`) and Spanish (`es`).
 - `Umbraco.Cms.Api.Management` (net10.0 / Umbraco 17 only)
 
 ## Changelog
+
+### 2.1.5 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 2.1.4 — 2026-08-21
 - Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.

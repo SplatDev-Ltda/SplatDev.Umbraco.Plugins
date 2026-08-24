@@ -7,7 +7,7 @@
     <PackageId>SplatDev.Content</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Authors>SplatDev</Authors>
     <Company>SplatDev Ltda</Company>
     <Description>Content helper utilities including CSV, Excel import, HTML, encryption, and QR generation</Description>

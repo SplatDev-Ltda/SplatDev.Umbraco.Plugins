@@ -1,5 +1,8 @@
 # SplatDev.Umbraco.Tools.Packager
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 A .NET CLI tool for creating Umbraco NuGet packages — generates `package.manifest`, bundles `App_Plugins` assets, and wraps `dotnet pack` to produce installable Umbraco Marketplace packages from your plugin projects.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Tools.Packager.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Tools.Packager)
@@ -125,6 +128,10 @@ No other NuGet dependencies — the tool leverages the .NET SDK build infrastruc
 **SplatDev.Umbraco.Tools.Packager** — part of the [SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins) suite. Licensed under MIT. &copy; SplatDev Ltda.
 
 ## Changelog
+
+### 1.0.4 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.0.3 — 2026-08-24
 

@@ -1,5 +1,8 @@
 # SplatDev.Umbraco.Pagination
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Core pagination library for the SplatDev Umbraco ecosystem — provides `PagedResults<T>`, `Pagination` model, entity interfaces, and extension methods. Zero Umbraco dependency — framework-reference only — making it usable in any .NET project.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Pagination.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Pagination)
@@ -160,6 +163,10 @@ No other NuGet dependencies. This is a lightweight, self-contained package with 
 **SplatDev.Umbraco.Pagination** — part of the [SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins) suite. Licensed under MIT. &copy; SplatDev Ltda.
 
 ## Changelog
+
+### 2.0.5 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 2.0.4 — 2026-08-24
 

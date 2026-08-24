@@ -1,5 +1,8 @@
 # SplatDev.Umbraco.Plugins.ContentPackages
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Gated content packages for Umbraco. A visitor subscribes to the newsletter, confirms their
 address, and receives links to read the article online and download the same content as
 **PDF**, **PPTX**, and **LLM-ready Markdown**.
@@ -115,6 +118,10 @@ created at startup. The Umbraco database is never touched. Override with
 `ConnectionStrings:ContentPackagesDb`.
 
 ## Changelog
+
+### 0.1.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 0.1.1 — 2026-08-24
 

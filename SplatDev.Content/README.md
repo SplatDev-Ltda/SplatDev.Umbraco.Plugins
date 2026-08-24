@@ -1,5 +1,8 @@
 # SplatDev.Content
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Content helper utilities for .NET applications — Excel import/export, CSV parsing, QR code generation, encryption/decryption, ISO 3166 country data with 240+ countries, timezone data, string helpers, and validation models.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Content.svg)](https://www.nuget.org/packages/SplatDev.Content)
@@ -118,6 +121,10 @@ var brasiliaTz = TimeZones.GetByIanaId("America/Sao_Paulo");
 **SplatDev.Content** — part of the [SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins) suite. Licensed under MIT. &copy; SplatDev Ltda.
 
 ## Changelog
+
+### 1.0.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.0.1 — 2026-08-24
 

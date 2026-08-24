@@ -9,7 +9,7 @@
     <ToolCommandName>umbraco-gen-plugin</ToolCommandName>
     <PackageId>SplatDev.Umbraco.Tools.T4.Plugins</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.0.3</Version>
+    <Version>1.0.4</Version>
     <Authors>SplatDev</Authors>
     <Company>SplatDev Ltda</Company>
     <Description>CLI code generator for Umbraco plugin scaffolding — creates Composer, Controller, Service, package.manifest, and lang files.</Description>

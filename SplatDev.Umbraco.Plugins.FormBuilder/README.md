@@ -1,5 +1,8 @@
 # FormBuilder for Umbraco
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 An open-source Umbraco Forms alternative — a fully functional form builder for Umbraco CMS without any per-site licensing requirements.
 
 ## Overview

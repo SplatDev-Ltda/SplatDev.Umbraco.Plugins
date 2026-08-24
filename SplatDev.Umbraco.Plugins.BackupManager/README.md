@@ -1,4 +1,7 @@
 # Umbraco Backup Manager
+
+<!-- screenshot:start -->
+<!-- screenshot:end -->
 A simple backup tool for Umbraco. Allows backing up files and database directly from the backoffice, when you don't have access to the server.
 
 The solution is organized into major releases + latest minor release.

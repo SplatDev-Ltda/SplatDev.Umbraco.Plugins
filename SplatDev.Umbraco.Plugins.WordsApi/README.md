@@ -1,5 +1,8 @@
 # WordsApi
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Umbraco Words API plugin — validate English word classification (noun detection) using the WordsAPI service via RapidAPI. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.WordsApi.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.WordsApi)
@@ -88,6 +91,10 @@ if (!memoryCache.TryGetValue(cacheKey, out bool isNoun))
 | `DefinitionDetails` | `Definition` (string), `PartOfSpeech` (string) — e.g. "noun", "verb" |
 
 ## Changelog
+
+### 2.0.4 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 2.0.3 — 2026-08-24
 

@@ -4,9 +4,6 @@ Umbraco 17 (net10.0) plugin for the **Santander Open Banking** suite. Wires up
 
 
 <!-- screenshot:start -->
-
-![Santander dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Santander/docs/screenshots/01-dashboard.png)
-
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Santander.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Santander)
@@ -47,6 +44,10 @@ dotnet add package SplatDev.Umbraco.Plugins.Santander
 `ApiKey`, `WorkspaceId`, `CovenantCode`, `BankId`, `AccountId`, `PixKey`, and per-product path overrides.
 
 ## Changelog
+
+### 1.3.4 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.3.3 — 2026-08-24
 

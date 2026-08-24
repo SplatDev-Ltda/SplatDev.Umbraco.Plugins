@@ -11,7 +11,7 @@
 		<FileVersion>2.0.0</FileVersion>
 		<PackageId>SplatDev.Umbraco.Plugins.PdfCurator</PackageId>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<Version>2.1.4</Version>
+		<Version>2.1.5</Version>
 		<Authors>SplatDev</Authors>
 		<Description>Umbraco PDF curator/manager plugin supporting Umbraco 13 (net8.0) and Umbraco 17 (net10.0)</Description>
 		<PackageTags>umbraco umbraco-marketplace</PackageTags>

@@ -1,5 +1,8 @@
 # UmbracoCms.Themes.Commerce
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 E-commerce theme for Umbraco. Provides product grid, product detail, cart, checkout, and category browse pages.
 
 ## Supported Umbraco Versions
@@ -65,6 +68,10 @@ shopRoot (allowAsRoot)
 - `Umbraco.Cms.Core` / `Umbraco.Cms.Web.Common`
 
 ## Changelog
+
+### 1.0.5 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.0.4 — 2026-08-24
 

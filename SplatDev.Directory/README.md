@@ -1,5 +1,8 @@
 # SplatDev.Directory
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Directory service abstraction for Umbraco plugins. Defines one contract —
 `IDirectoryProvider` — that Active Directory, a generic LDAP server and Entra ID all
 answer, so a plugin can look people up without knowing which of them a site runs.
@@ -80,6 +83,10 @@ administrator, because a password typed into a CMS form travels through the brow
 the request log on its way to the directory.
 
 ## Changelog
+
+### 1.0.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.0.1 — 2026-08-24
 

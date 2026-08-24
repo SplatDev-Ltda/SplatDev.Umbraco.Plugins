@@ -1,5 +1,8 @@
 # SplatDev.Umbraco.Plugins.Getnet
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Umbraco 17 (net10.0) plugin that wires up [`SplatDev.Payments.Getnet`](../SplatDev.Payments.Getnet) — the
 Getnet (Santander card-acquirer) SDK. Getnet uses OAuth2 `client_credentials` + HTTP Basic, **no client
 certificate** (this is a different integration from the mTLS Open Banking `SplatDev.*.Santander` packages).
@@ -29,6 +32,10 @@ later only if a generic (non-domain) backoffice surface is desired.
 This is a **headless API plugin** — no standalone backoffice dashboard, property editors, or UI components. It operates as an API service (payment processing + webhooks), registered via DI composition. The backoffice/webhook management surface is intentionally left in the consuming application.
 
 ## Changelog
+
+### 1.1.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.1.1 — 2026-08-24
 

@@ -5,8 +5,6 @@ Newsletter subscriber management, campaigns, and send tracking for Umbraco 13 (n
 
 <!-- screenshot:start -->
 
-![Newsletters dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Newsletters/docs/screenshots/01-dashboard.png)
-
 ![Newsletters on the front end](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Newsletters/docs/screenshots/04-front-end.png)
 
 <!-- screenshot:end -->
@@ -58,6 +56,10 @@ Wire it up to an email delivery service (SendGrid, SMTP, Mailgun, etc.) in
 `NewslettersService.cs` at the appropriate comment.
 
 ## Changelog
+
+### 2.3.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 2.3.1 — 2026-08-24
 

@@ -17,10 +17,6 @@
   },
   "Screenshots": [
     {
-      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Rsvp/docs/screenshots/01-dashboard.png",
-      "Caption": "The Rsvp dashboard in the Umbraco backoffice."
-    },
-    {
       "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Rsvp/docs/screenshots/02-property-editor.png",
       "Caption": "The Rsvp property editor on a document."
     },
