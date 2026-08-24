@@ -77,6 +77,10 @@ After registration, the Smtp dashboard appears in the Umbraco backoffice. Naviga
 
 ## Changelog
 
+### 2.4.1 — 2026-08-24
+
+Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.
+
 ### 2.4.0 — 2026-08-23
 
 The Umbraco Marketplace listing now carries this plugin's screenshots. The listing keeps its own screenshot list rather than reading the README, and this one was empty — so the entry showed no images at all.

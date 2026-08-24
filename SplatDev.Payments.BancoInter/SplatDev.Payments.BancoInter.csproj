@@ -7,14 +7,14 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>SplatDev.Payments.BancoInter</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.0.2</Version>
-    <Authors>SplatDev-Ltda</Authors>
+    <Version>1.0.3</Version>
+    <Authors>SplatDev</Authors>
     <Company>SplatDev Ltda</Company>
     <Description>Banco Inter payment gateway models, settings, and API contracts for Pix, Boleto, and Banking integrations.</Description>
     <PackageTags>banco-inter pix boleto payments brazil</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 

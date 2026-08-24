@@ -9,7 +9,7 @@
     <AssemblyName>SplatDev.Umbraco.Plugins.LazyLoad</AssemblyName>
     <RootNamespace>SplatDev.Umbraco.Plugins.LazyLoad</RootNamespace>
     <PackageId>SplatDev.Umbraco.Plugins.LazyLoad</PackageId>
-    <Version>1.2.2</Version>
+    <Version>1.2.3</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <Authors>SplatDev</Authors>
@@ -17,8 +17,8 @@
     <Description>Lazy loading image plugin for Umbraco — intercepts content rendering to add loading=lazy to img tags.</Description>
     <PackageTags>umbraco;umbraco-marketplace;plugin;splatdev</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 

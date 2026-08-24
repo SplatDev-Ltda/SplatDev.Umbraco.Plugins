@@ -22,7 +22,7 @@
     <_BasePackageTags>umbraco yaml infrastructure-as-code cms content-management export schema document-types data-types templates media languages dictionary members users umbraco-marketplace</_BasePackageTags>
 
     <PackageId>$(_BasePackageId)</PackageId>
-    <Version>2.1.0</Version>
+    <Version>2.1.1</Version>
     <Authors>Carlos Casalicchio</Authors>
     <Company>SplatDev</Company>
     <Copyright>Copyright © 2026 SplatDev</Copyright>
@@ -31,8 +31,8 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
-    <PackageProjectUrl>https://github.com/SplatDev-Ltda/umbraco-yaml</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/SplatDev-Ltda/umbraco-yaml</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/splatdevtech/umbraco-yaml</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/splatdevtech/umbraco-yaml</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes>v2.0.7: Fix auth token — revert _getToken() to getLatestToken() (getOpenApiConfiguration() has no .token, causing 401 on every API call). Fix .chip.selected text contrast (white text on dark background). v2.0.6: Fix ExportProfile route templates, WCAG UI/UX audit, contrast fixes.</PackageReleaseNotes>

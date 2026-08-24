@@ -5,14 +5,14 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>SplatDev.Payments.Getnet</PackageId>
-    <Version>1.0.1</Version>
-    <Authors>SplatDev-Ltda</Authors>
+    <Version>1.0.2</Version>
+    <Authors>SplatDev</Authors>
     <Company>SplatDev Ltda</Company>
     <Description>Getnet (Santander acquirer) payment SDK: OAuth2 client_credentials + HTTP Basic API client for Pix QR Code, boleto and payment-link, with a development mock mode. No client certificate required.</Description>
     <PackageTags>getnet santander pix boleto payment-link payments brazil</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>

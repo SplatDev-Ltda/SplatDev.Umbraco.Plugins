@@ -103,6 +103,16 @@ No `appsettings.json` keys required — all data comes from Umbraco content prop
 | `SEO` | `Title`, `Description`, `Tags`, `Canonical`, `Robots`, `Charset` |
 | `OpenGraph` | `Title`, `Type`, `Url`, `Image`, `Description`, `Author`, `DateCreated` |
 
+## Changelog
+
+### 2.1.5 — 2026-08-24
+
+Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.
+
+### 2.1.4 — 2026-08-24
+
+This package now keeps a changelog. Earlier releases predate it and are not reconstructed here — consult the repository history for those. From this version on, every release records what changed for someone using it.
+
 ## License
 
 MIT © [SplatDev](https://github.com/splatdevtech)

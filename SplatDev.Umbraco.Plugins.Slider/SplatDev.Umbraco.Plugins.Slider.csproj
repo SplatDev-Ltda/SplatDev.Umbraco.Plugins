@@ -13,7 +13,7 @@
     <AssemblyName>SplatDev.Umbraco.Plugins.Slider</AssemblyName>
     <RootNamespace>SplatDev.Umbraco.Plugins.Slider</RootNamespace>
     <PackageId>SplatDev.Umbraco.Plugins.Slider</PackageId>
-    <Version>1.4.0</Version>
+    <Version>1.4.1</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <Authors>SplatDev</Authors>
@@ -21,8 +21,8 @@
     <Description>Image slider plugin for Umbraco — stores slide data with EF Core, renders via configurable view component.</Description>
     <PackageTags>umbraco;umbraco-marketplace;plugin;splatdev</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 

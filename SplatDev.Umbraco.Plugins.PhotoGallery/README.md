@@ -85,6 +85,10 @@ the full image; photos below the fold load lazily.
 
 ## Changelog
 
+### 1.4.1 — 2026-08-24
+
+Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.
+
 ### 1.4.0 — 2026-08-23
 
 Adds a view component so the album chosen with the property editor can actually be rendered on a page. Until now the picker stored an id nothing consumed.

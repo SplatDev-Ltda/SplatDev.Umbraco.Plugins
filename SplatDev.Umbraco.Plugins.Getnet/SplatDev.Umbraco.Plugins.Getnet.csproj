@@ -5,14 +5,14 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>SplatDev.Umbraco.Plugins.Getnet</PackageId>
-    <Version>1.1.0</Version>
-    <Authors>SplatDev-Ltda</Authors>
+    <Version>1.1.1</Version>
+    <Authors>SplatDev</Authors>
     <Company>SplatDev Ltda</Company>
     <Description>Umbraco 17 plugin that registers the Getnet (Santander acquirer) SDK (SplatDev.Payments.Getnet): options binding, the API client, and the named Getnet HttpClient. Webhook/backoffice controllers and payment orchestration are application-specific and stay in the consuming app.</Description>
     <PackageTags>umbraco umbraco-marketplace getnet santander pix boleto payments</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>

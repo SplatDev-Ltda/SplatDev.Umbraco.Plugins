@@ -94,6 +94,10 @@ int count = await _copyValueService.BulkCopyAsync(mappingId, pairs, publish: fal
 
 ## Changelog
 
+### 2.4.1 — 2026-08-24
+
+Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.
+
 ### 2.4.0 — 2026-08-23
 
 The copy button now reads the source property correctly. It asked the document for the value and was handed a subscription to it instead, so every configured source looked empty and the button stayed disabled even when the source property clearly had text in it. The preview also updates live while you type into the source property.

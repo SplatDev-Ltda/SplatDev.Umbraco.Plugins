@@ -38,6 +38,10 @@ builder.CreateUmbracoBuilder()
 
 ## Changelog
 
+### 1.2.5 — 2026-08-24
+
+Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.
+
 ### 1.2.4 — 2026-08-21
 - Uploads now actually store the file. The upload wrote the *filename* into the media item and never the bytes, so every upload produced a media item pointing at nothing.
 - Files are filed under the media type that matches them — Image, Video, Audio, Vector Graphics or File — instead of everything becoming an Image.

@@ -81,6 +81,10 @@ the request log on its way to the directory.
 
 ## Changelog
 
+### 1.0.1 — 2026-08-24
+
+Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.
+
 ### 1.0.0 — 2026-08-22
 - First release. `IDirectoryProvider` with search, single lookup, account creation and a
   connection test, plus `IDirectoryProviderResolver` for sites that register more than

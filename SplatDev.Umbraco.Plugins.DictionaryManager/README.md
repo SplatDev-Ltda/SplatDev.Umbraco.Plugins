@@ -38,6 +38,10 @@ builder.CreateUmbracoBuilder()
 
 ## Changelog
 
+### 2.2.2 — 2026-08-24
+
+Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.
+
 ### 2.2.1 — 2026-08-21
 - The dashboard actually works. It made no requests at all — a Save button that set a flag for three seconds, and on Umbraco 13 a save() carrying a "TODO: implement save via API" comment that reported "Settings saved successfully" having saved nothing.
 - List every dictionary item with a column per language, edit a translation in place, add and delete items, and import or export the whole set as JSON with an overwrite option.

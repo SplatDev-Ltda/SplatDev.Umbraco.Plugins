@@ -4,15 +4,16 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>SplatDev.Umbraco.Plugins.GoogleAnalytics</PackageId>
-    <Version>2.2.0</Version>
+    <Version>2.2.1</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
     <Authors>SplatDev</Authors>
     <Description>Google Analytics GA4 integration for Umbraco — store tracking/measurement ID in settings and inject the GA4 script. Supports Umbraco 13 and 17.</Description>
     <PackageTags>umbraco umbraco-marketplace analytics google-analytics ga4</PackageTags>
     <Company>SplatDev Ltda</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
   <ItemGroup><FrameworkReference Include="Microsoft.AspNetCore.App" /></ItemGroup>
@@ -20,4 +21,7 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'"><PackageReference Include="Umbraco.Cms.Core" Version="17.3.4" /><PackageReference Include="Umbraco.Cms.Web.Common" Version="17.3.4" /></ItemGroup>
   <ItemGroup><EmbeddedResource Include="App_Plugins\**\*" /></ItemGroup>
   <ItemGroup><None Include="README.md" Pack="true" PackagePath="\" /><None Include="umbraco-marketplace.json" Pack="true" PackagePath="\" Condition="Exists('umbraco-marketplace.json')" /></ItemGroup>
+<ItemGroup>
+  <None Include="icon.png" Pack="true" PackagePath="\" />
+</ItemGroup>
 </Project>

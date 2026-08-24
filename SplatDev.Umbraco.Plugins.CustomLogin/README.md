@@ -68,6 +68,10 @@ npm run build
 
 ## Changelog
 
+### 2.3.1 — 2026-08-24
+
+Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.
+
 ### 2.3.0 — 2026-08-23
 
 The sign-in component no longer emits a whole HTML document. It rendered a doctype, a root element, a head and a body, along with a universal margin/padding reset and a flex layout applied to the body element — so dropping it onto one of your pages flattened every margin on that page and relaid the whole thing out. Its styles are now scoped to the component's own class names, which were renamed to the `splatdev-login__*` prefix; if you had overridden the old `.login-card`, `.login-field`, `.login-btn` or `.login-support` classes, update those selectors.

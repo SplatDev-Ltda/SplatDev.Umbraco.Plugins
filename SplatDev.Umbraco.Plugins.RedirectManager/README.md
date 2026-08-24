@@ -130,6 +130,10 @@ The `RegexRedirectComposer` + `PatternUrlRedirector` handle bulk redirects via r
 
 ## Changelog
 
+### 2.1.9 — 2026-08-24
+
+Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.
+
 ### 2.1.8 — 2026-08-22
 - The dashboard can reach its API on Umbraco 17. Umbraco 13 routed the controller by convention at `/umbraco/backoffice/api/RedirectManager/…`; Umbraco 17 does not route its management controllers that way, so nothing was mapped and every call 404'd. The controller now declares an explicit route on the Umbraco 17 target, and the dashboard calls it. Umbraco 13 keeps the URL its AngularJS bundle already uses.
 

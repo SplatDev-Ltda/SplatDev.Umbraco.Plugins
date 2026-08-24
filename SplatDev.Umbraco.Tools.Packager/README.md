@@ -126,6 +126,10 @@ No other NuGet dependencies — the tool leverages the .NET SDK build infrastruc
 
 ## Changelog
 
+### 1.0.3 — 2026-08-24
+
+Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.
+
 ### 1.0.2 — 2026-08-22
 - This package's README now reaches NuGet. The publish workflow discovered packages by a list of name patterns, and this one matched none of them, so it was never built or pushed by CI — the version on NuGet was placed there by hand before the README was wired up, and no release could refresh it. Discovery is now by prefix, so the package ships whenever the repo is tagged.
 

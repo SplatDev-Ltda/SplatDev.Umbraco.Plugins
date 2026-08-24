@@ -9,7 +9,7 @@
     <AssemblyName>SplatDev.Umbraco.Plugins.Dropzone</AssemblyName>
     <RootNamespace>SplatDev.Umbraco.Plugins.Dropzone</RootNamespace>
     <PackageId>SplatDev.Umbraco.Plugins.Dropzone</PackageId>
-    <Version>1.2.4</Version>
+    <Version>1.2.5</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <Authors>SplatDev</Authors>
@@ -17,8 +17,8 @@
     <Description>Dropzone.js file upload integration for Umbraco — drag-and-drop file upload with progress feedback.</Description>
     <PackageTags>umbraco;umbraco-marketplace;plugin;splatdev</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 

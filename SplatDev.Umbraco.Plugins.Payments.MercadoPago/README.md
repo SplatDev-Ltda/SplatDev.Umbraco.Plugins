@@ -83,6 +83,10 @@ mp.checkout({ preference: { id: preferenceId } });
 
 ## Changelog
 
+### 2.2.1 — 2026-08-24
+
+Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.
+
 ### 2.2.0 — 2026-08-23
 
 The Umbraco Marketplace listing now shows every screenshot for this plugin, not just the dashboard. The listing keeps its own screenshot list rather than reading the README.

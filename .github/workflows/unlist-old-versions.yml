@@ -1,0 +1,108 @@
+name: Unlist superseded versions
+
+# Leaves one listed version per package — the one this repo currently ships — and unlists
+# the rest, so a search or a `dotnet add package` resolves to the current release rather
+# than to whatever sorts highest.
+#
+# The keeper is read from each project's <Version>. It is deliberately NOT the highest
+# published version: three ids carry Umbraco 8 builds whose numbers sort above the current
+# release (Backups 8.18.7.2 over 3.3.2, CopyValue 8.18.8.1 over 2.4.0, DefaultValue
+# 8.18.7.1 over 2.3.0), so keeping "the latest" would unlist the current package and keep
+# the Umbraco 8 one. Backups already served 8.18.7.2 over the release that added
+# authorization to its anonymous Restore and Delete endpoints; this must not repeat.
+#
+# Unlisting hides a version from search and from "latest" resolution without deleting it,
+# so anyone pinned to an exact version keeps restoring, and it can be relisted.
+#
+# Manual, and dry-run unless told otherwise.
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Plan only, change nothing'
+        type: boolean
+        default: true
+      confirm:
+        description: 'Type UNLIST to act (ignored when dry_run is true)'
+        required: false
+        default: ''
+
+jobs:
+  unlist:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Build the plan
+        run: |
+          python3 tools/plan-unlist.py > plan.txt 2> plan-notes.txt || {
+            echo "::error::Could not build the unlist plan."; exit 1; }
+          echo "=== packages skipped ==="
+          cat plan-notes.txt
+          echo "=== versions to unlist: $(wc -l < plan.txt) ==="
+          head -40 plan.txt
+
+      - name: Refuse to unlist a shipped version
+        # A bug in the planner must not cost us the current release of anything.
+        run: |
+          FAILED=0
+          while IFS= read -r entry; do
+            id="${entry%@*}"; version="${entry##*@}"
+            csproj=$(find . -maxdepth 3 -name "$id.csproj" | head -1)
+            [ -z "$csproj" ] && continue
+            shipped=$(grep -oP '(?<=<Version>)[^<]+' "$csproj" | head -1)
+            if [ "$shipped" = "$version" ]; then
+              echo "::error::Plan would unlist the shipped version of $id ($version)"
+              FAILED=1
+            fi
+          done < plan.txt
+          [ "$FAILED" -eq 0 ] || exit 1
+          echo "No shipped version appears in the plan."
+
+      - name: Check confirmation
+        if: ${{ inputs.dry_run == false }}
+        run: |
+          if [ "${{ inputs.confirm }}" != "UNLIST" ]; then
+            echo "::error::Confirmation not given. Type UNLIST to proceed."
+            exit 1
+          fi
+
+      - name: Unlist
+        if: ${{ inputs.dry_run == false }}
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          if [ -z "$NUGET_API_KEY" ]; then
+            echo "::error::NUGET_API_KEY is not set."; exit 1
+          fi
+
+          OK=0; FAILED=0; FAILED_LIST=""
+          while IFS= read -r entry; do
+            id="${entry%@*}"; version="${entry##*@}"
+            if dotnet nuget delete "$id" "$version" \
+                 --source https://api.nuget.org/v3/index.json \
+                 --api-key "$NUGET_API_KEY" --non-interactive; then
+              OK=$((OK+1))
+            else
+              FAILED=$((FAILED+1)); FAILED_LIST="$FAILED_LIST $entry"
+            fi
+          done < plan.txt
+
+          # Counting outcomes, not attempts. This workflow's predecessor reported
+          # "Unlisted 17 version(s)" on a run where one came back 403 Forbidden.
+          echo "=== Summary ==="
+          echo "Unlisted: $OK"
+          if [ "$FAILED" -gt 0 ]; then
+            echo "::error::Failed to unlist $FAILED version(s):$FAILED_LIST"
+            echo ""
+            echo "A 403 here almost always means the package is owned by a different"
+            echo "nuget.org account than the one the api key was issued under. A key is"
+            echo "scoped to a single package owner, and no glob widens that. Check with:"
+            echo "  curl -s \"https://azuresearch-usnc.nuget.org/query?q=packageid:<id>\" | jq '.data[0].owners'"
+            exit 1
+          fi
