@@ -1,5 +1,8 @@
 # SplatDev.Api.Common.ApiVersioning
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Centralized API versioning configuration for ASP.NET Core — provides the `AddSplatApiVersioning()` extension method that configures `Asp.Versioning.Mvc` with sensible defaults: default version 1.0, assume version when unspecified, report API versions in responses, and support both query string (`api-version`) and header (`X-API-Version`) version readers.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Api.Common.ApiVersioning.svg)](https://www.nuget.org/packages/SplatDev.Api.Common.ApiVersioning)
@@ -143,6 +146,10 @@ If neither is provided, the default version 1.0 is assumed.
 **SplatDev.Api.Common.ApiVersioning** — part of the [SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins) suite. Licensed under MIT. &copy; SplatDev Ltda.
 
 ## Changelog
+
+### 2.0.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 2.0.1 — 2026-08-24
 

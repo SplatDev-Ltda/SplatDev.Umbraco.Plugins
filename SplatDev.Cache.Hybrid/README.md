@@ -1,5 +1,8 @@
 # SplatDev.Cache.Hybrid
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Microsoft.Extensions.Caching.Hybrid (HybridCache) adapter for `SplatDev.Cache` abstractions — L1/L2 caching with stampede protection. **Requires .NET 10+.**
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Cache.Hybrid.svg)](https://www.nuget.org/packages/SplatDev.Cache.Hybrid)
@@ -102,6 +105,10 @@ public class SessionService
 **SplatDev.Cache.Hybrid** — part of the [SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins) suite. Licensed under MIT. &copy; SplatDev Ltda.
 
 ## Changelog
+
+### 1.0.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.0.1 — 2026-08-24
 

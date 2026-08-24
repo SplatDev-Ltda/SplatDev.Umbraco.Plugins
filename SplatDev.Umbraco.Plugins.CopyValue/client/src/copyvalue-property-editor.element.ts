@@ -90,7 +90,15 @@ export class CopyValuePropertyEditorElement extends UmbElementMixin(LitElement) 
   set config(config: PropertyEditorConfig | undefined) {
     if (!config) return;
 
-    const raw = config.getValueByAlias<string>("sourceAliases") ?? "";
+    // "from" is the key the Umbraco 7/8 plugin used for its source list. Reading only
+    // "sourceAliases" meant a data type carried over from those versions arrived with no
+    // sources at all, and the editor reported "No source properties are set" on a data
+    // type that plainly had them. The old "to" key has no equivalent: that plugin copied
+    // between two other properties, where this one writes into its own.
+    const raw =
+      config.getValueByAlias<string>("sourceAliases") ??
+      config.getValueByAlias<string>("from") ??
+      "";
     this._sources = raw
       .split(",")
       .map((a) => a.trim())

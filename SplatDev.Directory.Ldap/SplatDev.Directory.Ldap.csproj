@@ -11,7 +11,7 @@
 
   <PropertyGroup>
     <PackageId>SplatDev.Directory.Ldap</PackageId>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Description>Active Directory and generic LDAP provider for SplatDev.Directory. Searches people, reads an account and optionally creates one, using System.DirectoryServices.Protocols so it runs on Linux as well as Windows.</Description>
     <PackageTags>umbraco;directory;activedirectory;ldap</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>

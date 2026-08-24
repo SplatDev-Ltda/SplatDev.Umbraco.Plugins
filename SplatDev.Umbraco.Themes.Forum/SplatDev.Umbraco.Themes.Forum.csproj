@@ -8,7 +8,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <PackageId>SplatDev.Umbraco.Themes.Forum</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.0.3</Version>
+    <Version>1.0.4</Version>
     <Authors>SplatDev</Authors>
     <Description>Forum/community theme for Umbraco - thread list, post view, user profiles, categories</Description>
     <PackageTags>umbraco;theme;forum;community umbraco-marketplace</PackageTags>

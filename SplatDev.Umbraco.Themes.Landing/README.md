@@ -1,5 +1,8 @@
 # UmbracoCms.Themes.Landing
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Landing page theme for Umbraco CMS. Provides a complete single-page landing experience: hero section with video background support, features grid, social proof (trust logos, testimonials, animated counters), pricing cards, CSS-only FAQ accordion, and a CTA banner.
 
 ## Requirements
@@ -76,6 +79,10 @@ The FAQ uses a CSS-only toggle pattern (hidden `<input type="checkbox">`) with n
 Elements with class `js-counter` and `data-target` attribute are animated with IntersectionObserver when they scroll into view. The animation degrades gracefully when JS is unavailable.
 
 ## Changelog
+
+### 1.0.5 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.0.4 — 2026-08-24
 

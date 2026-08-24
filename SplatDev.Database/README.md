@@ -1,5 +1,8 @@
 # SplatDev.Database
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Generic NPoco-based CRUD repository layer with automatic table creation and attribute-driven migration support. Provides the `IDbService<T>` interface and `DbService<T>` abstract class for consistent database access across any NPoco-backed SQL database.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Database.svg)](https://www.nuget.org/packages/SplatDev.Database)
@@ -136,6 +139,10 @@ var page = service.Page(1, 20, "ORDER BY CreatedAt DESC");
 **SplatDev.Database** — part of the [SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins) suite. Licensed under MIT. &copy; SplatDev Ltda.
 
 ## Changelog
+
+### 1.0.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.0.1 — 2026-08-24
 

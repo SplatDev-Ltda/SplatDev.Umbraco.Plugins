@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>SplatDev.Payments.Santander</PackageId>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <Authors>SplatDev</Authors>
     <Company>SplatDev Ltda</Company>
     <Description>Santander Open Banking (developer-portal) SDK: OAuth2 client_credentials + mTLS (ICP-Brasil e-CNPJ) API client and typed services for Balance/Statement, Boletos (cobrança), Payments, Pix QR Code, Pix Automático, OpenFX, Export Charge and Vouchers.</Description>

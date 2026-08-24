@@ -1,5 +1,8 @@
 # SplatDev.Routing
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Convention-based route registration for ASP.NET Core applications. Scan assemblies for `IRoute` implementations and auto-register them as conventional MVC controller routes.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Routing.svg)](https://www.nuget.org/packages/SplatDev.Routing)
@@ -97,6 +100,10 @@ The current `IRoute` interface mixes generic ASP.NET route metadata (`RouteAlias
 This split keeps the package usable by non-Umbraco consumers while preserving the Umbraco integration for plugin-heavy hosts.
 
 ## Changelog
+
+### 1.0.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.0.1 — 2026-08-24
 

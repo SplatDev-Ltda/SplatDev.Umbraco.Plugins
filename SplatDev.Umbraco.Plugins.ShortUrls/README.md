@@ -4,9 +4,6 @@ Umbraco short URL plugin — generate, store, and resolve short URLs backed by a
 
 
 <!-- screenshot:start -->
-
-![ShortUrls dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.ShortUrls/docs/screenshots/01-dashboard.png)
-
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.ShortUrls.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.ShortUrls)
@@ -109,6 +106,10 @@ public async Task<IActionResult> GetFromShortUrl(string shortUrl)
 | `ShortUrlExtensions` | Random URL-safe code generation (collision-checked) |
 
 ## Changelog
+
+### 2.1.10 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 2.1.9 — 2026-08-24
 

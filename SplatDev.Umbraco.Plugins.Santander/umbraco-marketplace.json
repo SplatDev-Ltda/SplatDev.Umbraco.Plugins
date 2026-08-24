@@ -7,10 +7,5 @@
   "Category": "Commerce",
   "Description": "Umbraco 17 plugin for the Santander payment integration (SplatDev.Payments.Santander).",
   "PackageType": "Package",
-  "Screenshots": [
-    {
-      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Santander/docs/screenshots/01-dashboard.png",
-      "Caption": "The Santander dashboard in the Umbraco backoffice."
-    }
-  ]
+  "Screenshots": []
 }

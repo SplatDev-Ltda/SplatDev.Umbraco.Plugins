@@ -5,8 +5,6 @@ Content restriction plugin for Umbraco — member-only content gates using Umbra
 
 <!-- screenshot:start -->
 
-![Restricted dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Restricted/docs/screenshots/01-dashboard.png)
-
 ![Restricted property editor](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Restricted/docs/screenshots/02-property-editor.png)
 
 ![Restricted data type](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Restricted/docs/screenshots/03-data-type.png)
@@ -67,6 +65,14 @@ This plugin uses Umbraco's own public access infrastructure — no additional da
 - Redirect behavior (login vs error page) must be configured per-node
 
 ## Changelog
+
+### 2.5.3 — 2026-08-24
+
+Restores the Common group and the Brazilian Portuguese translation that shipped with the Umbraco 8 package.
+
+### 2.5.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 2.5.1 — 2026-08-24
 

@@ -1,5 +1,8 @@
 # SplatDev.Reflection.Helpers
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Reflection and attribute helper utilities for .NET applications.
 
 ## What it provides
@@ -61,6 +64,10 @@ dotnet add package SplatDev.Reflection.Helpers
 **SplatDev.Reflection.Helpers** — part of the [SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins) suite. Licensed under MIT. © SplatDev Ltda.
 
 ## Changelog
+
+### 1.0.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.0.1 — 2026-08-24
 

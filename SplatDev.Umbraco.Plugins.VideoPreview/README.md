@@ -70,6 +70,10 @@ fetch('/umbraco/api/videopreview/GetVideoInfo?url=https://www.youtube.com/watch?
 
 ## Changelog
 
+### 2.3.2 — 2026-08-24
+
+Restores the `icon-movie` icon and the Rich Content group this plugin had as YouTube Preview on Umbraco 7 and 8, and its Brazilian Portuguese translation.
+
 ### 2.3.1 — 2026-08-24
 
 Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.

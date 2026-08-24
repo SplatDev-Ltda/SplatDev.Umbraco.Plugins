@@ -28,9 +28,23 @@
       "elementName": "videopreview-property-editor",
       "meta": {
         "label": "Video Preview",
-        "icon": "icon-video",
-        "group": "media",
+        "icon": "icon-movie",
+        "group": "Rich Content",
         "propertyEditorSchemaAlias": "Umbraco.TextBox"
+      }
+    },
+    {
+      "type": "localization",
+      "alias": "SplatDev.Localization.VideoPreview.pt-br",
+      "name": "VideoPreview (pt-br)",
+      "meta": {
+        "culture": "pt-br"
+      },
+      "value": {
+        "videoPreview": {
+          "paste": "Cole o endereço do vídeo",
+          "noPreview": "Nenhuma prévia disponível"
+        }
       }
     }
   ]

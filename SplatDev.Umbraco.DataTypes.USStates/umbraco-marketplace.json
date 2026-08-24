@@ -15,5 +15,10 @@
     "ImageUrl": "https://github.com/splatdevtech.png",
     "SyncContributorsFromRepository": true
   },
-  "Screenshots": []
+  "Screenshots": [
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.DataTypes.USStates/docs/screenshots/03-data-type.png",
+      "Caption": "Setting up the DataTypes.USStates data type."
+    }
+  ]
 }

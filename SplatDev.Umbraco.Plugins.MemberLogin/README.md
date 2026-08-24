@@ -5,8 +5,6 @@ Custom member login plugin for Umbraco — login form with username/email authen
 
 <!-- screenshot:start -->
 
-![MemberLogin dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.MemberLogin/docs/screenshots/01-dashboard.png)
-
 ![MemberLogin on the front end](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.MemberLogin/docs/screenshots/04-front-end.png)
 
 <!-- screenshot:end -->
@@ -62,6 +60,10 @@ The view component renders the login form and sets `ViewBag` properties for stat
 - View component only sets `ViewBag` properties; does not perform authentication server-side (delegates to API)
 
 ## Changelog
+
+### 2.2.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 2.2.1 — 2026-08-24
 

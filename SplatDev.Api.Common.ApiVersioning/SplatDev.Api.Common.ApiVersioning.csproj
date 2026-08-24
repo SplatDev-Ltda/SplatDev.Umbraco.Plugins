@@ -6,7 +6,7 @@
     <PackageId>SplatDev.Api.Common.ApiVersioning</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
-    <Version>2.0.1</Version>
+    <Version>2.0.2</Version>
     <Authors>SplatDev</Authors>
     <Company>SplatDev Ltda</Company>
     <Description>Centralized API versioning configuration for ASP.NET Core using Asp.Versioning</Description>

@@ -7,7 +7,7 @@
 		<Nullable>enable</Nullable>
 		<PackageId>SplatDev.Umbraco.Examine</PackageId>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<Version>2.0.4</Version>
+		<Version>2.0.5</Version>
 		<Authors>SplatDev</Authors>
 		<Description>Examine/Lucene search extensions for Umbraco 13 (net8.0) and Umbraco 17 (net10.0)</Description>
 		<PackageTags>umbraco examine lucene search</PackageTags>

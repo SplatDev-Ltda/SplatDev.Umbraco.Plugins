@@ -1,5 +1,8 @@
 # SplatDev.Payments.PagSeguro
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 PagSeguro / PagBank Order API v4 payment provider for the SplatDev.Payments abstraction layer.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Payments.PagSeguro.svg)](https://www.nuget.org/packages/SplatDev.Payments.PagSeguro)
@@ -132,6 +135,10 @@ Built on `System.Text.Json` — no third-party JSON library required.
 *SplatDev — pragmatic tools for .NET developers.*
 
 ## Changelog
+
+### 1.0.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.0.1 — 2026-08-24
 

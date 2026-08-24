@@ -1,5 +1,8 @@
 # SplatDev.Messaging
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Core messaging abstractions for the SplatDev Umbraco Plugins ecosystem. Provides contracts for email sending (single and bulk), SMS messaging, and canned/template-based message generation with placeholder replacement.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -118,6 +121,10 @@ None. This package has zero NuGet dependencies — it defines pure abstractions 
 **SplatDev.Messaging** — part of the [SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins) suite. Licensed under MIT. &copy; SplatDev Ltda.
 
 ## Changelog
+
+### 1.0.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.0.1 — 2026-08-24
 

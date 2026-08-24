@@ -1,5 +1,8 @@
 # Newsletter
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Newsletter subscriber lists, campaigns, Mailgun bulk send, and stats tracking for Umbraco 17 (net10.0). Depends on SplatDev.Umbraco.Plugins.EmailTemplates for rendering.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Newsletter.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Newsletter)
@@ -50,6 +53,10 @@ Add to `appsettings.json`:
 ```
 
 ## Changelog
+
+### 1.3.5 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.3.4 — 2026-08-24
 

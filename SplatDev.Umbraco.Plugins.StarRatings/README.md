@@ -5,8 +5,6 @@ Content star-ratings plugin for Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
 <!-- screenshot:start -->
 
-![StarRatings dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.StarRatings/docs/screenshots/01-dashboard.png)
-
 ![StarRatings property editor](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.StarRatings/docs/screenshots/02-property-editor.png)
 
 ![StarRatings data type](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.StarRatings/docs/screenshots/03-data-type.png)
@@ -55,6 +53,10 @@ npm run build
 ```
 
 ## Changelog
+
+### 2.4.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 2.4.1 — 2026-08-24
 

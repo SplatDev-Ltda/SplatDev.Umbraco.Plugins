@@ -1,5 +1,8 @@
 # SplatDev.Messaging.Twilio
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Twilio SMS provider for `SplatDev.Messaging` — sends SMS messages via the Twilio Programmable SMS API using the official `Twilio` SDK.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Messaging.Twilio.svg)](https://www.nuget.org/packages/SplatDev.Messaging.Twilio)
@@ -106,6 +109,10 @@ No additional HTTP client library required — the Twilio SDK handles transport.
 **SplatDev.Messaging.Twilio** — part of the [SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins) suite. Licensed under MIT. &copy; SplatDev Ltda.
 
 ## Changelog
+
+### 1.0.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.0.1 — 2026-08-24
 

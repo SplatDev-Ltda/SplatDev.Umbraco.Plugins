@@ -1,77 +1,10 @@
-<div ng-controller="DefaultValueDashboardController" class="defaultvalue-dashboard">
-    <div class="umb-panel-header">
-        <h1>Default Values</h1>
-        <p class="umb-panel-description">Configure default property values per document type. Applied automatically when new content nodes are created.</p>
-    </div>
-
-    <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;">
-        <button class="btn btn-primary" ng-click="newRule()">
-            <i class="icon-add"></i> Add Rule
-        </button>
-        <input class="umb-textstring" type="text" ng-model="filterAlias" placeholder="Filter by doc type or property..." style="flex:1;max-width:300px;" />
-    </div>
-
-    <!-- Edit Form -->
-    <div ng-if="showForm" style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:6px;padding:16px;margin-bottom:20px;">
-        <h3 style="margin-top:0;">{{editingRule.id ? 'Edit' : 'New'}} Default Value Rule</h3>
-        <div class="control-group">
-            <label>Document Type Alias</label>
-            <input class="umb-textstring" type="text" ng-model="editingRule.documentTypeAlias" placeholder="blogPost" />
-        </div>
-        <div class="control-group">
-            <label>Property Alias</label>
-            <input class="umb-textstring" type="text" ng-model="editingRule.propertyAlias" placeholder="pageTitle" />
-        </div>
-        <div class="control-group">
-            <label>Default Value</label>
-            <input class="umb-textstring" type="text" ng-model="editingRule.defaultValue" placeholder="Untitled" />
-        </div>
-        <div class="control-group">
-            <label>Priority (lower = higher priority)</label>
-            <input class="umb-textstring" type="number" ng-model="editingRule.priority" />
-        </div>
-        <div class="control-group">
-            <label>
-                <input type="checkbox" ng-model="editingRule.isEnabled" /> Enabled
-            </label>
-        </div>
-        <div style="display:flex;gap:8px;margin-top:12px;">
-            <button class="btn btn-success" ng-click="saveRule()" ng-disabled="saving">Save</button>
-            <button class="btn btn-default" ng-click="cancelEdit()">Cancel</button>
-        </div>
-    </div>
-
-    <div ng-if="loading" class="umb-loading">Loading rules...</div>
-
-    <div ng-if="!loading">
-        <table class="table" ng-if="filteredRules().length > 0">
-            <thead>
-                <tr>
-                    <th>Document Type</th>
-                    <th>Property Alias</th>
-                    <th>Default Value</th>
-                    <th>Priority</th>
-                    <th>Enabled</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="rule in filteredRules()" ng-class="{'text-muted': !rule.isEnabled}">
-                    <td><code>{{rule.documentTypeAlias}}</code></td>
-                    <td><code>{{rule.propertyAlias}}</code></td>
-                    <td>{{rule.defaultValue}}</td>
-                    <td>{{rule.priority}}</td>
-                    <td>
-                        <span ng-if="rule.isEnabled" style="color:green;">Yes</span>
-                        <span ng-if="!rule.isEnabled" style="color:#9ca3af;">No</span>
-                    </td>
-                    <td>
-                        <button class="btn btn-xs btn-default" ng-click="editRule(rule)">Edit</button>
-                        <button class="btn btn-xs btn-danger" ng-click="deleteRule(rule)">Delete</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <p ng-if="filteredRules().length === 0" style="color:#6b7280;">No rules found.</p>
+<div ng-controller="splatDev.DefaultValue.Controller as vm" class="default-value">
+    <div ng-if="vm.dValue !== null" class="default-value__value">{{ vm.value || vm.dValue }}</div>
+    <small ng-if="vm.dValue !== null" class="default-value__note">
+        <span ng-if="vm.value && vm.value !== vm.dValue">Set on this page. The data type's default is {{ vm.dValue }}.</span>
+        <span ng-if="!vm.value || vm.value === vm.dValue">From the data type's default.</span>
+    </small>
+    <div ng-if="vm.dValue === null" class="default-value__unset">
+        No default is set on this data type.
     </div>
 </div>

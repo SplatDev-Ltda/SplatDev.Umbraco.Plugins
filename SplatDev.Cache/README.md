@@ -1,5 +1,8 @@
 # SplatDev.Cache
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Generic caching abstractions for SplatDev packages — provider-agnostic interfaces for Redis, HybridCache, MemoryCache, and other backends.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Cache.svg)](https://www.nuget.org/packages/SplatDev.Cache)
@@ -228,6 +231,10 @@ None. This package has zero NuGet dependencies — it is pure interface and mode
 **SplatDev.Cache** — part of the [SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins) suite. Licensed under MIT. &copy; SplatDev Ltda.
 
 ## Changelog
+
+### 1.0.3 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.0.2 — 2026-08-24
 

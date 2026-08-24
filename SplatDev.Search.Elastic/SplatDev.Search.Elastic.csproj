@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>SplatDev.Search.Elastic</PackageId>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Authors>SplatDev</Authors>
     <Company>SplatDev Ltda</Company>
     <Description>Elasticsearch 8+ adapter for SplatDev.Search abstractions. Full-text search, aggregations, filtering, and sorting via the official Elastic.Clients.Elasticsearch SDK.</Description>

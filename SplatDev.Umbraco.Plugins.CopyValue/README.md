@@ -94,6 +94,10 @@ int count = await _copyValueService.BulkCopyAsync(mappingId, pairs, publish: fal
 
 ## Changelog
 
+### 2.4.2 — 2026-08-24
+
+Reads the `from` prevalue the Umbraco 7/8 plugin used, so a data type carried over from those versions arrives with its sources intact. Reading only `sourceAliases` meant the editor reported "No source properties are set" on a data type that plainly had them. The icon is back to `icon-layers` and the Brazilian Portuguese strings that shipped with the Umbraco 8 package are restored.
+
 ### 2.4.1 — 2026-08-24
 
 Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.

@@ -5,8 +5,6 @@ SVG file viewer plugin for Umbraco — renders inline SVG files from the Umbraco
 
 <!-- screenshot:start -->
 
-![SvgViewer dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.SvgViewer/docs/screenshots/01-dashboard.png)
-
 ![SvgViewer property editor](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.SvgViewer/docs/screenshots/02-property-editor.png)
 
 ![SvgViewer data type](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.SvgViewer/docs/screenshots/03-data-type.png)
@@ -41,6 +39,10 @@ builder.CreateUmbracoBuilder()
 ```
 
 ## Changelog
+
+### 1.2.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.2.1 — 2026-08-24
 

@@ -1,5 +1,8 @@
 # SplatDev.Search
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Provider-agnostic search abstractions for SplatDev packages — contracts for indexing documents, running queries, faceting, and autocomplete across Elasticsearch, OpenSearch, Meilisearch, and other backends.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Search.svg)](https://www.nuget.org/packages/SplatDev.Search)
@@ -217,6 +220,10 @@ Binds `SearchOptions` from `"SplatDev:Search"` config section and registers:
 **SplatDev.Search** — part of the [SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins) suite. Licensed under MIT. &copy; SplatDev Ltda.
 
 ## Changelog
+
+### 1.0.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.0.1 — 2026-08-24
 

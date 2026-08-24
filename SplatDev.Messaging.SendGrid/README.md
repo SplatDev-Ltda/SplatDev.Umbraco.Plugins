@@ -1,5 +1,8 @@
 # SplatDev.Messaging.SendGrid
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 SendGrid email provider for `SplatDev.Messaging` — sends emails via the SendGrid Web API using the official `SendGridClient`. Supports CC/BCC, HTML and plain-text bodies, and both single and bulk delivery with full async support.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Messaging.SendGrid.svg)](https://www.nuget.org/packages/SplatDev.Messaging.SendGrid)
@@ -128,6 +131,10 @@ var response = sendGrid.SendMessage(msg); // synchronous wrapper
 **SplatDev.Messaging.SendGrid** — part of the [SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins) suite. Licensed under MIT. &copy; SplatDev Ltda.
 
 ## Changelog
+
+### 1.0.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.0.1 — 2026-08-24
 

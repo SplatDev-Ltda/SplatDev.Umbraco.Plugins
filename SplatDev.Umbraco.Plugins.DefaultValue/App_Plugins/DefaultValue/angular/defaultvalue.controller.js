@@ -1,84 +1,16 @@
-angular.module("umbraco").controller("DefaultValueDashboardController", [
-    "$scope",
-    "$http",
-    function ($scope, $http) {
-        $scope.loading = true;
-        $scope.rules = [];
-        $scope.editingRule = null;
-        $scope.showForm = false;
-        $scope.saving = false;
-        $scope.filterAlias = "";
+// Umbraco 13 half of the Default Value editor.
+//
+// The Umbraco 7/8 controller assigned the configured value on every load, which discarded
+// anything set on the page. The default is applied only when the property is empty.
+angular.module("umbraco").controller("splatDev.DefaultValue.Controller", function ($scope) {
+    "use strict";
+    var vm = this;
 
-        $scope.loadRules = function () {
-            $scope.loading = true;
-            $http.get("/umbraco/api/defaultvalue/GetRules")
-                .then(function (response) {
-                    $scope.rules = response.data || [];
-                })
-                .catch(function () {
-                    $scope.rules = [];
-                })
-                .finally(function () {
-                    $scope.loading = false;
-                });
-        };
+    vm.dValue = ($scope.model.config && $scope.model.config.dValue) || null;
+    vm.value = $scope.model.value;
 
-        $scope.filteredRules = function () {
-            if (!$scope.filterAlias) return $scope.rules;
-            var f = $scope.filterAlias.toLowerCase();
-            return $scope.rules.filter(function (r) {
-                return r.documentTypeAlias.toLowerCase().indexOf(f) >= 0
-                    || r.propertyAlias.toLowerCase().indexOf(f) >= 0;
-            });
-        };
-
-        $scope.newRule = function () {
-            $scope.editingRule = {
-                documentTypeAlias: "",
-                propertyAlias: "",
-                defaultValue: "",
-                isEnabled: true,
-                priority: 0
-            };
-            $scope.showForm = true;
-        };
-
-        $scope.editRule = function (rule) {
-            $scope.editingRule = angular.copy(rule);
-            $scope.showForm = true;
-        };
-
-        $scope.cancelEdit = function () {
-            $scope.editingRule = null;
-            $scope.showForm = false;
-        };
-
-        $scope.saveRule = function () {
-            if (!$scope.editingRule) return;
-            $scope.saving = true;
-            $http.post("/umbraco/api/defaultvalue/SaveRule", $scope.editingRule)
-                .then(function () {
-                    $scope.showForm = false;
-                    $scope.editingRule = null;
-                    $scope.loadRules();
-                })
-                .catch(function () {
-                    alert("Failed to save rule.");
-                })
-                .finally(function () {
-                    $scope.saving = false;
-                });
-        };
-
-        $scope.deleteRule = function (rule) {
-            if (!confirm("Delete this rule?")) return;
-            $http.delete("/umbraco/api/defaultvalue/DeleteRule?id=" + rule.id)
-                .then(function () {
-                    $scope.loadRules();
-                });
-        };
-
-        // Init
-        $scope.loadRules();
+    if (vm.dValue !== null && vm.dValue !== "" && (vm.value === null || vm.value === undefined || vm.value === "")) {
+        $scope.model.value = vm.dValue;
+        vm.value = vm.dValue;
     }
-]);
+});

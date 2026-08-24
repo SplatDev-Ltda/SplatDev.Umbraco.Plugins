@@ -7,7 +7,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <PackageId>SplatDev.Umbraco.Themes.Conference</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.0.4</Version>
+    <Version>1.0.5</Version>
     <Authors>SplatDev</Authors>
     <Description>Conference/event theme for Umbraco - schedule, speakers, venue, registration, countdown</Description>
     <PackageTags>umbraco umbraco-marketplace theme conference event</PackageTags>

@@ -1,5 +1,7 @@
 {
-  "javascript": ["/App_Plugins/DefaultValue/angular/defaultvalue.controller.js"],
+  "javascript": [
+    "/App_Plugins/DefaultValue/angular/defaultvalue.controller.js"
+  ],
   "css": [],
   "propertyEditors": [],
   "gridEditors": [],
@@ -7,9 +9,15 @@
     {
       "alias": "DefaultValue.Dashboard",
       "view": "/App_Plugins/DefaultValue/angular/defaultvalue.html",
-      "sections": ["settings"],
+      "sections": [
+        "settings"
+      ],
       "tab": "Default Values",
-      "access": [{"grant": "admin"}]
+      "access": [
+        {
+          "grant": "admin"
+        }
+      ]
     }
   ]
 }

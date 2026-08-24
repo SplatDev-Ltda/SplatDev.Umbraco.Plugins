@@ -1,5 +1,8 @@
 # SplatDev.Cache.Redis
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 StackExchange.Redis adapter for `SplatDev.Cache` abstractions — distributed caching with connection multiplexing.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Cache.Redis.svg)](https://www.nuget.org/packages/SplatDev.Cache.Redis)
@@ -85,6 +88,10 @@ public class ProductService
 **SplatDev.Cache.Redis** — part of the [SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins) suite. Licensed under MIT. &copy; SplatDev Ltda.
 
 ## Changelog
+
+### 1.0.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.0.1 — 2026-08-24
 

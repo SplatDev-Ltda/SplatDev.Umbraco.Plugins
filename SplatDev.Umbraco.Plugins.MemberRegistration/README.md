@@ -5,8 +5,6 @@ Member registration plugin for Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
 <!-- screenshot:start -->
 
-![MemberRegistration dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.MemberRegistration/docs/screenshots/01-dashboard.png)
-
 ![MemberRegistration on the front end](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.MemberRegistration/docs/screenshots/04-front-end.png)
 
 <!-- screenshot:end -->
@@ -43,6 +41,10 @@ to run by hand.
 ```
 
 ## Changelog
+
+### 2.3.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 2.3.1 — 2026-08-24
 

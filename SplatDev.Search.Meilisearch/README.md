@@ -1,5 +1,8 @@
 # SplatDev.Search.Meilisearch
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Meilisearch adapter for `SplatDev.Search` abstractions — lightweight, typo-tolerant full-text search with instant indexing via the official `Meilisearch` .NET SDK.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Search.Meilisearch.svg)](https://www.nuget.org/packages/SplatDev.Search.Meilisearch)
@@ -63,6 +66,10 @@ var result = await _search.SearchAsync<Product>("products", new SearchRequest
 **SplatDev.Search.Meilisearch** — part of the [SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins) suite. Licensed under MIT. &copy; SplatDev Ltda.
 
 ## Changelog
+
+### 1.0.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.0.1 — 2026-08-24
 

@@ -1,5 +1,8 @@
 # UmbracoCms.Themes.Base
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 **Version:** 1.0.0
 **Author:** SplatDev
 **License:** MIT
@@ -190,6 +193,10 @@ Other UmbracoCms themes depend on this package and override or extend:
 ---
 
 ## Changelog
+
+### 1.0.6 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.0.5 — 2026-08-24
 

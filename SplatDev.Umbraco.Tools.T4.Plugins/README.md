@@ -1,5 +1,8 @@
 # SplatDev.Umbraco.Tools.T4.Plugins
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 CLI code generator for Umbraco plugin scaffolding. Creates Composer, Controller, Service, `package.manifest`, and language files from T4 templates.
 
 ## Package
@@ -49,6 +52,10 @@ The tool generates:
 - No Bellissima `client/` scaffolding yet — generated plugins are headless by default
 
 ## Changelog
+
+### 1.0.4 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.0.3 — 2026-08-24
 

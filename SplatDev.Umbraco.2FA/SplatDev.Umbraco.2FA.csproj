@@ -8,7 +8,7 @@
 		<Nullable>enable</Nullable>
 		<PackageId>SplatDev.Umbraco.2FA</PackageId>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<Version>2.0.4</Version>
+		<Version>2.0.5</Version>
 		<Authors>SplatDev</Authors>
 		<Description>Two-factor authentication utilities for Umbraco 13 (net8.0) and Umbraco 17 (net10.0)</Description>
 		<PackageTags>umbraco 2fa</PackageTags>

@@ -58,6 +58,14 @@ await _defaultValueService.ApplyDefaultsAsync("blogPost", properties);
 
 ## Changelog
 
+### 2.4.0 — 2026-08-24
+
+Brings back the property editor. Version 2.x replaced this plugin with a rules engine — tables, a dashboard, rules applied across content — and shipped no editor at all, which is a different product under the same package id. A site upgrading from Umbraco 7 or 8 had document types whose properties were bound to `splatDev.DefaultValue`, and that editor was simply absent, leaving those properties without one and their `dValue` configuration orphaned.
+
+The editor is back under its original alias, with the original `dValue` prevalue, so those document types resolve again. The rules engine is untouched and remains the way to apply defaults across many properties at once — the two are complementary, not alternatives.
+
+One deliberate difference from the original: it applies the default only when the property is empty. The Umbraco 7/8 controller assigned the configured value on every load, which discarded anything an editor had typed.
+
 ### 2.3.1 — 2026-08-24
 
 Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.

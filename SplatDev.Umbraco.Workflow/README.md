@@ -1,5 +1,8 @@
 # SplatDev.Umbraco.Workflow
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 A drop-in content workflow engine for Umbraco 13 that provides approval chains, versioned workflow definitions, and a pizza-chart dashboard.
 
 ## Architecture

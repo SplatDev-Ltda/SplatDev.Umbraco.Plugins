@@ -11,7 +11,7 @@
 
   <PropertyGroup>
     <PackageId>SplatDev.Directory</PackageId>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Description>Directory service abstraction for Umbraco plugins: search people, read one account, and optionally create one, across Active Directory, LDAP and Entra ID.</Description>
     <PackageTags>umbraco;directory;activedirectory;ldap;entra;azuread</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>

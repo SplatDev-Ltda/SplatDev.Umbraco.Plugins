@@ -1,5 +1,8 @@
 # SplatDev.Umbraco.Examine
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Enhanced Examine/Lucene search library for Umbraco — extends the built-in Examine search engine with fuzzy matching, boosted terms, a zero-stop-word analyzer, and strongly-typed search results with built-in pagination.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Examine.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Examine)
@@ -162,6 +165,10 @@ Both this package and [`SplatDev.Search.*`](/SplatDev.Search) coexist in the Spl
 **SplatDev.Umbraco.Examine** — part of the [SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins) suite. Licensed under MIT. © SplatDev Ltda.
 
 ## Changelog
+
+### 2.0.5 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 2.0.4 — 2026-08-24
 

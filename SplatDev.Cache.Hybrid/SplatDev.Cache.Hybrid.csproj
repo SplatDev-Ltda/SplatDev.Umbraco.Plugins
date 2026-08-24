@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>SplatDev.Cache.Hybrid</PackageId>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Authors>SplatDev</Authors>
     <Company>SplatDev Ltda</Company>
     <Description>Microsoft.Extensions.Caching.Hybrid (HybridCache) adapter for SplatDev.Cache abstractions. L1/L2 caching with stampede protection — .NET 10+.</Description>

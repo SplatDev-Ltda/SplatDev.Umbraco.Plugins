@@ -4,9 +4,6 @@ Umbraco SEO plugin — drop-in meta tags, Open Graph, canonical URLs, and robots
 
 
 <!-- screenshot:start -->
-
-![SEO dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.SEO/docs/screenshots/01-dashboard.png)
-
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.SEO.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.SEO)
@@ -104,6 +101,10 @@ No `appsettings.json` keys required — all data comes from Umbraco content prop
 | `OpenGraph` | `Title`, `Type`, `Url`, `Image`, `Description`, `Author`, `DateCreated` |
 
 ## Changelog
+
+### 2.1.6 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 2.1.5 — 2026-08-24
 

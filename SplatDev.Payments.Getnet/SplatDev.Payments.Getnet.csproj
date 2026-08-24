@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>SplatDev.Payments.Getnet</PackageId>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <Authors>SplatDev</Authors>
     <Company>SplatDev Ltda</Company>
     <Description>Getnet (Santander acquirer) payment SDK: OAuth2 client_credentials + HTTP Basic API client for Pix QR Code, boleto and payment-link, with a development mock mode. No client certificate required.</Description>

@@ -24,7 +24,7 @@
     {
       "type": "localization",
       "alias": "UmbracoCms.OnOff.Localization.En",
-      "name": "OnOff \u2014 English",
+      "name": "OnOff — English",
       "meta": {
         "culture": "en",
         "localizations": {
@@ -48,7 +48,7 @@
       "meta": {
         "label": "On/Off Switch",
         "icon": "icon-power",
-        "group": "common",
+        "group": "Common",
         "propertyEditorSchemaAlias": "Umbraco.TrueFalse",
         "settings": {
           "properties": [

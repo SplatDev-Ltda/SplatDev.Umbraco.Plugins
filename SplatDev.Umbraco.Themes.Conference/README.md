@@ -1,5 +1,8 @@
 # UmbracoCms.Themes.Conference
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Conference/event theme for Umbraco – schedule, speakers, venue, registration, countdown.
 
 ## Features
@@ -77,6 +80,10 @@ On first startup the theme auto-installs its Umbraco schema (data types, documen
 Include `/css/conference-theme.css` in your layout or reference it directly. Customise via CSS custom properties defined in `:root`.
 
 ## Changelog
+
+### 1.0.5 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.0.4 — 2026-08-24
 

@@ -62,6 +62,10 @@ to run by hand.
 
 ## Changelog
 
+### 2.3.2 — 2026-08-24
+
+Restores the Common group this plugin had on Umbraco 7 and 8.
+
 ### 2.3.1 — 2026-08-24
 
 Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.

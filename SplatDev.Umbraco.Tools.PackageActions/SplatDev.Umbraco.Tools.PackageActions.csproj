@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <PackageId>SplatDev.Umbraco.Tools.PackageActions</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.0.3</Version>
+    <Version>1.0.4</Version>
     <Authors>SplatDev</Authors>
     <Company>SplatDev Ltda</Company>
     <Description>Umbraco package action helpers — run document type, data type, template and content node setup during package install.</Description>

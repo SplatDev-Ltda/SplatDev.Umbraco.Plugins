@@ -1,5 +1,8 @@
 # SplatDev.Payments.Stripe
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Stripe payment provider for the SplatDev.Payments abstraction layer — PaymentIntents, refunds, customers, subscriptions, and webhooks.
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Payments.Stripe.svg)](https://www.nuget.org/packages/SplatDev.Payments.Stripe)
@@ -129,6 +132,10 @@ No third-party JSON library required — Stripe.net uses `System.Text.Json` inte
 *SplatDev — pragmatic tools for .NET developers.*
 
 ## Changelog
+
+### 1.0.2 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.0.1 — 2026-08-24
 

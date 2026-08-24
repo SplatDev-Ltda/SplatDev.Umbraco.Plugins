@@ -1,5 +1,8 @@
 # UmbracoCms.Themes.Corporate
 
+<!-- screenshot:start -->
+<!-- screenshot:end -->
+
 Professional corporate theme for Umbraco. Provides home, about, services, team, and contact pages designed for business/company websites.
 
 ## Supported Umbraco Versions
@@ -84,6 +87,10 @@ Override CSS custom properties in your own stylesheet:
 ```
 
 ## Changelog
+
+### 1.0.5 — 2026-08-24
+
+Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
 
 ### 1.0.4 — 2026-08-24
 

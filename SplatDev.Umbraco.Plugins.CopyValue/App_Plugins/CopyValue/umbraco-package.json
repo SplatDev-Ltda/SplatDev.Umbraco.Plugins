@@ -24,7 +24,7 @@
     {
       "type": "localization",
       "alias": "UmbracoCms.CopyValue.Localization.En",
-      "name": "CopyValue \u2014 English",
+      "name": "CopyValue — English",
       "meta": {
         "culture": "en",
         "localizations": {
@@ -46,8 +46,8 @@
       "elementName": "copyvalue-property-editor",
       "meta": {
         "label": "Copy Value",
-        "icon": "icon-documents",
-        "group": "common",
+        "icon": "icon-layers",
+        "group": "Common",
         "propertyEditorSchemaAlias": "Umbraco.TextBox",
         "settings": {
           "properties": [
@@ -90,6 +90,21 @@
               "value": false
             }
           ]
+        }
+      }
+    },
+    {
+      "type": "localization",
+      "alias": "SplatDev.Localization.CopyValue.pt-br",
+      "name": "CopyValue (pt-br)",
+      "meta": {
+        "culture": "pt-br"
+      },
+      "value": {
+        "copyValue": {
+          "copy": "Copiar",
+          "copied": "Copiado",
+          "nothing": "Nada para copiar"
         }
       }
     }
