@@ -75,4 +75,15 @@ EXPOSE 5000
 HEALTHCHECK --interval=20s --timeout=5s --start-period=120s --retries=6 \
     CMD curl -sf http://127.0.0.1:5000/umbraco || exit 1
 
+# Umbraco writes its SQLite database under /app/umbraco/Data and the test runner writes
+# screenshots under /output. Both are created by root above, so handing them to the
+# non-root user has to happen before the USER switch or the container cannot start.
+#
+# /app/umbraco/Data is a named volume: Docker seeds a *new* volume from the image and
+# carries this ownership across. An existing u13-data/u17-data volume was created while
+# the image still ran as root and keeps root ownership, so an upgrade needs
+# `docker compose -f docker-compose.test.yml down -v` once.
+RUN chown -R app:app /app /output
+
+USER app
 ENTRYPOINT ["dotnet", "Umbraco17.Baseline.dll"]

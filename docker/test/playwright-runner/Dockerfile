@@ -35,4 +35,20 @@ RUN mkdir -p /output/screenshots/u13 /output/screenshots/u17 /output/test-result
 
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+    CMD pgrep -f run-screenshots || exit 1
+
+# Deliberately still root, unlike the two Umbraco containers.
+#
+# /output here is a host bind mount (./docker/test/output in docker-compose.test.yml),
+# and a bind mount keeps the host directory's ownership — a chown in the image does not
+# touch it. pwuser is uid 1001 while the host directory belongs to whoever runs compose,
+# usually 1000, so `USER pwuser` leaves this container unable to write a single
+# screenshot. It would not error out visibly either: the run would simply produce an
+# empty output directory, which is the failure shape this repository keeps finding.
+#
+# Pinning a uid in the image cannot fix that; only the caller knows the host's. This is
+# an ephemeral local test container with no network exposure, so it stays root and the
+# two long-running Umbraco containers — which write to named volumes, where ownership
+# does propagate from the image — are the ones that drop privileges.
 CMD ["/app/scripts/run-screenshots.sh"]
