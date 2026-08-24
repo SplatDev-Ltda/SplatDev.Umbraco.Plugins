@@ -83,7 +83,20 @@ The one still listed is the worst of the eight to leave alone: 9.5.4 sorts above
 
 `.github/workflows/unlist-superseded.yml` unlists these wholesale (manual dispatch, dry-run by default). Unlisting hides an id from search and resolution without deleting it, and the Umbraco Marketplace takes its listings from NuGet so the entry goes with it. It is **not** deprecation: NuGet's deprecation flag adds a banner naming the replacement, which is what someone who already installed one needs to see, and it can only be set in the nuget.org UI — do both.
 
-`SplatDevUmbracoPluginBackup` could not be unlisted from CI: the NuGet api key answered **403 Forbidden**, because that id has no dot and a `SplatDev.*` key glob does not match it. Widen the key's scope or unlist it by hand. The workflow used to report that run as a clean success — it counted attempts, not outcomes — and now fails the job instead.
+`SplatDevUmbracoPluginBackup` could not be unlisted from CI: the NuGet api key answered **403 Forbidden**. This was recorded here as a package-id glob problem — that the id has no dot and a `SplatDev.*` glob misses it — and that was wrong. The key's glob is `*` and it holds the *Unlist or relist package versions* scope, so it covers the id fine.
+
+The actual reason is ownership. A NuGet key is scoped to one **package owner**, and this key's is `SplatDev`, while `SplatDevUmbracoPluginBackup` is owned by `Shuchita`:
+
+```
+SplatDevUmbracoPluginBackup       owners=['Shuchita']
+SplatDev.Umbraco.Plugins.Backups  owners=['SplatDev']
+```
+
+No key issued under `SplatDev` can touch it, whatever the glob. The seven ids that did unlist are all `SplatDev`-owned. Fix it by adding `SplatDev` as a co-owner of that package from the `Shuchita` account (nuget.org allows several owners), after which the existing key works — or have `Shuchita` unlist and deprecate it directly. Widening the glob achieves nothing.
+
+Check ownership before blaming a key: `curl -s "https://azuresearch-usnc.nuget.org/query?q=packageid:<id>" | jq '.data[0].owners'`.
+
+The workflow used to report that run as a clean success — it counted attempts, not outcomes — and now fails the job instead.
 
 Two ids in this group are deliberately left alone. `…Plugins.AdPreview` (0.0.3.5, Umbraco 7) has a v17 port in PR #118 that will publish under the same id, and `…Plugins.HideContent` (1.0.1, a `umbracoNaviHide` visual) has no current equivalent to point anyone at.
 
