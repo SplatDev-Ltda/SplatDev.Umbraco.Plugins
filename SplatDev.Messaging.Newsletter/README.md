@@ -81,12 +81,12 @@ Zero-dependency plain C# events. Provider implementations raise these; consumers
 
 ## Usage (with a provider)
 
+This package is **contracts only** — `INewsletterProvider`, the models and the events. It
+ships no implementation, and there is no provider package alongside it yet. `AddMailchimp()`
+does not exist anywhere in this repository; register your own implementation:
+
 ```csharp
-builder.Services.AddMailchimp(options =>
-{
-    options.ApiKey = builder.Configuration["Mailchimp:ApiKey"] ?? "";
-    options.ServerPrefix = builder.Configuration["Mailchimp:ServerPrefix"] ?? "";
-});
+builder.Services.AddScoped<INewsletterProvider, MyNewsletterProvider>();
 
 // Access via interface
 public class MyController(INewsletterProvider provider)

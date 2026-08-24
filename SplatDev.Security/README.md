@@ -21,32 +21,31 @@ Security utilities for .NET applications — phishing detection via CheckPhish.a
 dotnet add package SplatDev.Security
 ```
 
-## Configuration
-
-### Register services in DI
-
-```csharp
-// Program.cs
-builder.Services.AddDbContext<SecurityDbContext>(options =>
-    options.UseSqlServer(connectionString));
-
-builder.Services.AddSingleton<Tools>();
-```
-
 ## Usage
+
+`Tools` is a **static** class. There is nothing to register in DI and nothing to construct —
+`new Tools()` does not compile, and neither does `AddSingleton<Tools>()`. Every method takes
+the API key for the service it calls; this package does not read configuration or hold
+credentials.
+
+Every network method also accepts an optional `HttpMessageHandler`, which is how the tests
+exercise them without calling the live services.
 
 ### Phishing detection via CheckPhish.ai
 
 ```csharp
 using SplatDev.Security;
 
-var tools = new Tools();
-var result = await tools.CheckPhish("https://suspicious-site.com");
+CheckPhishResponse result = await Tools.CheckPhish(apiKey, "https://suspicious-site.com");
 
-if (result.IsPhishing)
-    Console.WriteLine($"Phishing detected! Resolution: {result.Resolution}");
-else
-    Console.WriteLine($"Clean. Job ID: {result.JobId}");
+// disposition is "clean", "phish", "suspicious" — status is "DONE" when the scan finished
+Console.WriteLine($"{result.disposition} (job {result.jobID}, status {result.status})");
+```
+
+A scan that has not finished returns `status` other than `"DONE"`; poll it with the job id:
+
+```csharp
+var polled = await Tools.CheckPhishPendingJob(apiKey, result.jobID);
 ```
 
 ### Google Safe Browsing lookup
@@ -54,56 +53,70 @@ else
 ```csharp
 using SplatDev.Security;
 
-var result = await tools.CheckSafeBrowsing("https://malware-site.com");
+var result = await Tools.GoogleSafeBrowing(apiKey, new[] { "https://malware-site.com" });
 
-if (result.IsMalicious)
+if (result.Matches?.Any() == true)
     Console.WriteLine("URL flagged by Google Safe Browsing");
 ```
+
+The method name is `GoogleSafeBrowing` — the typo is in the shipped API and renaming it would
+be a breaking change.
+
+It returns Google's own `GoogleSecuritySafebrowsingV4FindThreatMatchesResponse` from
+`Google.Apis.Safebrowsing.v4`, not a type defined here.
 
 ### IP quality scoring via IPQualityScore
 
 ```csharp
 using SplatDev.Security;
 
-var score = await tools.CheckIpQualityScore("203.0.113.42");
+IpQualityScoreResponse score = await Tools.IpQualityScore(apiKey, "https://example.com/");
 
-Console.WriteLine($"Fraud score: {score.FraudScore}");
-Console.WriteLine($"Is proxy: {score.IsProxy}");
-Console.WriteLine($"Is VPN: {score.IsVpn}");
-Console.WriteLine($"ISP: {score.Isp}");
+Console.WriteLine($"Risk score: {score.Risk_score}");
+Console.WriteLine($"Phishing:   {score.Phishing}");
+Console.WriteLine($"Malware:    {score.Malware}");
+Console.WriteLine($"Suspicious: {score.Suspicious}");
 ```
 
-### IP blacklist/whitelist management
-
-```csharp
-using SplatDev.Security;
-
-// Check if an IP is in an allowed or blocked list
-bool isBlocked = tools.IsIpBlacklisted("192.168.1.100");
-bool isAllowed = tools.IsIpWhitelisted("10.0.0.1");
-
-// Validate IP format
-bool valid = tools.IsIpValid("192.168.1.1");
-
-// Add to whitelist
-await tools.AddToWhitelistAsync("10.0.0.0/24", description: "Internal network");
-```
-
-### Email validation
-
-```csharp
-using SplatDev.Security;
-
-bool validEmail = tools.IsEmailValid("user@example.com");
-```
+The property names follow IPQualityScore's own JSON, so they are snake-cased with a leading
+capital — `Risk_score`, `Ip_address`, `Dns_valid`.
 
 ### HTTP basic auth encoding
 
 ```csharp
 using SplatDev.Security;
 
-string authHeader = Tools.EncodeBasicAuth("username", "password");
-// Returns "Basic dXNlcm5hbWU6cGFzc3dvcmQ="
+string encoded = Tools.EncodeAuthHeader("username", "password");
+// "dXNlcm5hbWU6cGFzc3dvcmQ=" — the value only, without the "Basic " prefix
+
+Tuple<string, string> decoded = Tools.DecodeAuthHeader(encoded);
+// decoded.Item1 = "username", decoded.Item2 = "password"
+```
+
+### Password helpers
+
+```csharp
+string generated = await Tools.GeneratePasswordAsync();
+string hashed    = await Tools.EncrypPasswordAsync(password, salt: "…");
+```
+
+`EncrypPasswordAsync` is spelled that way in the shipped API.
+
+## IP list entities
+
+`IpBlacklist`, `IpWhitelist` and `IpHistory` are **EF Core entity classes and nothing more**.
+This package ships no `DbContext`, no repository and no lookup methods — add them to your own
+context and query them yourself:
+
+```csharp
+public class MyDbContext : DbContext
+{
+    public DbSet<IpBlacklist> IpBlacklist => Set<IpBlacklist>();
+    public DbSet<IpWhitelist> IpWhitelist => Set<IpWhitelist>();
+    public DbSet<IpHistory>   IpHistory   => Set<IpHistory>();
+}
+
+bool blocked = await db.IpBlacklist.AnyAsync(x => x.Ip == candidate && x.ReleaseOn > DateTime.UtcNow);
 ```
 
 ## Features
@@ -111,24 +124,23 @@ string authHeader = Tools.EncodeBasicAuth("username", "password");
 - **CheckPhish.ai integration** — real-time phishing URL detection with detailed threat resolution
 - **Google Safe Browsing** lookup against Google's continuously updated malware and phishing database
 - **IPQualityScore** scoring: fraud score, proxy/VPN detection, ISP lookup, bot detection
-- **IP blacklist management** — persistent blacklist with EF Core entities (`IpBlacklist`)
-- **IP whitelist management** — persistent whitelist for trusted networks (`IpWhitelist`)
-- **IP history tracking** — audit trail of IP lookups via `IpHistory` EF entity
-- IP address format validation (`IsIpValid`)
-- Email address format validation (`IsEmailValid`)
-- HTTP Basic Authentication header encoding
+- **EF Core entities** for IP blacklist, whitelist and lookup history (`IpBlacklist`,
+  `IpWhitelist`, `IpHistory`) — entity definitions only; the `DbContext` and the queries are
+  yours
+- HTTP Basic Authentication header encoding and decoding
+- Password generation and hashing helpers
 - Structured API response models (`CheckPhishResponse`, `IpQualityScoreResponse`)
 
 ## Key Classes
 
 | Class | Purpose |
 |-------|---------|
-| `Tools` | Main facade for all security checks (CheckPhish, Safe Browsing, IPQS, IP validation) |
+| `Tools` | Static facade for the three lookup services, auth-header encoding and the password helpers |
 | `CheckPhishResponse` | Response model from CheckPhish.ai API |
 | `IpQualityScoreResponse` | Response model from IPQualityScore API |
-| `IpBlacklist` | EF Core entity for blocked IP addresses |
-| `IpWhitelist` | EF Core entity for allowed IP addresses |
-| `IpHistory` | EF Core entity for IP lookup audit trail |
+| `IpBlacklist` | EF Core entity for blocked IP addresses — definition only |
+| `IpWhitelist` | EF Core entity for allowed IP addresses — definition only |
+| `IpHistory` | EF Core entity for an IP lookup audit trail — definition only |
 
 ## Dependencies
 
@@ -138,7 +150,6 @@ string authHeader = Tools.EncodeBasicAuth("username", "password");
 | `Microsoft.EntityFrameworkCore.SqlServer` | 8.0.13 | SQL Server database provider |
 | `Google.Apis.Safebrowsing.v4` | 1.68.0.2968 | Google Safe Browsing API client |
 | `RestSharp` | 112.1.0 | HTTP client for CheckPhish.ai and IPQualityScore APIs |
-| `Newtonsoft.Json` | 13.0.3 | JSON serialization for API responses |
 
 ---
 
