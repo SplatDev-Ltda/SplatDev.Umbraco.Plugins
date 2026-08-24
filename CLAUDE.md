@@ -114,6 +114,10 @@ the last row still turns up in a search.
 The one still listed is the worst of the eight to leave alone: 9.5.4 sorts above the
 3.3.2 that replaced it, so it wins the search outright.
 
+The two jobs nuget.org gives no API for — deprecating the superseded ids, and the ownership
+transfer `SplatDevUmbracoPluginBackup` needs — are written up with exact values and a draft
+support request in `docs/nuget-housekeeping.md`.
+
 `.github/workflows/unlist-superseded.yml` unlists these wholesale (manual dispatch, dry-run by default). Unlisting hides an id from search and resolution without deleting it, and the Umbraco Marketplace takes its listings from NuGet so the entry goes with it. It is **not** deprecation: NuGet's deprecation flag adds a banner naming the replacement, which is what someone who already installed one needs to see, and it can only be set in the nuget.org UI — do both.
 
 `SplatDevUmbracoPluginBackup` could not be unlisted from CI: the NuGet api key answered **403 Forbidden**. This was recorded here as a package-id glob problem — that the id has no dot and a `SplatDev.*` glob misses it — and that was wrong. The key's glob is `*` and it holds the *Unlist or relist package versions* scope, so it covers the id fine.
