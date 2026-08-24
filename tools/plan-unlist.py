@@ -11,7 +11,7 @@ added authorization to its anonymous endpoints.
 Prints one `id@version` per line, and refuses to plan anything for a package whose shipped
 version is not on NuGet yet, because unlisting the rest would leave it with nothing listed.
 """
-import json, os, re, subprocess, sys, urllib.request
+import gzip, json, os, re, subprocess, sys, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -22,12 +22,32 @@ DELIST_ENTIRELY = [
 ]
 
 def published(pid):
+    """Versions that are still LISTED.
+
+    The flat container returns unlisted versions too, so planning from it re-attempts every
+    version that a previous run already unlisted — which on a rate-limited run means the
+    retries are spent on work already done. Registration carries the listed flag.
+    """
     try:
-        with urllib.request.urlopen(
-            f"https://api.nuget.org/v3-flatcontainer/{pid.lower()}/index.json", timeout=30) as r:
-            return json.load(r)["versions"]
+        req = urllib.request.Request(
+            f"https://api.nuget.org/v3/registration5-gz-semver2/{pid.lower()}/index.json",
+            headers={"Accept-Encoding": "gzip"})
+        with urllib.request.urlopen(req, timeout=30) as r:
+            raw = r.read()
+            if r.headers.get("Content-Encoding") == "gzip":
+                raw = gzip.decompress(raw)
+            data = json.loads(raw)
     except Exception:
         return []
+
+    listed = []
+    for page in data.get("items", []):
+        for item in page.get("items", []):
+            entry = item.get("catalogEntry", {})
+            # listed defaults to true when the flag is absent.
+            if entry.get("listed", True):
+                listed.append(entry.get("version"))
+    return [v for v in listed if v]
 
 def main():
     listing = subprocess.run(["bash", "-c",

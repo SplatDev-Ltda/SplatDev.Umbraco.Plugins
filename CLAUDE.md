@@ -77,6 +77,21 @@ packages skipped. Tag and publish first, then unlist. The run is batched — `ba
 `delay_seconds`, `batch_pause_seconds` — and reports a `start_at` offset so a partial run
 resumes rather than restarting.
 
+**NuGet rate-limits a long unlist run, and a discarded stderr hides it.** The first full
+run unlisted 571 versions and recorded 323 failures — roughly 250 consecutive successes and
+then failures interleaving, across 51 unrelated packages, which is throttling rather than
+anything wrong with those packages. No shipped version was lost, because the guard held.
+Two things made it worse than it needed to be: the step sent `dotnet nuget delete` output to
+`/dev/null`, so the reason for every failure was unrecoverable, and there was no retry, so a
+transient throttle was recorded as permanent. Both are fixed — four attempts with quadratic
+backoff, 403 breaking out immediately since a permission problem never succeeds, and the
+failure line now carries the message.
+
+`tools/plan-unlist.py` also reads the **registration** index rather than the flat container,
+because the flat container lists unlisted versions too — planning from it re-attempts
+everything a previous run already unlisted, which is exactly the work a rate-limited retry
+cannot afford. After the first run the remaining plan was 289, not 911.
+
 **Legacy Umbraco 8 versions can outrank the current package.** Several ids carry `8.18.x` builds whose version numbers sort *above* today's `2.x`/`3.x`, so NuGet resolves the v8 assembly as latest. This is not cosmetic: `Backups` served 8.18.7.2 over the 3.3.0 that added authorization to its anonymous `Restore` and `Delete` endpoints, making a published security fix unreachable. Unlist the legacy versions — `.github/workflows/unlist-legacy.yml`, manual dispatch — and check the *search* index, not the flat container, which lists unlisted versions too:
 `curl -s "https://azuresearch-usnc.nuget.org/query?q=packageid:<id>&prerelease=true"`.
 
