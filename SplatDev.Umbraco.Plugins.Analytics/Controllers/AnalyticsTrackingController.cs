@@ -18,9 +18,10 @@ namespace SplatDev.Umbraco.Plugins.Analytics.Controllers;
 /// </remarks>
 [AllowAnonymous]
 #if NET10_0_OR_GREATER
-[Route("umbraco/api/analytics")]
+[Route("umbraco/api/analytics/[action]")]
+#else
+[Route("umbraco/backoffice/api/AnalyticsTracking/[action]")]
 #endif
-[Route("umbraco/backoffice/api/AnalyticsTracking")]
 public class AnalyticsTrackingController : ControllerBase
 {
     private readonly IAnalyticsService _service;
@@ -33,7 +34,7 @@ public class AnalyticsTrackingController : ControllerBase
     }
 
     /// <summary>Records a page view. Returns the visit id, which the exit call needs.</summary>
-    [HttpPost("record")]
+    [HttpPost]
     public async Task<IActionResult> Record([FromBody] RecordVisitRequest request, CancellationToken ct)
     {
         if (request is null)
@@ -60,7 +61,7 @@ public class AnalyticsTrackingController : ControllerBase
     }
 
     /// <summary>Closes a visit when the visitor leaves, recording where they went from.</summary>
-    [HttpPost("exit")]
+    [HttpPost]
     public async Task<IActionResult> Exit([FromBody] RecordExitRequest request, CancellationToken ct)
     {
         if (request is null || request.VisitId <= 0)
@@ -74,7 +75,7 @@ public class AnalyticsTrackingController : ControllerBase
     /// How many times this node has been visited. The old plugin exposed this so a template
     /// could show a visit count on the page itself.
     /// </summary>
-    [HttpGet("visit-count")]
+    [HttpGet]
     public async Task<IActionResult> VisitCount([FromQuery] int nodeId, CancellationToken ct) =>
         Ok(await _service.GetVisitCountAsync(nodeId, ct));
 
