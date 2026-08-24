@@ -26,6 +26,10 @@ on:
         required: true
         default: ''
 
+# Authenticates to NuGet with NUGET_API_KEY; the repository token needs nothing else.
+permissions:
+  contents: read
+
 jobs:
   unlist:
     runs-on: ubuntu-latest
