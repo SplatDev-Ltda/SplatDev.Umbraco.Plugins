@@ -1,0 +1,15 @@
+{
+  "javascript": ["/App_Plugins/Analytics/angular/analytics.controller.js"],
+  "css": [],
+  "propertyEditors": [],
+  "gridEditors": [],
+  "dashboards": [
+    {
+      "alias": "SplatDev.Analytics.Dashboard",
+      "view": "/App_Plugins/Analytics/angular/analytics.html",
+      "sections": ["content"],
+      "tab": "Analytics",
+      "access": [{ "grant": "admin" }]
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+@using SplatDev.Umbraco.Plugins.Analytics.ViewComponents
+@model AnalyticsBeaconViewModel
+
+@*
+    A view component renders into someone else's page, so this emits a script and nothing
+    else — no styles, no elements that affect layout.
+*@
+
+<script>
+    (function () {
+        if (window.__splatdevAnalytics) return;
+        window.__splatdevAnalytics = true;
+
+        var nodeId = @Model.NodeId;
+        var useClientIp = @(Model.UseClientIpLookup ? "true" : "false");
+        var base = "/umbraco/api/analytics";
+        var visitId = 0;
+
+        function browserInfo() {
+            var nav = window.navigator || {};
+            var brands = (nav.userAgentData && nav.userAgentData.brands) || [];
+            return {
+                appVersion: nav.appVersion,
+                language: nav.language,
+                languageName: nav.language,
+                platform: (nav.userAgentData && nav.userAgentData.platform) || nav.platform,
+                os: (nav.userAgentData && nav.userAgentData.platform) || nav.platform,
+                userAgent: nav.userAgent,
+                vendor: nav.vendor,
+                versions: brands.map(function (b) { return { brand: b.brand, version: b.version }; })
+            };
+        }
+
+        function post(path, body, useBeacon) {
+            var url = base + path;
+            var json = JSON.stringify(body);
+
+            // A page being unloaded will not wait for fetch to finish; sendBeacon is the
+            // only thing that reliably survives it, which is why the old build's exit
+            // tracking recorded so little.
+            if (useBeacon && navigator.sendBeacon) {
+                navigator.sendBeacon(url, new Blob([json], { type: "application/json" }));
+                return Promise.resolve(null);
+            }
+
+            return fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: json,
+                keepalive: !!useBeacon
+            }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+        }
+
+        function record(ip) {
+            post("/record", {
+                nodeId: nodeId,
+                entryUrl: window.location.pathname + window.location.search,
+                resolution: window.screen ? window.screen.width + "x" + window.screen.height : null,
+                ipAddress: ip,
+                browser: browserInfo()
+            }, false).then(function (result) {
+                if (result && result.visitId) visitId = result.visitId;
+            });
+        }
+
+        function start() {
+            if (!useClientIp) { record(null); return; }
+
+            // Configured to report the address from the browser. This contacts a third
+            // party from every visitor's browser; set IpSource to Server to take it from
+            // the connection instead and drop this request entirely.
+            fetch("https://api.ipify.org?format=json")
+                .then(function (r) { return r.json(); })
+                .then(function (d) { record(d && d.ip ? d.ip : null); })
+                .catch(function () { record(null); });
+        }
+
+        function finish() {
+            if (!visitId) return;
+            post("/exit", {
+                visitId: visitId,
+                exitUrl: window.location.pathname + window.location.search
+            }, true);
+        }
+
+        // pagehide fires where beforeunload does not, notably on mobile Safari.
+        window.addEventListener("pagehide", finish);
+        window.addEventListener("beforeunload", finish);
+
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", start);
+        } else {
+            start();
+        }
+    })();
+</script>
