@@ -501,4 +501,5 @@
       <Platform Solution="*|x86" Project="x86" />
     </Project>
   </Folder>
+  <Project Path="SplatDev.Umbraco.Plugins.AdPreview/SplatDev.Umbraco.Plugins.AdPreview.csproj" />
 </Solution>

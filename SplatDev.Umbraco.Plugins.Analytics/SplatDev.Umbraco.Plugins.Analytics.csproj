@@ -1,18 +1,55 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
     <ContentTargetFolders>.</ContentTargetFolders>
     <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <!-- The views live in the assembly, not in loose files: nothing packs loose
+         .cshtml, and MVC resolves views from the consuming site's content root. -->
+    <EnableDefaultContentItems>false</EnableDefaultContentItems>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
     <PackageId>SplatDev.Umbraco.Plugins.Analytics</PackageId>
-    <Version>2.1.5</Version>
+    <Version>3.0.0</Version>
     <Authors>SplatDev</Authors>
-    <Description>Compatibility shim for the renamed Google Analytics GA4 package. Install SplatDev.Umbraco.Plugins.GoogleAnalytics directly for new applications.</Description>
-    <PackageTags>umbraco analytics google-analytics ga4 deprecated</PackageTags>
+    <Description>First-party visitor analytics for Umbraco. Records visits against content nodes with browser, screen, entry and exit details, and reports totals, recurring visitors, real-time activity and per-page breakdowns from a backoffice dashboard. Your data stays in your database. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).</Description>
+    <PackageTags>umbraco umbraco-marketplace analytics visitors statistics first-party</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageProjectUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
+
   <ItemGroup>
-    <ProjectReference Include="../SplatDev.Umbraco.Plugins.GoogleAnalytics/SplatDev.Umbraco.Plugins.GoogleAnalytics.csproj" />
+    <EmbeddedResource Include="App_Plugins\**\*" />
+    <Content Include="Views\**\*.cshtml" Pack="false" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.11" />
+    <PackageReference Include="Umbraco.Cms.Core" Version="13.12.0" />
+    <PackageReference Include="Umbraco.Cms.Web.Common" Version="13.12.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.20" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.20" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.20" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.6" />
+    <PackageReference Include="Umbraco.Cms.Core" Version="17.3.4" />
+    <PackageReference Include="Umbraco.Cms.Web.Common" Version="17.3.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="icon.png" Pack="true" PackagePath="\" Condition="Exists('icon.png')" />
+    <None Include="umbraco-marketplace.json" Pack="true" PackagePath="\" Condition="Exists('umbraco-marketplace.json')" />
   </ItemGroup>
 
   <!-- Pack backoffice assets at their App_Plugins paths; embedded resources alone are not deployed by PackageReference. -->

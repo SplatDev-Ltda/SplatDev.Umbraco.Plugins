@@ -357,6 +357,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SplatDev.Directory.Ldap", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SplatDev.Directory.EntraId", "SplatDev.Directory.EntraId\SplatDev.Directory.EntraId.csproj", "{4DA714C8-F878-456F-8F24-1787E80C6B3E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SplatDev.Umbraco.Plugins.Analytics.Tests", "SplatDev.Umbraco.Plugins.Analytics.Tests\SplatDev.Umbraco.Plugins.Analytics.Tests.csproj", "{D2D06CDB-8F75-4905-A3CD-038395B65C33}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -2327,6 +2329,18 @@ Global
 		{4DA714C8-F878-456F-8F24-1787E80C6B3E}.Release|x64.Build.0 = Release|Any CPU
 		{4DA714C8-F878-456F-8F24-1787E80C6B3E}.Release|x86.ActiveCfg = Release|Any CPU
 		{4DA714C8-F878-456F-8F24-1787E80C6B3E}.Release|x86.Build.0 = Release|Any CPU
+		{D2D06CDB-8F75-4905-A3CD-038395B65C33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2D06CDB-8F75-4905-A3CD-038395B65C33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2D06CDB-8F75-4905-A3CD-038395B65C33}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D2D06CDB-8F75-4905-A3CD-038395B65C33}.Debug|x64.Build.0 = Debug|Any CPU
+		{D2D06CDB-8F75-4905-A3CD-038395B65C33}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D2D06CDB-8F75-4905-A3CD-038395B65C33}.Debug|x86.Build.0 = Debug|Any CPU
+		{D2D06CDB-8F75-4905-A3CD-038395B65C33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2D06CDB-8F75-4905-A3CD-038395B65C33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2D06CDB-8F75-4905-A3CD-038395B65C33}.Release|x64.ActiveCfg = Release|Any CPU
+		{D2D06CDB-8F75-4905-A3CD-038395B65C33}.Release|x64.Build.0 = Release|Any CPU
+		{D2D06CDB-8F75-4905-A3CD-038395B65C33}.Release|x86.ActiveCfg = Release|Any CPU
+		{D2D06CDB-8F75-4905-A3CD-038395B65C33}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

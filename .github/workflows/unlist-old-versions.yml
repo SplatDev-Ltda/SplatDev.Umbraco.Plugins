@@ -134,14 +134,34 @@ jobs:
             fi
 
             id="${entry%@*}"; version="${entry##*@}"
-            if dotnet nuget delete "$id" "$version" \
-                 --source https://api.nuget.org/v3/index.json \
-                 --api-key "$NUGET_API_KEY" --non-interactive > /dev/null 2>&1; then
+
+            # Retry with backoff. NuGet rate-limits a long run: the first attempt at this
+            # left 571 unlisted and 323 "failed" after roughly 250 consecutive successes,
+            # which is throttling rather than anything wrong with those packages. Output is
+            # captured rather than discarded — the first run sent it to /dev/null, so the
+            # reason for every one of those failures was unrecoverable.
+            ATTEMPT=0; DONE_ONE=0; LAST=""
+            while [ "$ATTEMPT" -lt 4 ]; do
+              ATTEMPT=$((ATTEMPT+1))
+              if LAST=$(dotnet nuget delete "$id" "$version" \
+                   --source https://api.nuget.org/v3/index.json \
+                   --api-key "$NUGET_API_KEY" --non-interactive 2>&1); then
+                DONE_ONE=1; break
+              fi
+              # A 403 is a permission or ownership problem and will never succeed; retrying
+              # it just burns the rate limit that the transient failures need.
+              if printf '%s' "$LAST" | grep -qiE "forbidden|403"; then break; fi
+              BACKOFF=$((ATTEMPT * ATTEMPT * 5))
+              echo "  retry   $entry (attempt $ATTEMPT, waiting ${BACKOFF}s)"
+              sleep "$BACKOFF"
+            done
+
+            if [ "$DONE_ONE" -eq 1 ]; then
               OK=$((OK+1))
               echo "  ok      $entry"
             else
               FAILED=$((FAILED+1)); FAILED_LIST="$FAILED_LIST $entry"
-              echo "  FAILED  $entry"
+              echo "  FAILED  $entry — $(printf '%s' "$LAST" | tr '\n' ' ' | cut -c1-160)"
             fi
             DONE=$((DONE+1))
             sleep "$DELAY"

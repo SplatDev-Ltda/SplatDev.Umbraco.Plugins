@@ -1,0 +1,15 @@
+{
+  "$schema": "../../umbraco-package-schema.json",
+  "id": "AdPreview",
+  "name": "AdPreview",
+  "version": "1.0.0",
+  "allowPackageTelemetry": false,
+  "extensions": [{
+    "type": "propertyEditorSchema", "alias": "AdPreview", "name": "Ad Preview",
+    "meta": { "defaultPropertyEditorUiAlias": "SplatDev.AdPreview.PropertyEditorUi" }
+  }, {
+    "type": "propertyEditorUi", "alias": "SplatDev.AdPreview.PropertyEditorUi", "name": "Ad Preview editor",
+    "element": "/App_Plugins/AdPreview/dist/adpreview-property-editor.js", "elementName": "splatdev-adpreview-property-editor",
+    "meta": { "label": "Ad Preview", "propertyEditorSchemaAlias": "AdPreview", "icon": "icon-image", "group": "common", "supportsReadOnly": true }
+  }]
+}
