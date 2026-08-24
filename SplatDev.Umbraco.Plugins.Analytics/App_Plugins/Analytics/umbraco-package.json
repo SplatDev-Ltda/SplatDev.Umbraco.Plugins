@@ -1,0 +1,22 @@
+{
+  "$schema": "../../umbraco-package-schema.json",
+  "name": "SplatDev Analytics",
+  "version": "3.0.0",
+  "extensions": [
+    {
+      "type": "dashboard",
+      "alias": "SplatDev.Dashboard.Analytics",
+      "name": "Analytics",
+      "element": "/App_Plugins/Analytics/dist/analytics-dashboard.element.js",
+      "elementName": "analytics-dashboard",
+      "weight": 40,
+      "meta": {
+        "label": "Analytics",
+        "pathname": "splatdev-analytics"
+      },
+      "conditions": [
+        { "alias": "Umb.Condition.SectionAlias", "match": "Umb.Section.Content" }
+      ]
+    }
+  ]
+}
