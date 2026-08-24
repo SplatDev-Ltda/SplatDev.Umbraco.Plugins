@@ -23,13 +23,14 @@ dotnet add package SplatDev.Umbraco.Plugins.ShortUrls
 
 ## Quick Start
 
-Register in `Program.cs`:
+Registration is generic in your own short-URL entity — the extension method is
+`AddShortUrls<T>()`, and it does not compile without the type argument:
 
 ```csharp
 builder.CreateUmbracoBuilder()
     .AddBackOffice()
     .AddWebsite()
-    .AddShortUrls()   // <-- add this
+    .AddShortUrls<YourShortUrlEntity>()   // <-- add this
     .Build();
 ```
 

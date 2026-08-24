@@ -32,15 +32,7 @@ dotnet add package SplatDev.Umbraco.Plugins.PhotoGallery
 
 ## Quick Start
 
-Register in `Program.cs`:
-
-```csharp
-builder.CreateUmbracoBuilder()
-    .AddBackOffice()
-    .AddWebsite()
-    .AddPhotoGallery()   // <-- add this
-    .Build();
-```
+No registration call is needed. The package ships Umbraco composers, so the `AddComposers()` already in the default `Program.cs` picks the plugin up as soon as the package is referenced.
 
 The Photo Gallery dashboard appears under the **Settings** section in the Umbraco backoffice. It displays albums and photos managed through the gallery.
 

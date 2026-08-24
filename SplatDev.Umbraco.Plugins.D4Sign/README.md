@@ -23,15 +23,7 @@ dotnet add package SplatDev.Umbraco.Plugins.D4Sign
 
 ## Quick Start
 
-Register in `Program.cs`:
-
-```csharp
-builder.CreateUmbracoBuilder()
-    .AddBackOffice()
-    .AddWebsite()
-    .AddD4Sign()   // <-- add this
-    .Build();
-```
+No registration call is needed. The package ships Umbraco composers, so the `AddComposers()` already in the default `Program.cs` picks the plugin up as soon as the package is referenced.
 
 ## Configuration
 
