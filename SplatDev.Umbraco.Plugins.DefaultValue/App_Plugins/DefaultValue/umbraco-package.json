@@ -37,6 +37,20 @@
           }
         }
       }
+    },
+    {
+      "type": "propertyEditorUi",
+      "alias": "SplatDev.PropertyEditorUi.DefaultValue",
+      "name": "Default Value",
+      "element": "/App_Plugins/DefaultValue/dist/defaultvalue-property-editor.element.js",
+      "elementName": "defaultvalue-property-editor",
+      "meta": {
+        "label": "Default Value",
+        "icon": "icon-info",
+        "group": "Common",
+        "propertyEditorSchemaAlias": "splatDev.DefaultValue",
+        "supportsReadOnly": true
+      }
     }
   ]
 }

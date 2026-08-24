@@ -3,9 +3,12 @@ import { defineConfig } from "vite";
 export default defineConfig({
   build: {
     lib: {
-      entry: "src/defaultvalue-dashboard.element.ts",
+      entry: {
+        "defaultvalue-dashboard.element": "src/defaultvalue-dashboard.element.ts",
+        "defaultvalue-property-editor.element": "src/defaultvalue-property-editor.element.ts",
+      },
       formats: ["es"],
-      fileName: () => "defaultvalue-dashboard.element.js",
+      fileName: (_f, name) => `${name}.js`,
     },
     outDir: "../App_Plugins/DefaultValue/dist",
     emptyOutDir: true,
