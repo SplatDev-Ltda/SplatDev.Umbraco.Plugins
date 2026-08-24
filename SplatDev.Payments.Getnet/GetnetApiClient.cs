@@ -262,9 +262,19 @@ public sealed class GetnetApiClient(
         }
     }
 
+    // Backslash and quote are not the only characters that have to be escaped: a control
+    // character in a seller id or order id passes through the manual pair untouched and
+    // produces a JSON document Getnet rejects. JavaScriptEncoder covers the whole set.
+    //
+    // The Default encoder rather than UnsafeRelaxedJsonEscaping. Both emit valid JSON and
+    // any conformant parser decodes them identically; Default also escapes the HTML-unsafe
+    // characters, which costs nothing here and means an id echoed back into a page later
+    // cannot carry markup with it.
+    //
+    // The real fix is to stop building these documents by concatenation and hand the
+    // payload to JsonSerializer. That is a larger change than this one.
     private static string EscapeJson(string value) =>
-        value.Replace("\\", "\\\\", StringComparison.Ordinal)
-             .Replace("\"", "\\\"", StringComparison.Ordinal);
+        System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(value);
 
     private sealed class TokenResponse
     {
