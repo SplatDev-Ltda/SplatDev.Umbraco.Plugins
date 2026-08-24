@@ -70,6 +70,13 @@ the first place. `tools/plan-unlist.py` builds the plan, refuses to plan anythin
 package whose shipped version is not on NuGet yet (unlisting the rest would leave it with
 nothing listed), and the workflow re-checks every entry against `<Version>` before acting.
 
+**Publish before unlisting, or the plan collapses.** That same guard means a release which
+bumps a lot of packages leaves their new versions unpublished, so the planner skips them:
+immediately after the v2.8.0 metadata bumps the plan fell from ~777 entries to 44, with 135
+packages skipped. Tag and publish first, then unlist. The run is batched — `batch_size`,
+`delay_seconds`, `batch_pause_seconds` — and reports a `start_at` offset so a partial run
+resumes rather than restarting.
+
 **Legacy Umbraco 8 versions can outrank the current package.** Several ids carry `8.18.x` builds whose version numbers sort *above* today's `2.x`/`3.x`, so NuGet resolves the v8 assembly as latest. This is not cosmetic: `Backups` served 8.18.7.2 over the 3.3.0 that added authorization to its anonymous `Restore` and `Delete` endpoints, making a published security fix unreachable. Unlist the legacy versions — `.github/workflows/unlist-legacy.yml`, manual dispatch — and check the *search* index, not the flat container, which lists unlisted versions too:
 `curl -s "https://azuresearch-usnc.nuget.org/query?q=packageid:<id>&prerelease=true"`.
 

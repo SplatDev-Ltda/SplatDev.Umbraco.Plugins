@@ -27,6 +27,26 @@ on:
         description: 'Type UNLIST to act (ignored when dry_run is true)'
         required: false
         default: ''
+      batch_size:
+        description: 'Versions per batch'
+        required: false
+        default: '25'
+      delay_seconds:
+        description: 'Pause between individual unlists'
+        required: false
+        default: '2'
+      batch_pause_seconds:
+        description: 'Pause between batches'
+        required: false
+        default: '30'
+      start_at:
+        description: 'Skip this many entries — use to resume a partial run'
+        required: false
+        default: '0'
+      max_batches:
+        description: 'Stop after this many batches (0 = all)'
+        required: false
+        default: '0'
 
 jobs:
   unlist:
@@ -81,22 +101,64 @@ jobs:
             echo "::error::NUGET_API_KEY is not set."; exit 1
           fi
 
-          OK=0; FAILED=0; FAILED_LIST=""
+          BATCH_SIZE=${{ inputs.batch_size }}
+          DELAY=${{ inputs.delay_seconds }}
+          BATCH_PAUSE=${{ inputs.batch_pause_seconds }}
+          START_AT=${{ inputs.start_at }}
+          MAX_BATCHES=${{ inputs.max_batches }}
+
+          TOTAL=$(wc -l < plan.txt)
+          echo "Plan holds $TOTAL version(s); starting at offset $START_AT,"
+          echo "in batches of $BATCH_SIZE with ${DELAY}s between calls and ${BATCH_PAUSE}s between batches."
+
+          OK=0; FAILED=0; DONE=0; BATCH=0; INDEX=0
+          FAILED_LIST=""
+
           while IFS= read -r entry; do
+            INDEX=$((INDEX+1))
+            # Resuming: everything before the offset was handled by an earlier run.
+            [ "$INDEX" -le "$START_AT" ] && continue
+
+            if [ $((DONE % BATCH_SIZE)) -eq 0 ]; then
+              if [ "$DONE" -gt 0 ]; then
+                echo "--- batch $BATCH done ($OK unlisted, $FAILED failed). Pausing ${BATCH_PAUSE}s."
+                sleep "$BATCH_PAUSE"
+              fi
+              BATCH=$((BATCH+1))
+              if [ "$MAX_BATCHES" -gt 0 ] && [ "$BATCH" -gt "$MAX_BATCHES" ]; then
+                echo "Reached max_batches ($MAX_BATCHES). Resume with start_at=$((INDEX-1))."
+                BATCH=$((BATCH-1))
+                break
+              fi
+              echo "=== batch $BATCH (entries $INDEX..) ==="
+            fi
+
             id="${entry%@*}"; version="${entry##*@}"
             if dotnet nuget delete "$id" "$version" \
                  --source https://api.nuget.org/v3/index.json \
-                 --api-key "$NUGET_API_KEY" --non-interactive; then
+                 --api-key "$NUGET_API_KEY" --non-interactive > /dev/null 2>&1; then
               OK=$((OK+1))
+              echo "  ok      $entry"
             else
               FAILED=$((FAILED+1)); FAILED_LIST="$FAILED_LIST $entry"
+              echo "  FAILED  $entry"
             fi
+            DONE=$((DONE+1))
+            sleep "$DELAY"
           done < plan.txt
 
           # Counting outcomes, not attempts. This workflow's predecessor reported
           # "Unlisted 17 version(s)" on a run where one came back 403 Forbidden.
+          echo ""
           echo "=== Summary ==="
-          echo "Unlisted: $OK"
+          echo "Batches run: $BATCH"
+          echo "Unlisted:    $OK"
+          echo "Failed:      $FAILED"
+          echo "Remaining:   $((TOTAL - START_AT - DONE))"
+          if [ $((TOTAL - START_AT - DONE)) -gt 0 ]; then
+            echo "Resume the rest with start_at=$((START_AT + DONE))."
+          fi
+
           if [ "$FAILED" -gt 0 ]; then
             echo "::error::Failed to unlist $FAILED version(s):$FAILED_LIST"
             echo ""
