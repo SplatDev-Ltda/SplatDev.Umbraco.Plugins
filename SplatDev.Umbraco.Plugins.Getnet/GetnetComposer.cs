@@ -44,7 +44,12 @@ public sealed class GetnetComposer : IComposer
         };
 
         builder.Services.AddSingleton(options);
-        builder.Services.AddScoped<GetnetApiClient>();
+        // Singleton, not scoped. The client caches its OAuth token behind a SemaphoreSlim
+        // in instance state; registered per-request that cache is discarded every request
+        // and every call re-authenticates. Its four dependencies — IHttpClientFactory, the
+        // options singleton registered just above, IHostEnvironment and ILogger — are all
+        // singletons themselves, so there is no captive dependency.
+        builder.Services.AddSingleton<GetnetApiClient>();
 
         builder.Services.AddHttpClient("Getnet", client =>
         {
