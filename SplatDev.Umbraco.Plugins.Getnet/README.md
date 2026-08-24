@@ -27,3 +27,14 @@ later only if a generic (non-domain) backoffice surface is desired.
 ## Architecture
 
 This is a **headless API plugin** — no standalone backoffice dashboard, property editors, or UI components. It operates as an API service (payment processing + webhooks), registered via DI composition. The backoffice/webhook management surface is intentionally left in the consuming application.
+
+## Changelog
+
+### 1.1.1 — 2026-08-24
+
+Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.
+
+### 1.1.0 — 2026-08-24
+
+This package now keeps a changelog. Earlier releases predate it and are not reconstructed here — consult the repository history for those. From this version on, every release records what changed for someone using it.
+

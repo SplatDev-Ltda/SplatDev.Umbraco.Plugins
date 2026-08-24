@@ -42,6 +42,10 @@ builder.CreateUmbracoBuilder()
 
 ## Changelog
 
+### 1.2.1 — 2026-08-24
+
+Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.
+
 ### 1.2.0 — 2026-08-23
 
 The property editor can now be used. Its manifest declared a property editor schema with no server-side editor behind it, so Umbraco refused to create a data type for it with "The targeted property editor was not found". It now stores its value with a schema the server actually provides.

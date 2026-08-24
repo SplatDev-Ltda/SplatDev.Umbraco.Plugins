@@ -5,15 +5,16 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>SplatDev.Messaging.Mailgun</PackageId>
-    <Version>1.0.0</Version>
-    <Authors>SplatDev-Ltda</Authors>
+    <Version>1.0.1</Version>
+    <Authors>SplatDev</Authors>
     <Company>SplatDev Ltda</Company>
     <Description>Mailgun email provider for SplatDev.Messaging. Uses HttpClient directly — no third-party Mailgun SDK required.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
     <PackageTags>mailgun email messaging splatdev</PackageTags>
   </PropertyGroup>
   <ItemGroup>
@@ -21,5 +22,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 </Project>

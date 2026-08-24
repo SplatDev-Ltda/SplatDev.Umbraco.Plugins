@@ -75,6 +75,10 @@ Supported notification types: `info`, `success`, `warning`, `error`.
 
 ## Changelog
 
+### 2.4.1 — 2026-08-24
+
+Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.
+
 ### 2.4.0 — 2026-08-23
 
 Fixes the notification tables on SQLite. The plugin asked for a default database schema unconditionally; SQLite has none, so EF folded the request into the table name and every read went to an object the migration never created.

@@ -59,6 +59,17 @@ Spins up Umbraco 13 (`:5001`) and Umbraco 17 (`:5000`) baselines plus a Playwrig
 
 **A publishable plugin must be in `SplatDev.Core.sln`, or it is silently dropped from every release.** `publish.yml` restores the solution *once* and then builds each plugin with `--no-restore`, so a project outside the solution has no assets file, fails instantly, and is skipped with a `::warning::` that nothing surfaces. Getnet and Santander sat outside it and went unpublished for an unknown number of tags — Santander's API-key hardening was stuck at 1.1.6 on NuGet while the repo said 1.3.0. Both are now in the solution. `tools/check-solution-membership.sh` guards this and must search at the same depth `publish.yml` discovers at — it used `-maxdepth 2` against the publisher's `-maxdepth 3`, so nested plugins under `SplatDev.Umbraco.Plugins.Yaml/` were invisible to the guard while still being built, and Schema2Yaml was dropped from v2.1.5 exactly that way. (This paragraph used to say CI builds per-project *without* `--no-restore`, which stopped being true and is exactly how the gap survived.) `SplatDev.Publishable.slnf` is the publishable subset; `SplatDev.Core.slnx` is the newer solution format kept alongside the `.sln`.
 
+**Only one version of each package should be listed, and it is not the highest one.**
+`.github/workflows/unlist-old-versions.yml` keeps the version this repo ships and unlists
+the rest, taking the keeper from each project's `<Version>` rather than by sorting the
+published list — because for three ids the highest published version is the Umbraco 8
+build (`Backups` 8.18.7.2 over 3.3.2, `CopyValue` 8.18.8.1 over 2.4.0, `DefaultValue`
+8.18.7.1 over 2.3.0). A "keep the latest" rule would unlist the current release and keep
+the Umbraco 8 one, which is the failure that made a published security fix unreachable in
+the first place. `tools/plan-unlist.py` builds the plan, refuses to plan anything for a
+package whose shipped version is not on NuGet yet (unlisting the rest would leave it with
+nothing listed), and the workflow re-checks every entry against `<Version>` before acting.
+
 **Legacy Umbraco 8 versions can outrank the current package.** Several ids carry `8.18.x` builds whose version numbers sort *above* today's `2.x`/`3.x`, so NuGet resolves the v8 assembly as latest. This is not cosmetic: `Backups` served 8.18.7.2 over the 3.3.0 that added authorization to its anonymous `Restore` and `Delete` endpoints, making a published security fix unreachable. Unlist the legacy versions — `.github/workflows/unlist-legacy.yml`, manual dispatch — and check the *search* index, not the flat container, which lists unlisted versions too:
 `curl -s "https://azuresearch-usnc.nuget.org/query?q=packageid:<id>&prerelease=true"`.
 

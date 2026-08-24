@@ -9,7 +9,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>SplatDev.Umbraco.Plugins.2fa</PackageId>
-    <Version>3.2.0</Version>
+    <Version>3.2.1</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <Authors>SplatDev</Authors>
@@ -17,8 +17,8 @@
     <PackageTags>umbraco umbraco-marketplace 2fa totp two-factor-authentication</PackageTags>
     <Company>SplatDev Ltda</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 

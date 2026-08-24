@@ -178,6 +178,10 @@ Issues and PRs welcome at [github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins](ht
 
 ## Changelog
 
+### 3.3.3 — 2026-08-24
+
+Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.
+
 ### 3.3.2 — 2026-08-22
 - Encrypting a backup no longer leaves the unencrypted copy next to it. The engine wrote the archive but kept the plain `.json` it had wrapped, so the content the key was meant to protect sat in the same folder in the clear.
 - Compressing or encrypting also no longer leaves that `.json` behind as dead weight, which had doubled the disk every backup cost.

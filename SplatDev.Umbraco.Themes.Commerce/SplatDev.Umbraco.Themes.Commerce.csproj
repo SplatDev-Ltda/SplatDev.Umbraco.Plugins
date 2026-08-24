@@ -6,20 +6,21 @@
     <Nullable>enable</Nullable>
     <PackageId>SplatDev.Umbraco.Themes.Commerce</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.0.3</Version>
+    <Version>1.0.4</Version>
     <Authors>SplatDev</Authors>
     <Description>E-commerce theme for Umbraco - product grid, product detail, cart, checkout, category browse</Description>
     <PackageTags>umbraco umbraco-marketplace theme commerce ecommerce</PackageTags>
     <Company>SplatDev Ltda</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="icon.png" Pack="true" PackagePath="\" />
     <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="umbraco-marketplace.json" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>

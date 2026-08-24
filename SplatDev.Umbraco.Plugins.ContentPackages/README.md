@@ -114,6 +114,16 @@ Leads and download hits live in a SQLite sidecar at `umbraco/Data/contentpackage
 created at startup. The Umbraco database is never touched. Override with
 `ConnectionStrings:ContentPackagesDb`.
 
+## Changelog
+
+### 0.1.1 — 2026-08-24
+
+Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.
+
+### 0.1.0 — 2026-08-24
+
+This package now keeps a changelog. Earlier releases predate it and are not reconstructed here — consult the repository history for those. From this version on, every release records what changed for someone using it.
+
 ## License
 
 MIT © [SplatDev](https://github.com/SplatDev-Ltda)

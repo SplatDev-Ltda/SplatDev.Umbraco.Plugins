@@ -57,6 +57,10 @@ Access the Schema2Yaml dashboard from the Umbraco Settings section. Select the e
 
 ## Changelog
 
+### 2.1.1 — 2026-08-24
+
+Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.
+
 ### 2.1.0 — 2026-08-23
 
 Fixes the Umbraco Marketplace listing, which pointed its screenshot at a different repository and returned 404 — so the entry showed a broken image.

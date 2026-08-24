@@ -8,20 +8,21 @@
     <PackageId>SplatDev.Umbraco.Plugins.ContentPackages</PackageId>
     <Product>SplatDev.Umbraco.Plugins.ContentPackages</Product>
     <Title>SplatDev.Umbraco.Plugins.ContentPackages</Title>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <!-- Skeleton only. CI packs and pushes every SplatDev.Umbraco.Plugins.* on a v* tag,
          so this stays unpackable until the phases in PLAN.md are done. It still builds in
          CI, which is the point — regressions get caught without publishing a half-finished
          package to NuGet. Flip to true at Phase 8. -->
     <IsPackable>false</IsPackable>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
     <Authors>SplatDev</Authors>
     <Description>Gated content packages for Umbraco — a newsletter signup unlocks HTML, PDF, PPTX and LLM-ready Markdown behind signed, expiring links. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).</Description>
     <PackageTags>umbraco umbraco-marketplace newsletter lead-magnet gated-content downloads</PackageTags>
     <Company>SplatDev Ltda</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
@@ -60,6 +61,8 @@
 
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="umbraco-marketplace.json" Pack="true" PackagePath="\" />
+    <None Include="icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <!-- Pack backoffice assets at their App_Plugins paths; embedded resources alone are not deployed by PackageReference. -->

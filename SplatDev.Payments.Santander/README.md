@@ -32,3 +32,14 @@ mTLS as well.
 - Pix QR Code: host `trust-pix.santander.com.br`, `PUT /api/v1/cob/{txid}`
 
 Each product is homologated individually with Santander.
+
+## Changelog
+
+### 1.0.2 — 2026-08-24
+
+Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.
+
+### 1.0.1 — 2026-08-24
+
+This package now keeps a changelog. Earlier releases predate it and are not reconstructed here — consult the repository history for those. From this version on, every release records what changed for someone using it.
+

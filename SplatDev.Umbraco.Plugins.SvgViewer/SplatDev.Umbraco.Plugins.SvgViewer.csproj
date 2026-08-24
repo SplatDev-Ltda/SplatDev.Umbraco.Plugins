@@ -9,7 +9,7 @@
     <AssemblyName>SplatDev.Umbraco.Plugins.SvgViewer</AssemblyName>
     <RootNamespace>SplatDev.Umbraco.Plugins.SvgViewer</RootNamespace>
     <PackageId>SplatDev.Umbraco.Plugins.SvgViewer</PackageId>
-    <Version>1.2.0</Version>
+    <Version>1.2.1</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <Authors>SplatDev</Authors>
@@ -17,8 +17,8 @@
     <Description>SVG file viewer plugin for Umbraco — renders inline SVG files from the Umbraco media library safely.</Description>
     <PackageTags>umbraco;umbraco-marketplace;plugin;splatdev</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 

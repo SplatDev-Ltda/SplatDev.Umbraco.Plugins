@@ -5,15 +5,15 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <PackageId>SplatDev.Umbraco.Themes.Landing</PackageId>
-    <Version>1.0.3</Version>
+    <Version>1.0.4</Version>
     <Authors>SplatDev</Authors>
     <Company>SplatDev</Company>
     <Copyright>Copyright © 2026 SplatDev</Copyright>
     <Description>Landing page theme for Umbraco - hero section, features grid, testimonials, pricing cards, FAQ accordion, CTA banner</Description>
     <PackageTags>umbraco umbraco-marketplace theme landing landing-page</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/SplatDev-Ltda/umbraco-themes</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/SplatDev-Ltda/umbraco-themes</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/splatdevtech/umbraco-themes</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/splatdevtech/umbraco-themes</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
@@ -38,6 +38,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Config\umbraco.yml" />
     <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="umbraco-marketplace.json" Pack="true" PackagePath="\" />
     <None Include="icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
   <ItemGroup>

@@ -125,3 +125,13 @@ wa-*.png
 # disk. A trailing-slash pattern does not match a symlink, so 59 of them were tracked as
 # links into an absolute path on one developer machine.
 **/client/node_modules
+
+# The Umbraco 17 baseline is a local test site: its database, generated Views, config and
+# umbraco/ runtime folder are per-machine state, not source. `git add -A` swept its live
+# SQLite files into a commit once; these keep that from repeating.
+test-environments/*/umbraco/
+test-environments/*/Views/
+test-environments/*/config/
+test-environments/**/*.sqlite.db
+test-environments/**/*.db-shm
+test-environments/**/*.db-wal

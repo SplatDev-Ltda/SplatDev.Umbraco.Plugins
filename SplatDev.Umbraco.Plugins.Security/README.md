@@ -71,6 +71,16 @@ Add to `appsettings.json`:
 - Uses both `NWebsec.AspNetCore.Middleware` and `Joonasw.SecurityHeaders` for different headers, which is a maintenance concern
 - Windows Data Protection key path is hardcoded to `C:\temp`
 
+## Changelog
+
+### 2.0.3 — 2026-08-24
+
+Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.
+
+### 2.0.2 — 2026-08-24
+
+This package now keeps a changelog. Earlier releases predate it and are not reconstructed here — consult the repository history for those. From this version on, every release records what changed for someone using it.
+
 ## License
 
 MIT © [SplatDev](https://github.com/SplatDev-Ltda)

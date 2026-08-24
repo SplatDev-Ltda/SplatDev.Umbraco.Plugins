@@ -73,6 +73,10 @@ The build output is placed at `App_Plugins/JsonRpc/dist/jsonrpc-dashboard.elemen
 
 ## Changelog
 
+### 2.2.3 — 2026-08-24
+
+Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.
+
 ### 2.2.2 — 2026-08-21
 - API keys can be managed from the dashboard — list, create and revoke. It previously made no requests at all.
 - A newly created key is returned as its own result with a rawKey field, shown once. It used to be smuggled back inside the entity's Name as "name||RAW:key", which every caller had to parse and which was one accidental re-save away from writing a live key into the database in plain text.

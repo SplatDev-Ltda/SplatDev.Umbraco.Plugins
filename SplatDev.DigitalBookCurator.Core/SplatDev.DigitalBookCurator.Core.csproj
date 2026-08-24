@@ -6,10 +6,12 @@
     <Nullable>enable</Nullable>
     <PackageId>SplatDev.DigitalBookCurator.Core</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.0.0</Version>
+    <PackageIcon>icon.png</PackageIcon>
+    <Version>1.0.1</Version>
     <Authors>SplatDev</Authors>
     <Company>SplatDev Ltda</Company>
     <Description>Core library for the Digital Book Curator - PDF/eBook management with EF Core persistence</Description>
+    <PackageTags>splatdev pdf ebook library dotnet</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
@@ -23,6 +25,7 @@
 
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

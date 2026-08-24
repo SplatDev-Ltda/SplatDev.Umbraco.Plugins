@@ -65,6 +65,10 @@ The build output is placed at `App_Plugins/Exif/dist/exif-dashboard.element.js` 
 
 ## Changelog
 
+### 1.2.4 — 2026-08-24
+
+Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.
+
 ### 1.2.3 — 2026-08-22
 - You pick the image from the media library instead of pasting a GUID. The field asked for a media key, which the backoffice never shows you. The picker is filtered to images, since EXIF is image metadata.
 - Reading by file path is now confined to the site. The path came from the query string and was passed straight to the file system, so a signed-in backoffice user could name anything the site process could reach — another site's media on a shared host, a backup directory — and learn from the response whether it existed. Reads are now limited to the site's own web and content roots, with `..` resolved before the check rather than after.

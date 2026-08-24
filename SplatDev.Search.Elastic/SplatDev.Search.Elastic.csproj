@@ -6,15 +6,16 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>SplatDev.Search.Elastic</PackageId>
-    <Version>1.0.0</Version>
-    <Authors>SplatDev-Ltda</Authors>
+    <Version>1.0.1</Version>
+    <Authors>SplatDev</Authors>
     <Company>SplatDev Ltda</Company>
     <Description>Elasticsearch 8+ adapter for SplatDev.Search abstractions. Full-text search, aggregations, filtering, and sorting via the official Elastic.Clients.Elasticsearch SDK.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
     <PackageTags>search elasticsearch fulltext indexing splatdev</PackageTags>
   </PropertyGroup>
 
@@ -28,6 +29,7 @@
 
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

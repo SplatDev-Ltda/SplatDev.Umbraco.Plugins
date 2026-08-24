@@ -86,6 +86,10 @@ Authentication happens via browser redirects — the OAuth flow is handled by AS
 
 ## Changelog
 
+### 2.2.1 — 2026-08-24
+
+Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.
+
 ### 2.2.0 — 2026-08-23
 
 Rebuilds the backoffice bundle so the shipped JavaScript matches the source it is built from.

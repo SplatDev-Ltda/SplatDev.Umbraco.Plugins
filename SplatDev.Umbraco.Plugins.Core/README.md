@@ -36,3 +36,14 @@ This is a **headless library** — no backoffice dashboard, property editors, or
 ## Architecture
 
 This is a **headless library** — no backoffice dashboard, property editors, or UI components. It operates purely as a shared constants/helpers package registered via DI composition.
+
+## Changelog
+
+### 2.0.3 — 2026-08-24
+
+Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.
+
+### 2.0.2 — 2026-08-24
+
+This package now keeps a changelog. Earlier releases predate it and are not reconstructed here — consult the repository history for those. From this version on, every release records what changed for someone using it.
+

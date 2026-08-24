@@ -71,6 +71,10 @@ The dashboard provides a UI for browsing indexes, running searches, and triggeri
 
 ## Changelog
 
+### 1.2.3 — 2026-08-24
+
+Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.
+
 ### 1.2.2 — 2026-08-21
 - Dashboard now sends the backoffice token with its API calls. On Umbraco 17 those calls were arriving unauthenticated and coming back 401, which the dashboard rendered as an empty state rather than an error.
 - A failed request now raises a notification instead of leaving the dashboard looking like there is simply no data.

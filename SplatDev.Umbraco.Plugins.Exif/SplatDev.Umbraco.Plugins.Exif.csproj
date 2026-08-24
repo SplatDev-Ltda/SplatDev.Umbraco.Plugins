@@ -9,7 +9,7 @@
     <AssemblyName>SplatDev.Umbraco.Plugins.Exif</AssemblyName>
     <RootNamespace>SplatDev.Umbraco.Plugins.Exif</RootNamespace>
     <PackageId>SplatDev.Umbraco.Plugins.Exif</PackageId>
-    <Version>1.2.3</Version>
+    <Version>1.2.4</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <Authors>SplatDev</Authors>
@@ -17,8 +17,8 @@
     <Description>EXIF metadata extractor for Umbraco media — reads camera, GPS, and image EXIF data using MetadataExtractor. Supports Umbraco 13 (net8.0) with AngularJS dashboard and Umbraco 17 (net10.0) with Bellissima Lit dashboard.</Description>
     <PackageTags>umbraco;umbraco-marketplace;plugin;splatdev</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 

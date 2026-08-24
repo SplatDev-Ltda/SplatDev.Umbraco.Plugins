@@ -6,14 +6,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>SplatDev.Umbraco.Plugins.Backups</PackageId>
-    <Version>3.3.2</Version>
+    <Version>3.3.3</Version>
     <Authors>SplatDev</Authors>
     <Description>Backup plugin for Umbraco — create and manage backups from the backoffice. Supports cloud storage providers: Azure Blob, Google Drive, Dropbox, Box, OneDrive, Mega, Seafile, Amazon S3, SFTP, and local file system. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).</Description>
     <PackageTags>umbraco umbraco-marketplace backup restore export cloud-storage azure-blob s3 dropbox sftp</PackageTags>
     <Company>SplatDev Ltda</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>

@@ -36,6 +36,10 @@ This package configures presentation data only. It does not connect accounts, pu
 
 ## Changelog
 
+### 1.1.3 — 2026-08-24
+
+Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.
+
 ### 1.1.2 — 2026-08-23
 
 Corrects the note below. The 1.1.1 entry said NuGet never published 1.1.0. It did — it
