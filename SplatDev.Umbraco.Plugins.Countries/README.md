@@ -27,15 +27,7 @@ dotnet add package SplatDev.Umbraco.Plugins.Countries
 
 ## Quick Start
 
-Register in `Program.cs`:
-
-```csharp
-builder.CreateUmbracoBuilder()
-    .AddBackOffice()
-    .AddWebsite()
-    .AddCountries()   // <-- add this
-    .Build();
-```
+No registration call is needed. The package ships Umbraco composers, so the `AddComposers()` already in the default `Program.cs` picks the plugin up as soon as the package is referenced.
 
 On first startup, the plugin runs an Umbraco migration that creates the `countries` table and bulk-inserts country data from a CSV file.
 

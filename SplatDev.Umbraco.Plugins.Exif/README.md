@@ -26,15 +26,7 @@ dotnet add package SplatDev.Umbraco.Plugins.Exif
 
 ## Quick Start
 
-Register in `Program.cs`:
-
-```csharp
-builder.CreateUmbracoBuilder()
-    .AddBackOffice()
-    .AddWebsite()
-    .AddExif()   // <-- add this
-    .Build();
-```
+No registration call is needed. The package ships Umbraco composers, so the `AddComposers()` already in the default `Program.cs` picks the plugin up as soon as the package is referenced.
 
 The EXIF Viewer dashboard appears under the **Settings** section in the Umbraco backoffice. You can look up EXIF metadata by:
 
