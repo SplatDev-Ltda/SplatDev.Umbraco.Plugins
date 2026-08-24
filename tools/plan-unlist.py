@@ -15,9 +15,13 @@ import gzip, json, os, re, subprocess, sys, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Ids with no Umbraco 13/17 release. Every version goes.
+# Ids with no Umbraco 13/17 release at all, where every version goes.
+#
+# AdPreview was on this list and has been removed: it had no project when the list was
+# written, and now has one — 1.0.0 shipped in v2.9.0. Leaving it here would have unlisted
+# the release we had just published, because a delist-entirely entry ignores the shipped
+# version by design. An id belongs here only while nothing in the repo builds it.
 DELIST_ENTIRELY = [
-    "SplatDev.Umbraco.Plugins.AdPreview",
     "SplatDev.Umbraco.Plugins.HideContent",
 ]
 
