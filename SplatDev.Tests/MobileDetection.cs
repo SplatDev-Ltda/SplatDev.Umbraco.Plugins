@@ -16,7 +16,8 @@ namespace SplatDev.Tests
     using System.Text;
 
     //borrowed from https://mahmutcanga.com/2019/12/13/unit-testing-httprequest-in-c/
-    [Trait("Category", "Integration")]
+    // No Integration trait: this builds an HttpRequest in memory and reads the device
+    // list off disk. Nothing here reaches the network, and the trait kept it out of CI.
     public class MobileDetectionTests : IDisposable
     {
         private MemoryStream _memoryStream;

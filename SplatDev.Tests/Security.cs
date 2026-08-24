@@ -14,7 +14,10 @@ namespace SplatDev.Tests
 
     using Xunit;
 
-    [Trait("Category", "Integration")]
+    // No Integration trait: these three no longer call CheckPhish, Google Safe Browsing
+    // or IPQualityScore. Each supplies a mocked HttpMessageHandler and asserts on a canned
+    // response, so they are ordinary unit tests — and CI filters Category=Integration out,
+    // which meant they had stopped running anywhere.
     public class Security
     {
         [Fact]
