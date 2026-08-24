@@ -42,6 +42,11 @@ project.fragment.lock.json
 # (its icon.png needed -f). Keep the project tracked.
 !/SplatDev.Cache/
 !/SplatDev.Cache/**
+# ...but not its build output. The two lines above re-include everything under that
+# project, which defeated the bin/ and obj/ rules above and let `git add -A` commit 77
+# build artefacts.
+/SplatDev.Cache/**/bin/
+/SplatDev.Cache/**/obj/
 *.log
 *.tmp
 *.tmp_proj
