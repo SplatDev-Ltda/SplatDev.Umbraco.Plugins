@@ -47,6 +47,14 @@ on:
         description: 'Stop after this many batches (0 = all)'
         required: false
         default: '0'
+      max_entries:
+        description: 'Stop after this many entries. NuGet throttles a key at roughly 240 unlists, so a larger run cannot finish (0 = no cap)'
+        required: false
+        default: '200'
+      abort_after_consecutive_failures:
+        description: 'Stop the run once this many entries fail in a row — past that point the key is throttled and the rest will fail too (0 = never)'
+        required: false
+        default: '8'
 
 # Authenticates to NuGet with NUGET_API_KEY; the repository token needs nothing else.
 permissions:
@@ -110,12 +118,19 @@ jobs:
           BATCH_PAUSE=${{ inputs.batch_pause_seconds }}
           START_AT=${{ inputs.start_at }}
           MAX_BATCHES=${{ inputs.max_batches }}
+          MAX_ENTRIES=${{ inputs.max_entries }}
+          ABORT_STREAK=${{ inputs.abort_after_consecutive_failures }}
+
+          # Ids that have unlisted at least once in this run, so a later 403 on one of them
+          # is throttling rather than the key not owning the package.
+          PROVEN_OWNED=$(mktemp)
 
           TOTAL=$(wc -l < plan.txt)
           echo "Plan holds $TOTAL version(s); starting at offset $START_AT,"
           echo "in batches of $BATCH_SIZE with ${DELAY}s between calls and ${BATCH_PAUSE}s between batches."
 
           OK=0; FAILED=0; DONE=0; BATCH=0; INDEX=0
+          STREAK=0; ABORTED=0
           FAILED_LIST=""
 
           while IFS= read -r entry; do
@@ -139,11 +154,19 @@ jobs:
 
             id="${entry%@*}"; version="${entry##*@}"
 
-            # Retry with backoff. NuGet rate-limits a long run: the first attempt at this
-            # left 571 unlisted and 323 "failed" after roughly 250 consecutive successes,
-            # which is throttling rather than anything wrong with those packages. Output is
-            # captured rather than discarded — the first run sent it to /dev/null, so the
-            # reason for every one of those failures was unrecoverable.
+            # Retry with backoff.
+            #
+            # A 403 used to break out immediately, on the reasoning that it means the
+            # package is owned by another account and will never succeed. That is true of
+            # an ownership 403 and false of a throttling one, and NuGet returns 403 for
+            # both. Run 2 unlisted 240 entries without a single failure and then failed
+            # 130 in a row; exactly one retry fired in the whole run, because every one of
+            # those failures took the 403 break. The retry existed and could not run.
+            #
+            # An id that has already unlisted successfully in this run is proven to be
+            # owned by this key, so a later 403 on it is throttling and is retried. An id
+            # that has never succeeded keeps the old behaviour, because for that one the
+            # ownership reading is still live.
             ATTEMPT=0; DONE_ONE=0; LAST=""
             while [ "$ATTEMPT" -lt 4 ]; do
               ATTEMPT=$((ATTEMPT+1))
@@ -152,22 +175,52 @@ jobs:
                    --api-key "$NUGET_API_KEY" --non-interactive 2>&1); then
                 DONE_ONE=1; break
               fi
-              # A 403 is a permission or ownership problem and will never succeed; retrying
-              # it just burns the rate limit that the transient failures need.
-              if printf '%s' "$LAST" | grep -qiE "forbidden|403"; then break; fi
+              if printf '%s' "$LAST" | grep -qiE "forbidden|403"; then
+                if ! grep -qxF "$id" "$PROVEN_OWNED"; then
+                  echo "  403     $entry — no version of this id has unlisted in this run; treating as ownership, not retrying"
+                  break
+                fi
+                echo "  403     $entry — this id has unlisted before in this run, so this is throttling; retrying"
+              fi
               BACKOFF=$((ATTEMPT * ATTEMPT * 5))
               echo "  retry   $entry (attempt $ATTEMPT, waiting ${BACKOFF}s)"
               sleep "$BACKOFF"
             done
 
             if [ "$DONE_ONE" -eq 1 ]; then
-              OK=$((OK+1))
+              OK=$((OK+1)); STREAK=0
+              grep -qxF "$id" "$PROVEN_OWNED" || echo "$id" >> "$PROVEN_OWNED"
               echo "  ok      $entry"
             else
-              FAILED=$((FAILED+1)); FAILED_LIST="$FAILED_LIST $entry"
-              echo "  FAILED  $entry — $(printf '%s' "$LAST" | tr '\n' ' ' | cut -c1-160)"
+              FAILED=$((FAILED+1)); STREAK=$((STREAK+1)); FAILED_LIST="$FAILED_LIST $entry"
+              # dotnet nuget delete opens with a warn : line naming the package and the
+              # endpoint, which is 120-odd characters of nothing before the status code.
+              # Truncating from the front threw the reason away on every failure of run 2.
+              REASON=$(printf '%s' "$LAST" \
+                | grep -iE "error|forbidden|unauthorized|too many|throttl|timed out|[0-9]{3} \(" \
+                | tr '\n' ' ' | sed -E 's/[[:space:]]+/ /g' | cut -c1-300)
+              [ -n "$REASON" ] || REASON=$(printf '%s' "$LAST" | tr '\n' ' ' | sed -E 's/[[:space:]]+/ /g' | tail -c 300)
+              echo "  FAILED  $entry — $REASON"
             fi
             DONE=$((DONE+1))
+
+            # Once the key is throttled every remaining call fails, so a long run turns
+            # into a long list of failures that says nothing. Run 2 recorded 130 of them.
+            # Stop instead, and report where to resume.
+            if [ "$ABORT_STREAK" -gt 0 ] && [ "$STREAK" -ge "$ABORT_STREAK" ]; then
+              echo ""
+              echo "$STREAK entries failed in a row — stopping rather than working through the rest."
+              echo "This is what a throttled key looks like: it is not specific to these packages."
+              ABORTED=1
+              break
+            fi
+
+            if [ "$MAX_ENTRIES" -gt 0 ] && [ "$DONE" -ge "$MAX_ENTRIES" ]; then
+              echo ""
+              echo "Reached max_entries ($MAX_ENTRIES)."
+              break
+            fi
+
             sleep "$DELAY"
           done < plan.txt
 
@@ -183,12 +236,26 @@ jobs:
             echo "Resume the rest with start_at=$((START_AT + DONE))."
           fi
 
+          if [ "$ABORTED" -eq 1 ]; then
+            echo ""
+            echo "::error::Stopped after $STREAK consecutive failures. Unlisted $OK before that."
+            echo "Resume with start_at=$((START_AT + DONE)) once the rate limit has reset."
+            echo "Observed ceiling is roughly 240 unlists per key per run, so keep max_entries under it."
+            exit 1
+          fi
+
           if [ "$FAILED" -gt 0 ]; then
             echo "::error::Failed to unlist $FAILED version(s):$FAILED_LIST"
             echo ""
-            echo "A 403 here almost always means the package is owned by a different"
-            echo "nuget.org account than the one the api key was issued under. A key is"
-            echo "scoped to a single package owner, and no glob widens that. Check with:"
+            echo "Two different things return 403 here and they need different responses."
+            echo ""
+            echo "Throttling: a long run stops succeeding partway through and everything"
+            echo "after fails. Run 2 unlisted 240 without a failure and then failed 130 in"
+            echo "a row. Wait, then resume with start_at=$((START_AT + DONE))."
+            echo ""
+            echo "Ownership: a key is scoped to one nuget.org package owner, and no glob"
+            echo "widens that. Failures from the very first attempt, on ids that never"
+            echo "succeed, are this. Check with:"
             echo "  curl -s \"https://azuresearch-usnc.nuget.org/query?q=packageid:<id>\" | jq '.data[0].owners'"
             exit 1
           fi

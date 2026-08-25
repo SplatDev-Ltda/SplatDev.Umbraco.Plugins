@@ -87,6 +87,26 @@ transient throttle was recorded as permanent. Both are fixed — four attempts w
 backoff, 403 breaking out immediately since a permission problem never succeeds, and the
 failure line now carries the message.
 
+The second run pinned the shape down: 240 unlisted with **zero** failures, then 130
+consecutive failures and nothing after. Same cliff as run 1, which managed roughly 250.
+It is a ceiling of about 240 operations per key per run, not random loss, so a plan larger
+than that cannot finish however gently it is paced — cap the run (`max_entries`, default
+200) and resume with `start_at`.
+
+The retry added after run 1 fired exactly **once** across those 130 failures. NuGet answers
+403 for a throttled key as well as an unowned one, and the "403 is ownership, never retry"
+rule — correct for `SplatDevUmbracoPluginBackup` — made every throttled call give up
+instantly. The two are now told apart by evidence: an id that has already unlisted
+successfully in this run is proven owned, so a later 403 on it is throttling and is
+retried; an id that has never succeeded keeps the immediate break. The run also stops after
+8 consecutive failures instead of grinding through the remainder, and reports the
+`start_at` to resume from.
+
+The failure line was truncated to 160 characters from the front, and `dotnet nuget delete`
+opens with a `warn : Deleting <id> <version> from …` line — so the cut landed before the
+status code and run 2's 130 failures recorded no reason at all, again. It now selects the
+line carrying the status.
+
 `tools/plan-unlist.py` also reads the **registration** index rather than the flat container,
 because the flat container lists unlisted versions too — planning from it re-attempts
 everything a previous run already unlisted, which is exactly the work a rate-limited retry
