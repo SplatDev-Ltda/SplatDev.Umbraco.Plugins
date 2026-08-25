@@ -12,8 +12,8 @@ Pure payment abstractions for .NET — defines interfaces for payments, transact
 
 | .NET | Umbraco | Package Version |
 |------|---------|-----------------|
-| 8.0  | 13      | 1.0.2           |
-| 10.0 | 17      | 1.0.2           |
+| 8.0  | 13      | 1.0.3           |
+| 10.0 | 17      | 1.0.3           |
 
 ## Installation
 
@@ -23,150 +23,81 @@ dotnet add package SplatDev.Payments
 
 ## Abstractions
 
-### IPayment — Base payment interface
+Two interfaces with the same name and very different jobs, which is the first thing to get
+straight:
+
+| | |
+| --- | --- |
+| `IPayment` | a **payment**, as data. Four properties, no methods. |
+| `IPayment<T>` | a **provider**, as operations. Four async methods, returning `T`. |
+
+A provider implements the generic one and takes the non-generic one as its input.
+
+### IPayment — the payment itself
 
 ```csharp
 using SplatDev.Payments.Interfaces;
 
-public class MyPaymentProvider : IPayment
+public sealed class MyPayment : IPayment
 {
-    public async Task<PaymentResult> CreatePaymentRequestAsync(
-        IPayer payer,
-        decimal amount,
-        string currency,
-        CancellationToken ct = default)
-    {
-        // Implement payment creation
-    }
-
-    public async Task<Transaction> GetTransactionAsync(
-        string transactionId,
-        CancellationToken ct = default)
-    {
-        // Implement transaction retrieval
-    }
-
-    public async Task<Transaction> ConfirmTransationAsync(
-        string transactionId,
-        CancellationToken ct = default)
-    {
-        // Implement transaction confirmation
-    }
+    public IPaymentMethod Details { get; set; } = default!;
+    public string PaymentMethodId { get; set; } = string.Empty;
+    public decimal? TransactionAmount { get; set; }
+    public string Description { get; set; } = string.Empty;
 }
 ```
 
-### IPayment<T> — Generic payment interface
+### IPayment&lt;T&gt; — the provider
+
+`T` is whatever your provider's API hands back — a response DTO, a string, a status object.
+The interface does not prescribe it.
 
 ```csharp
 using SplatDev.Payments.Interfaces;
 
-// Typed payment with provider-specific configuration
-public class StripePayment : IPayment<StripeConfig>
+public sealed class MyProvider : IPayment<MyApiResponse>
 {
-    private readonly StripeConfig _config;
+    public Task<MyApiResponse> CreatePaymentRequestAsync(IPayment model) { ... }
 
-    public StripePayment(StripeConfig config)
-    {
-        _config = config;
-    }
+    public Task<MyApiResponse> GetPaymentCodeAsync(IPayment model, string contentType) { ... }
 
-    public async Task<PaymentResult> CreatePaymentRequestAsync(
-        IPayer payer,
-        decimal amount,
-        string currency,
-        CancellationToken ct = default)
-    {
-        // Use _config.ApiKey, _config.WebhookSecret, etc.
-    }
+    public Task<MyApiResponse> GetTransactionAsync(string notificationCode, string receiver, string token) { ... }
 
-    // ... other IPayment members
-}
-```
-
-## Usage
-
-### Implement a custom payment provider
-
-```csharp
-using SplatDev.Payments;
-using SplatDev.Payments.Interfaces;
-
-public class CustomProvider : IPayment
-{
-    public async Task<PaymentResult> CreatePaymentRequestAsync(
-        IPayer payer,
-        decimal amount,
-        string currency,
-        CancellationToken ct = default)
-    {
-        // Call the provider's API
-        var response = await _httpClient.PostAsync(...);
-
-        return new PaymentResult
-        {
-            Success = true,
-            TransactionId = response.TransactionId,
-            Status = PaymentStatus.Pending,
-            RedirectUrl = response.CheckoutUrl
-        };
-    }
-
-    public async Task<Transaction> GetTransactionAsync(
-        string transactionId,
-        CancellationToken ct = default)
-    {
-        // Query transaction status
-    }
-
-    public async Task<Transaction> ConfirmTransationAsync(
-        string transactionId,
-        CancellationToken ct = default)
-    {
-        // Confirm/capture the transaction
-    }
+    // Note the spelling: ConfirmTransationAsync. It is a typo in the shipped interface and
+    // renaming it would break every implementation, so it stays.
+    public Task<bool> ConfirmTransationAsync(string transaction, string referenceCode, string receiver, string token) { ... }
 }
 ```
 
 ### Register in DI
 
 ```csharp
-// Program.cs
-builder.Services.AddScoped<IPayment, CustomProvider>();
+builder.Services.AddScoped<IPayment<MyApiResponse>, MyProvider>();
+```
 
-// Inject into a controller
-public class CheckoutController : Controller
+Inject the closed generic — `IPayment<MyApiResponse>` — not `IPayment`, which is a model
+rather than a service.
+
+## The supporting interfaces
+
+`ICard` is the only one with members:
+
+```csharp
+public interface ICard
 {
-    private readonly IPayment _payment;
-
-    public CheckoutController(IPayment payment)
-    {
-        _payment = payment;
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Pay([FromBody] CheckoutRequest request)
-    {
-        var payer = new Payer
-        {
-            Name = request.CustomerName,
-            Email = request.CustomerEmail,
-            Card = new Card
-            {
-                Number = request.CardNumber,
-                ExpirationMonth = request.ExpMonth,
-                ExpirationYear = request.ExpYear
-            }
-        };
-
-        var result = await _payment.CreatePaymentRequestAsync(
-            payer, request.Amount, request.Currency);
-
-        return result.Success
-            ? Redirect(result.RedirectUrl!)
-            : BadRequest(result.ErrorMessage);
-    }
+    string FirstSixDigits { get; set; }
+    string LastFourDigits { get; set; }
+    int ExpirationMonth { get; set; }
+    int ExpirationYear { get; set; }
+    string Status { get; set; }
+    DateTime DateCreated { get; set; }
+    DateTime DateLastUpdated { get; set; }
 }
 ```
+
+`IOrder`, `IPayer`, `IPaymentMethod`, `IShipment` and `ISubscription` are **marker
+interfaces** — declared empty, so a provider shapes those types however its API needs. This
+package deliberately says nothing about them beyond the name.
 
 ## Features
 
@@ -216,6 +147,10 @@ None — this is a pure abstractions package with no external dependencies.
 **SplatDev.Payments** — part of the [SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins) suite. Licensed under MIT. &copy; SplatDev Ltda.
 
 ## Changelog
+
+### 1.0.3 — 2026-08-25
+
+Documentation only, no code change. The README's Abstractions and Usage sections described an API this package does not have: it showed `IPayment` being implemented with async methods, when `IPayment` is a data interface with four properties and no methods at all, and it named `PaymentResult`, `Transaction` and `StripeConfig`, none of which exist. The operations live on `IPayment<T>`, whose four methods have quite different signatures. Both interfaces are now documented as they are, along with the fact that `IOrder`, `IPayer`, `IPaymentMethod`, `IShipment` and `ISubscription` are deliberately empty marker interfaces — and that `ConfirmTransationAsync` is spelled that way in the shipped interface.
 
 ### 1.0.2 — 2026-08-24
 

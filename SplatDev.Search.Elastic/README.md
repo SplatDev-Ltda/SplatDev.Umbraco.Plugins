@@ -12,8 +12,8 @@ Elasticsearch 8+ adapter for `SplatDev.Search` abstractions — full-text search
 
 | .NET | Umbraco | Package Version |
 |------|---------|-----------------|
-| 8.0  | 13      | 1.0.2           |
-| 10.0 | 17      | 1.0.2           |
+| 8.0  | 13      | 1.0.3           |
+| 10.0 | 17      | 1.0.3           |
 
 ## Installation
 
@@ -68,9 +68,9 @@ public class ProductCatalog
             Size = 20,
             Sort =
             [
-                new SearchSort { Field = "price", Direction = SortDirection.Descending },
+                new SearchSortField { Field = "price", Direction = SortDirection.Descending },
             ],
-            Filters = new Dictionary<string, string>
+            Filters = new Dictionary<string, object>
             {
                 { "category", "electronics" },
                 { "inStock", "true" },
@@ -105,6 +105,10 @@ public class ProductCatalog
 **SplatDev.Search.Elastic** — part of the [SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins) suite. Licensed under MIT. &copy; SplatDev Ltda.
 
 ## Changelog
+
+### 1.0.3 — 2026-08-25
+
+Documentation only, no code change. The README's search example used `SearchSort`; the real type is `SearchSortField`. It also assigned a `Dictionary<string, string>` to `SearchRequest.Filters`, which is a `Dictionary<string, object>` — so the sample did not compile on either count. It is now compiled against the assembly.
 
 ### 1.0.2 — 2026-08-24
 
