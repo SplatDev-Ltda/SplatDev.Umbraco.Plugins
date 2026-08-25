@@ -17,11 +17,22 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Ids with no Umbraco 13/17 release at all, where every version goes.
 #
-# AdPreview was on this list and has been removed: it had no project when the list was
-# written, and now has one — 1.0.0 shipped in v2.9.0. Leaving it here would have unlisted
-# the release we had just published, because a delist-entirely entry ignores the shipped
-# version by design. An id belongs here only while nothing in the repo builds it.
+# There are two AdPreview packages and this list had the wrong one.
+#
+#   AdPreview                            0.0.3, "Image Ad previewer for Umbraco v7.4.3+",
+#                                        6,687 downloads, nothing in this repo builds it
+#   SplatDev.Umbraco.Plugins.AdPreview   1.0.0, Umbraco 13 and 17, shipped in v2.9.0
+#
+# The list originally held the second — the live one — so it was removed, correctly. But the
+# first was never on it, because CLAUDE.md recorded the dead package under the prefixed id
+# and said a v17 port "will publish under the same id". It did not: the port publishes as
+# SplatDev.Umbraco.Plugins.AdPreview, a different id, and the bare one was left listed.
+#
+# It matters more than the rest of this list. At 6,687 downloads against the replacement's
+# 2,301, it ranks first for "adpreview" and for "umbraco ad preview" while the current
+# package ranks third and second — so anyone searching finds an Umbraco 7.4.3 build first.
 DELIST_ENTIRELY = [
+    "AdPreview",
     "SplatDev.Umbraco.Plugins.HideContent",
 ]
 

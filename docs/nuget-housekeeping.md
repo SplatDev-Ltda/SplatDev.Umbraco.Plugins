@@ -23,6 +23,7 @@ Select all versions, reason **Other**, and set the alternate package.
 
 | Deprecate this id | Alternate package | Message |
 | --- | --- | --- |
+| `AdPreview` | `SplatDev.Umbraco.Plugins.AdPreview` | **Do this one first.** Umbraco 7 build, 6,687 downloads, currently ranks above the replacement in search. |
 | `SplatDev.Umbraco.Plugins.SocialMediaChannels` | `SplatDev.Umbraco.Plugins.SocialMedia.Channels` | Replaced by a package under the current naming convention. |
 | `SplatDev.Umbraco.Plugins.SimpleAnalytics` | `SplatDev.Umbraco.Plugins.Analytics` | Replaced. Analytics 3.0.0 restores this plugin's self-hosted visitor tracking. |
 | `SplatDev.Umbraco.Plugin.Backups13` | `SplatDev.Umbraco.Plugins.Backups` | Replaced by a package under the current naming convention. |
