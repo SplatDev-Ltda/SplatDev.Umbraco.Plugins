@@ -20,8 +20,11 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
     <PackageReference Include="Umbraco.Cms.Core" Version="17.3.4" />
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\SplatDev.Umbraco.Tools.Packager\SplatDev.Umbraco.Tools.Packager.csproj" />
+    <ProjectReference Include="..\SplatDev.Umbraco.Tools.T4.Plugins\SplatDev.Umbraco.Tools.T4.Plugins.csproj" />
+    <ProjectReference Include="..\SplatDev.Umbraco.Tools.T4.Themes\SplatDev.Umbraco.Tools.T4.Themes.csproj" />
   </ItemGroup>
 
 </Project>
