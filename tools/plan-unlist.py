@@ -11,7 +11,11 @@ added authorization to its anonymous endpoints.
 Prints one `id@version` per line, and refuses to plan anything for a package whose shipped
 version is not on NuGet yet, because unlisting the rest would leave it with nothing listed.
 """
-import gzip, json, os, re, subprocess, sys, urllib.request
+import gzip, json, os, re, subprocess, sys, time, urllib.error, urllib.request
+
+
+class LookupFailed(Exception):
+    """A registration lookup that failed rather than legitimately returned nothing."""
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -42,18 +46,33 @@ def published(pid):
     The flat container returns unlisted versions too, so planning from it re-attempts every
     version that a previous run already unlisted — which on a rate-limited run means the
     retries are spent on work already done. Registration carries the listed flag.
+
+    A 404 means the id has never been published, which is a real answer and returns [].
+    Anything else is a lookup failure and raises: an empty list and a failed request used to
+    be indistinguishable here, so a network blip silently dropped a package from the plan and
+    its old versions stayed listed with nothing said. That is how AdPreview went missing from
+    a plan on the very run after it was added to DELIST_ENTIRELY.
     """
-    try:
-        req = urllib.request.Request(
-            f"https://api.nuget.org/v3/registration5-gz-semver2/{pid.lower()}/index.json",
-            headers={"Accept-Encoding": "gzip"})
-        with urllib.request.urlopen(req, timeout=30) as r:
-            raw = r.read()
-            if r.headers.get("Content-Encoding") == "gzip":
-                raw = gzip.decompress(raw)
-            data = json.loads(raw)
-    except Exception:
-        return []
+    url = f"https://api.nuget.org/v3/registration5-gz-semver2/{pid.lower()}/index.json"
+    last = None
+    for attempt in range(3):
+        try:
+            req = urllib.request.Request(url, headers={"Accept-Encoding": "gzip"})
+            with urllib.request.urlopen(req, timeout=30) as r:
+                raw = r.read()
+                if r.headers.get("Content-Encoding") == "gzip":
+                    raw = gzip.decompress(raw)
+                data = json.loads(raw)
+            break
+        except urllib.error.HTTPError as e:
+            if e.code == 404:
+                return []
+            last = e
+        except Exception as e:
+            last = e
+        time.sleep(2 * (attempt + 1))
+    else:
+        raise LookupFailed(f"{pid}: {last}")
 
     listed = []
     for page in data.get("items", []):
@@ -69,13 +88,16 @@ def main():
         'find . -maxdepth 3 -name "SplatDev.*.csproj" | grep -v "Tests\\|BackupManager\\|FormsClone\\|obj\\|bin\\|PdfCurator\\|/customers/\\|test-environments"'],
         cwd=ROOT, capture_output=True, text=True).stdout.split()
 
-    plan, skipped = [], []
+    plan, skipped, failures = [], [], []
     for rel in sorted(listing):
         path = os.path.join(ROOT, rel.lstrip("./"))
         text = open(path, encoding="utf-8").read()
         pid = (re.search(r"<PackageId>(.*?)</PackageId>", text) or [None, os.path.basename(path)[:-7]])[1]
         shipped = (re.search(r"<Version>(.*?)</Version>", text) or [None, None])[1]
-        versions = published(pid)
+        try:
+            versions = published(pid)
+        except LookupFailed as e:
+            failures.append(str(e)); continue
         if not versions:
             continue
         if not shipped:
@@ -87,14 +109,29 @@ def main():
                 plan.append(f"{pid}@{v}")
 
     for pid in DELIST_ENTIRELY:
-        for v in published(pid):
+        try:
+            versions = published(pid)
+        except LookupFailed as e:
+            failures.append(str(e)); continue
+        if not versions:
+            failures.append(f"{pid}: on DELIST_ENTIRELY but nothing is listed — check the id")
+            continue
+        for v in versions:
             plan.append(f"{pid}@{v}")
 
     for line in plan:
         print(line)
     for note in skipped:
         print(f"# skipped {note}", file=sys.stderr)
-    print(f"# {len(plan)} version(s) to unlist, {len(skipped)} package(s) skipped", file=sys.stderr)
+    for note in failures:
+        print(f"# LOOKUP FAILED {note}", file=sys.stderr)
+    print(f"# {len(plan)} version(s) to unlist, {len(skipped)} package(s) skipped, "
+          f"{len(failures)} lookup failure(s)", file=sys.stderr)
+
+    # A plan built while lookups were failing is incomplete, and acting on it silently
+    # leaves those packages listed for good. Refuse it.
+    if failures:
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
