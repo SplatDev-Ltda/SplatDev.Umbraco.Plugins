@@ -12,8 +12,8 @@ SMTP email provider for `SplatDev.Messaging` — sends emails via `System.Net.Ma
 
 | .NET | Umbraco | Package Version |
 |------|---------|-----------------|
-| 8.0  | 13      | 1.0.2           |
-| 10.0 | 17      | 1.0.2           |
+| 8.0  | 13      | 1.1.0           |
+| 10.0 | 17      | 1.1.0           |
 
 ## Installation
 
@@ -143,6 +143,10 @@ var result = smtp.SendMessage(mail); // synchronous wrapper
 **SplatDev.Messaging.Smtp** — part of the [SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins) suite. Licensed under MIT. &copy; SplatDev Ltda.
 
 ## Changelog
+
+### 1.1.0 — 2026-08-25
+
+Adds `SmtpOptions` and `AddSplatDevSmtp(configuration)`, so the SMTP client can be configured and registered from `appsettings.json` rather than constructed by hand. The controller is tidied to match; sending behaviour is unchanged.
 
 ### 1.0.2 — 2026-08-24
 

@@ -11,8 +11,8 @@ Core messaging abstractions for the SplatDev Umbraco Plugins ecosystem. Provides
 
 | .NET | Umbraco | Package Version |
 |------|---------|-----------------|
-| 8.0  | 13      | 1.0.2           |
-| 10.0 | 17      | 1.0.2           |
+| 8.0  | 13      | 1.1.0           |
+| 10.0 | 17      | 1.1.0           |
 
 ## Installation
 
@@ -121,6 +121,10 @@ None. This package has zero NuGet dependencies — it defines pure abstractions 
 **SplatDev.Messaging** — part of the [SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins) suite. Licensed under MIT. &copy; SplatDev Ltda.
 
 ## Changelog
+
+### 1.1.0 — 2026-08-25
+
+Adds the two contracts the SMS providers now share. `ISmsMessagingController<TMessage, TResult>` declares synchronous and async `SendMessage`, both taking either a message object or a plain `(from, to, body)` triple, and `Sms` is a provider-neutral message with string addresses. Calling code can now depend on this package instead of on a particular provider. Additive only — nothing existing changed.
 
 ### 1.0.2 — 2026-08-24
 
