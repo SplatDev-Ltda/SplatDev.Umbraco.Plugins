@@ -12,8 +12,8 @@ Twilio SMS provider for `SplatDev.Messaging` — sends SMS messages via the Twil
 
 | .NET | Umbraco | Package Version |
 |------|---------|-----------------|
-| 8.0  | 13      | 1.0.2           |
-| 10.0 | 17      | 1.0.2           |
+| 8.0  | 13      | 2.0.0           |
+| 10.0 | 17      | 2.0.0           |
 
 ## Installation
 
@@ -109,6 +109,10 @@ No additional HTTP client library required — the Twilio SDK handles transport.
 **SplatDev.Messaging.Twilio** — part of the [SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins) suite. Licensed under MIT. &copy; SplatDev Ltda.
 
 ## Changelog
+
+### 2.0.0 — 2026-08-25
+
+**Breaking.** `SplatDev.Messaging.Twilio.Models.Sms` is removed. Use `SplatDev.Messaging.Models.Sms` instead — the same three properties, with `From` and `To` as plain strings rather than Twilio's `PhoneNumber`, so the calling code no longer needs a Twilio type to describe a message. `TwilioSmsController` now implements the shared `ISmsMessagingController<Sms, MessageResource>` contract and gains `(from, to, body)` overloads. Also adds `TwilioOptions` and `AddSplatDevTwilio(configuration)` for configuration-based registration.
 
 ### 1.0.2 — 2026-08-24
 

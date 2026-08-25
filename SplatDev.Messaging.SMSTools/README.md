@@ -12,8 +12,8 @@ SMSTools SMS provider for the `SplatDev.Messaging` framework. Sends SMS messages
 
 | .NET | Umbraco | Package Version |
 |------|---------|-----------------|
-| 8.0  | 13      | 1.0.2           |
-| 10.0 | 17      | 1.0.2           |
+| 8.0  | 13      | 1.1.0           |
+| 10.0 | 17      | 1.1.0           |
 
 ## Installation
 
@@ -23,14 +23,24 @@ dotnet add package SplatDev.Messaging.SMSTools
 
 ## Configuration
 
-Add to `appsettings.json`:
+Bind `SmsToolsOptions` from configuration and register the controller:
+
+```csharp
+builder.Services.AddSplatDevSmsTools(builder.Configuration);
+```
+
+It reads `SplatDev:Messaging:SMSTools` by default; pass a section name to override.
 
 ```json
 {
-  "SMSTools": {
-    "ApiKey": "your-sms-tools-api-key",
-    "ApiUrl": "https://api.smstools.com/v1",
-    "From": "+1234567890"
+  "SplatDev": {
+    "Messaging": {
+      "SMSTools": {
+        "ApiKey": "your-sms-tools-api-key",
+        "BaseUrl": "https://api.smstools24.com",
+        "DefaultFrom": "+1234567890"
+      }
+    }
   }
 }
 ```
@@ -38,27 +48,41 @@ Add to `appsettings.json`:
 | Key | Required | Description |
 |-----|----------|-------------|
 | `ApiKey` | Yes | SMSTools API key |
-| `ApiUrl` | Yes | SMSTools API base URL |
-| `From` | Yes | Sender phone number (E.164 format) |
+| `BaseUrl` | No | API base URL. Defaults to `https://api.smstools24.com` |
+| `DefaultFrom` | No | Sender used when a message does not set `From` |
 
 ## Usage
 
+`SmsToolsController` implements `ISmsMessagingController<Sms, SmsToolsResult>` from
+`SplatDev.Messaging`, so the calling code does not depend on this provider:
+
 ```csharp
-using SplatDev.Messaging.Interfaces;
-using SplatDev.Messaging.SMSTools;
+using SplatDev.Messaging.Models;
+using SplatDev.Messaging.SMSTools.Controllers;
+using SplatDev.Messaging.SMSTools.Models;
 
-var smsService = new SMSToolsController(apiKey, apiUrl);
-
-var result = await smsService.SendMessageAsync(new Sms
+public class Notifier(SmsToolsController sms)
 {
-    From = "+1234567890",
-    To = "+5511999999999",
-    Body = "Your verification code is 123456"
-});
+    public async Task SendCode(string to, string code)
+    {
+        SmsToolsResult result = await sms.SendMessageAsync(new Sms
+        {
+            From = "+1234567890",
+            To = to,
+            Body = $"Your verification code is {code}",
+        });
 
-if (result.Success)
-    Console.WriteLine($"SMS sent. SID: {result.MessageId}");
+        if (result.Success)
+            Console.WriteLine($"SMS sent. Id: {result.MessageId}");
+        else
+            Console.WriteLine($"Failed: {result.Status} {result.Message}");
+    }
+}
 ```
+
+There is a `SendMessage` overload pair taking `(from, to, body)` directly, and a
+synchronous `SendMessage` for each — the synchronous ones block on the async call, so
+prefer the async form.
 
 ## Features
 
@@ -87,6 +111,10 @@ No additional SMS SDK required — uses SMSTools REST API directly.
 **SplatDev.Messaging.SMSTools** — part of the [SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins) suite. Licensed under MIT. &copy; SplatDev Ltda.
 
 ## Changelog
+
+### 1.1.0 — 2026-08-25
+
+This package has shipped since 1.0.0 with a csproj, a README, an icon and no code at all — every release was an empty assembly. It now contains the SMSTools client it always claimed to: `SmsToolsController`, implementing `ISmsMessagingController<Sms, SmsToolsResult>` from SplatDev.Messaging, with `SmsToolsOptions` bound from `SplatDev:Messaging:SMSTools` and an `AddSplatDevSmsTools(configuration)` registration. The README documented a constructor and class name that did not exist; every example in it is now compiled against the real API.
 
 ### 1.0.2 — 2026-08-24
 

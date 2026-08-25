@@ -1,127 +1,53 @@
-﻿namespace SplatDev.Messaging.Twilio.Controllers
+namespace SplatDev.Messaging.Twilio.Controllers
 {
-    using global::Twilio;
+    using global::Twilio.Clients;
     using global::Twilio.Rest.Api.V2010.Account;
     using global::Twilio.Types;
 
-    using Microsoft.Win32.SafeHandles;
-
     using SplatDev.Messaging.Interfaces;
+    using SplatDev.Messaging.Models;
     using SplatDev.Messaging.Twilio.Models;
 
     using System;
-    using System.Collections.Generic;
-    using System.Runtime.InteropServices;
     using System.Threading.Tasks;
 
-    public class TwilioSmsController : IMessagingController<Sms, MessageResource>
+    public class TwilioSmsController : ISmsMessagingController<Sms, MessageResource>
     {
-        public TwilioSmsController(string accountSid, string authToken)
+        private readonly ITwilioRestClient client;
+        private readonly TwilioOptions options;
+
+        public TwilioSmsController(TwilioOptions options)
         {
-            TwilioClient.Init(accountSid, authToken);
+            this.options = options;
+            client = new TwilioRestClient(options.AccountSid, options.AuthToken);
         }
 
-        /// <summary>
-        /// Sends the Sms message.
-        /// </summary>
-        /// <param name="message">The Sms message.</param>
-        /// <returns>Sms response from the Twilio service</returns>
         public MessageResource SendMessage(Sms message)
-        {
-            MessageResource msg = MessageResource.Create(
+            => SendMessageAsync(message).GetAwaiter().GetResult();
+
+        public MessageResource SendMessage(string from, string to, string body)
+            => SendMessageAsync(from, to, body).GetAwaiter().GetResult();
+
+        public Task<MessageResource> SendMessageAsync(Sms message)
+            => MessageResource.CreateAsync(
+                to: new PhoneNumber(message.To),
+                from: new PhoneNumber(message.From),
                 body: message.Body,
-                from: message.From,
-                to: message.To
-            );
-            return msg;
-        }
+                client: client);
 
-        /// <summary>
-        /// Sends the Sms message.
-        /// </summary>
-        /// <param name="subject">NOT USED</param>
-        /// <param name="from">NOT USED</param>
-        /// <param name="fromAddress">The Phone number which originated the message</param>
-        /// <param name="to">NOT USED</param>
-        /// <param name="toAddress">The phone number recipient of the message</param>
-        /// <param name="message">NOT USED</param>
-        /// <param name="plainMessage">The Sms message being sent.</param>
-        /// <param name="bcc">NOT USED</param>
-        /// <param name="cc">NOT USED</param>
-        /// <returns>Sms response from the Twilio service</returns>
-        public MessageResource SendMessage(string subject, string from, string fromAddress, string to, string toAddress, string message, string plainMessage = "", IEnumerable<IAddress> bcc = null, IEnumerable<IAddress> cc = null)
+        public Task<MessageResource> SendMessageAsync(string from, string to, string body)
         {
-            MessageResource msg = MessageResource.Create(
-                body: plainMessage,
-                from: new PhoneNumber(fromAddress),
-                to: new PhoneNumber(toAddress)
-            );
-            return msg;
+            var fromNumber = new PhoneNumber(string.IsNullOrEmpty(from) ? options.DefaultFrom ?? from : from);
+            return MessageResource.CreateAsync(
+                to: new PhoneNumber(to),
+                from: fromNumber,
+                body: body,
+                client: client);
         }
 
-        /// <summary>
-        /// Sends the message asynchronous.
-        /// </summary>
-        /// <param name="message">The Sms message.</param>
-        /// <returns>Sms response from the Twilio service</returns>
-        public async Task<MessageResource> SendMessageAsync(Sms message)
-        {
-            MessageResource msg = await MessageResource.CreateAsync(
-                 body: message.Body,
-                 from: message.From,
-                 to: message.To
-             );
-            return msg;
-        }
-
-        /// <summary>
-        /// Sends the Sms message asynchronous.
-        /// </summary>
-        /// <param name="subject">NOT USED</param>
-        /// <param name="from">NOT USED</param>
-        /// <param name="fromAddress">The Phone number which originated the message</param>
-        /// <param name="to">NOT USED</param>
-        /// <param name="toAddress">The phone number recipient of the message</param>
-        /// <param name="message">NOT USED</param>
-        /// <param name="plainMessage">The Sms message being sent.</param>
-        /// <param name="bcc">NOT USED</param>
-        /// <param name="cc">NOT USED</param>
-        /// <returns>Sms response from the Twilio service</returns>
-        public async Task<MessageResource> SendMessageAsync(string subject, string from, string fromAddress, string to, string toAddress, string message, string plainMessage = "", IEnumerable<IAddress> bcc = null, IEnumerable<IAddress> cc = null)
-        {
-            MessageResource msg = await MessageResource.CreateAsync(
-                body: plainMessage,
-                from: new PhoneNumber(fromAddress),
-                to: new PhoneNumber(toAddress)
-            );
-            return msg;
-        }
-
-        #region Dispose
-        private bool _disposed = false;
-        private readonly SafeHandle _safeHandle = new SafeFileHandle(IntPtr.Zero, true);
         public void Dispose()
         {
-            Dispose(true);
             GC.SuppressFinalize(this);
         }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (_disposed)
-            {
-                return;
-            }
-
-            if (disposing)
-            {
-                _safeHandle?.Dispose();
-            }
-
-            _disposed = true;
-        }
-
-        ~TwilioSmsController() => Dispose(false);
-        #endregion
     }
 }
