@@ -72,8 +72,15 @@ jobs:
 
       - name: Build the plan
         run: |
+          # plan-notes.txt carries the reason. Printing it only on the success path
+          # meant a failed plan reported "Could not build the unlist plan" and nothing
+          # else, with the actual cause sitting in a file nobody sees — the same shape
+          # as the unlist step that once sent dotnet's output to /dev/null.
           python3 tools/plan-unlist.py > plan.txt 2> plan-notes.txt || {
-            echo "::error::Could not build the unlist plan."; exit 1; }
+            echo "::error::Could not build the unlist plan."
+            echo "--- plan-notes.txt ---"
+            cat plan-notes.txt
+            exit 1; }
           echo "=== packages skipped ==="
           cat plan-notes.txt
           echo "=== versions to unlist: $(wc -l < plan.txt) ==="
