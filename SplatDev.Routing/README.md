@@ -1,122 +1,76 @@
 # SplatDev.Routing
 
-<!-- screenshot:start -->
-<!-- screenshot:end -->
+Convention-based route registration helpers for ASP.NET Core applications.
 
-Convention-based route registration for ASP.NET Core applications. Scan assemblies for `IRoute` implementations and auto-register them as conventional MVC controller routes.
+## What it provides
 
-[![NuGet](https://img.shields.io/nuget/v/SplatDev.Routing.svg)](https://www.nuget.org/packages/SplatDev.Routing)
+- **IRoute** — interface for declaring conventional MVC routes:
+  - `RouteAlias` — unique route name
+  - `Url` — route pattern (must not start with `/`)
+  - `Controller` — target controller name
+  - `Action` — target action name
+  - `Defaults` — optional route defaults (anonymous object)
 
-## Compatibility
+- **IUmbracoPluginRoute** — extends `IRoute` with Umbraco-specific metadata:
+  - `RootId` — Umbraco content node root ID
+  - `RootAlias` — Umbraco content node root alias
+  - `IsPluginController` — marks the route as a plugin controller
 
-| .NET  | Package Version |
-|-------|-----------------|
-| 8.0   | 1.0.0           |
-| 10.0  | 1.0.0           |
+- **RouteServiceExtensions.MapSplatDevRoutes** — scans caller-provided assemblies for `IRoute` implementations and registers each as a conventional MVC route. Uses `ActivatorUtilities.CreateInstance` for DI support on route ctors.
 
-## Installation
+## Install
 
-```sh
+```shell
 dotnet add package SplatDev.Routing
 ```
 
-## Quick Start
-
-Implement `IRoute` with your controller mapping, then register on the endpoint builder:
+## Usage
 
 ```csharp
-using SplatDev.Routing;
-using SplatDev.Routing.Interfaces;
-
-public class HomeRoutes : IRoute
+// 1. Implement IRoute
+public class HomeRoute : IRoute
 {
     public string RouteAlias => "home";
-    public string Url => "{controller=Home}/{action=Index}/{id?}";
+    public string Url => "";
     public string Controller => "Home";
     public string Action => "Index";
-    public object? Defaults => null;
-    public int? RootId => null;
-    public string? RootAlias => null;
-    public bool IsPluginController => false;
+    public object Defaults => null;
 }
+
+// 2. Register in Program.cs / Startup.cs
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapSplatDevRoutes(typeof(HomeRoute).Assembly);
+});
 ```
 
-In `Program.cs`:
-
-```csharp
-app.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
-
-app.MapSplatDevRoutes(typeof(HomeRoutes).Assembly);  // scan for IRoute impls
-```
-
-Routes are instantiated via DI (`ActivatorUtilities.CreateInstance`), so your `IRoute` implementations can receive registered services through their constructors.
-
-## What's Implemented
-
-### `IRoute` interface (`SplatDev.Routing.Interfaces`)
-
-| Member              | Type      | Description                                      |
-|---------------------|-----------|--------------------------------------------------|
-| `RouteAlias`        | `string`  | Unique name for the route                        |
-| `Url`               | `string`  | URL pattern (must not start with `/`)            |
-| `Controller`        | `string`  | Default controller name                          |
-| `Action`            | `string`  | Default action name                              |
-| `Defaults`          | `object?` | Route defaults (falls back to controller/action) |
-| `RootId`            | `int?`    | Umbraco root node ID (set `null` if not Umbraco) |
-| `RootAlias`         | `string?` | Umbraco root node alias                          |
-| `IsPluginController`| `bool`    | Whether this is an Umbraco plugin controller     |
-
-### `RouteServiceExtensions`
-
-```csharp
-public static IEndpointRouteBuilder MapSplatDevRoutes(
-    this IEndpointRouteBuilder endpoints,
-    params Assembly[] assemblies
-)
-```
-
-Scans the provided assemblies for concrete `IRoute` implementations and registers each via `MapControllerRoute`. Routes are created through `ActivatorUtilities.CreateInstance` so DI-injected constructors are supported.
-
-At least one assembly must be provided.
+For Umbraco plugin routes, implement `IUmbracoPluginRoute : IRoute` instead.
 
 ## Limitations
 
-- **Umbraco-specific fields on the generic interface.** `RootId`, `RootAlias`, and `IsPluginController` leak Umbraco concepts into what the package description markets as an ASP.NET Core utility. See the design decision below for the planned resolution.
-- **No route ordering or priority.** Routes are registered in discovery order; the first-matching route wins. If you need explicit ordering, pass assemblies in the desired sequence.
-- **Hard dependency on `Microsoft.AspNetCore.App`.** This package requires the ASP.NET Core shared framework and cannot be used in console / worker-service projects that only reference `Microsoft.NET.Sdk`.
+- Routes must be registered via the `Microsoft.AspNetCore.Mvc` pipeline (`MapControllerRoute`).
+- All-assemblies scan is not supported — callers must explicitly provide the target assemblies.
 
-## Design Decision: Interface Shape
+## Design decisions
 
-**Status:** Recorded, pending implementation in a future release.
+- **Interface split (v1.1.0):** `RootId`, `RootAlias`, and `IsPluginController` were moved from `IRoute` to `IUmbracoPluginRoute : IRoute` to keep the base interface free of Umbraco-specific fields.
+- **DI on ctors:** `Activator.CreateInstance` was replaced with `ActivatorUtilities.CreateInstance` (requires `IServiceProvider` from `IEndpointRouteBuilder`).
 
-The current `IRoute` interface mixes generic ASP.NET route metadata (`RouteAlias`, `Url`, `Controller`, `Action`, `Defaults`) with Umbraco-specific fields (`RootId`, `RootAlias`, `IsPluginController`). This is semantically wrong for a package described as an ASP.NET Core utility.
+## Target frameworks
 
-**Planned resolution (v2.0):**
-
-1. Extract a clean `IRoute` interface with only the generic fields.
-2. Create `IUmbracoPluginRoute : IRoute` carrying the three Umbraco-specific members.
-3. Update `MapSplatDevRoutes` to scan for both, registering plugin routes with the extra Umbraco metadata only when relevant.
-
-This split keeps the package usable by non-Umbraco consumers while preserving the Umbraco integration for plugin-heavy hosts.
-
-## Changelog
-
-### 1.0.2 — 2026-08-24
-
-Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.
-
-### 1.0.1 — 2026-08-24
-
-Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.
-
-### 1.0.0 — 2026-08-24
-
-This package now keeps a changelog. Earlier releases predate it and are not reconstructed here — consult the repository history for those. From this version on, every release records what changed for someone using it.
-
-## License
-
-MIT (c) [SplatDev](https://github.com/SplatDev-Ltda)
+| Framework |
+|-----------|
+| net8.0    |
+| net10.0   |
 
 ---
 
-**SplatDev.Routing** — part of the [SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins) suite. Licensed under MIT. (c) SplatDev Ltda.
+**SplatDev.Routing** — part of the [SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins) suite. Licensed under MIT. © SplatDev Ltda.
+
+## Changelog
+
+### 2.0.0 — 2026-08-25
+
+**Breaking.** `RootId`, `RootAlias` and `IsPluginController` move off `IRoute` and onto a new `IUmbracoPluginRoute : IRoute`. They only ever meant anything for routes served by an Umbraco plugin controller, but sat on the base interface, so every route had to implement three members it did not use. A route that needs them now implements `IUmbracoPluginRoute`; one that does not is unchanged apart from dropping the three stubs.
+
+Route discovery is unaffected — `MapSplatDevRoutes` scans for `IRoute`, and `IUmbracoPluginRoute` derives from it, so both kinds are still found.
