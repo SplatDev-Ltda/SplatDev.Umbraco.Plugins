@@ -2,7 +2,7 @@
 
 A comprehensive monorepo of Umbraco plugins, extensions, and utilities maintained by **SplatDev Ltda**. Supports **Umbraco 13** (net8.0) and **Umbraco 17** (net10.0).
 
-[![Build & Test](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Core/actions/workflows/build.yml/badge.svg)](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Core/actions/workflows/build.yml)
+[![Build & Test](https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/actions/workflows/build.yml/badge.svg)](https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/actions/workflows/build.yml)
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Common)](https://www.nuget.org/packages?q=SplatDev)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -219,19 +219,25 @@ All packages target `net8.0;net10.0` and use conditional package references to i
 
 ### Quick Start
 
-1. Install the desired NuGet package(s)
-2. Register the services in your `Startup.cs` or `Program.cs`:
+1. Install the desired NuGet package(s).
+2. That is usually all. Every plugin here ships Umbraco composers, and the `AddComposers()`
+   already in the default `Program.cs` discovers them as soon as the package is referenced:
 
 ```csharp
-builder.Services.AddUmbraco(builder.Environment, builder.Configuration)
+builder.CreateUmbracoBuilder()
     .AddBackOffice()
     .AddWebsite()
-    .AddSplatDevPlugins()  // adds SplatDev services
-    .AddComposer()
+    .AddComposers()
     .Build();
 ```
 
-Refer to each package's documentation for specific configuration options.
+There is no `AddSplatDevPlugins()`, and Umbraco's method is `AddComposers()` — plural.
+
+A few packages do expose a builder extension, because they need a type argument or options
+from you: `SplatDev.Umbraco.Plugins.ShortUrls` (`AddShortUrls<T>()`) and
+`SplatDev.Umbraco.Workflow.Api` (`AddSplatDevWorkflowJsonProvider(…)`) among them. Each
+package's own README says so where it applies; where it says nothing, there is nothing to
+call.
 
 ---
 

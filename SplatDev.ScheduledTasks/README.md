@@ -23,73 +23,122 @@ dotnet add package SplatDev.ScheduledTasks
 
 ## Configuration
 
-### Register with DI
+`SplatDev.ScheduledTasks.Services.TaskScheduler` collides with `System.Threading.Tasks.TaskScheduler`,
+which implicit usings put in scope in any modern project — so a bare `new TaskScheduler(db)`
+fails with `CS0104: 'TaskScheduler' is an ambiguous reference`. Alias it:
 
 ```csharp
-using SplatDev.ScheduledTasks;
-
-// Program.cs
-builder.Services.AddDbContext<ScheduledTasksDbContext>(options =>
-    options.UseSqlServer(connectionString));
-
-builder.Services.AddSingleton<TaskScheduler>();
-builder.Services.AddScoped<ITaskAction, MyCustomTask>();
+using TaskScheduler = SplatDev.ScheduledTasks.Services.TaskScheduler;
 ```
 
-### Define a custom task
+`TaskScheduler` takes a `DbContext` and **starts scheduling in its constructor**. There is no
+`StartAsync`, and there is no `ScheduledTasksDbContext` in this package — put a
+`DbSet<ScheduledTask>` on your own context:
 
 ```csharp
-using SplatDev.ScheduledTasks;
+public class MyDbContext : DbContext
+{
+    public MyDbContext(DbContextOptions<MyDbContext> options) : base(options) { }
+    public DbSet<ScheduledTask> ScheduledTasks => Set<ScheduledTask>();
+}
+```
+
+```csharp
+// Program.cs
+builder.Services.AddDbContext<MyDbContext>(o => o.UseSqlServer(connectionString));
+
+// Constructed once, per DbContext. It reads the task table and schedules timers as it is
+// built, so build it when the application is ready to start running tasks — not during
+// service registration.
+var scheduler = new TaskScheduler(db);
+```
+
+The constructor returns without scheduling anything if the database cannot be reached
+(`context.Database.CanConnect()`), so a missing connection is silent rather than fatal.
+
+### Define a task
+
+Tasks are invoked by reflection. `ScheduledTask.ClassToInvoke` holds an assembly-qualified
+type name, the type is resolved with `Type.GetType`, instantiated through its **parameterless
+constructor**, and its `Perform` method is called. Constructor injection does not work — a
+task class with dependencies will throw when the scheduler tries to build it.
+
+`ITaskAction` is synchronous and takes the event args:
+
+```csharp
+using SplatDev.ScheduledTasks.Events;
+using SplatDev.ScheduledTasks.Interfaces;
 
 public class EmailReminderTask : ITaskAction
 {
-    private readonly IEmailService _email;
+    public EmailReminderTask() { }          // must be parameterless
 
-    public EmailReminderTask(IEmailService email)
+    public void Perform(ScheduledEventArgs args)
     {
-        _email = email;
-    }
-
-    public async Task ExecuteAsync(CancellationToken cancellationToken)
-    {
-        await _email.SendRemindersAsync();
+        // args.Payload.Task is the ScheduledTask row that triggered this
+        Console.WriteLine($"Running {args.Payload.Task.Name}");
     }
 }
 ```
 
-### Schedule and run tasks
+### Schedule a task
+
+Rows in the task table are the schedule. Add one and construct the scheduler:
 
 ```csharp
-using SplatDev.ScheduledTasks;
-
-var scheduler = serviceProvider.GetRequiredService<TaskScheduler>();
-
-// Register a new scheduled task
-var task = new ScheduledTask
+db.ScheduledTasks.Add(new ScheduledTask
 {
     Name = "Daily Email Reminder",
+    Description = "Sends the overnight reminder batch",
     TaskType = ScheduledTaskType.Email,
-    Interval = TimeSpan.FromHours(24),
-    AssemblyName = typeof(EmailReminderTask).Assembly.FullName!,
-    TypeName = typeof(EmailReminderTask).FullName!
-};
+    Active = true,
+    Repeat = true,
+    RepeatEveryXHours = 24,          // hours and minutes, not a TimeSpan
+    RepeatEveryXMinutes = 0,
+    StartOn = DateTime.UtcNow,
+    ClassToInvoke = typeof(EmailReminderTask).AssemblyQualifiedName!,
+    StopOnError = false,
+});
+await db.SaveChangesAsync();
 
-scheduler.AddTask(task);
-
-// Hook into schedule lifecycle events
-scheduler.OnScheduleElapsed += (sender, args) =>
-{
-    Console.WriteLine($"Task '{args.Task.Name}' completed at {args.ElapsedAt}");
-};
-
-scheduler.OnTriggerEvent += (sender, args) =>
-{
-    Console.WriteLine($"Task '{args.Task.Name}' triggered with criteria: {args.Criteria}");
-};
-
-// Start the scheduler
-await scheduler.StartAsync();
+var scheduler = new TaskScheduler(db);
 ```
+
+A task with `Repeat = false` runs once and is skipped afterwards, because `LastRunOnUtc` has
+been set.
+
+Tasks that should not be persisted can be passed to the constructor instead:
+
+```csharp
+var scheduler = new TaskScheduler(db, runtime: new[] { oneOffTask });
+```
+
+### Events
+
+Both delegates take a **single** argument — there is no `sender`:
+
+```csharp
+scheduler.OnTriggerEvent += args =>
+    Console.WriteLine($"{args.Message} ({args.MessageType})");
+
+scheduler.OnScheduleElapsed += args =>
+    Console.WriteLine($"Running {args.Payload.Task.Name}");
+```
+
+`ScheduledEventArgs` carries `Message`, `MessageType`, `Payload` and `AutoReset`. The task
+itself is `args.Payload.Task`.
+
+### Shutting down
+
+`TaskScheduler` owns a `Timer` per repeating task and implements `IDisposable`. Dispose it or
+the timers keep firing:
+
+```csharp
+scheduler.Dispose();
+```
+
+`StopOnError = true` on a task disposes the whole scheduler when that task throws — every
+other task stops too.
 
 ## Usage
 
@@ -112,41 +161,47 @@ public enum ScheduledTaskType
 }
 ```
 
-### Filtering scheduled tasks
+### Reading the schedule
+
+`TaskScheduler` exposes the two collections it was built from and nothing else — there is no
+`GetTasksAsync` and no `CancelTaskAsync`. Query your own `DbSet` for anything more:
 
 ```csharp
-// Retrieve tasks by type
-var emailTasks = await scheduler.GetTasksAsync(ScheduledTaskType.Email);
+IEnumerable<ScheduledTask> persisted = scheduler.ScheduledTasks;
+IEnumerable<ScheduledTask> runtime   = scheduler.RuntimeTasks;
 
-// Filter by custom criteria
-var dueTasks = await scheduler.GetTasksAsync(criteria: t => t.NextRun <= DateTime.UtcNow);
-
-// Cancel a specific task
-await scheduler.CancelTaskAsync(taskId);
+var emailTasks = await db.ScheduledTasks
+    .Where(t => t.TaskType == ScheduledTaskType.Email && t.Active)
+    .ToListAsync();
 ```
+
+Deactivating a task means setting `Active = false` and rebuilding the scheduler; a timer that
+is already running is only stopped by `Dispose()`.
 
 ## Features
 
-- **EF Core persistence** — task definitions and execution history stored in SQL Server via `ScheduledTasksDbContext`
-- **Reflection-based invocation** — tasks are resolved and instantiated at runtime by `AssemblyName` and `TypeName`
-- **Repeatable tasks** with configurable intervals (`TimeSpan`)
-- **9 built-in task categories** via `ScheduledTaskType` enum (Action, Check, Email, Notify, Process, Report, Send, Validate, Verify)
-- **Criteria filtering** for fine-grained task selection and triggering
-- **Event-driven execution**: `OnScheduleElapsed` fires when a task interval completes; `OnTriggerEvent` fires on manual triggers
-- **ScheduledEventArgs** provides execution context (task metadata, elapsed time, trigger criteria)
-- `ITaskAction` interface for implementing custom task logic with async support
-- Logging integration via `SplatDev.Logger` project reference
+- **EF Core persistence** — task rows live in a `DbSet<ScheduledTask>` on your own context
+- **Reflection-based invocation** — `ClassToInvoke` holds an assembly-qualified type name;
+  the type needs a parameterless constructor and a `Perform` method
+- **Repeatable tasks** with an interval given as whole hours plus minutes
+- **9 task categories** via `ScheduledTaskType` (Action, Check, Email, Notify, Process,
+  Report, Send, Validate, Verify)
+- **Event-driven execution**: `OnTriggerEvent` when a task is scheduled, `OnScheduleElapsed`
+  immediately before it runs — both taking a single `ScheduledEventArgs`
+- `ITaskAction` for task logic. It is synchronous: `void Perform(ScheduledEventArgs)`
+- `StopOnError` disposes the scheduler when a task throws
+- Logging via the `SplatDev.Logger` project reference
 
 ## Key Classes
 
 | Class | Purpose |
 |-------|---------|
-| `TaskScheduler` | Core scheduler managing task registration, execution, and lifecycle |
-| `ITaskAction` | Interface for implementing custom task execution logic |
-| `ScheduledTask` | EF Core entity representing a scheduled task definition |
+| `TaskScheduler` | Reads the task table and owns a `Timer` per repeating task. `IDisposable` |
+| `ITaskAction` | `void Perform(ScheduledEventArgs)` — the contract the reflected type must satisfy |
+| `ScheduledTask` | EF Core entity for a task definition |
 | `ScheduledTaskType` | Enum of 9 task categories |
-| `ScheduledEventArgs` | Event arguments for schedule lifecycle events |
-| `ScheduledTasksDbContext` | EF Core database context for task persistence |
+| `ScheduledEventArgs` | `Message`, `MessageType`, `Payload`, `AutoReset` |
+| `ScheduledTaskPayload` | `Task`, `RelatedType`, `Message`, `DependentTaskId`, `Dependencies`, `Actions` |
 
 ## Dependencies
 

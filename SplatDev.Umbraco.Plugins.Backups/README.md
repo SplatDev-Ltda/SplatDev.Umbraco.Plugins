@@ -52,17 +52,11 @@ Install-Package SplatDev.Umbraco.Plugins.Backups
 
 ## Quick Start
 
-Add to your `Program.cs` (or `Startup.cs`):
+No registration call is needed. The package ships Umbraco composers, so the
+`AddComposers()` already in the default `Program.cs` picks the plugin up as soon as the
+package is referenced.
 
-```csharp
-builder.CreateUmbracoBuilder()
-    .AddBackOffice()
-    .AddWebsite()
-    .AddBackups()  // Add this line
-    .Build();
-```
-
-Then configure in `appsettings.json`:
+Configure it in `appsettings.json`:
 
 ```json
 {
