@@ -15,8 +15,8 @@ Fixed admin bar for Umbraco — injects a toolbar at the top of front-end pages 
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.0.0           |
-| 17.x    | 10.0 | 2.0.0           |
+| 13.x    | 8.0  | 2.3.2           |
+| 17.x    | 10.0 | 2.3.2           |
 
 ## Installation
 
@@ -59,6 +59,10 @@ After registration, the admin bar automatically appears at the top of every fron
 - Position customization (top vs bottom) requires the `Position` config key
 
 ## Changelog
+
+### 2.3.2 — 2026-08-25
+
+Documentation only, no code change. The README's Quick Start told you to call a registration method that does not exist in this package — following it produced a compile error on the first build. There is nothing to register: the package ships Umbraco composers and the `AddComposers()` already in the default `Program.cs` finds it. The Compatibility table also now shows the version actually being shipped instead of the one it was written at.
 
 ### 2.3.1 — 2026-08-24
 

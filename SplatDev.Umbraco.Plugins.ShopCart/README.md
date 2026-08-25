@@ -12,8 +12,8 @@ Simple shopping cart for Umbraco — add/remove items, quantity management, and 
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.0.0           |
-| 17.x    | 10.0 | 2.0.0           |
+| 13.x    | 8.0  | 2.3.2           |
+| 17.x    | 10.0 | 2.3.2           |
 
 ## Installation
 

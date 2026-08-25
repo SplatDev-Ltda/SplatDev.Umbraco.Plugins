@@ -52,6 +52,14 @@ jobs:
         # isolation fix, where a sed matched the wrong string and left the version alone.
         run: bash tools/check-version-bumps.sh
 
+      - name: Check README version tables
+        # The Compatibility table's last column is the package version, and it is the
+        # first thing a reader checks to see whether a package supports their Umbraco.
+        # Nothing kept it in step with <Version>: when this was first measured, 96 of
+        # 96 READMEs with a table disagreed with their csproj and not one was right —
+        # several still advertised 1.0.0 for packages on their fourth release.
+        run: python3 tools/sync-readme-versions.py --check
+
       - name: Restore dependencies
         run: dotnet restore SplatDev.Core.sln
 

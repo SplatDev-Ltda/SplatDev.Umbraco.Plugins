@@ -11,8 +11,8 @@ Umbraco security headers plugin — adds Content-Security-Policy, HSTS, X-Frame-
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.0.0           |
-| 17.x    | 10.0 | 2.0.0           |
+| 13.x    | 8.0  | 2.0.5           |
+| 17.x    | 10.0 | 2.0.5           |
 
 ## Installation
 
@@ -67,6 +67,10 @@ Add to `appsettings.json`:
 - Windows Data Protection key path is hardcoded to `C:\temp`
 
 ## Changelog
+
+### 2.0.5 — 2026-08-25
+
+Documentation only, no code change. The README's Quick Start told you to call a registration method that does not exist in this package — following it produced a compile error on the first build. There is nothing to register: the package ships Umbraco composers and the `AddComposers()` already in the default `Program.cs` finds it. The Compatibility table also now shows the version actually being shipped instead of the one it was written at.
 
 ### 2.0.4 — 2026-08-24
 

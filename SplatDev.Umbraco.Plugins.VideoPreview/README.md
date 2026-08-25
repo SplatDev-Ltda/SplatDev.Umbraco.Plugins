@@ -19,8 +19,8 @@ Video thumbnail preview for Umbraco — extract video metadata and auto-generate
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 1.0.0           |
-| 17.x    | 10.0 | 1.0.0           |
+| 13.x    | 8.0  | 2.3.2           |
+| 17.x    | 10.0 | 2.3.2           |
 
 ## Installation
 

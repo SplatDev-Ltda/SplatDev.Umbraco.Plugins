@@ -7,7 +7,7 @@
     <PackageId>SplatDev.Messaging.Newsletter</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <Authors>SplatDev</Authors>
     <Company>SplatDev Ltda</Company>
     <Description>Newsletter/mailing-list foundation library — interfaces, DTOs, and events. No provider implementations or external dependencies.</Description>

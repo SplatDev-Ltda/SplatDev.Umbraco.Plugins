@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>SplatDev.Umbraco.Plugins.Getnet</PackageId>
-    <Version>1.1.2</Version>
+    <Version>1.1.3</Version>
     <Authors>SplatDev</Authors>
     <Company>SplatDev Ltda</Company>
     <Description>Umbraco 17 plugin that registers the Getnet (Santander acquirer) SDK (SplatDev.Payments.Getnet): options binding, the API client, and the named Getnet HttpClient. Webhook/backoffice controllers and payment orchestration are application-specific and stay in the consuming app.</Description>

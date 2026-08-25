@@ -12,8 +12,8 @@ Email template engine, Mailgun mail provider, newsletter campaigns, and member n
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 1.0.0           |
-| 17.x    | 10.0 | 1.0.0           |
+| 13.x    | 8.0  | 1.3.3           |
+| 17.x    | 10.0 | 1.3.3           |
 
 ## Installation
 
@@ -40,6 +40,10 @@ Add to `appsettings.json`:
 ```
 
 ## Changelog
+
+### 1.3.3 — 2026-08-25
+
+Documentation only, no code change. The README's Quick Start told you to call a registration method that does not exist in this package — following it produced a compile error on the first build. There is nothing to register: the package ships Umbraco composers and the `AddComposers()` already in the default `Program.cs` finds it. The Compatibility table also now shows the version actually being shipped instead of the one it was written at.
 
 ### 1.3.2 — 2026-08-24
 

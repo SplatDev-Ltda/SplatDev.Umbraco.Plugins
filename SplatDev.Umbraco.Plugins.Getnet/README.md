@@ -33,6 +33,10 @@ This is a **headless API plugin** — no standalone backoffice dashboard, proper
 
 ## Changelog
 
+### 1.1.3 — 2026-08-25
+
+Fixes two defects in the Getnet client. Escaping a seller or order id that contains a control character produced a request body that was not valid JSON, so the call failed; the whole character set is escaped properly now. And the API client is registered as a singleton rather than per request, so the OAuth token it caches survives to be reused instead of every call re-authenticating.
+
 ### 1.1.2 — 2026-08-24
 
 Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.

@@ -12,8 +12,8 @@ A .NET CLI tool for creating Umbraco NuGet packages — generates `package.manif
 
 | .NET | Umbraco | Package Version |
 |------|---------|-----------------|
-| 8.0  | 13      | 1.0.0           |
-| 10.0 | 17      | 1.0.0           |
+| 8.0  | 13      | 1.0.4           |
+| 10.0 | 17      | 1.0.4           |
 
 ## Installation
 

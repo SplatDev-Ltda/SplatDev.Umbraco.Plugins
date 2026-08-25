@@ -11,8 +11,8 @@ ASP.NET Core middleware that sanitizes query strings on incoming requests — st
 
 | .NET | Umbraco | Package Version |
 |------|---------|-----------------|
-| 8.0  | 13      | 2.0.0           |
-| 10.0 | 17      | 2.0.0           |
+| 8.0  | 13      | 2.0.5           |
+| 10.0 | 17      | 2.0.5           |
 
 ## Installation
 

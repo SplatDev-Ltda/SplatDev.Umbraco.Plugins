@@ -8,8 +8,8 @@ Import YAML document type definitions into Umbraco — creates and updates conte
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 1.0.38          |
-| 17.x    | 10.0 | 1.0.38          |
+| 13.x    | 8.0  | 1.1.3           |
+| 17.x    | 10.0 | 1.1.3           |
 
 ## Installation
 
@@ -63,6 +63,10 @@ documentTypes:
 - YAML format must match the structure produced by `Schema2Yaml`; hand-written YAML files may fail validation
 
 ## Changelog
+
+### 1.1.3 — 2026-08-25
+
+Documentation only, no code change. The README's Quick Start told you to call a registration method that does not exist in this package — following it produced a compile error on the first build. There is nothing to register: the package ships Umbraco composers and the `AddComposers()` already in the default `Program.cs` finds it. The Compatibility table also now shows the version actually being shipped instead of the one it was written at.
 
 ### 1.1.2 — 2026-08-24
 

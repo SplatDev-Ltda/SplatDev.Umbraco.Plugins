@@ -13,8 +13,8 @@ Built on top of the `SplatDev.DigitalBookCurator.Core` library which handles PDF
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.0.0           |
-| 17.x    | 10.0 | 2.0.0           |
+| 13.x    | 8.0  | 2.1.5           |
+| 17.x    | 10.0 | 2.1.5           |
 
 ## Installation
 

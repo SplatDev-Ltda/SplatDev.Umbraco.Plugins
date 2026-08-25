@@ -12,8 +12,8 @@ Umbraco email integration plugin — send templated HTML emails from Umbraco usi
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.0.0           |
-| 17.x    | 10.0 | 2.0.0           |
+| 13.x    | 8.0  | 2.1.10          |
+| 17.x    | 10.0 | 2.1.10          |
 
 ## Installation
 
@@ -95,6 +95,10 @@ The `MailerApiController` exposes a test endpoint at `/umbraco/backoffice/api/Ma
 - Umbraco `GlobalSettings:Smtp` configuration
 
 ## Changelog
+
+### 2.1.10 — 2026-08-25
+
+Documentation only, no code change. The README's Quick Start told you to call a registration method that does not exist in this package — following it produced a compile error on the first build. There is nothing to register: the package ships Umbraco composers and the `AddComposers()` already in the default `Program.cs` finds it. The Compatibility table also now shows the version actually being shipped instead of the one it was written at.
 
 ### 2.1.9 — 2026-08-24
 

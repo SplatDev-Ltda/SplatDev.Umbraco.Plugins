@@ -16,8 +16,8 @@ A comprehensive backup plugin for Umbraco that lets you create, schedule, and re
 
 | Umbraco Version | .NET Target | Package Version |
 |---|---|---|
-| Umbraco 13.x | net8.0 | 3.1.x |
-| Umbraco 17.x | net10.0 | 3.1.x |
+| Umbraco 13.x | net8.0 | 3.3.4 |
+| Umbraco 17.x | net10.0 | 3.3.4 |
 
 ## Features
 
@@ -171,6 +171,10 @@ MIT — see [LICENSE](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins/
 Issues and PRs welcome at [github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins).
 
 ## Changelog
+
+### 3.3.4 — 2026-08-25
+
+Documentation only, no code change. The README's Quick Start told you to call `.AddBackups()`, which does not exist; following it produced a compile error. The plugin registers itself through its Umbraco composer and needs no call at all.
 
 ### 3.3.3 — 2026-08-24
 

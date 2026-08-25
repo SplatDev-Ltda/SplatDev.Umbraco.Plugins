@@ -15,8 +15,8 @@ Umbraco social login integration plugin — configure OAuth providers (Facebook,
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.0.0           |
-| 17.x    | 10.0 | 2.0.0           |
+| 13.x    | 8.0  | 2.2.2           |
+| 17.x    | 10.0 | 2.2.2           |
 
 ## Installation
 
@@ -50,6 +50,10 @@ Add to `appsettings.json`:
 ```
 
 ## Changelog
+
+### 2.2.2 — 2026-08-25
+
+Documentation only, no code change. The README's Quick Start told you to call a registration method that does not exist in this package — following it produced a compile error on the first build. There is nothing to register: the package ships Umbraco composers and the `AddComposers()` already in the default `Program.cs` finds it. The Compatibility table also now shows the version actually being shipped instead of the one it was written at.
 
 ### 2.2.1 — 2026-08-24
 
