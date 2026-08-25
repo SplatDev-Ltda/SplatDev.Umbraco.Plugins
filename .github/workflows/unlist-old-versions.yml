@@ -84,7 +84,12 @@ jobs:
           echo "=== packages skipped ==="
           cat plan-notes.txt
           echo "=== versions to unlist: $(wc -l < plan.txt) ==="
-          head -40 plan.txt
+          # The whole plan, not head -40. DELIST_ENTIRELY entries are appended last, so a
+          # truncated listing hides exactly the entries that were added by hand and are
+          # most worth checking. Reading a 64-entry plan through head -40 is what led to
+          # AdPreview being reported as missing when it was at position 64 all along.
+          # These runs are hundreds of lines at most; there is nothing to save here.
+          cat plan.txt
 
       - name: Refuse to unlist a shipped version
         # A bug in the planner must not cost us the current release of anything.
