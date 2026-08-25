@@ -176,7 +176,35 @@ Check ownership before blaming a key: `curl -s "https://azuresearch-usnc.nuget.o
 
 The workflow used to report that run as a clean success — it counted attempts, not outcomes — and now fails the job instead.
 
-Two ids in this group are deliberately left alone. `…Plugins.AdPreview` (0.0.3.5, Umbraco 7) has a v17 port in PR #118 that will publish under the same id, and `…Plugins.HideContent` (1.0.1, a `umbracoNaviHide` visual) has no current equivalent to point anyone at.
+That table used to carry a ninth row's worth of confusion. It said `…Plugins.AdPreview`
+(0.0.3.5, Umbraco 7) was deliberately left alone because "a v17 port in PR #118 will publish
+under the same id". Both halves were wrong, and the mistake hid the worst offender in the
+estate.
+
+There are **two** AdPreview packages:
+
+| id | version | targets | downloads | state |
+| --- | --- | --- | --- | --- |
+| `AdPreview` | 0.0.3 | Umbraco 7.4.3+ | **6,687** | listed, nothing in this repo builds it |
+| `SplatDev.Umbraco.Plugins.AdPreview` | 1.0.0 | Umbraco 13 and 17 | 2,301 | listed, shipped in v2.9.0 |
+
+The dead one is the **bare** id, not the prefixed one, and the port did **not** publish under
+the same id — it publishes as `SplatDev.Umbraco.Plugins.AdPreview`. So the exclusion protected
+the live package (which never needed protecting) while the Umbraco 7 build stayed listed and
+was never on any cleanup list.
+
+It is the one case where "the stale one wins the eye" is literally true. With 6,687 downloads
+against 2,301, `AdPreview` ranks **first** for both `adpreview` and `umbraco ad preview`, and
+the current package ranks third and second. Anyone searching finds a 2016-era Umbraco 7
+package first. Contrast `SplatDevUmbracoPluginBackup` above, where the same claim was made and
+measurement disproved it — the difference is downloads, which is what NuGet actually ranks on.
+
+`AdPreview` is now in `DELIST_ENTIRELY` in `tools/plan-unlist.py` and on the deprecation list
+in `docs/nuget-housekeeping.md`.
+
+One id is still deliberately left alone: `…Plugins.HideContent` (a `umbracoNaviHide` visual)
+has no current equivalent to point anyone at — and is in any case no longer listed on
+nuget.org at all.
 
 **Private feed.** `nuget.config` maps `PdfCurator.*` to `https://nuget.pkg.github.com/splatdevtech/` and reads `%GITHUB_ACTOR%` / `%GITHUB_TOKEN%` from the environment. Restore of PdfCurator fails without those set.
 
