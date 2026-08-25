@@ -1,19 +1,44 @@
-import { LitElement as c, html as t, css as p, state as r, customElement as g } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as m } from "@umbraco-cms/backoffice/element-api";
-var h = Object.defineProperty, b = Object.getOwnPropertyDescriptor, s = (e, a, n, l) => {
-  for (var o = l > 1 ? void 0 : l ? b(a, n) : a, u = e.length - 1, d; u >= 0; u--)
-    (d = e[u]) && (o = (l ? d(a, n, o) : d(o)) || o);
-  return l && o && h(a, n, o), o;
-};
-let i = class extends m(c) {
+import { LitElement as f, nothing as _, html as r, css as y, state as u, customElement as w } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as x } from "@umbraco-cms/backoffice/element-api";
+import { UMB_AUTH_CONTEXT as T } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as $ } from "@umbraco-cms/backoffice/notification";
+function k(e) {
+  let a = null, i = null;
+  const d = e.consumeContext.bind(e), n = new Promise((o) => {
+    d(T, async (s) => {
+      var p;
+      try {
+        a = await ((p = s == null ? void 0 : s.getLatestToken) == null ? void 0 : p.call(s)) ?? null;
+      } catch {
+        a = null;
+      }
+      o();
+    }), setTimeout(o, 3e3);
+  });
+  return d($, (o) => {
+    i = o;
+  }), async (o, s = {}) => {
+    await n;
+    const p = new Headers(s.headers);
+    a && !p.has("Authorization") && p.set("Authorization", `Bearer ${a}`);
+    const c = await fetch(o, { ...s, credentials: "same-origin", headers: p });
+    if (!c.ok) {
+      const h = c.status === 401 || c.status === 403, v = h ? "Not authorised" : "Could not load data", m = h ? `The backoffice token was ${a ? "sent but rejected" : "not available"} (${c.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${c.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${c.status} from ${String(o)} — ${m}`), i == null || i.peek("danger", { data: { headline: v, message: m } });
+    }
+    return c;
+  };
+}
+var S = Object.defineProperty, O = Object.getOwnPropertyDescriptor, b = (e) => {
+  throw TypeError(e);
+}, l = (e, a, i, d) => {
+  for (var n = d > 1 ? void 0 : d ? O(a, i) : a, o = e.length - 1, s; o >= 0; o--)
+    (s = e[o]) && (n = (d ? s(a, i, n) : s(n)) || n);
+  return d && n && S(a, i, n), n;
+}, z = (e, a, i) => a.has(e) || b("Cannot " + i), A = (e, a, i) => (z(e, a, "read from private field"), i ? i.call(e) : a.get(e)), E = (e, a, i) => a.has(e) ? b("Cannot add the same private member more than once") : a instanceof WeakSet ? a.add(e) : a.set(e, i), g;
+let t = class extends x(f) {
   constructor() {
-    super(...arguments), this._activeTab = "analysis", this._analysisPages = [
-      { title: "Home", url: "/", score: "good", metaDescriptionStatus: "present" },
-      { title: "About Us", url: "/about", score: "warning", metaDescriptionStatus: "too-long" },
-      { title: "Blog", url: "/blog", score: "poor", metaDescriptionStatus: "missing" },
-      { title: "Contact", url: "/contact", score: "good", metaDescriptionStatus: "present" },
-      { title: "Services", url: "/services", score: "warning", metaDescriptionStatus: "too-long" }
-    ], this._runningAnalysis = !1, this._metaTags = {
+    super(...arguments), this._activeTab = "analysis", this._analysisPages = [], this._runningAnalysis = !1, this._analysisLoaded = !1, this._analysisError = null, E(this, g, k(this)), this._metaTags = {
       metaTitle: "",
       metaDescription: "",
       canonicalUrl: "",
@@ -27,8 +52,19 @@ let i = class extends m(c) {
       ogType: "website"
     }, this._metaSaved = !1, this._ogSaved = !1;
   }
+  firstUpdated() {
+    this._runAnalysis();
+  }
   async _runAnalysis() {
-    this._runningAnalysis = !0, await new Promise((e) => setTimeout(e, 1500)), this._runningAnalysis = !1;
+    this._runningAnalysis = !0, this._analysisError = null;
+    try {
+      const e = await A(this, g).call(this, "/umbraco/api/seo/analysis");
+      e.ok ? this._analysisPages = await e.json() : (this._analysisError = e.status === 401 || e.status === 403 ? `The request was refused (${e.status}). This is an authorisation problem, not an empty site.` : `The analysis request failed with ${e.status}.`, this._analysisPages = []);
+    } catch (e) {
+      this._analysisError = `The analysis request could not be sent: ${String(e)}`, this._analysisPages = [];
+    } finally {
+      this._analysisLoaded = !0, this._runningAnalysis = !1;
+    }
   }
   _saveMeta() {
     this._metaSaved = !0, setTimeout(() => this._metaSaved = !1, 3e3);
@@ -47,10 +83,11 @@ let i = class extends m(c) {
     }
   }
   _renderAnalysisTab() {
-    return t`
-      <div class="notice">
-        Phase 3 BE APIs are pending. Analysis data shown below is placeholder.
-      </div>
+    return r`
+      ${this._analysisError ? r`<div class="notice notice-error">${this._analysisError}</div>` : this._analysisLoaded && this._analysisPages.length === 0 ? r`<div class="notice">
+              No published pages were returned. Either the site has no published
+              content, or none of it carries the SEO properties this plugin reads.
+            </div>` : _}
       <uui-box>
         <div class="analysis-header" slot="headline">
           <span>Page SEO Analysis</span>
@@ -71,7 +108,7 @@ let i = class extends m(c) {
             <uui-table-head-cell>Meta Description</uui-table-head-cell>
           </uui-table-head>
           ${this._analysisPages.map(
-      (e) => t`
+      (e) => r`
               <uui-table-row>
                 <uui-table-cell>${e.title}</uui-table-cell>
                 <uui-table-cell>
@@ -95,7 +132,7 @@ let i = class extends m(c) {
     `;
   }
   _renderMetaTagsTab() {
-    return t`
+    return r`
       <div class="notice">
         Phase 3 BE APIs are pending. Meta tag configuration is not yet persisted.
       </div>
@@ -184,7 +221,7 @@ let i = class extends m(c) {
   }
   _renderOpenGraphTab() {
     const e = this._og.ogImageUrl.trim().length > 0;
-    return t`
+    return r`
       <div class="notice">
         Phase 3 BE APIs are pending. Open Graph configuration is not yet persisted.
       </div>
@@ -255,7 +292,7 @@ let i = class extends m(c) {
           </p>
           <div class="og-preview">
             <div class="og-preview-image">
-              ${e ? t`<img src=${this._og.ogImageUrl} alt="OG Preview" />` : t`<span>No image set — 1200 × 630 px recommended</span>`}
+              ${e ? r`<img src=${this._og.ogImageUrl} alt="OG Preview" />` : r`<span>No image set — 1200 × 630 px recommended</span>`}
             </div>
             <div class="og-preview-body">
               <p class="og-preview-url">example.com</p>
@@ -272,7 +309,7 @@ let i = class extends m(c) {
     `;
   }
   render() {
-    return t`
+    return r`
       <h1>SEO Dashboard</h1>
       <p class="description">
         Analyse your site's SEO health, manage meta tags, and configure Open
@@ -281,7 +318,7 @@ let i = class extends m(c) {
 
       <uui-tab-group>
         ${["analysis", "meta", "og"].map(
-      (e) => t`
+      (e) => r`
             <uui-tab
               label=${{ analysis: "Analysis", meta: "Meta Tags", og: "Open Graph" }[e]}
               ?active=${this._activeTab === e}
@@ -299,7 +336,8 @@ let i = class extends m(c) {
     `;
   }
 };
-i.styles = p`
+g = /* @__PURE__ */ new WeakMap();
+t.styles = y`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -470,32 +508,38 @@ i.styles = p`
       margin-bottom: var(--uui-size-space-4, 12px);
     }
   `;
-s([
-  r()
-], i.prototype, "_activeTab", 2);
-s([
-  r()
-], i.prototype, "_analysisPages", 2);
-s([
-  r()
-], i.prototype, "_runningAnalysis", 2);
-s([
-  r()
-], i.prototype, "_metaTags", 2);
-s([
-  r()
-], i.prototype, "_og", 2);
-s([
-  r()
-], i.prototype, "_metaSaved", 2);
-s([
-  r()
-], i.prototype, "_ogSaved", 2);
-i = s([
-  g("seo-dashboard")
-], i);
-const x = i;
+l([
+  u()
+], t.prototype, "_activeTab", 2);
+l([
+  u()
+], t.prototype, "_analysisPages", 2);
+l([
+  u()
+], t.prototype, "_runningAnalysis", 2);
+l([
+  u()
+], t.prototype, "_analysisLoaded", 2);
+l([
+  u()
+], t.prototype, "_analysisError", 2);
+l([
+  u()
+], t.prototype, "_metaTags", 2);
+l([
+  u()
+], t.prototype, "_og", 2);
+l([
+  u()
+], t.prototype, "_metaSaved", 2);
+l([
+  u()
+], t.prototype, "_ogSaved", 2);
+t = l([
+  w("seo-dashboard")
+], t);
+const M = t;
 export {
-  i as SeoDashboardElement,
-  x as default
+  t as SeoDashboardElement,
+  M as default
 };

@@ -12,8 +12,8 @@ Umbraco SEO plugin — drop-in meta tags, Open Graph, canonical URLs, and robots
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.1.7           |
-| 17.x    | 10.0 | 2.1.7           |
+| 13.x    | 8.0  | 2.2.0           |
+| 17.x    | 10.0 | 2.2.0           |
 
 ## Installation
 
@@ -93,6 +93,18 @@ No `appsettings.json` keys required — all data comes from Umbraco content prop
 | `OpenGraph` | `Title`, `Type`, `Url`, `Image`, `Description`, `Author`, `DateCreated` |
 
 ## Changelog
+
+### 2.2.0 — 2026-08-25
+
+The dashboard's Analysis tab now analyses the site. It previously rendered five hardcoded pages — Home, About Us, Blog, Contact, Services — behind a notice saying the backend was pending, and its "Run Analysis" button waited a second and a half and changed nothing. There was no controller and no service in the package at all.
+
+There is now. Every published page is scored against the limits search engines apply: titles truncate past 60 characters, descriptions past 160, and a page missing either — or carrying a noindex — is reported as poor rather than merely imperfect. A missing canonical is called out. Each page comes back with the specific issues found, not just a colour.
+
+SEO property aliases differ between sites, so several common spellings are tried (`seoMetaTitle`, `metaTitle`, `seoTitle`, `browserTitle` and the equivalents for description, canonical and robots) rather than one being imposed.
+
+The dashboard also tells you when a request fails instead of showing an empty list, so a refused call no longer looks like a site with no pages.
+
+The Meta Tags and Open Graph tabs still do not persist and still say so.
 
 ### 2.1.7 — 2026-08-25
 

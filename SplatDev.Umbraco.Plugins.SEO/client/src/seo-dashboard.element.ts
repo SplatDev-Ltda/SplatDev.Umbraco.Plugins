@@ -2,6 +2,8 @@ import { LitElement, html, css, nothing } from "@umbraco-cms/backoffice/external
 import { customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 
+import { createAuthFetch } from "./auth-fetch";
+
 type SeoScore = "good" | "warning" | "poor";
 type OgType = "website" | "article" | "product";
 
@@ -10,6 +12,8 @@ interface PageAnalysis {
   url: string;
   score: SeoScore;
   metaDescriptionStatus: "present" | "missing" | "too-long";
+  /** Everything that counted against the page, in the order the analyzer checked. */
+  issues?: string[];
 }
 
 interface MetaTagsModel {
@@ -204,15 +208,20 @@ export class SeoDashboardElement extends UmbElementMixin(LitElement) {
 
   @state() private _activeTab: string = "analysis";
 
-  @state() private _analysisPages: PageAnalysis[] = [
-    { title: "Home", url: "/", score: "good", metaDescriptionStatus: "present" },
-    { title: "About Us", url: "/about", score: "warning", metaDescriptionStatus: "too-long" },
-    { title: "Blog", url: "/blog", score: "poor", metaDescriptionStatus: "missing" },
-    { title: "Contact", url: "/contact", score: "good", metaDescriptionStatus: "present" },
-    { title: "Services", url: "/services", score: "warning", metaDescriptionStatus: "too-long" },
-  ];
+  @state() private _analysisPages: PageAnalysis[] = [];
 
   @state() private _runningAnalysis: boolean = false;
+
+  /** Null until the first run finishes, so "no pages" and "not asked yet" stay distinct. */
+  @state() private _analysisLoaded: boolean = false;
+
+  @state() private _analysisError: string | null = null;
+
+  readonly #fetch = createAuthFetch(this);
+
+  override firstUpdated(): void {
+    void this._runAnalysis();
+  }
 
   @state() private _metaTags: MetaTagsModel = {
     metaTitle: "",
@@ -235,8 +244,27 @@ export class SeoDashboardElement extends UmbElementMixin(LitElement) {
 
   private async _runAnalysis(): Promise<void> {
     this._runningAnalysis = true;
-    await new Promise((r) => setTimeout(r, 1500));
-    this._runningAnalysis = false;
+    this._analysisError = null;
+    try {
+      const res = await this.#fetch("/umbraco/api/seo/analysis");
+      if (!res.ok) {
+        // Distinguish a refused request from an empty site. Rendering the empty state on
+        // both is what let six dashboards in this repo look healthy while every call failed.
+        this._analysisError =
+          res.status === 401 || res.status === 403
+            ? `The request was refused (${res.status}). This is an authorisation problem, not an empty site.`
+            : `The analysis request failed with ${res.status}.`;
+        this._analysisPages = [];
+      } else {
+        this._analysisPages = (await res.json()) as PageAnalysis[];
+      }
+    } catch (e) {
+      this._analysisError = `The analysis request could not be sent: ${String(e)}`;
+      this._analysisPages = [];
+    } finally {
+      this._analysisLoaded = true;
+      this._runningAnalysis = false;
+    }
   }
 
   private _saveMeta(): void {
@@ -259,9 +287,14 @@ export class SeoDashboardElement extends UmbElementMixin(LitElement) {
 
   private _renderAnalysisTab() {
     return html`
-      <div class="notice">
-        Phase 3 BE APIs are pending. Analysis data shown below is placeholder.
-      </div>
+      ${this._analysisError
+        ? html`<div class="notice notice-error">${this._analysisError}</div>`
+        : this._analysisLoaded && this._analysisPages.length === 0
+          ? html`<div class="notice">
+              No published pages were returned. Either the site has no published
+              content, or none of it carries the SEO properties this plugin reads.
+            </div>`
+          : nothing}
       <uui-box>
         <div class="analysis-header" slot="headline">
           <span>Page SEO Analysis</span>
