@@ -21,6 +21,21 @@ namespace SplatDev.Messaging.Smtp.Controllers
         public delegate void MailerSent(object sender, SmtpResultEventArgs args);
         public event MailerSent? OnMailerSent;
 
+        /// <summary>
+        /// Uses the SmtpClient defaults, which come from the host's
+        /// <c>system.net/mailSettings</c> configuration.
+        /// </summary>
+        /// <remarks>
+        /// Kept so that adding the options constructor is not a source-breaking change —
+        /// this is how the type has always been constructed, and SplatDev.Tests still
+        /// does. Prefer the options overload: it is explicit about where mail goes.
+        /// </remarks>
+        public SmtpController()
+        {
+            options = new SmtpOptions();
+            client = new SmtpClient();
+        }
+
         public SmtpController(SmtpOptions options)
         {
             this.options = options;
