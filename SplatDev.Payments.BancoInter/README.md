@@ -12,8 +12,8 @@ Banco Inter payment gateway integration for `SplatDev.Payments` — models, sett
 
 | .NET | Umbraco | Package Version |
 |------|---------|-----------------|
-| 8.0  | 13      | 1.0.4           |
-| 10.0 | 17      | 1.0.4           |
+| 8.0  | 13      | 1.0.5           |
+| 10.0 | 17      | 1.0.5           |
 
 ## Installation
 
@@ -27,6 +27,7 @@ dotnet add package SplatDev.Payments.BancoInter
 
 ```csharp
 using SplatDev.Payments.BancoInter;
+using SplatDev.Payments.BancoInter.Models;   // the Inter* request and response types
 
 var settings = new BancoInterSettings
 {
@@ -71,7 +72,7 @@ Console.WriteLine(settings.TokenUrl); // https://cdpj-sandbox.partners.uatinter.
 
 | Class | Description |
 |-------|-------------|
-| `InterPixCharge` | Pix charge request (amount, payer, expiration) |
+| `InterPixChargeRequest` | Pix charge request (amount, payer, expiration) |
 | `InterPixChargeResponse` | Pix charge response (txid, QR code, copy-paste string) |
 | `InterPixPayment` | Pix payment request (Pix key, amount, description) |
 
@@ -79,7 +80,7 @@ Console.WriteLine(settings.TokenUrl); // https://cdpj-sandbox.partners.uatinter.
 
 | Class | Description |
 |-------|-------------|
-| `InterBoleto` | Boleto issuance request (payer, amount, due date, fine/interest) |
+| `InterBoletoRequest` | Boleto issuance request (payer, amount, due date, fine/interest) |
 | `InterBoletoResponse` | Boleto issuance response (barcode, digitable line, PDF URL) |
 
 ### Banking
@@ -94,12 +95,13 @@ Console.WriteLine(settings.TokenUrl); // https://cdpj-sandbox.partners.uatinter.
 
 ```csharp
 using SplatDev.Payments.BancoInter;
+using SplatDev.Payments.BancoInter.Models;   // the Inter* request and response types
 
 // 1. Get OAuth token
 var token = await GetTokenAsync(settings);  // POST {TokenUrl} with client_credentials
 
 // 2. Create a Pix charge
-var charge = new InterPixCharge
+var charge = new InterPixChargeRequest
 {
     Calendario = new() { Expiracao = 3600 },
     Valor = new() { Original = "49.90", ModalidadeAlteracao = 0 },
@@ -110,16 +112,20 @@ var charge = new InterPixCharge
 // POST {BaseUrl}/cob/v2/cob with Bearer token
 
 // 3. Issue a Boleto
-var boleto = new InterBoleto
+var boleto = new InterBoletoRequest
 {
     SeuNumero = "INV-001",
     ValorNominal = 199.90m,
-    DataVencimento = DateTime.UtcNow.AddDays(7),
+    // DataVencimento and DataEmissao are strings in the API's yyyy-MM-dd form, not dates.
+    DataVencimento = DateTime.UtcNow.AddDays(7).ToString("yyyy-MM-dd"),
     Pagador = new()
     {
         Nome = "John Doe",
         CpfCnpj = "12345678901",
-        Endereco = new() { Cidade = "Sao Paulo", Uf = "SP" }
+        // Endereco is the street line. Cidade and Uf are siblings of it, not nested inside.
+        Endereco = "Rua Example, 100",
+        Cidade = "Sao Paulo",
+        Uf = "SP",
     }
 };
 
@@ -146,6 +152,10 @@ No third-party SDK dependencies — this is a model/contracts library. HTTP call
 **SplatDev.Payments.BancoInter** — part of the [SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins) suite. Licensed under MIT. &copy; SplatDev Ltda.
 
 ## Changelog
+
+### 1.0.5 — 2026-08-25
+
+Documentation only, no code change. The README's example used `InterPixCharge` and `InterBoleto`; the real types are `InterPixChargeRequest` and `InterBoletoRequest`. Three further errors in the same snippet: `DataVencimento` is a string in `yyyy-MM-dd` form rather than a `DateTime`, `Pagador.Endereco` is the street line with `Cidade` and `Uf` as its siblings rather than nested inside it, and the `using` omitted `SplatDev.Payments.BancoInter.Models`, where every `Inter*` type actually lives. The example is now compiled against the assembly.
 
 ### 1.0.4 — 2026-08-24
 
