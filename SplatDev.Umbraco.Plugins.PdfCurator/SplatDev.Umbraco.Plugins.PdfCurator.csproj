@@ -7,14 +7,14 @@
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<AssemblyVersion>2.0.0</AssemblyVersion>
-		<FileVersion>2.0.0</FileVersion>
+		<AssemblyVersion>3.0.0</AssemblyVersion>
+		<FileVersion>3.0.0</FileVersion>
 		<PackageId>SplatDev.Umbraco.Plugins.PdfCurator</PackageId>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<Version>2.1.5</Version>
+		<Version>3.0.0</Version>
 		<Authors>SplatDev</Authors>
-		<Description>Umbraco PDF curator/manager plugin supporting Umbraco 13 (net8.0) and Umbraco 17 (net10.0)</Description>
-		<PackageTags>umbraco umbraco-marketplace</PackageTags>
+		<Description>Umbraco 17 Book Library add-on — backoffice section with Dashboard, Library, Review, and Reports powered by PdfCurator.Web components.</Description>
+		<PackageTags>umbraco umbraco-marketplace pdf book library curator</PackageTags>
 		<Company>SplatDev Ltda</Company>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</PackageProjectUrl>
@@ -42,7 +42,6 @@
 		<PackageReference Include="PdfCurator.Web" Version="0.2.38" />
 	</ItemGroup>
 
-	<!-- The member area depends on PdfCurator.Core/Web (net10.0-only) — Umbraco 17 hosts only -->
 	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
 		<Compile Remove="Controllers\Member\**\*.cs" />
 		<Compile Remove="Components\PdfCuratorDatabaseHandler.cs" />

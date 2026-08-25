@@ -1,36 +1,24 @@
-import { LitElement as s, html as u, css as n, customElement as c } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as d } from "@umbraco-cms/backoffice/element-api";
-var m = Object.getOwnPropertyDescriptor, v = (p, i, o, l) => {
-  for (var e = l > 1 ? void 0 : l ? m(i, o) : i, t = p.length - 1, a; t >= 0; t--)
-    (a = p[t]) && (e = a(e) || e);
+import { customElement as f } from "@umbraco-cms/backoffice/external/lit";
+import { P as l } from "./chunks/pdfc-section-wrapper-CqiCQvAb.js";
+var s = Object.getOwnPropertyDescriptor, v = (p, a, o, n) => {
+  for (var e = n > 1 ? void 0 : n ? s(a, o) : a, r = p.length - 1, c; r >= 0; r--)
+    (c = p[r]) && (e = c(e) || e);
   return e;
 };
-let r = class extends d(s) {
-  render() {
-    return u`
-      <uui-box headline="Review Queue">
-        <!-- TODO(PDFC-W0): Swap for <pdfc-review> real component -->
-        <pdfc-review-placeholder></pdfc-review-placeholder>
-      </uui-box>
-    `;
+let t = class extends l {
+  get headline() {
+    return "Review Queue";
+  }
+  get componentTag() {
+    return "pdfc-review";
   }
 };
-r.styles = n`
-    :host {
-      display: block;
-      padding: var(--uui-size-layout-1, 24px);
-    }
-
-    uui-box {
-      margin-bottom: var(--uui-size-space-5, 16px);
-    }
-  `;
-r = v([
-  c("pdfc-review-wrapper")
-], r);
-const x = r;
+t = v([
+  f("pdfc-review-wrapper")
+], t);
+const u = t;
 export {
-  r as PdfcReviewWrapperElement,
-  x as default
+  t as PdfcReviewWrapperElement,
+  u as default
 };
 //# sourceMappingURL=pdfc-review-wrapper.element.js.map
