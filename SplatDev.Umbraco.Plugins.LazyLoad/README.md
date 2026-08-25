@@ -1,6 +1,6 @@
 # LazyLoad
 
-Lazy loading image plugin for Umbraco — intercepts content rendering to add loading=lazy to img tags.
+Lazy loading plugin for Umbraco — defers `img.lazy` and `iframe.lazy` until they approach the viewport, using `IntersectionObserver` with an immediate-load fallback.
 
 
 <!-- screenshot:start -->
@@ -32,7 +32,7 @@ No registration call is needed. The package ships Umbraco composers, so the `Add
 
 ### 1.2.4 — 2026-08-25
 
-Documentation only, no code change. The README's Quick Start told you to call a registration method that does not exist in this package — following it produced a compile error on the first build. There is nothing to register: the package ships Umbraco composers and the `AddComposers()` already in the default `Program.cs` finds it. The Compatibility table also now shows the version actually being shipped instead of the one it was written at.
+Documentation only, no code change. The README's Quick Start told you to call a registration method that does not exist in this package — following it produced a compile error on the first build. There is nothing to register: the package ships Umbraco composers and the `AddComposers()` already in the default `Program.cs` finds it. The Compatibility table also now shows the version actually being shipped instead of the one it was written at. The summary line also now describes what the plugin does — it defers `img.lazy` and `iframe.lazy` via `IntersectionObserver`, rather than adding a `loading=lazy` attribute to images.
 
 ### 1.2.3 — 2026-08-24
 

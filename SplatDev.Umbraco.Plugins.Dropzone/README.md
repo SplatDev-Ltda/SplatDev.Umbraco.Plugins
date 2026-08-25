@@ -1,6 +1,6 @@
 # Dropzone
 
-Dropzone.js file upload integration for Umbraco — drag-and-drop file upload with progress feedback.
+Dropzone.js file upload integration for Umbraco — drag-and-drop upload straight into the Umbraco Media library, with progress feedback.
 
 
 <!-- screenshot:start -->
@@ -29,7 +29,7 @@ No registration call is needed. The package ships Umbraco composers, so the `Add
 
 ### 1.2.7 — 2026-08-25
 
-Documentation only, no code change. The README's Quick Start told you to call a registration method that does not exist in this package — following it produced a compile error on the first build. There is nothing to register: the package ships Umbraco composers and the `AddComposers()` already in the default `Program.cs` finds it. The Compatibility table also now shows the version actually being shipped instead of the one it was written at.
+Documentation only, no code change. The README's Quick Start told you to call a registration method that does not exist in this package — following it produced a compile error on the first build. There is nothing to register: the package ships Umbraco composers and the `AddComposers()` already in the default `Program.cs` finds it. The Compatibility table also now shows the version actually being shipped instead of the one it was written at. The summary line also now says where uploads land: the Umbraco Media library.
 
 ### 1.2.6 — 2026-08-24
 

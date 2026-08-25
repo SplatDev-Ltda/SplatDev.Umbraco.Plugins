@@ -1,6 +1,6 @@
 # Slider
 
-Image slider plugin for Umbraco — stores slide data with EF Core, renders via configurable view component. Provides a Bellissima backoffice dashboard for managing sliders and slides.
+Image slider plugin for Umbraco — stores slide data with EF Core, managed from a backoffice dashboard over its own API and rendered by a view component. Provides a Bellissima backoffice dashboard for managing sliders and slides.
 
 
 <!-- screenshot:start -->
@@ -96,7 +96,7 @@ for visitors who ask for reduced motion.
 
 ### 1.4.2 — 2026-08-25
 
-Documentation only, no code change. The README's Quick Start told you to call a registration method that does not exist in this package — following it produced a compile error on the first build. There is nothing to register: the package ships Umbraco composers and the `AddComposers()` already in the default `Program.cs` finds it. The Compatibility table also now shows the version actually being shipped instead of the one it was written at.
+Documentation only, no code change. The README's Quick Start told you to call a registration method that does not exist in this package — following it produced a compile error on the first build. There is nothing to register: the package ships Umbraco composers and the `AddComposers()` already in the default `Program.cs` finds it. The Compatibility table also now shows the version actually being shipped instead of the one it was written at. The summary line also now mentions the backoffice dashboard and its API alongside the view component.
 
 ### 1.4.1 — 2026-08-24
 
