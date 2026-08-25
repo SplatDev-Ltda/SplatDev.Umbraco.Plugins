@@ -13,8 +13,8 @@ Built on top of the `SplatDev.DigitalBookCurator.Core` library which handles PDF
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.1.5           |
-| 17.x    | 10.0 | 2.1.5           |
+| 13.x    | 8.0  | 3.0.0           |
+| 17.x    | 10.0 | 3.0.0           |
 
 ## Installation
 
@@ -153,6 +153,12 @@ Localized in English (`en`) and Spanish (`es`).
 - `Umbraco.Cms.Api.Management` (net10.0 / Umbraco 17 only)
 
 ## Changelog
+
+### 3.0.0 — 2026-08-25
+
+Mounts the real PdfCurator component suite in the backoffice section — Dashboard, Library, Review and Reports are live rather than the placeholder they were, and the "coming soon" notice is gone. Adds a section wrapper element and the constants it shares.
+
+**Breaking**: this release targets the Umbraco 17 Book Library add-on described by the new package description, and the major version reflects that the section's contents have changed wholesale rather than incrementally.
 
 ### 2.1.5 — 2026-08-24
 
