@@ -50,10 +50,35 @@ for dir in $(git diff --name-only "$TAG"..HEAD 2>/dev/null \
   # check still catches. docs/screenshots/ likewise: READMEs reference those images by
   # absolute URL rather than packing them. docs/ is not excluded wholesale, because
   # WhatsApp packs its icon from docs/brand/.
-  shipping=$(git diff --name-only "$TAG"..HEAD -- "$dir" 2>/dev/null \
+  changed=$(git diff --name-only "$TAG"..HEAD -- "$dir" 2>/dev/null \
              | grep -vE '(^|/)node_modules(/|$)' \
              | grep -vE '(^|/)client/' \
-             | grep -vE '(^|/)docs/screenshots/' | wc -l)
+             | grep -vE '(^|/)docs/screenshots/')
+
+  # A README whose entire diff is its Compatibility table's version column does not need
+  # a bump. That column is derived from <Version>; correcting it describes the package
+  # that is already published rather than changing it, and the corrected table reaches
+  # nuget.org with that package's next real release.
+  #
+  # Without this the two rules deadlock: tools/sync-readme-versions.py corrects the
+  # table, that counts as a shipping change, this guard demands a bump, the bump moves
+  # <Version>, and the table needs correcting again — for all 96 READMEs at once, which
+  # would mean republishing the whole estate to fix a derived number. A prose change to
+  # a README still trips this check, because a README is only dropped when nothing but
+  # table rows changed.
+  shipping=0
+  for f in $changed; do
+    case "$f" in
+      *README.md)
+        substantive=$(git diff -U0 "$TAG"..HEAD -- "$f" 2>/dev/null \
+          | grep -E '^[+-]' \
+          | grep -vE '^(\+\+\+|---)' \
+          | grep -vcE '^[+-][[:space:]]*\|.*\|[[:space:]]*[0-9]+\.[0-9][^|]*\|[[:space:]]*$')
+        [ "$substantive" -gt 0 ] && shipping=$((shipping+1))
+        ;;
+      *) shipping=$((shipping+1)) ;;
+    esac
+  done
   [ "$shipping" -eq 0 ] && continue
 
   now=$(grep -oP '(?<=<Version>)[^<]+' "$csproj" | head -1)
