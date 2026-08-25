@@ -17,6 +17,10 @@ import gzip, json, os, re, subprocess, sys, time, urllib.error, urllib.request
 class LookupFailed(Exception):
     """A registration lookup that failed rather than legitimately returned nothing."""
 
+
+class NotPublished(Exception):
+    """The id has never been published — a 404 from the registration index."""
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Ids with no Umbraco 13/17 release at all, where every version goes.
@@ -35,6 +39,11 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # It matters more than the rest of this list. At 6,687 downloads against the replacement's
 # 2,301, it ranks first for "adpreview" and for "umbraco ad preview" while the current
 # package ranks third and second — so anyone searching finds an Umbraco 7.4.3 build first.
+#
+# Its registration lookup works and returns ['0.0.3']; it has been planned correctly since
+# the day it was added. A commit message here once said it "went missing from a plan", which
+# was a misreading of a log truncated at head -40 — DELIST_ENTIRELY entries are appended
+# last, so it sat past the cut.
 DELIST_ENTIRELY = [
     "AdPreview",
     "SplatDev.Umbraco.Plugins.HideContent",
@@ -47,11 +56,15 @@ def published(pid):
     version that a previous run already unlisted — which on a rate-limited run means the
     retries are spent on work already done. Registration carries the listed flag.
 
-    A 404 means the id has never been published, which is a real answer and returns [].
-    Anything else is a lookup failure and raises: an empty list and a failed request used to
-    be indistinguishable here, so a network blip silently dropped a package from the plan and
-    its old versions stayed listed with nothing said. That is how AdPreview went missing from
-    a plan on the very run after it was added to DELIST_ENTIRELY.
+    Three outcomes, and they have to stay distinct:
+
+      raises NotPublished   404 — the id has never existed. On DELIST_ENTIRELY that means
+                            the id is wrong and is worth saying loudly.
+      returns []            the id exists and every version is already unlisted. On
+                            DELIST_ENTIRELY that is the finished state, not a problem.
+      raises LookupFailed   the request failed. Previously every exception was swallowed
+                            into [], so a network blip dropped a package from the plan
+                            silently and its old versions stayed listed for good.
     """
     url = f"https://api.nuget.org/v3/registration5-gz-semver2/{pid.lower()}/index.json"
     last = None
@@ -66,7 +79,7 @@ def published(pid):
             break
         except urllib.error.HTTPError as e:
             if e.code == 404:
-                return []
+                raise NotPublished(pid)
             last = e
         except Exception as e:
             last = e
@@ -96,6 +109,8 @@ def main():
         shipped = (re.search(r"<Version>(.*?)</Version>", text) or [None, None])[1]
         try:
             versions = published(pid)
+        except NotPublished:
+            continue
         except LookupFailed as e:
             failures.append(str(e)); continue
         if not versions:
@@ -111,10 +126,14 @@ def main():
     for pid in DELIST_ENTIRELY:
         try:
             versions = published(pid)
+        except NotPublished:
+            failures.append(f"{pid}: on DELIST_ENTIRELY but has never been published — wrong id?")
+            continue
         except LookupFailed as e:
             failures.append(str(e)); continue
         if not versions:
-            failures.append(f"{pid}: on DELIST_ENTIRELY but nothing is listed — check the id")
+            # Every version is already unlisted. That is this list doing its job, not a fault.
+            skipped.append(f"{pid}: on DELIST_ENTIRELY, already fully unlisted")
             continue
         for v in versions:
             plan.append(f"{pid}@{v}")
