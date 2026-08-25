@@ -31,11 +31,20 @@ credentials.
 Every network method also accepts an optional `HttpMessageHandler`, which is how the tests
 exercise them without calling the live services.
 
+One trap worth knowing before the first `using`: the two response models are declared in
+**`SplatDev.UrlShortening.Models`**, not `SplatDev.Security.Models`, even though they ship in
+this package. `using SplatDev.Security;` on its own gets you `Tools` and a
+`CS0246: The type or namespace name 'CheckPhishResponse' could not be found`.
+
+```csharp
+using SplatDev.Security;                // Tools, Constants
+using SplatDev.Security.Models;         // IpBlacklist, IpWhitelist, IpHistory
+using SplatDev.UrlShortening.Models;    // CheckPhishResponse, IpQualityScoreResponse
+```
+
 ### Phishing detection via CheckPhish.ai
 
 ```csharp
-using SplatDev.Security;
-
 CheckPhishResponse result = await Tools.CheckPhish(apiKey, "https://suspicious-site.com");
 
 // disposition is "clean", "phish", "suspicious" — status is "DONE" when the scan finished
@@ -51,8 +60,6 @@ var polled = await Tools.CheckPhishPendingJob(apiKey, result.jobID);
 ### Google Safe Browsing lookup
 
 ```csharp
-using SplatDev.Security;
-
 var result = await Tools.GoogleSafeBrowing(apiKey, new[] { "https://malware-site.com" });
 
 if (result.Matches?.Any() == true)
@@ -68,8 +75,6 @@ It returns Google's own `GoogleSecuritySafebrowsingV4FindThreatMatchesResponse` 
 ### IP quality scoring via IPQualityScore
 
 ```csharp
-using SplatDev.Security;
-
 IpQualityScoreResponse score = await Tools.IpQualityScore(apiKey, "https://example.com/");
 
 Console.WriteLine($"Risk score: {score.Risk_score}");
@@ -84,8 +89,6 @@ capital — `Risk_score`, `Ip_address`, `Dns_valid`.
 ### HTTP basic auth encoding
 
 ```csharp
-using SplatDev.Security;
-
 string encoded = Tools.EncodeAuthHeader("username", "password");
 // "dXNlcm5hbWU6cGFzc3dvcmQ=" — the value only, without the "Basic " prefix
 
@@ -136,8 +139,8 @@ bool blocked = await db.IpBlacklist.AnyAsync(x => x.Ip == candidate && x.Release
 | Class | Purpose |
 |-------|---------|
 | `Tools` | Static facade for the three lookup services, auth-header encoding and the password helpers |
-| `CheckPhishResponse` | Response model from CheckPhish.ai API |
-| `IpQualityScoreResponse` | Response model from IPQualityScore API |
+| `CheckPhishResponse` | Response model from CheckPhish.ai — namespace `SplatDev.UrlShortening.Models` |
+| `IpQualityScoreResponse` | Response model from IPQualityScore — namespace `SplatDev.UrlShortening.Models` |
 | `IpBlacklist` | EF Core entity for blocked IP addresses — definition only |
 | `IpWhitelist` | EF Core entity for allowed IP addresses — definition only |
 | `IpHistory` | EF Core entity for an IP lookup audit trail — definition only |

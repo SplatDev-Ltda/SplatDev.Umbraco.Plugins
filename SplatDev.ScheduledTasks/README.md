@@ -23,6 +23,14 @@ dotnet add package SplatDev.ScheduledTasks
 
 ## Configuration
 
+`SplatDev.ScheduledTasks.Services.TaskScheduler` collides with `System.Threading.Tasks.TaskScheduler`,
+which implicit usings put in scope in any modern project — so a bare `new TaskScheduler(db)`
+fails with `CS0104: 'TaskScheduler' is an ambiguous reference`. Alias it:
+
+```csharp
+using TaskScheduler = SplatDev.ScheduledTasks.Services.TaskScheduler;
+```
+
 `TaskScheduler` takes a `DbContext` and **starts scheduling in its constructor**. There is no
 `StartAsync`, and there is no `ScheduledTasksDbContext` in this package — put a
 `DbSet<ScheduledTask>` on your own context:
