@@ -1,13 +1,25 @@
 # Infrastructure as Code — Azure Bicep Templates
 
-Azure Bicep templates for provisioning Umbraco hosting infrastructure on Microsoft Azure. Covers resource groups, storage accounts, and Key Vault across dev/staging/prod environments.
+Azure Bicep templates for provisioning Umbraco hosting infrastructure on Microsoft Azure, across dev/staging/prod environments.
 
 ## What's Included
 
+`bicep/main.bicep` deploys six resources. The list below is what the template actually
+declares — it previously named three of them and omitted the App Service the site runs on.
+
 - **Resource Group** — scoped per environment (`dev`, `staging`, `prod`)
-- **Storage Account** — Standard_LRS, v2, for Umbraco media and log storage
-- **Key Vault** — secrets/keys management with soft-delete enabled
-- **Environment parameterisation** — single `environment` param drives naming and SKU selection
+- **Storage Account** — Standard_LRS, v2, for Umbraco media and log storage. Public blob
+  access off, cross-tenant replication off, TLS 1.2 minimum, HTTPS only
+- **Key Vault** — secrets and keys, with soft delete and purge protection enabled
+- **Service Bus namespace** — for the messaging packages
+- **App Service plan** and **App Service** — `httpsOnly`, TLS 1.2 minimum, FTPS disabled,
+  always on
+- **Environment parameterisation** — a single `environment` param drives naming and SKU
+
+Network reachability is deliberately left alone: the template hardens transport but does
+not restrict who can reach the site, because there is no VNet or private endpoint here to
+reach it by. Disabling public access without one removes the only route to the app rather
+than narrowing it. That is a decision waiting on a VNet design, not an oversight.
 
 ## Usage
 

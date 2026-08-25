@@ -1,6 +1,6 @@
 # SvgViewer
 
-SVG file viewer plugin for Umbraco — renders inline SVG files from the Umbraco media library safely.
+SVG file viewer plugin for Umbraco — renders SVGs from the media library inline, sanitising the markup before it reaches the page.
 
 
 <!-- screenshot:start -->
@@ -34,7 +34,7 @@ No registration call is needed. The package ships Umbraco composers, so the `Add
 
 ### 1.2.3 — 2026-08-25
 
-Documentation only, no code change. The README's Quick Start told you to call a registration method that does not exist in this package — following it produced a compile error on the first build. There is nothing to register: the package ships Umbraco composers and the `AddComposers()` already in the default `Program.cs` finds it. The Compatibility table also now shows the version actually being shipped instead of the one it was written at.
+Documentation only, no code change. The README's Quick Start told you to call a registration method that does not exist in this package — following it produced a compile error on the first build. There is nothing to register: the package ships Umbraco composers and the `AddComposers()` already in the default `Program.cs` finds it. The Compatibility table also now shows the version actually being shipped instead of the one it was written at. The summary line also now says that the markup is sanitised before it reaches the page.
 
 ### 1.2.2 — 2026-08-24
 
