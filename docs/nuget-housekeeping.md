@@ -27,15 +27,33 @@ Select all versions, reason **Other**, and set the alternate package.
 | `SplatDev.Umbraco.Plugins.SimpleAnalytics` | `SplatDev.Umbraco.Plugins.Analytics` | Replaced. Analytics 3.0.0 restores this plugin's self-hosted visitor tracking. |
 | `SplatDev.Umbraco.Plugin.Backups13` | `SplatDev.Umbraco.Plugins.Backups` | Replaced by a package under the current naming convention. |
 | `SplatDevUmbracoPluginBackup` | `SplatDev.Umbraco.Plugins.Backups` | See section 2 — this one needs ownership first. |
-| `SplatDev.Umbraco.Plugins.CharLimitRestrict` | `SplatDev.Umbraco.Plugins.CharLimit` | Replaced. CharLimit 1.5.0 restores this plugin's counter, prevalue and translations. |
+| `SplatDev.Umbraco.Plugins.CharLimitRestrict` | `SplatDev.Umbraco.Plugins.CharLimit` | Replaced. CharLimit 1.5.1 restores this plugin's counter, prevalue and translations. |
 | `SplatDev.Umbraco.Plugins.OnOffButton` | `SplatDev.Umbraco.Plugins.OnOff` | Replaced by a package under the current naming convention. |
 | `SplatDev.Umbraco.Plugins.RestrictPage` | `SplatDev.Umbraco.Plugins.Restricted` | Replaced by a package under the current naming convention. |
 | `SplatDev.Umbraco.Plugins.YouTubePreview` | `SplatDev.Umbraco.Plugins.VideoPreview` | Replaced by a package under the current naming convention. |
 
-Two ids are deliberately **not** deprecated: `…Plugins.AdPreview`, which now has a project
-again and will publish under its own id, and `…Plugins.HideContent`, whose replacement
-`…Plugins.HiddenContent` is listed but which has no equivalent worth pointing someone at
-mid-upgrade.
+**Every alternate above was verified live on nuget.org on 2026-08-25**, so each one can be
+entered without re-checking:
+
+| alternate | listed version |
+| --- | --- |
+| `…Plugins.SocialMedia.Channels` | 2.3.1 |
+| `…Plugins.Analytics` | 3.0.0 |
+| `…Plugins.Backups` | 3.3.4 |
+| `…Plugins.CharLimit` | 1.5.1 |
+| `…Plugins.OnOff` | 2.3.2 |
+| `…Plugins.Restricted` | 2.5.3 |
+| `…Plugins.VideoPreview` | 2.3.2 |
+
+Two ids are **not** on the list, for different reasons.
+
+`…Plugins.AdPreview` is alive, not superseded — it has a project again and is listed at
+1.0.0 under its own id. Nothing to deprecate.
+
+`…Plugins.HideContent` is **not listed on nuget.org at all**, so there is nothing there to
+deprecate either. This file used to imply it was still out there and only lacked a good
+replacement to point at; it is simply gone. Its nearest equivalent,
+`…Plugins.HiddenContent`, is listed at 2.5.3 if the question ever comes up.
 
 ## 2. `SplatDevUmbracoPluginBackup` — ownership
 
