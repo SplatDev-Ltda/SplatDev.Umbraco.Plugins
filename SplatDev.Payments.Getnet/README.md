@@ -13,8 +13,8 @@ Targets both `net8.0` (Umbraco 13) and `net10.0` (Umbraco 17). Transport-only; t
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 1.0.0           |
-| 17.x    | 10.0 | 1.0.0           |
+| 13.x    | 8.0  | 1.0.4           |
+| 17.x    | 10.0 | 1.0.4           |
 
 ## Installation
 
@@ -57,6 +57,10 @@ Configure `appsettings.json`:
 - This is a transport-only SDK — payment orchestration (idempotency, retry, webhook handling) must be implemented in the consuming application.
 
 ## Changelog
+
+### 1.0.4 — 2026-08-25
+
+Fixes two defects in the Getnet client. Escaping a seller or order id that contains a control character produced a request body that was not valid JSON, so the call failed; the whole character set is escaped properly now. And the API client is registered as a singleton rather than per request, so the OAuth token it caches survives to be reused instead of every call re-authenticating.
 
 ### 1.0.3 — 2026-08-24
 

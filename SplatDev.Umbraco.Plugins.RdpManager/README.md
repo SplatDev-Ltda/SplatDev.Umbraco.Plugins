@@ -15,8 +15,8 @@ Umbraco Remote Desktop connection manager — store RDP configurations and gener
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.0.0           |
-| 17.x    | 10.0 | 2.0.0           |
+| 13.x    | 8.0  | 2.5.1           |
+| 17.x    | 10.0 | 2.5.1           |
 
 ## Installation
 

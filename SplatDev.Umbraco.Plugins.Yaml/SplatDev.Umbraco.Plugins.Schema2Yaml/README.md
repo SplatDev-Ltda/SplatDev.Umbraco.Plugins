@@ -8,8 +8,8 @@ Export Umbraco document types to YAML format — reverse operation of Yaml2Schem
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.0.7           |
-| 17.x    | 10.0 | 2.0.7           |
+| 13.x    | 8.0  | 2.1.2           |
+| 17.x    | 10.0 | 2.1.2           |
 
 ## Installation
 

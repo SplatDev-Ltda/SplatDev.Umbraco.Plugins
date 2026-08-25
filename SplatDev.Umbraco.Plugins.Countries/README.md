@@ -16,8 +16,8 @@ Umbraco countries data plugin — seeds and maintains a `countries` database tab
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.0.0           |
-| 17.x    | 10.0 | 2.0.0           |
+| 13.x    | 8.0  | 2.2.1           |
+| 17.x    | 10.0 | 2.2.1           |
 
 ## Installation
 
@@ -84,6 +84,10 @@ var results = db.Fetch<Country>("WHERE enShortName LIKE @0", $"%{query}%");
 | `CountrySchemaMigrationComposer` | Registers the migration plan via Umbraco's `Upgrader` |
 
 ## Changelog
+
+### 2.2.1 — 2026-08-25
+
+Documentation only, no code change. The README's Quick Start told you to call a registration method that does not exist in this package — following it produced a compile error on the first build. There is nothing to register: the package ships Umbraco composers and the `AddComposers()` already in the default `Program.cs` finds it. The Compatibility table also now shows the version actually being shipped instead of the one it was written at.
 
 ### 2.2.0 — 2026-08-23
 

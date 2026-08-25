@@ -12,8 +12,8 @@ NPoco database layer for Umbraco — provides `BaseEntityRepository<T>` with aut
 
 | .NET | Umbraco | Package Version |
 |------|---------|-----------------|
-| 8.0  | 13.12.0 | 1.0.0           |
-| 10.0 | 17.3.4  | 1.0.0           |
+| 8.0  | 13.12.0 | 2.0.5           |
+| 10.0 | 17.3.4  | 2.0.5           |
 
 ## Installation
 

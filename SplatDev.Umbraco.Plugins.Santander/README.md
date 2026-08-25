@@ -12,7 +12,7 @@ Umbraco 17 (net10.0) plugin for the **Santander Open Banking** suite. Wires up
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 17.x    | 10.0 | 1.0.0           |
+| 17.x    | 10.0 | 1.3.4           |
 
 ## Installation
 

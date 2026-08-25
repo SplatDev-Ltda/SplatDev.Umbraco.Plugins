@@ -15,8 +15,8 @@ Google Analytics GA4 integration for Umbraco. The package registers the GA4 inte
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x | 8.0 | 2.1.5 |
-| 17.x | 10.0 | 2.1.5 |
+| 13.x | 8.0 | 2.2.1 |
+| 17.x | 10.0 | 2.2.1 |
 
 ## Installation
 

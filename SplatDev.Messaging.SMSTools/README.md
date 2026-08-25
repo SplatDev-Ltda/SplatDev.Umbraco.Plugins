@@ -12,8 +12,8 @@ SMSTools SMS provider for the `SplatDev.Messaging` framework. Sends SMS messages
 
 | .NET | Umbraco | Package Version |
 |------|---------|-----------------|
-| 8.0  | 13      | 1.0.0           |
-| 10.0 | 17      | 1.0.0           |
+| 8.0  | 13      | 1.0.2           |
+| 10.0 | 17      | 1.0.2           |
 
 ## Installation
 

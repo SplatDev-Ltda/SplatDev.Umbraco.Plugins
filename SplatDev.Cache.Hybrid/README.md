@@ -12,7 +12,7 @@ Microsoft.Extensions.Caching.Hybrid (HybridCache) adapter for `SplatDev.Cache` a
 
 | .NET | Umbraco | Package Version |
 |------|---------|-----------------|
-| 10.0 | 17      | 1.0.0           |
+| 10.0 | 17      | 1.0.2           |
 
 > This package targets **net10.0 only**. For Umbraco 13 (net8.0), use `SplatDev.Cache.Redis` or the built-in `IMemoryCache`.
 

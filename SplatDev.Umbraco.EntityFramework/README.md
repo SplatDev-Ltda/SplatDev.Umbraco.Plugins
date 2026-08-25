@@ -12,8 +12,8 @@ Entity Framework Core integration for Umbraco — provides the `IRepository<TEnt
 
 | .NET | Umbraco | EF Core | Package Version |
 |------|---------|---------|-----------------|
-| 8.0  | 13      | 8.0.20  | 1.0.0           |
-| 10.0 | 17      | 10.0.7  | 1.0.0           |
+| 8.0  | 13      | 2.0.5   | 1.0.0           |
+| 10.0 | 17      | 2.0.5   | 1.0.0           |
 
 ## Installation
 

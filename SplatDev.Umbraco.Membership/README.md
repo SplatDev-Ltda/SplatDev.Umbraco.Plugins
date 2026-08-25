@@ -11,8 +11,8 @@ Membership utilities for Umbraco 13 and Umbraco 17 — assign members to groups 
 
 | .NET | Umbraco | Package Version |
 |------|---------|-----------------|
-| 8.0  | 13      | 2.0.0           |
-| 10.0 | 17      | 2.0.0           |
+| 8.0  | 13      | 2.0.5           |
+| 10.0 | 17      | 2.0.5           |
 
 ## Installation
 

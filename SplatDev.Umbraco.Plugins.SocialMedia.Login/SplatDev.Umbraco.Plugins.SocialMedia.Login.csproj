@@ -7,7 +7,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<PackageId>SplatDev.Umbraco.Plugins.SocialMedia.Login</PackageId>
-		<Version>2.2.1</Version>
+		<Version>2.2.2</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
 		<Authors>SplatDev</Authors>

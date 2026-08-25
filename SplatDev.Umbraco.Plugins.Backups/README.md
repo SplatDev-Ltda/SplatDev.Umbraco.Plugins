@@ -16,8 +16,8 @@ A comprehensive backup plugin for Umbraco that lets you create, schedule, and re
 
 | Umbraco Version | .NET Target | Package Version |
 |---|---|---|
-| Umbraco 13.x | net8.0 | 3.1.x |
-| Umbraco 17.x | net10.0 | 3.1.x |
+| Umbraco 13.x | net8.0 | 3.3.3 |
+| Umbraco 17.x | net10.0 | 3.3.3 |
 
 ## Features
 
