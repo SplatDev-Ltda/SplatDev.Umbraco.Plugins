@@ -140,3 +140,10 @@ test-environments/*/config/
 test-environments/**/*.sqlite.db
 test-environments/**/*.db-shm
 test-environments/**/*.db-wal
+
+# Python bytecode. tools/*.py are run directly and by CI; importing one for a test
+# leaves a __pycache__ beside it, and a plain `git add -A` then commits it. Two .pyc
+# files reached master that way, one of them in the commit that fixed the unlist
+# planner.
+__pycache__/
+*.py[cod]
