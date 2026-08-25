@@ -1,23 +1,38 @@
-namespace SplatDev.Payments.Stripe.Extensions
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using SplatDev.Payments.Stripe.Data;
+using SplatDev.Payments.Stripe.Interfaces;
+using SplatDev.Payments.Stripe.Services;
+
+namespace SplatDev.Payments.Stripe.Extensions;
+
+public static class StripeServiceCollectionExtensions
 {
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using SplatDev.Payments.Stripe.Models;
-    using SplatDev.Payments.Stripe.Services;
-
-    public static class StripeServiceCollectionExtensions
+    public static IServiceCollection AddSplatDevStripe(
+        this IServiceCollection services,
+        IConfiguration configuration,
+        string configSectionPath = "SplatDev:Payments:Stripe")
     {
-        public static IServiceCollection AddSplatDevStripe(
-            this IServiceCollection services,
-            IConfiguration configuration,
-            string sectionName = StripeOptions.DefaultSection)
+        services.Configure<StripeSettings>(configuration.GetSection(configSectionPath));
+
+        var connectionString = configuration.GetConnectionString("umbracoDbDSN")
+                            ?? configuration.GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException(
+                                "Connection string 'umbracoDbDSN' or 'DefaultConnection' not found.");
+
+        services.AddScoped<StripeAuditInterceptor>();
+        services.AddDbContext<StripePaymentDbContext>((sp, options) =>
         {
-            services.Configure<StripeOptions>(
-                configuration.GetSection(sectionName));
+            options.UseSqlServer(connectionString);
+            options.AddInterceptors(sp.GetRequiredService<StripeAuditInterceptor>());
+        });
 
-            services.AddSingleton<StripeService>();
+        services.AddScoped<IStripeCheckoutService, StripeCheckoutService>();
 
-            return services;
-        }
+        services.AddScoped<IPaymentIntentRepository, PaymentIntentRepository>();
+        services.AddScoped<IStripeWebhookHandler, StripeWebhookHandler>();
+
+        return services;
     }
 }
