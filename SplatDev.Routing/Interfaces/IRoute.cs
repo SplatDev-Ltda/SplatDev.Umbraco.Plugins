@@ -1,5 +1,8 @@
-﻿namespace SplatDev.Routing.Interfaces
+namespace SplatDev.Routing.Interfaces
 {
+    /// <summary>
+    /// A conventional route discovered by <c>MapSplatDevRoutes</c>.
+    /// </summary>
     public interface IRoute
     {
         string RouteAlias { get; }
@@ -8,12 +11,11 @@
         /// Cannot start with /
         /// </summary>
         string Url { get; }
-        string Controller { get; }
-        string Action { get; }
-        object Defaults { get; }
-        int? RootId { get; }
-        string RootAlias { get; }
 
-        bool IsPluginController { get; }
+        string Controller { get; }
+
+        string Action { get; }
+
+        object Defaults { get; }
     }
 }
