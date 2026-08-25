@@ -71,11 +71,16 @@ With no contact for that account, the route is NuGet support. Draft below.
 > before it was renamed to follow our current naming convention. We have no means of
 > contacting that account.
 >
-> The version number is the problem. 9.5.4 sorts above the 3.3.3 that superseded it, so
-> NuGet resolves the abandoned package as the newer one and a search shows it first. Anyone
-> installing it gets a build for a long-unsupported Umbraco version, and misses fixes we
-> have published since — including one that added authorization to endpoints that were
-> previously anonymous.
+> It is still listed and installable, with roughly 321 downloads. Anyone who finds it
+> installs a build targeting a long-unsupported Umbraco version, and misses everything
+> published since under the current id — including a release that added authorization to
+> backup restore and delete endpoints that had previously been reachable without it.
+>
+> To be precise about what I am and am not claiming: the abandoned package does not
+> outrank ours in search, and its higher version number has no bearing on how our package
+> resolves, since the two are separate ids. The problem is narrower — it is live, it is
+> installable, and anyone already depending on it has no signal that a maintained
+> replacement exists.
 >
 > Could you either transfer ownership of `SplatDevUmbracoPluginBackup` to the `SplatDev`
 > account, or unlist and deprecate version 9.5.4 with
