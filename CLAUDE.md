@@ -112,7 +112,9 @@ because the flat container lists unlisted versions too — planning from it re-a
 everything a previous run already unlisted, which is exactly the work a rate-limited retry
 cannot afford. After the first run the remaining plan was 289, not 911.
 
-**Legacy Umbraco 8 versions can outrank the current package.** Several ids carry `8.18.x` builds whose version numbers sort *above* today's `2.x`/`3.x`, so NuGet resolves the v8 assembly as latest. This is not cosmetic: `Backups` served 8.18.7.2 over the 3.3.0 that added authorization to its anonymous `Restore` and `Delete` endpoints, making a published security fix unreachable. Unlist the legacy versions — `.github/workflows/unlist-legacy.yml`, manual dispatch — and check the *search* index, not the flat container, which lists unlisted versions too:
+**Legacy Umbraco 8 versions can outrank the current package — resolved, but this is the mechanism to watch.** Several ids carried `8.18.x` builds whose version numbers sort *above* today's `2.x`/`3.x`, so NuGet resolved the v8 assembly as latest. This is about versions *within one package id*, which is exactly what version sorting governs — unlike the search-ranking claim above, which was a confusion of the two.
+
+Verified clear as of 2026-08-25: `Backups`, `CopyValue` and `DefaultValue` each resolve to their current release (3.3.3, 2.4.2, 2.4.0) with no `8.18.x` version listed. `Backups` in fact has a single listed version, which is the goal state for every id here. This is not cosmetic: `Backups` served 8.18.7.2 over the 3.3.0 that added authorization to its anonymous `Restore` and `Delete` endpoints, making a published security fix unreachable. Unlist the legacy versions — `.github/workflows/unlist-legacy.yml`, manual dispatch — and check the *search* index, not the flat container, which lists unlisted versions too:
 `curl -s "https://azuresearch-usnc.nuget.org/query?q=packageid:<id>&prerelease=true"`.
 
 **Some package ids were replaced rather than updated, and the dead one often looks newer.** A plugin rebuilt under a conforming name left its old id on NuGet, still resolvable, sometimes at a higher version than its replacement — so a search turns up both and the stale one wins the eye:
@@ -131,8 +133,27 @@ the last row still turns up in a search.
 | `…Plugins.RestrictPage` | 2.0.1 | yes | `…Plugins.Restricted` | 2.5.0 |
 | `…Plugins.YouTubePreview` | 2.0.1 | yes | `…Plugins.VideoPreview` | 2.3.0 |
 
-The one still listed is the worst of the eight to leave alone: 9.5.4 sorts above the
-3.3.2 that replaced it, so it wins the search outright.
+The one still listed is `SplatDevUmbracoPluginBackup`, and the reason recorded here for
+prioritising it was wrong. It said 9.5.4 "sorts above the 3.3.2 that replaced it, so it
+wins the search outright". It does not, and cannot: NuGet's search ranks *different ids*
+by relevance and downloads, not by version number. Measured across four queries —
+
+| query | rank of `…Plugins.Backups` | rank of `SplatDevUmbracoPluginBackup` |
+| --- | --- | --- |
+| `umbraco backup` | **1** | 2 |
+| `backups` | 3 | not in top 5 |
+| `splatdev backup` | **1** | 3 |
+| `SplatDevUmbracoPluginBackup` | 2 | 1 |
+
+— the replacement wins everywhere except a search for the dead id by name.
+
+That confuses two different mechanisms. Version numbers decide which version of *one* id
+resolves as latest, which is the real Umbraco 8 problem below. They have nothing to do with
+which of *two* ids a search surfaces first.
+
+So this is a lower priority than it read: the id is still listed and installable, with 321
+downloads, and anyone already depending on it gets no signal pointing at the replacement.
+That is what deprecation fixes, and it is worth doing — but it is not outranking anything.
 
 The two jobs nuget.org gives no API for — deprecating the superseded ids, and the ownership
 transfer `SplatDevUmbracoPluginBackup` needs — are written up with exact values and a draft
