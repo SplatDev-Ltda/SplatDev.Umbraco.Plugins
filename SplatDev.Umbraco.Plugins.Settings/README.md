@@ -4,6 +4,9 @@ Umbraco site-wide settings manager plugin — key-value configuration store with
 
 
 <!-- screenshot:start -->
+
+![Settings dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Settings/docs/screenshots/01-dashboard.png)
+
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Settings.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Settings)
@@ -12,8 +15,8 @@ Umbraco site-wide settings manager plugin — key-value configuration store with
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.4.4           |
-| 17.x    | 10.0 | 2.4.4           |
+| 13.x    | 8.0  | 2.4.5           |
+| 17.x    | 10.0 | 2.4.5           |
 
 ## Installation
 
@@ -59,6 +62,10 @@ _settingsService.Set("SiteName", "My New Site");
 - Group definitions are configured in appsettings.json and require an application restart to apply changes
 
 ## Changelog
+
+### 2.4.5 — 2026-08-26
+
+The NuGet listing now shows the dashboard. It had no screenshot before, so the listing gave no picture of what the plugin looks like in the backoffice.
 
 ### 2.4.4 — 2026-08-26
 

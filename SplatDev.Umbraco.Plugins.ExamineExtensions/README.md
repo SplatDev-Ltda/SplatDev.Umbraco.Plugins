@@ -4,6 +4,9 @@ Examine search extensions for Umbraco — query helpers, index inspection, and r
 
 
 <!-- screenshot:start -->
+
+![ExamineExtensions dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.ExamineExtensions/docs/screenshots/01-dashboard.png)
+
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.ExamineExtensions.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.ExamineExtensions)
@@ -12,8 +15,8 @@ Examine search extensions for Umbraco — query helpers, index inspection, and r
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 1.2.5           |
-| 17.x    | 10.0 | 1.2.5           |
+| 13.x    | 8.0  | 1.2.6           |
+| 17.x    | 10.0 | 1.2.6           |
 
 ## Installation
 
@@ -67,6 +70,10 @@ The dashboard provides a UI for browsing indexes, running searches, and triggeri
 - No authorization on API endpoints
 
 ## Changelog
+
+### 1.2.6 — 2026-08-26
+
+The NuGet listing now shows the dashboard. It had no screenshot before, so the listing gave no picture of what the plugin looks like in the backoffice.
 
 ### 1.2.5 — 2026-08-26
 

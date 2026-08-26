@@ -4,6 +4,9 @@ Simple shopping cart for Umbraco — add/remove items, quantity management, and 
 
 
 <!-- screenshot:start -->
+
+![ShopCart dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.ShopCart/docs/screenshots/01-dashboard.png)
+
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.ShopCart.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.ShopCart)
@@ -12,8 +15,8 @@ Simple shopping cart for Umbraco — add/remove items, quantity management, and 
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.3.3           |
-| 17.x    | 10.0 | 2.3.3           |
+| 13.x    | 8.0  | 2.3.4           |
+| 17.x    | 10.0 | 2.3.4           |
 
 ## Installation
 
@@ -72,6 +75,10 @@ The plugin includes a `ProductDocumentType` scaffolding class for creating Umbra
 - No auto-install mechanism for the Product document type scaffolding
 
 ## Changelog
+
+### 2.3.4 — 2026-08-26
+
+The NuGet listing now shows the dashboard. It had no screenshot before, so the listing gave no picture of what the plugin looks like in the backoffice.
 
 ### 2.3.3 — 2026-08-26
 

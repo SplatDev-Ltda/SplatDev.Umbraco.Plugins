@@ -35,8 +35,15 @@ def caption(stem: str) -> str:
 
 
 done, skipped = [], []
-for shots_dir in sorted(pathlib.Path(".").glob("SplatDev.Umbraco.Plugins.*/docs/screenshots")):
-    proj = shots_dir.parts[0]
+# Both depths: nested plugins live at SplatDev.Umbraco.Plugins.Yaml/SplatDev.Umbraco.
+# Plugins.Schema2Yaml, and a one-level glob resolves them to the parent directory - which
+# holds no .csproj and ships nothing. That is the same depth blind spot that dropped
+# Schema2Yaml from v2.1.5.
+globs = ["SplatDev.Umbraco.Plugins.*/docs/screenshots",
+         "SplatDev.Umbraco.Plugins.*/SplatDev.Umbraco.Plugins.*/docs/screenshots"]
+found = sorted({d for g in globs for d in pathlib.Path(".").glob(g)})
+for shots_dir in found:
+    proj = str(shots_dir.parent.parent)
     readme = pathlib.Path(proj) / "README.md"
     if not readme.exists():
         skipped.append((proj, "no README.md")); continue
@@ -46,7 +53,7 @@ for shots_dir in sorted(pathlib.Path(".").glob("SplatDev.Umbraco.Plugins.*/docs/
         skipped.append((proj, "no screenshots on disk")); continue
 
     text = readme.read_text(encoding="utf-8", errors="replace")
-    name = proj.replace("SplatDev.Umbraco.Plugins.", "")
+    name = pathlib.Path(proj).name.replace("SplatDev.Umbraco.Plugins.", "")
     images = "\n\n".join(
         f"![{name} {caption(s.stem)}]({RAW}/{proj}/docs/screenshots/{s.name})" for s in shots
     )

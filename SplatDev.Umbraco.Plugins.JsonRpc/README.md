@@ -4,6 +4,9 @@ JSON-RPC 2.0 API endpoint for Umbraco — expose content as JSON-RPC with API ke
 
 
 <!-- screenshot:start -->
+
+![JsonRpc dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.JsonRpc/docs/screenshots/01-dashboard.png)
+
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.JsonRpc.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.JsonRpc)
@@ -12,8 +15,8 @@ JSON-RPC 2.0 API endpoint for Umbraco — expose content as JSON-RPC with API ke
 
 | Umbraco | .NET | Package Version | Dashboard |
 |---------|------|-----------------|-----------|
-| 13.x    | 8.0  | 2.2.6           | AngularJS |
-| 17.x    | 10.0 | 2.2.6           | Lit (Bellissima) |
+| 13.x    | 8.0  | 2.2.7           | AngularJS |
+| 17.x    | 10.0 | 2.2.7           | Lit (Bellissima) |
 
 ## Installation
 
@@ -61,6 +64,10 @@ The build output is placed at `App_Plugins/JsonRpc/dist/jsonrpc-dashboard.elemen
 - `Services/` — API key management and request logging
 
 ## Changelog
+
+### 2.2.7 — 2026-08-26
+
+The NuGet listing now shows the dashboard. It had no screenshot before, so the listing gave no picture of what the plugin looks like in the backoffice.
 
 ### 2.2.6 — 2026-08-26
 

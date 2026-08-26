@@ -4,6 +4,9 @@ Umbraco SEO plugin — drop-in meta tags, Open Graph, canonical URLs, and robots
 
 
 <!-- screenshot:start -->
+
+![SEO dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.SEO/docs/screenshots/01-dashboard.png)
+
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.SEO.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.SEO)
@@ -12,8 +15,8 @@ Umbraco SEO plugin — drop-in meta tags, Open Graph, canonical URLs, and robots
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.3.1           |
-| 17.x    | 10.0 | 2.3.1           |
+| 13.x    | 8.0  | 2.3.2           |
+| 17.x    | 10.0 | 2.3.2           |
 
 ## Installation
 
@@ -93,6 +96,10 @@ No `appsettings.json` keys required — all data comes from Umbraco content prop
 | `OpenGraph` | `Title`, `Type`, `Url`, `Image`, `Description`, `Author`, `DateCreated` |
 
 ## Changelog
+
+### 2.3.2 — 2026-08-26
+
+The NuGet listing now shows the dashboard. It had no screenshot before, so the listing gave no picture of what the plugin looks like in the backoffice.
 
 ### 2.3.1 — 2026-08-26
 

@@ -4,6 +4,9 @@ Email template engine, Mailgun mail provider, newsletter campaigns, and member n
 
 
 <!-- screenshot:start -->
+
+![EmailNotifications dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.EmailNotifications/docs/screenshots/01-dashboard.png)
+
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.EmailNotifications.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.EmailNotifications)
@@ -12,8 +15,8 @@ Email template engine, Mailgun mail provider, newsletter campaigns, and member n
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 1.3.4           |
-| 17.x    | 10.0 | 1.3.4           |
+| 13.x    | 8.0  | 1.3.5           |
+| 17.x    | 10.0 | 1.3.5           |
 
 ## Installation
 
@@ -40,6 +43,10 @@ Add to `appsettings.json`:
 ```
 
 ## Changelog
+
+### 1.3.5 — 2026-08-26
+
+The NuGet listing now shows the dashboard. It had no screenshot before, so the listing gave no picture of what the plugin looks like in the backoffice.
 
 ### 1.3.4 — 2026-08-26
 

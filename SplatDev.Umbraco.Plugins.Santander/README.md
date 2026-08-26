@@ -4,6 +4,9 @@ Umbraco 17 (net10.0) plugin for the **Santander Open Banking** suite. Wires up
 
 
 <!-- screenshot:start -->
+
+![Santander dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Santander/docs/screenshots/01-dashboard.png)
+
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Santander.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Santander)
@@ -12,7 +15,7 @@ Umbraco 17 (net10.0) plugin for the **Santander Open Banking** suite. Wires up
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 17.x    | 10.0 | 1.3.5           |
+| 17.x    | 10.0 | 1.3.6           |
 
 ## Installation
 
@@ -44,6 +47,10 @@ dotnet add package SplatDev.Umbraco.Plugins.Santander
 `ApiKey`, `WorkspaceId`, `CovenantCode`, `BankId`, `AccountId`, `PixKey`, and per-product path overrides.
 
 ## Changelog
+
+### 1.3.6 — 2026-08-26
+
+The NuGet listing now shows the dashboard. It had no screenshot before, so the listing gave no picture of what the plugin looks like in the backoffice.
 
 ### 1.3.5 — 2026-08-26
 

@@ -4,6 +4,9 @@ e-Not Assina electronic signature integration for Umbraco. Supports document cre
 
 
 <!-- screenshot:start -->
+
+![ENotAssina dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.ENotAssina/docs/screenshots/01-dashboard.png)
+
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.ENotAssina.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.ENotAssina)
@@ -12,8 +15,8 @@ e-Not Assina electronic signature integration for Umbraco. Supports document cre
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 1.2.5           |
-| 17.x    | 10.0 | 1.2.5           |
+| 13.x    | 8.0  | 1.2.6           |
+| 17.x    | 10.0 | 1.2.6           |
 
 ## Installation
 
@@ -39,6 +42,10 @@ Add to `appsettings.json`:
 ```
 
 ## Changelog
+
+### 1.2.6 — 2026-08-26
+
+The NuGet listing now shows the dashboard. It had no screenshot before, so the listing gave no picture of what the plugin looks like in the backoffice.
 
 ### 1.2.5 — 2026-08-26
 

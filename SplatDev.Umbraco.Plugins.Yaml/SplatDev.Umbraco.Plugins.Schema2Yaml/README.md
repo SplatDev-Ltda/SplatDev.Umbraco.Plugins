@@ -2,14 +2,21 @@
 
 Export Umbraco document types to YAML format — reverse operation of Yaml2Schema. Exports content types, media types, members, and content to YAML files for version control or migration.
 
+
+<!-- screenshot:start -->
+
+![Schema2Yaml dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Yaml/SplatDev.Umbraco.Plugins.Schema2Yaml/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Schema2Yaml.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Schema2Yaml)
 
 ## Compatibility
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.1.2           |
-| 17.x    | 10.0 | 2.1.2           |
+| 13.x    | 8.0  | 2.1.3           |
+| 17.x    | 10.0 | 2.1.3           |
 
 ## Installation
 
@@ -56,6 +63,10 @@ Access the Schema2Yaml dashboard from the Umbraco Settings section. Select the e
 - No incremental/delta export; always exports the full schema
 
 ## Changelog
+
+### 2.1.3 — 2026-08-26
+
+The NuGet listing now shows the dashboard. It had no screenshot before, so the listing gave no picture of what the plugin looks like in the backoffice.
 
 ### 2.1.2 — 2026-08-24
 

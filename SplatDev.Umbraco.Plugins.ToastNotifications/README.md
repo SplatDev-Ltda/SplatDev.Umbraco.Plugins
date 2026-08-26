@@ -4,6 +4,9 @@ Toast / snackbar notification system for Umbraco — manage configurable notific
 
 
 <!-- screenshot:start -->
+
+![ToastNotifications dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.ToastNotifications/docs/screenshots/01-dashboard.png)
+
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.ToastNotifications.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.ToastNotifications)
@@ -12,8 +15,8 @@ Toast / snackbar notification system for Umbraco — manage configurable notific
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.4.3           |
-| 17.x    | 10.0 | 2.4.3           |
+| 13.x    | 8.0  | 2.4.4           |
+| 17.x    | 10.0 | 2.4.4           |
 
 ## Installation
 
@@ -71,6 +74,10 @@ Supported notification types: `info`, `success`, `warning`, `error`.
 - No built-in front-end rendering component; consumers must implement their own toast UI
 
 ## Changelog
+
+### 2.4.4 — 2026-08-26
+
+The NuGet listing now shows the dashboard. It had no screenshot before, so the listing gave no picture of what the plugin looks like in the backoffice.
 
 ### 2.4.3 — 2026-08-26
 
