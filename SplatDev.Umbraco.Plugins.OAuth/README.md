@@ -4,6 +4,9 @@ Umbraco OAuth social login plugin — member authentication via Google, Facebook
 
 
 <!-- screenshot:start -->
+
+![OAuth dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.OAuth/docs/screenshots/01-dashboard.png)
+
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.OAuth.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.OAuth)
@@ -12,8 +15,8 @@ Umbraco OAuth social login plugin — member authentication via Google, Facebook
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.2.2           |
-| 17.x    | 10.0 | 2.2.2           |
+| 13.x    | 8.0  | 2.2.4           |
+| 17.x    | 10.0 | 2.2.4           |
 
 ## Installation
 
@@ -82,6 +85,14 @@ Authentication happens via browser redirects — the OAuth flow is handled by AS
 - Member account linking (connecting multiple social accounts to one Umbraco member) is not supported
 
 ## Changelog
+
+### 2.2.4 — 2026-08-26
+
+Fixes a duplicate registration on sites that still have a physical App_Plugins folder for this plugin, left behind by an older release that copied content into the site. Umbraco registered those extensions twice - once from its own scan of the folder, once from this package's embedded manifest - and logged "Extension with alias ... is already registered". The embedded manifest now yields to the physical copy.
+
+### 2.2.3 — 2026-08-26
+
+The NuGet listing now shows the OAuth configuration dashboard, with the Google, Facebook and X provider cards.
 
 ### 2.2.2 — 2026-08-24
 

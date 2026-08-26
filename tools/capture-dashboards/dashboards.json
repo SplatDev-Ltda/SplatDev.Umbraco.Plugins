@@ -1,0 +1,27 @@
+{
+  "_comment": "Generated from each plugin's umbraco-package.json. section is the URL segment under /umbraco/section/.",
+  "dashboards": [
+    { "plugin": "BackupManager",        "section": "settings", "pathname": "backup-manager" },
+    { "plugin": "D4Sign",               "section": "content",  "pathname": "d4sign" },
+    { "plugin": "DictionaryManager",    "section": "settings", "pathname": "dictionary-manager" },
+    { "plugin": "Dropzone",             "section": "settings", "pathname": "dropzone" },
+    { "plugin": "ENotAssina",           "section": "content",  "pathname": "enotassina" },
+    { "plugin": "EmailNotifications",   "section": "content",  "pathname": "email-notifications" },
+    { "plugin": "ExamineExtensions",    "section": "settings", "pathname": "examine-extensions" },
+    { "plugin": "ExceptionManager",     "section": "settings", "pathname": "exception-manager" },
+    { "plugin": "Forums",               "section": "settings", "pathname": "forums" },
+    { "plugin": "Gdrp",                 "section": "content",  "pathname": "gdrp" },
+    { "plugin": "JsonRpc",              "section": "content",  "pathname": "json-rpc" },
+    { "plugin": "Mailer",               "section": "settings", "pathname": "mailer" },
+    { "plugin": "OAuth",                "section": "settings", "pathname": "oauth" },
+    { "plugin": "Payments.MercadoPago", "section": "settings", "pathname": "mercadopago" },
+    { "plugin": "SEO",                  "section": "settings", "pathname": "seo" },
+    { "plugin": "Santander",            "section": "content",  "pathname": "santander-banking" },
+    { "plugin": "Settings",             "section": "content",  "pathname": "site-settings" },
+    { "plugin": "ShopCart",             "section": "content",  "pathname": "shop-cart" },
+    { "plugin": "ShortUrls",            "section": "settings", "pathname": "short-urls" },
+    { "plugin": "Smtp",                 "section": "settings", "pathname": "smtp" },
+    { "plugin": "ToastNotifications",   "section": "content",  "pathname": "toast-notifications" },
+    { "plugin": "Yaml",                 "section": "settings", "pathname": "schema-export" }
+  ]
+}

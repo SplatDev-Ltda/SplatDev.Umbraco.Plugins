@@ -15,8 +15,8 @@ Banco Inter payment integration for Umbraco — supports Pix (immediate and due 
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 1.3.1           |
-| 17.x    | 10.0 | 1.3.1           |
+| 13.x    | 8.0  | 1.3.2           |
+| 17.x    | 10.0 | 1.3.2           |
 
 ## Installation
 
@@ -82,6 +82,10 @@ Set `Environment: sandbox` for testing, `production` for live transactions.
 - Webhook payload signature verification is handled at the library level
 
 ## Changelog
+
+### 1.3.2 — 2026-08-26
+
+Fixes a duplicate registration on sites that still have a physical App_Plugins folder for this plugin, left behind by an older release that copied content into the site. Umbraco registered those extensions twice - once from its own scan of the folder, once from this package's embedded manifest - and logged "Extension with alias ... is already registered". The embedded manifest now yields to the physical copy.
 
 ### 1.3.1 — 2026-08-24
 

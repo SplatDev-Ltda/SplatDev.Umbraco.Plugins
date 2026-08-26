@@ -21,8 +21,8 @@ Photo gallery plugin for Umbraco — stores gallery albums and photos with EF Co
 
 | Umbraco | .NET | Package Version | Dashboard |
 |---------|------|-----------------|-----------|
-| 13.x    | 8.0  | 1.4.2           | AngularJS |
-| 17.x    | 10.0 | 1.4.2           | Lit (Bellissima) |
+| 13.x    | 8.0  | 1.4.3           | AngularJS |
+| 17.x    | 10.0 | 1.4.3           | Lit (Bellissima) |
 
 ## Installation
 
@@ -76,6 +76,10 @@ inherits your site's design. Thumbnails are used where a photo has one and each 
 the full image; photos below the fold load lazily.
 
 ## Changelog
+
+### 1.4.3 — 2026-08-26
+
+Fixes a duplicate registration on sites that still have a physical App_Plugins folder for this plugin, left behind by an older release that copied content into the site. Umbraco registered those extensions twice - once from its own scan of the folder, once from this package's embedded manifest - and logged "Extension with alias ... is already registered". The embedded manifest now yields to the physical copy.
 
 ### 1.4.2 — 2026-08-25
 

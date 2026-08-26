@@ -28,8 +28,8 @@ A full-featured survey builder plugin for Umbraco 13 and Umbraco 17.
 
 | Framework | Umbraco | EF Core |
 |-----------|---------|---------|
-| net8.0    | 13.12.0 | 2.4.2   |
-| net10.0   | 17.3.4  | 2.4.2   |
+| net8.0    | 13.12.0 | 2.4.3   |
+| net10.0   | 17.3.4  | 2.4.3   |
 
 ## API Endpoints
 
@@ -79,6 +79,10 @@ it is configured with — SQL Server or SQLite. There is nothing to scaffold and
 to run by hand.
 
 ## Changelog
+
+### 2.4.3 — 2026-08-26
+
+Fixes a duplicate registration on sites that still have a physical App_Plugins folder for this plugin, left behind by an older release that copied content into the site. Umbraco registered those extensions twice - once from its own scan of the folder, once from this package's embedded manifest - and logged "Extension with alias ... is already registered". The embedded manifest now yields to the physical copy.
 
 ### 2.4.2 — 2026-08-24
 

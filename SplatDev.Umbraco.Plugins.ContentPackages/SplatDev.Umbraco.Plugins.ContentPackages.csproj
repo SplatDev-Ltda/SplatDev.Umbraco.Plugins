@@ -8,7 +8,7 @@
     <PackageId>SplatDev.Umbraco.Plugins.ContentPackages</PackageId>
     <Product>SplatDev.Umbraco.Plugins.ContentPackages</Product>
     <Title>SplatDev.Umbraco.Plugins.ContentPackages</Title>
-    <Version>0.1.2</Version>
+    <Version>0.1.3</Version>
     <!-- Skeleton only. CI packs and pushes every SplatDev.Umbraco.Plugins.* on a v* tag,
          so this stays unpackable until the phases in PLAN.md are done. It still builds in
          CI, which is the point — regressions get caught without publishing a half-finished

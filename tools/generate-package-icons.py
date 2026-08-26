@@ -114,6 +114,9 @@ GLYPH_FOR: dict[str, str] = {
     "search": "search", "examine": "search", "elastic": "search", "lucene": "search",
     "analytics": "chart", "insights": "chart", "stats": "chart", "metrics": "gauge",
     "seo": "tag", "sitemap": "sitemap", "redirects": "shuffle", "robots": "eye",
+    # "adpreview" rather than a bare "preview": the matcher takes the longest keyword
+    # present, and "preview" would outrank "video" and restyle VideoPreview too.
+    "adpreview": "eye",
     "cache": "bolt", "cachemanager": "bolt", "redis": "bolt", "performance": "gauge",
     "backup": "archive", "backups": "archive", "restore": "archive", "export": "download",
     "import": "upload", "migration": "refresh", "sync": "refresh", "usync": "refresh",

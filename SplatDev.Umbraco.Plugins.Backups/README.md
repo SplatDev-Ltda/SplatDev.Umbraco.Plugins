@@ -16,8 +16,8 @@ A comprehensive backup plugin for Umbraco that lets you create, schedule, and re
 
 | Umbraco Version | .NET Target | Package Version |
 |---|---|---|
-| Umbraco 13.x | net8.0 | 3.3.4 |
-| Umbraco 17.x | net10.0 | 3.3.4 |
+| Umbraco 13.x | net8.0 | 3.3.5 |
+| Umbraco 17.x | net10.0 | 3.3.5 |
 
 ## Features
 
@@ -171,6 +171,10 @@ MIT — see [LICENSE](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins/
 Issues and PRs welcome at [github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins](https://github.com/SplatDev-Ltda/SplatDev.Umbraco.Plugins).
 
 ## Changelog
+
+### 3.3.5 — 2026-08-26
+
+Fixes a duplicate registration on sites that still have a physical App_Plugins folder for this plugin, left behind by an older release that copied content into the site. Umbraco registered those extensions twice - once from its own scan of the folder, once from this package's embedded manifest - and logged "Extension with alias ... is already registered". The embedded manifest now yields to the physical copy.
 
 ### 3.3.4 — 2026-08-25
 

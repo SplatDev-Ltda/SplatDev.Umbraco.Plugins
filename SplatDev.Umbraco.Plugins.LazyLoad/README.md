@@ -15,8 +15,8 @@ Lazy loading plugin for Umbraco — defers `img.lazy` and `iframe.lazy` until th
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 1.2.4           |
-| 17.x    | 10.0 | 1.2.4           |
+| 13.x    | 8.0  | 1.2.5           |
+| 17.x    | 10.0 | 1.2.5           |
 
 ## Installation
 
@@ -29,6 +29,10 @@ dotnet add package SplatDev.Umbraco.Plugins.LazyLoad
 No registration call is needed. The package ships Umbraco composers, so the `AddComposers()` already in the default `Program.cs` picks the plugin up as soon as the package is referenced.
 
 ## Changelog
+
+### 1.2.5 — 2026-08-26
+
+Fixes a duplicate registration on sites that still have a physical App_Plugins folder for this plugin, left behind by an older release that copied content into the site. Umbraco registered those extensions twice - once from its own scan of the folder, once from this package's embedded manifest - and logged "Extension with alias ... is already registered". The embedded manifest now yields to the physical copy.
 
 ### 1.2.4 — 2026-08-25
 

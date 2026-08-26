@@ -8,9 +8,9 @@ latest version and a one-line summary per package.
 
 ![NuGetCatalog dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.NuGetCatalog/docs/screenshots/01-dashboard.png)
 
-![NuGetCatalog screenshot](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.NuGetCatalog/docs/screenshots/01-packages.png)
+![NuGetCatalog packages](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.NuGetCatalog/docs/screenshots/01-packages.png)
 
-![NuGetCatalog screenshot](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.NuGetCatalog/docs/screenshots/02-manage.png)
+![NuGetCatalog manage](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.NuGetCatalog/docs/screenshots/02-manage.png)
 
 <!-- screenshot:end -->
 
@@ -94,6 +94,14 @@ under different URL forms.
 Reads nuget.org only. No publishing, unlisting, or per-version charts.
 
 ## Changelog
+
+### 1.2.2 — 2026-08-26
+
+Fixes a duplicate registration on sites that still have a physical App_Plugins folder for this plugin, left behind by an older release that copied content into the site. Umbraco registered those extensions twice - once from its own scan of the folder, once from this package's embedded manifest - and logged "Extension with alias ... is already registered". The embedded manifest now yields to the physical copy.
+
+### 1.2.1 — 2026-08-26
+
+The two screenshots on the NuGet listing now describe themselves — "packages" and "manage" rather than both reading "screenshot".
 
 ### 1.2.0 — 2026-08-23
 

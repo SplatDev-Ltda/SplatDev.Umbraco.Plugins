@@ -12,8 +12,8 @@ Toast / snackbar notification system for Umbraco — manage configurable notific
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.4.2           |
-| 17.x    | 10.0 | 2.4.2           |
+| 13.x    | 8.0  | 2.4.3           |
+| 17.x    | 10.0 | 2.4.3           |
 
 ## Installation
 
@@ -71,6 +71,10 @@ Supported notification types: `info`, `success`, `warning`, `error`.
 - No built-in front-end rendering component; consumers must implement their own toast UI
 
 ## Changelog
+
+### 2.4.3 — 2026-08-26
+
+Fixes a duplicate registration on sites that still have a physical App_Plugins folder for this plugin, left behind by an older release that copied content into the site. Umbraco registered those extensions twice - once from its own scan of the folder, once from this package's embedded manifest - and logged "Extension with alias ... is already registered". The embedded manifest now yields to the physical copy.
 
 ### 2.4.2 — 2026-08-24
 

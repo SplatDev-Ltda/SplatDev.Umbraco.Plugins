@@ -17,8 +17,8 @@ Character limit property editor for Umbraco — enforces max length on text prop
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 1.5.1           |
-| 17.x    | 10.0 | 1.5.1           |
+| 13.x    | 8.0  | 1.5.2           |
+| 17.x    | 10.0 | 1.5.2           |
 
 ## Installation
 
@@ -56,6 +56,10 @@ Add a CharLimit data type to any text property on a document type. The property 
 - Different `DataEditor` attribute signatures are used via conditional compilation for net8.0 vs net10.0
 
 ## Changelog
+
+### 1.5.2 — 2026-08-26
+
+Fixes a duplicate registration on sites that still have a physical App_Plugins folder for this plugin, left behind by an older release that copied content into the site. Umbraco registered those extensions twice - once from its own scan of the folder, once from this package's embedded manifest - and logged "Extension with alias ... is already registered". The embedded manifest now yields to the physical copy.
 
 ### 1.5.1 — 2026-08-25
 

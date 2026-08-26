@@ -5,6 +5,9 @@ reports them from a backoffice dashboard. The data stays in your database — no
 analytics service, no account, nothing to consent to on someone else's behalf.
 
 <!-- screenshot:start -->
+
+![Analytics dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Analytics/docs/screenshots/01-dashboard.png)
+
 <!-- screenshot:end -->
 
 ## Compatibility
@@ -116,6 +119,14 @@ On Umbraco 13 these are reached at `/umbraco/backoffice/api/AnalyticsApi/...` an
 `/umbraco/backoffice/api/AnalyticsTracking/...`.
 
 ## Changelog
+
+### 3.0.2 — 2026-08-26
+
+Fixes a duplicate registration on sites that still have a physical App_Plugins folder for this plugin, left behind by an older release that copied content into the site. Umbraco registered those extensions twice - once from its own scan of the folder, once from this package's embedded manifest - and logged "Extension with alias ... is already registered". The embedded manifest now yields to the physical copy.
+
+### 3.0.1 — 2026-08-26
+
+The NuGet listing now shows the dashboard screenshot. The image existed in the repository but nothing referenced it, so the listing had no picture of what the plugin looks like.
 
 ### 3.0.0 — 2026-08-24
 
