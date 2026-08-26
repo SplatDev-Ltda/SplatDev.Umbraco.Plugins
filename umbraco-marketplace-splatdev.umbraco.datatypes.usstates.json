@@ -1,12 +1,12 @@
 {
   "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
-  "Description": "Dropzone.js file upload integration for Umbraco — drag-and-drop file upload with progress feedback.",
-  "Category": "PIM & DAM",
+  "Description": "US States data type for Umbraco 13 (net8.0) and Umbraco 17 (net10.0)",
+  "Category": "Editor Tools",
   "PackageType": "Package",
   "LicenseTypes": [
     "Free"
   ],
-  "DocumentationUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/blob/master/SplatDev.Umbraco.Plugins.Dropzone/README.md",
+  "DocumentationUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/blob/master/SplatDev.Umbraco.DataTypes.USStates/README.md",
   "IssueTrackerUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/issues",
   "AuthorDetails": {
     "Name": "SplatDev",
@@ -15,5 +15,10 @@
     "ImageUrl": "https://github.com/splatdevtech.png",
     "SyncContributorsFromRepository": true
   },
-  "Screenshots": []
+  "Screenshots": [
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.DataTypes.USStates/docs/screenshots/03-data-type.png",
+      "Caption": "Setting up the DataTypes.USStates data type."
+    }
+  ]
 }

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
+  "Description": "Umbraco social media channel management plugin — select a social channel theme and configure profile links. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0)",
+  "Category": "Editor Tools",
+  "PackageType": "Package",
+  "LicenseTypes": [
+    "Free"
+  ],
+  "DocumentationUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/blob/master/SplatDev.Umbraco.Plugins.SocialMedia.Channels.PropertyEditor/README.md",
+  "IssueTrackerUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/issues",
+  "AuthorDetails": {
+    "Name": "SplatDev",
+    "Description": "SplatDev Ltda — building Umbraco plugins and tools for agencies and developers.",
+    "Url": "https://github.com/splatdevtech",
+    "ImageUrl": "https://github.com/splatdevtech.png",
+    "SyncContributorsFromRepository": true
+  },
+  "Screenshots": [
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.SocialMedia.Channels.PropertyEditor/docs/screenshots/02-property-editor.png",
+      "Caption": "The SocialMedia.Channels.PropertyEditor property editor on a document."
+    },
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.SocialMedia.Channels.PropertyEditor/docs/screenshots/03-data-type.png",
+      "Caption": "Setting up the SocialMedia.Channels.PropertyEditor data type."
+    }
+  ]
+}

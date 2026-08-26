@@ -1,12 +1,12 @@
 {
   "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
-  "Description": "Dropzone.js file upload integration for Umbraco — drag-and-drop file upload with progress feedback.",
-  "Category": "PIM & DAM",
+  "Description": "CLI tool for creating Umbraco NuGet packages — generates package.manifest, bundles App_Plugins assets, and wraps dotnet pack.",
+  "Category": "Developer Tools",
   "PackageType": "Package",
   "LicenseTypes": [
     "Free"
   ],
-  "DocumentationUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/blob/master/SplatDev.Umbraco.Plugins.Dropzone/README.md",
+  "DocumentationUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/blob/master/SplatDev.Umbraco.Tools.Packager/README.md",
   "IssueTrackerUrl": "https://github.com/splatdevtech/SplatDev.Umbraco.Plugins/issues",
   "AuthorDetails": {
     "Name": "SplatDev",
