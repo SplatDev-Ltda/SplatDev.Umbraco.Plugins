@@ -33,23 +33,30 @@ public sealed class SeoApiController : ControllerBase
 {
     private readonly IUmbracoContextAccessor _contextAccessor;
     private readonly SeoAnalyzer _analyzer;
+    private readonly SeoDefaultsStore _defaults;
 #if NET10_0_OR_GREATER
     private readonly IDocumentNavigationQueryService _navigation;
 
     public SeoApiController(
         IUmbracoContextAccessor contextAccessor,
         SeoAnalyzer analyzer,
+        SeoDefaultsStore defaults,
         IDocumentNavigationQueryService navigation)
     {
         _contextAccessor = contextAccessor;
         _analyzer = analyzer;
+        _defaults = defaults;
         _navigation = navigation;
     }
 #else
-    public SeoApiController(IUmbracoContextAccessor contextAccessor, SeoAnalyzer analyzer)
+    public SeoApiController(
+        IUmbracoContextAccessor contextAccessor,
+        SeoAnalyzer analyzer,
+        SeoDefaultsStore defaults)
     {
         _contextAccessor = contextAccessor;
         _analyzer = analyzer;
+        _defaults = defaults;
     }
 #endif
 
@@ -86,6 +93,20 @@ public sealed class SeoApiController : ControllerBase
             warning = pages.Count(p => p.Score == SeoScore.Warning),
             poor = pages.Count(p => p.Score == SeoScore.Poor),
         });
+    }
+
+    /// <summary>The site-wide defaults, for the Meta Tags and Open Graph tabs.</summary>
+    [HttpGet]
+    public IActionResult Defaults() => Ok(_defaults.Get());
+
+    /// <summary>Saves the site-wide defaults.</summary>
+    [HttpPost]
+    public IActionResult SaveDefaults([FromBody] SeoDefaults defaults)
+    {
+        if (defaults is null) return BadRequest(new { error = "No settings were supplied." });
+
+        _defaults.Save(defaults);
+        return Ok(_defaults.Get());
     }
 
     /// <summary>
