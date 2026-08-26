@@ -1,68 +1,81 @@
 # Deploying staging
 
-`staging-umbraco.splatdev.tech` is an Umbraco 17 install carrying every publishable plugin.
-`.github/workflows/deploy-staging.yml` publishes `test-environments/Umbraco17.Baseline` and
-syncs it to the host. It is **manual dispatch only** — staging is outward-facing, so a
-deploy is a decision someone makes rather than something a merge triggers.
+`staging-umbraco.splatdev.tech` is an Umbraco 17 instance carrying every publishable plugin,
+running as the Docker container `u17-testing-web`.
+`.github/workflows/deploy-staging.yml` updates it. **Manual dispatch only** — staging is
+outward-facing, so a deploy is a decision someone makes rather than something a merge
+triggers.
+
+## A deploy is an image rebuild, not a file copy
+
+The container's only volumes are `u17_media` and `u17_plugins`; neither carries the
+application, which is baked into the image. Copying published output to a directory on the
+host therefore achieves nothing — the container never reads it. (The first version of this
+workflow did exactly that.)
+
+So the workflow:
+
+1. packs every publishable plugin into a local NuGet feed, using **the same discovery rule
+   as `publish.yml`** so a package that ships is a package staging gets;
+2. regenerates `plugins.props` with `tools/make-plugins-props.py`, failing if any plugin it
+   lists has no `.nupkg`;
+3. ships that build context to the host;
+4. runs `docker compose build` and recreates the service;
+5. polls the site and **fails the job** if it does not come back.
+
+`infra/testing-instances/u17/Dockerfile` builds a fresh Umbraco site from a **pinned**
+`Umbraco.Templates::17.6.0` and installs the plugins from that local feed in a single
+restore. Keep the pin: without it the instance silently drifted to Umbraco 18 once already
+(SPL-3497), and because both are .NET 10 nothing failed loudly — plugins were simply
+"verified" against the wrong major.
 
 ## Secrets it needs
 
-The workflow checks all four up front and fails with a named error if any is missing,
-rather than dying later inside an ssh command nobody can read.
+Checked up front, so a missing one is a named error rather than an unreadable ssh failure.
 
 | Secret | What it is |
 | --- | --- |
 | `STAGING_SSH_HOST` | hostname or IP of the staging box |
 | `STAGING_SSH_USER` | the deploy user |
-| `STAGING_SSH_KEY` | that user's **private** key, whole file including the header line |
-| `STAGING_PATH` | absolute path of the site root on the host |
+| `STAGING_SSH_PASSWORD` | that user's password |
+| `STAGING_SRC` | absolute path of the build context on the host |
 
 Optional:
 
 | Name | Kind | Default | What it is |
 | --- | --- | --- | --- |
-| `STAGING_SERVICE` | secret | `umbraco-staging` | unit name, when restarting via systemd |
+| `STAGING_COMPOSE_DIR` | secret | `STAGING_SRC` | where `docker-compose.yml` lives, if not the build context |
 | `STAGING_URL` | variable | `https://staging-umbraco.splatdev.tech` | what the health check polls |
 
-Give the deploy user its own key, and grant it only what the deploy does: write to
-`STAGING_PATH`, and restart the site. If the restart is systemd it needs a sudoers rule for
-that one unit rather than general sudo.
+**On the password.** This authenticates with `sshpass`, reading the password from the
+environment rather than the command line so it stays out of the host's process list. It is
+still materially weaker than a key: a reusable password that opens a shell, held by CI, and
+rotated only by hand. A dedicated deploy key restricted to this one job is the better shape
+if you revisit it.
 
 ## Running it
 
-Actions → **Deploy staging** → Run workflow. Inputs: `ref` (default `master`), `restart`
-(`docker` or `systemd`), and `dry_run`, which builds and reports what rsync *would* change
-without touching the host. Run it dry the first time.
+Actions → **Deploy staging** → Run workflow.
 
-## What it deliberately does not overwrite
+- `ref` — branch, tag or SHA to deploy (default `master`)
+- `dry_run` — packs everything and reports what *would* ship without touching the host. Run
+  this first.
+- `no_cache` — rebuild the image from scratch. On by default; turn it off for a quick
+  iteration when only plugin packages changed.
 
-The publish is the application; the host owns its own state. `appsettings.json` (and any
-`appsettings.*.json`), `umbraco/Data/`, `umbraco/Logs/` and `wwwroot/media/` are excluded,
-so the staging connection string and database survive a deploy.
+## Why the rebuild fixes the duplicate aliases
 
-Everything else syncs with `--delete`. That matters: without it the host accumulates files
-no current release ships, which is how staging came to hold stale `App_Plugins` folders.
+Staging logged fifteen `Extension with alias X is already registered` errors. Umbraco
+discovers extensions by enumerating physical directories under `App_Plugins` at the content
+root, and every plugin *also* registers its embedded manifest through an
+`IPackageManifestReader` — so a site holding a real folder for a plugin gets each alias
+twice.
 
-## Why it removes App_Plugins
+Those folders are baked into the running image by an older, content-copying release. A
+rebuild from current source produces none, because plugins now embed their assets; the
+workflow's packing step would surface it if that regressed. The reader also yields to a
+physical copy now, so any install still in that state is quiet regardless.
 
-Every plugin embeds its `App_Plugins` content and hands Umbraco the manifest through an
-`IPackageManifestReader`, so a correct publish contains no `App_Plugins` directory — the
-workflow fails if one appears, because that means a package has started copying content
-again.
-
-A site that still has a real `App_Plugins/<Name>/` folder from an older content-copying
-release gets that plugin's extensions registered **twice**: once from Umbraco's own scan of
-physical directories, once from the embedded manifest. The backoffice logs
-
-```
-Extension with alias <X> is already registered
-```
-
-and drops one. Staging had fifteen of these, across PdfCurator, EmailTemplates, AdPreview,
-ShopCart and RdpManager.
-
-Two things fix it, and both are wanted. The reader now skips a manifest whose physical
-folder exists, so the *code* is quiet on any site in that state — including installs in the
-wild that this workflow will never touch. The deploy then removes the folders, which is
-what actually returns the host to the intended embedded-only shape rather than just
-silencing the symptom.
+Note that `u17_plugins` mounts at `/app/wwwroot/App_Plugins`, which is **not** the directory
+Umbraco scans — `wwwroot/App_Plugins` is not served at all, which is separately how
+Schema2Yaml and Yaml2Schema were once unreachable. That volume is not the cause here.
