@@ -57,6 +57,7 @@ try {
 
 // Errors that fire on every page regardless of which dashboard is open.
 const GLOBAL_NOISE = [/is already registered/i];
+const MIN_CHARS = 40;
 const globalErrors = new Set();
 
 const kept = [], rejected = [];
@@ -71,36 +72,52 @@ for (const d of targets) {
     bad.push(`${r.status()} ${r.url().replace(BASE, "")}`); };
   page.on("response", onResp);
 
-  const url = `${BASE}/umbraco/section/${d.section}/dashboard/${d.pathname}`;
+  // A plugin that owns a whole section is not reached at .../dashboard/<name>: a bare
+  // section has no dashboard segment, and PdfCurator routes its sectionViews under
+  // /view/. Those entries carry an explicit path instead of being constructed.
+  const url = d.path
+    ? `${BASE}${d.path}`
+    : `${BASE}/umbraco/section/${d.section}/dashboard/${d.pathname}`;
   let reason = null, h = 0;
   try {
     await page.goto(url, { waitUntil: "networkidle", timeout: 90_000 });
     // Lit dashboards register, mount and then fetch. Measuring at domcontentloaded reports
     // 0px for a dashboard that renders perfectly a few seconds later — SEO did exactly that.
     await page.waitForTimeout(7000);
-    // The whole backoffice lives in shadow DOM, so document.querySelector finds nothing —
-    // measuring that way reports 0px for a dashboard that rendered perfectly. Walk the
-    // shadow roots and take the tallest dashboard-ish element we can find.
+    // Measuring a container's height proves nothing: umb-body-layout is full height whether
+    // the panel rendered anything or not, so an empty section scored the same 940px as a
+    // working dashboard. ContentPackages and PdfCurator both passed that check while
+    // rendering nothing at all. Measure the visible text actually painted below the section
+    // nav instead, which is what a reader of the screenshot would see.
     h = await page.evaluate(() => {
-      let best = 0;
+      const seen = new Set();
+      let chars = 0;
       const visit = (root) => {
         for (const el of root.querySelectorAll("*")) {
-          const t = el.tagName.toLowerCase();
-          if (t.includes("dashboard") || t === "umb-body-layout" || t === "main")
-            best = Math.max(best, Math.round(el.getBoundingClientRect().height));
           if (el.shadowRoot) visit(el.shadowRoot);
+          if (el.children.length) continue;          // leaves only, so text is not counted twice
+          const r = el.getBoundingClientRect();
+          if (r.top < 70 || r.width < 1 || r.height < 1) continue;   // 70px excludes the top nav
+          const t = (el.textContent || "").trim();
+          if (!t || seen.has(t)) continue;
+          seen.add(t);
+          chars += t.length;
         }
       };
       visit(document);
-      return best;
+      return chars;
     });
-    // Some console errors are site-wide, not this dashboard's fault — a duplicate extension
+
+    // Some console errors are site-wide, not this dashboard's fault - a duplicate extension
     // alias anywhere in the manifest throws on every page load. Rejecting on those would
-    // reject all 22. They are collected and reported once instead.
+    // reject every dashboard. They are collected and reported once instead.
     const mine = errors.filter((e) => !GLOBAL_NOISE.some((re) => re.test(e)));
     errors.filter((e) => GLOBAL_NOISE.some((re) => re.test(e))).forEach((e) => globalErrors.add(e));
 
-    if (h < 120) reason = `rendered only ${h}px`;
+    // 40 rather than something higher: a dashboard whose only state is empty still says
+    // so, and EmailTemplates - two tabs, a Create button and "No email templates yet" -
+    // paints 87 characters. The genuinely blank ones paint 0, so the gap is wide.
+    if (h < MIN_CHARS) reason = `only ${h} visible characters below the nav`;
     else if (mine.length) reason = `console error: ${mine[0]}`;
     else if (bad.length) reason = `api ${bad[0]}`;
   } catch (e) { reason = String(e).split("\n")[0].slice(0, 120); }
@@ -108,11 +125,15 @@ for (const d of targets) {
   page.off("console", onErr); page.off("requestfailed", onFail); page.off("response", onResp);
 
   if (reason) { rejected.push([d.plugin, reason]); console.log(`  reject ${d.plugin}: ${reason}`); continue; }
-  const dir = path.join(ROOT, `SplatDev.Umbraco.Plugins.${d.plugin}`, "docs", "screenshots");
+  // A nested plugin lives under its parent, and the parent holds no .csproj and ships
+  // nothing - writing there put Schema2Yaml's screenshot somewhere no package could
+  // reference. Such entries name their project path explicitly.
+  const dir = path.join(ROOT, d.project || `SplatDev.Umbraco.Plugins.${d.plugin}`,
+                        "docs", "screenshots");
   fs.mkdirSync(dir, { recursive: true });
   await page.screenshot({ path: path.join(dir, "01-dashboard.png") });
   kept.push(d.plugin);
-  console.log(`  keep   ${d.plugin} (${h}px)`);
+  console.log(`  keep   ${d.plugin} (${h} chars)`);
 }
 
 await browser.close();

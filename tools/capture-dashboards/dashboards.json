@@ -1,27 +1,138 @@
 {
-  "_comment": "Generated from each plugin's umbraco-package.json. section is the URL segment under /umbraco/section/.",
+  "_comment": "Generated from each plugin's umbraco-package.json. section is the URL segment under /umbraco/section/. path overrides the constructed URL for plugins that own a whole section rather than contributing a dashboard to one.",
   "dashboards": [
-    { "plugin": "BackupManager",        "section": "settings", "pathname": "backup-manager" },
-    { "plugin": "D4Sign",               "section": "content",  "pathname": "d4sign" },
-    { "plugin": "DictionaryManager",    "section": "settings", "pathname": "dictionary-manager" },
-    { "plugin": "Dropzone",             "section": "settings", "pathname": "dropzone" },
-    { "plugin": "ENotAssina",           "section": "content",  "pathname": "enotassina" },
-    { "plugin": "EmailNotifications",   "section": "content",  "pathname": "email-notifications" },
-    { "plugin": "ExamineExtensions",    "section": "settings", "pathname": "examine-extensions" },
-    { "plugin": "ExceptionManager",     "section": "settings", "pathname": "exception-manager" },
-    { "plugin": "Forums",               "section": "settings", "pathname": "forums" },
-    { "plugin": "Gdrp",                 "section": "content",  "pathname": "gdrp" },
-    { "plugin": "JsonRpc",              "section": "content",  "pathname": "json-rpc" },
-    { "plugin": "Mailer",               "section": "settings", "pathname": "mailer" },
-    { "plugin": "OAuth",                "section": "settings", "pathname": "oauth" },
-    { "plugin": "Payments.MercadoPago", "section": "settings", "pathname": "mercadopago" },
-    { "plugin": "SEO",                  "section": "settings", "pathname": "seo" },
-    { "plugin": "Santander",            "section": "content",  "pathname": "santander-banking" },
-    { "plugin": "Settings",             "section": "content",  "pathname": "site-settings" },
-    { "plugin": "ShopCart",             "section": "content",  "pathname": "shop-cart" },
-    { "plugin": "ShortUrls",            "section": "settings", "pathname": "short-urls" },
-    { "plugin": "Smtp",                 "section": "settings", "pathname": "smtp" },
-    { "plugin": "ToastNotifications",   "section": "content",  "pathname": "toast-notifications" },
-    { "plugin": "Yaml",                 "section": "settings", "pathname": "schema-export" }
+    {
+      "plugin": "BackupManager",
+      "section": "settings",
+      "pathname": "backup-manager"
+    },
+    {
+      "plugin": "D4Sign",
+      "section": "content",
+      "pathname": "d4sign"
+    },
+    {
+      "plugin": "DictionaryManager",
+      "section": "settings",
+      "pathname": "dictionary-manager"
+    },
+    {
+      "plugin": "Dropzone",
+      "section": "settings",
+      "pathname": "dropzone"
+    },
+    {
+      "plugin": "ENotAssina",
+      "section": "content",
+      "pathname": "enotassina"
+    },
+    {
+      "plugin": "EmailNotifications",
+      "section": "content",
+      "pathname": "email-notifications"
+    },
+    {
+      "plugin": "ExamineExtensions",
+      "section": "settings",
+      "pathname": "examine-extensions"
+    },
+    {
+      "plugin": "ExceptionManager",
+      "section": "settings",
+      "pathname": "exception-manager"
+    },
+    {
+      "plugin": "Forums",
+      "section": "settings",
+      "pathname": "forums"
+    },
+    {
+      "plugin": "Gdrp",
+      "section": "content",
+      "pathname": "gdrp"
+    },
+    {
+      "plugin": "JsonRpc",
+      "section": "content",
+      "pathname": "json-rpc"
+    },
+    {
+      "plugin": "Mailer",
+      "section": "settings",
+      "pathname": "mailer"
+    },
+    {
+      "plugin": "OAuth",
+      "section": "settings",
+      "pathname": "oauth"
+    },
+    {
+      "plugin": "Payments.MercadoPago",
+      "section": "settings",
+      "pathname": "mercadopago"
+    },
+    {
+      "plugin": "SEO",
+      "section": "settings",
+      "pathname": "seo"
+    },
+    {
+      "plugin": "Santander",
+      "section": "content",
+      "pathname": "santander-banking"
+    },
+    {
+      "plugin": "Settings",
+      "section": "content",
+      "pathname": "site-settings"
+    },
+    {
+      "plugin": "ShopCart",
+      "section": "content",
+      "pathname": "shop-cart"
+    },
+    {
+      "plugin": "ShortUrls",
+      "section": "settings",
+      "pathname": "short-urls"
+    },
+    {
+      "plugin": "Smtp",
+      "section": "settings",
+      "pathname": "smtp"
+    },
+    {
+      "plugin": "ToastNotifications",
+      "section": "content",
+      "pathname": "toast-notifications"
+    },
+    {
+      "plugin": "Yaml",
+      "section": "settings",
+      "pathname": "schema-export",
+      "project": "SplatDev.Umbraco.Plugins.Yaml/SplatDev.Umbraco.Plugins.Schema2Yaml"
+    },
+    {
+      "plugin": "ContentPackages",
+      "section": "content-packages",
+      "pathname": "content-packages",
+      "path": "/umbraco/section/content-packages"
+    },
+    {
+      "plugin": "EmailTemplates",
+      "section": "email-templates",
+      "pathname": "email-templates"
+    },
+    {
+      "plugin": "Newsletter",
+      "section": "newsletter",
+      "pathname": "newsletter"
+    },
+    {
+      "plugin": "PdfCurator",
+      "section": "pdf-curator",
+      "pathname": "dashboard",
+      "path": "/umbraco/section/pdf-curator/view/dashboard"
+    }
   ]
 }

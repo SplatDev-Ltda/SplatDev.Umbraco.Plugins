@@ -1,6 +1,9 @@
 # Newsletter
 
 <!-- screenshot:start -->
+
+![Newsletter dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Newsletter/docs/screenshots/01-dashboard.png)
+
 <!-- screenshot:end -->
 
 Newsletter subscriber lists, campaigns, Mailgun bulk send, and stats tracking for Umbraco 17 (net10.0). Depends on SplatDev.Umbraco.Plugins.EmailTemplates for rendering.
@@ -11,7 +14,7 @@ Newsletter subscriber lists, campaigns, Mailgun bulk send, and stats tracking fo
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 17.x    | 10.0 | 1.3.7           |
+| 17.x    | 10.0 | 1.3.8           |
 
 ## Installation
 
@@ -46,6 +49,10 @@ Add to `appsettings.json`:
 ```
 
 ## Changelog
+
+### 1.3.8 — 2026-08-26
+
+The NuGet listing now shows the dashboard. It had no screenshot before, so the listing gave no picture of what the plugin looks like in the backoffice.
 
 ### 1.3.7 — 2026-08-26
 
