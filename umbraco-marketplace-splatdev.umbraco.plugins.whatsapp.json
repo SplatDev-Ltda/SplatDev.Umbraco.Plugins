@@ -18,23 +18,23 @@
   "Screenshots": [
     {
       "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/01-inbox.png",
-      "Caption": "Inbox — conversations with initials avatars, readable numbers, delivery ticks, and how long the 24-hour reply window has left."
+      "Caption": "WhatsApp screenshot."
     },
     {
       "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/02-contacts.png",
-      "Caption": "Contacts — names your team gives WhatsApp numbers, used across the inbox in place of the WhatsApp profile name."
+      "Caption": "WhatsApp screenshot."
     },
     {
       "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/03-send.png",
-      "Caption": "Send an approved template with its variables filled in, previewed before it goes out."
+      "Caption": "WhatsApp screenshot."
     },
     {
       "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/04-templates.png",
-      "Caption": "Every template on your WhatsApp Business Account, with approval status and variable count."
+      "Caption": "WhatsApp screenshot."
     },
     {
       "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/05-status.png",
-      "Caption": "Phone health, quality rating, and setup warnings for anything left unconfigured."
+      "Caption": "WhatsApp screenshot."
     }
   ]
 }

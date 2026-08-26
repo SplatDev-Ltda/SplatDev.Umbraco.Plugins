@@ -69,6 +69,10 @@ shopRoot (allowAsRoot)
 
 ## Changelog
 
+### 1.0.6 — 2026-08-26
+
+The Marketplace listing declared the category "Website Themes", which is not in the Marketplace's taxonomy, so the whole listing failed validation and the theme showed only its bare NuGet metadata. It is now "Themes & Starter Kits", and the listing carries its screenshots.
+
 ### 1.0.5 — 2026-08-24
 
 Removes a dashboard screenshot that showed an error toast. It was captured against a site where this plugin's API was unreachable, so it advertised a broken dashboard. No screenshot is better than a misleading one; a replacement will be taken against a working install.

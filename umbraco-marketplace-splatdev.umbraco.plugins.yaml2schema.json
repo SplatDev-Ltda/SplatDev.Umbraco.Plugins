@@ -21,5 +21,11 @@
       "Description": "Companion package — exports your existing Umbraco site structure to YAML. v2.x supports Umbraco 14-17, v1.x supports Umbraco 13.",
       "GroupTitle": "Umbraco YAML Toolkit"
     }
+  ],
+  "Screenshots": [
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Yaml/SplatDev.Umbraco.Plugins.Yaml2Schema/docs/screenshots/01-dashboard.png",
+      "Caption": "The Yaml2Schema dashboard in the Umbraco backoffice."
+    }
   ]
 }

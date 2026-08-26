@@ -24,8 +24,8 @@
   ],
   "Screenshots": [
     {
-      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/umbraco-yaml/main/docs/images/hero-banner.png",
-      "Caption": "Schema Export dashboard — one-click YAML + media ZIP download"
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Yaml/SplatDev.Umbraco.Plugins.Schema2Yaml/docs/screenshots/01-dashboard.png",
+      "Caption": "The Schema2Yaml dashboard in the Umbraco backoffice."
     }
   ]
 }

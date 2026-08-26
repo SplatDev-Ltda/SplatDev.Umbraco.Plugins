@@ -8,7 +8,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <PackageId>SplatDev.Umbraco.Themes.Portfolio</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.0.4</Version>
+    <Version>1.0.5</Version>
     <Authors>SplatDev</Authors>
     <Description>Portfolio theme for Umbraco - project grid, project detail, filtering, lightbox, about</Description>
     <PackageTags>umbraco;theme;portfolio;creative umbraco-marketplace</PackageTags>

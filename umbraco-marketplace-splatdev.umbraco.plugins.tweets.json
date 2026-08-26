@@ -17,8 +17,8 @@
   },
   "Screenshots": [
     {
-      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Tweets/docs/screenshots/01-dashboard.png",
-      "Caption": "The Tweets dashboard in the Umbraco backoffice."
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Tweets/docs/screenshots/04-front-end.png",
+      "Caption": "Tweets rendered on the front end."
     }
   ]
 }

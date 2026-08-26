@@ -19,6 +19,10 @@
     {
       "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.VisitorCounter/docs/screenshots/01-dashboard.png",
       "Caption": "The VisitorCounter dashboard in the Umbraco backoffice."
+    },
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.VisitorCounter/docs/screenshots/04-front-end.png",
+      "Caption": "VisitorCounter rendered on the front end."
     }
   ]
 }
