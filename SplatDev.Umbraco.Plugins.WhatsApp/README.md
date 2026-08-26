@@ -2,15 +2,15 @@
 
 <!-- screenshot:start -->
 
-![WhatsApp screenshot](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/01-inbox.png)
+![WhatsApp inbox](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/01-inbox.png)
 
-![WhatsApp screenshot](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/02-contacts.png)
+![WhatsApp contacts](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/02-contacts.png)
 
-![WhatsApp screenshot](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/03-send.png)
+![WhatsApp send](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/03-send.png)
 
-![WhatsApp screenshot](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/04-templates.png)
+![WhatsApp templates](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/04-templates.png)
 
-![WhatsApp screenshot](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/05-status.png)
+![WhatsApp status](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.WhatsApp/docs/screenshots/05-status.png)
 
 <!-- screenshot:end -->
 
@@ -196,6 +196,10 @@ dotnet test --filter "Category=Integration"
 | Webhooks return 401 | `AppSecret` doesn't match the Meta app secret. |
 
 ## Changelog
+
+### 3.5.2 — 2026-08-26
+
+The five screenshots on the NuGet listing now describe themselves — inbox, contacts, send, templates and status — rather than all five reading "screenshot".
 
 ### 3.5.1 — 2026-08-24
 

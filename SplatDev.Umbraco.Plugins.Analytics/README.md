@@ -5,6 +5,9 @@ reports them from a backoffice dashboard. The data stays in your database — no
 analytics service, no account, nothing to consent to on someone else's behalf.
 
 <!-- screenshot:start -->
+
+![Analytics dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Analytics/docs/screenshots/01-dashboard.png)
+
 <!-- screenshot:end -->
 
 ## Compatibility
@@ -116,6 +119,10 @@ On Umbraco 13 these are reached at `/umbraco/backoffice/api/AnalyticsApi/...` an
 `/umbraco/backoffice/api/AnalyticsTracking/...`.
 
 ## Changelog
+
+### 3.0.1 — 2026-08-26
+
+The NuGet listing now shows the dashboard screenshot. The image existed in the repository but nothing referenced it, so the listing had no picture of what the plugin looks like.
 
 ### 3.0.0 — 2026-08-24
 

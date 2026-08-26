@@ -8,9 +8,9 @@ latest version and a one-line summary per package.
 
 ![NuGetCatalog dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.NuGetCatalog/docs/screenshots/01-dashboard.png)
 
-![NuGetCatalog screenshot](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.NuGetCatalog/docs/screenshots/01-packages.png)
+![NuGetCatalog packages](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.NuGetCatalog/docs/screenshots/01-packages.png)
 
-![NuGetCatalog screenshot](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.NuGetCatalog/docs/screenshots/02-manage.png)
+![NuGetCatalog manage](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.NuGetCatalog/docs/screenshots/02-manage.png)
 
 <!-- screenshot:end -->
 
@@ -94,6 +94,10 @@ under different URL forms.
 Reads nuget.org only. No publishing, unlisting, or per-version charts.
 
 ## Changelog
+
+### 1.2.1 — 2026-08-26
+
+The two screenshots on the NuGet listing now describe themselves — "packages" and "manage" rather than both reading "screenshot".
 
 ### 1.2.0 — 2026-08-23
 
