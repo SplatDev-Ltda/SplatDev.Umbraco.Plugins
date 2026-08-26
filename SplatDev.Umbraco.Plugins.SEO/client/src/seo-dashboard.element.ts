@@ -221,6 +221,41 @@ export class SeoDashboardElement extends UmbElementMixin(LitElement) {
 
   override firstUpdated(): void {
     void this._runAnalysis();
+    void this._loadDefaults();
+  }
+
+  private async _loadDefaults(): Promise<void> {
+    try {
+      const res = await this.#fetch("/umbraco/api/seo/defaults");
+      if (!res.ok) return;
+      const d = await res.json();
+      this._metaTags = {
+        metaTitle: d.metaTitle ?? "",
+        metaDescription: d.metaDescription ?? "",
+        canonicalUrl: d.canonicalUrl ?? "",
+        keywords: d.keywords ?? "",
+        noIndex: !!d.noIndex,
+        noFollow: !!d.noFollow,
+      };
+      this._og = {
+        ogTitle: d.ogTitle ?? "",
+        ogDescription: d.ogDescription ?? "",
+        ogImageUrl: d.ogImageUrl ?? "",
+        ogType: (d.ogType ?? "website") as OgType,
+      };
+    } catch {
+      // Leave the fields empty; saving will still work and overwrite whatever is stored.
+    }
+  }
+
+  /** Both tabs edit one site-wide record, so either save posts the whole thing. */
+  private async _saveDefaults(): Promise<boolean> {
+    const res = await this.#fetch("/umbraco/api/seo/savedefaults", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...this._metaTags, ...this._og }),
+    });
+    return res.ok;
   }
 
   @state() private _metaTags: MetaTagsModel = {
@@ -267,14 +302,14 @@ export class SeoDashboardElement extends UmbElementMixin(LitElement) {
     }
   }
 
-  private _saveMeta(): void {
-    this._metaSaved = true;
-    setTimeout(() => (this._metaSaved = false), 3000);
+  private async _saveMeta(): Promise<void> {
+    this._metaSaved = await this._saveDefaults();
+    if (this._metaSaved) setTimeout(() => (this._metaSaved = false), 3000);
   }
 
-  private _saveOg(): void {
-    this._ogSaved = true;
-    setTimeout(() => (this._ogSaved = false), 3000);
+  private async _saveOg(): Promise<void> {
+    this._ogSaved = await this._saveDefaults();
+    if (this._ogSaved) setTimeout(() => (this._ogSaved = false), 3000);
   }
 
   private _metaStatusLabel(status: PageAnalysis["metaDescriptionStatus"]): string {
@@ -342,7 +377,8 @@ export class SeoDashboardElement extends UmbElementMixin(LitElement) {
   private _renderMetaTagsTab() {
     return html`
       <div class="notice">
-        Phase 3 BE APIs are pending. Meta tag configuration is not yet persisted.
+        These are site-wide fallbacks, saved for the whole site. A page that sets its own
+        SEO properties overrides them.
       </div>
       <uui-box headline="Meta Tags">
         <div class="form-grid">
@@ -432,7 +468,7 @@ export class SeoDashboardElement extends UmbElementMixin(LitElement) {
     const hasImage = this._og.ogImageUrl.trim().length > 0;
     return html`
       <div class="notice">
-        Phase 3 BE APIs are pending. Open Graph configuration is not yet persisted.
+        Site-wide Open Graph defaults, used where a page does not supply its own.
       </div>
       <uui-box headline="Open Graph">
         <div class="form-grid">

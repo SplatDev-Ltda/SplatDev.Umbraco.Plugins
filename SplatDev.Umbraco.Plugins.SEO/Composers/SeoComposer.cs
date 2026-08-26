@@ -13,5 +13,10 @@ public class SeoComposer : IComposer
         // every request. SeoApiController takes it by constructor injection; without this
         // the controller cannot be activated and every call to the dashboard's API 500s.
         builder.Services.AddSingleton<SeoAnalyzer>();
+
+        // Scoped, not singleton: it takes IKeyValueService, which is scoped. A singleton
+        // holding a scoped dependency is a captive dependency and would serve the first
+        // request's scope forever.
+        builder.Services.AddScoped<SeoDefaultsStore>();
     }
 }

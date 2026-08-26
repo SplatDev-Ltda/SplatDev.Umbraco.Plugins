@@ -1,11 +1,11 @@
-import { LitElement as f, nothing as _, html as r, css as y, state as u, customElement as w } from "@umbraco-cms/backoffice/external/lit";
+import { LitElement as _, nothing as y, html as r, css as w, state as u, customElement as T } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin as x } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as T } from "@umbraco-cms/backoffice/auth";
-import { UMB_NOTIFICATION_CONTEXT as $ } from "@umbraco-cms/backoffice/notification";
-function k(e) {
-  let a = null, i = null;
+import { UMB_AUTH_CONTEXT as $ } from "@umbraco-cms/backoffice/auth";
+import { UMB_NOTIFICATION_CONTEXT as k } from "@umbraco-cms/backoffice/notification";
+function S(e) {
+  let a = null, t = null;
   const d = e.consumeContext.bind(e), n = new Promise((o) => {
-    d(T, async (s) => {
+    d($, async (s) => {
       var p;
       try {
         a = await ((p = s == null ? void 0 : s.getLatestToken) == null ? void 0 : p.call(s)) ?? null;
@@ -15,30 +15,30 @@ function k(e) {
       o();
     }), setTimeout(o, 3e3);
   });
-  return d($, (o) => {
-    i = o;
+  return d(k, (o) => {
+    t = o;
   }), async (o, s = {}) => {
     await n;
     const p = new Headers(s.headers);
     a && !p.has("Authorization") && p.set("Authorization", `Bearer ${a}`);
     const c = await fetch(o, { ...s, credentials: "same-origin", headers: p });
     if (!c.ok) {
-      const h = c.status === 401 || c.status === 403, v = h ? "Not authorised" : "Could not load data", m = h ? `The backoffice token was ${a ? "sent but rejected" : "not available"} (${c.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${c.status}. Anything shown below may be incomplete.`;
-      console.error(`[SplatDev] ${c.status} from ${String(o)} — ${m}`), i == null || i.peek("danger", { data: { headline: v, message: m } });
+      const m = c.status === 401 || c.status === 403, f = m ? "Not authorised" : "Could not load data", b = m ? `The backoffice token was ${a ? "sent but rejected" : "not available"} (${c.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${c.status}. Anything shown below may be incomplete.`;
+      console.error(`[SplatDev] ${c.status} from ${String(o)} — ${b}`), t == null || t.peek("danger", { data: { headline: f, message: b } });
     }
     return c;
   };
 }
-var S = Object.defineProperty, O = Object.getOwnPropertyDescriptor, b = (e) => {
+var O = Object.defineProperty, z = Object.getOwnPropertyDescriptor, v = (e) => {
   throw TypeError(e);
-}, l = (e, a, i, d) => {
-  for (var n = d > 1 ? void 0 : d ? O(a, i) : a, o = e.length - 1, s; o >= 0; o--)
-    (s = e[o]) && (n = (d ? s(a, i, n) : s(n)) || n);
-  return d && n && S(a, i, n), n;
-}, z = (e, a, i) => a.has(e) || b("Cannot " + i), A = (e, a, i) => (z(e, a, "read from private field"), i ? i.call(e) : a.get(e)), E = (e, a, i) => a.has(e) ? b("Cannot add the same private member more than once") : a instanceof WeakSet ? a.add(e) : a.set(e, i), g;
-let t = class extends x(f) {
+}, l = (e, a, t, d) => {
+  for (var n = d > 1 ? void 0 : d ? z(a, t) : a, o = e.length - 1, s; o >= 0; o--)
+    (s = e[o]) && (n = (d ? s(a, t, n) : s(n)) || n);
+  return d && n && O(a, t, n), n;
+}, A = (e, a, t) => a.has(e) || v("Cannot " + t), g = (e, a, t) => (A(e, a, "read from private field"), t ? t.call(e) : a.get(e)), D = (e, a, t) => a.has(e) ? v("Cannot add the same private member more than once") : a instanceof WeakSet ? a.add(e) : a.set(e, t), h;
+let i = class extends x(_) {
   constructor() {
-    super(...arguments), this._activeTab = "analysis", this._analysisPages = [], this._runningAnalysis = !1, this._analysisLoaded = !1, this._analysisError = null, E(this, g, k(this)), this._metaTags = {
+    super(...arguments), this._activeTab = "analysis", this._analysisPages = [], this._runningAnalysis = !1, this._analysisLoaded = !1, this._analysisError = null, D(this, h, S(this)), this._metaTags = {
       metaTitle: "",
       metaDescription: "",
       canonicalUrl: "",
@@ -53,12 +53,41 @@ let t = class extends x(f) {
     }, this._metaSaved = !1, this._ogSaved = !1;
   }
   firstUpdated() {
-    this._runAnalysis();
+    this._runAnalysis(), this._loadDefaults();
+  }
+  async _loadDefaults() {
+    try {
+      const e = await g(this, h).call(this, "/umbraco/api/seo/defaults");
+      if (!e.ok) return;
+      const a = await e.json();
+      this._metaTags = {
+        metaTitle: a.metaTitle ?? "",
+        metaDescription: a.metaDescription ?? "",
+        canonicalUrl: a.canonicalUrl ?? "",
+        keywords: a.keywords ?? "",
+        noIndex: !!a.noIndex,
+        noFollow: !!a.noFollow
+      }, this._og = {
+        ogTitle: a.ogTitle ?? "",
+        ogDescription: a.ogDescription ?? "",
+        ogImageUrl: a.ogImageUrl ?? "",
+        ogType: a.ogType ?? "website"
+      };
+    } catch {
+    }
+  }
+  /** Both tabs edit one site-wide record, so either save posts the whole thing. */
+  async _saveDefaults() {
+    return (await g(this, h).call(this, "/umbraco/api/seo/savedefaults", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...this._metaTags, ...this._og })
+    })).ok;
   }
   async _runAnalysis() {
     this._runningAnalysis = !0, this._analysisError = null;
     try {
-      const e = await A(this, g).call(this, "/umbraco/api/seo/analysis");
+      const e = await g(this, h).call(this, "/umbraco/api/seo/analysis");
       e.ok ? this._analysisPages = await e.json() : (this._analysisError = e.status === 401 || e.status === 403 ? `The request was refused (${e.status}). This is an authorisation problem, not an empty site.` : `The analysis request failed with ${e.status}.`, this._analysisPages = []);
     } catch (e) {
       this._analysisError = `The analysis request could not be sent: ${String(e)}`, this._analysisPages = [];
@@ -66,11 +95,11 @@ let t = class extends x(f) {
       this._analysisLoaded = !0, this._runningAnalysis = !1;
     }
   }
-  _saveMeta() {
-    this._metaSaved = !0, setTimeout(() => this._metaSaved = !1, 3e3);
+  async _saveMeta() {
+    this._metaSaved = await this._saveDefaults(), this._metaSaved && setTimeout(() => this._metaSaved = !1, 3e3);
   }
-  _saveOg() {
-    this._ogSaved = !0, setTimeout(() => this._ogSaved = !1, 3e3);
+  async _saveOg() {
+    this._ogSaved = await this._saveDefaults(), this._ogSaved && setTimeout(() => this._ogSaved = !1, 3e3);
   }
   _metaStatusLabel(e) {
     switch (e) {
@@ -87,7 +116,7 @@ let t = class extends x(f) {
       ${this._analysisError ? r`<div class="notice notice-error">${this._analysisError}</div>` : this._analysisLoaded && this._analysisPages.length === 0 ? r`<div class="notice">
               No published pages were returned. Either the site has no published
               content, or none of it carries the SEO properties this plugin reads.
-            </div>` : _}
+            </div>` : y}
       <uui-box>
         <div class="analysis-header" slot="headline">
           <span>Page SEO Analysis</span>
@@ -134,7 +163,8 @@ let t = class extends x(f) {
   _renderMetaTagsTab() {
     return r`
       <div class="notice">
-        Phase 3 BE APIs are pending. Meta tag configuration is not yet persisted.
+        These are site-wide fallbacks, saved for the whole site. A page that sets its own
+        SEO properties overrides them.
       </div>
       <uui-box headline="Meta Tags">
         <div class="form-grid">
@@ -223,7 +253,7 @@ let t = class extends x(f) {
     const e = this._og.ogImageUrl.trim().length > 0;
     return r`
       <div class="notice">
-        Phase 3 BE APIs are pending. Open Graph configuration is not yet persisted.
+        Site-wide Open Graph defaults, used where a page does not supply its own.
       </div>
       <uui-box headline="Open Graph">
         <div class="form-grid">
@@ -336,8 +366,8 @@ let t = class extends x(f) {
     `;
   }
 };
-g = /* @__PURE__ */ new WeakMap();
-t.styles = y`
+h = /* @__PURE__ */ new WeakMap();
+i.styles = w`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -510,36 +540,36 @@ t.styles = y`
   `;
 l([
   u()
-], t.prototype, "_activeTab", 2);
+], i.prototype, "_activeTab", 2);
 l([
   u()
-], t.prototype, "_analysisPages", 2);
+], i.prototype, "_analysisPages", 2);
 l([
   u()
-], t.prototype, "_runningAnalysis", 2);
+], i.prototype, "_runningAnalysis", 2);
 l([
   u()
-], t.prototype, "_analysisLoaded", 2);
+], i.prototype, "_analysisLoaded", 2);
 l([
   u()
-], t.prototype, "_analysisError", 2);
+], i.prototype, "_analysisError", 2);
 l([
   u()
-], t.prototype, "_metaTags", 2);
+], i.prototype, "_metaTags", 2);
 l([
   u()
-], t.prototype, "_og", 2);
+], i.prototype, "_og", 2);
 l([
   u()
-], t.prototype, "_metaSaved", 2);
+], i.prototype, "_metaSaved", 2);
 l([
   u()
-], t.prototype, "_ogSaved", 2);
-t = l([
-  w("seo-dashboard")
-], t);
-const M = t;
+], i.prototype, "_ogSaved", 2);
+i = l([
+  T("seo-dashboard")
+], i);
+const G = i;
 export {
-  t as SeoDashboardElement,
-  M as default
+  i as SeoDashboardElement,
+  G as default
 };

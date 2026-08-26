@@ -12,8 +12,8 @@ Umbraco SEO plugin — drop-in meta tags, Open Graph, canonical URLs, and robots
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.2.0           |
-| 17.x    | 10.0 | 2.2.0           |
+| 13.x    | 8.0  | 2.3.0           |
+| 17.x    | 10.0 | 2.3.0           |
 
 ## Installation
 
@@ -93,6 +93,16 @@ No `appsettings.json` keys required — all data comes from Umbraco content prop
 | `OpenGraph` | `Title`, `Type`, `Url`, `Image`, `Description`, `Author`, `DateCreated` |
 
 ## Changelog
+
+### 2.3.0 — 2026-08-25
+
+The Meta Tags and Open Graph tabs now save. Both previously carried a notice saying configuration was not yet persisted, and their Save buttons set a flag that showed a tick for three seconds and stored nothing.
+
+They hold site-wide fallbacks — neither tab has a page selector, and per-page values belong on the site's own document types, which this plugin does not own. A page that sets its own SEO properties overrides them.
+
+Stored in Umbraco's key-value store under a namespaced key rather than a table of this plugin's own. A table would need a migration, and a migration that succeeds while leaving the plugin querying a name that does not exist is a failure this codebase has seen more than once. Unreadable stored settings fall back to empty fields you can save over, rather than taking the dashboard down.
+
+All three placeholder notices are now gone from the dashboard, because all three things they described are built.
 
 ### 2.2.0 — 2026-08-25
 
