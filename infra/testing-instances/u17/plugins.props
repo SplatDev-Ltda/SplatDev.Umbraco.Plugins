@@ -145,7 +145,7 @@
     <PackageReference Include="SplatDev.Umbraco.Tools.Packager" Version="1.0.4" />
     <PackageReference Include="SplatDev.Umbraco.Tools.T4.Plugins" Version="1.0.4" />
     <PackageReference Include="SplatDev.Umbraco.Tools.T4.Themes" Version="1.0.4" />
-    <PackageReference Include="$(_BasePackageId)" Version="2.1.3" />
+    <PackageReference Include="SplatDev.Umbraco.Plugins.Schema2Yaml" Version="2.1.3" />
     <PackageReference Include="SplatDev.Umbraco.Plugins.Yaml2Schema" Version="1.1.4" />
   </ItemGroup>
 </Project>
