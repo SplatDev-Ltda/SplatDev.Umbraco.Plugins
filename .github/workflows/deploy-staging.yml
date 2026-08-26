@@ -37,6 +37,13 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # packages: read is required, not optional. nuget.config maps PdfCurator.* to the
+    # private github-splatdevtech feed and resolves its credentials from GITHUB_TOKEN, so
+    # without this the restore answers 403 Forbidden and the whole deploy stops before it
+    # packs anything. build.yml has always had it; this workflow did not.
+    permissions:
+      contents: read
+      packages: read
     steps:
       - uses: actions/checkout@v4
         with:
