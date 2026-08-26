@@ -1,6 +1,9 @@
 # Umbraco Backup Manager
 
 <!-- screenshot:start -->
+
+![BackupManager dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.BackupManager/docs/screenshots/01-dashboard.png)
+
 <!-- screenshot:end -->
 A simple backup tool for Umbraco. Allows backing up files and database directly from the backoffice, when you don't have access to the server.
 

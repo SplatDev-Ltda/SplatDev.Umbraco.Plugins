@@ -4,6 +4,9 @@ Discussion forums plugin for Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
 
 <!-- screenshot:start -->
+
+![Forums dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Forums/docs/screenshots/01-dashboard.png)
+
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Forums.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Forums)
@@ -12,8 +15,8 @@ Discussion forums plugin for Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.2.6           |
-| 17.x    | 10.0 | 2.2.6           |
+| 13.x    | 8.0  | 2.2.7           |
+| 17.x    | 10.0 | 2.2.7           |
 
 ## Installation
 
@@ -64,6 +67,10 @@ npm run build
 ```
 
 ## Changelog
+
+### 2.2.7 — 2026-08-26
+
+The NuGet listing now shows the dashboard. It had no screenshot before, so the listing gave no picture of what the plugin looks like in the backoffice.
 
 ### 2.2.6 — 2026-08-26
 

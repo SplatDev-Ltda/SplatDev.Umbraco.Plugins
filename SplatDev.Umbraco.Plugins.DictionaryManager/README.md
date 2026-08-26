@@ -4,6 +4,9 @@ Dictionary import/export/CRUD manager for Umbraco — full rewrite of the Umbrac
 
 
 <!-- screenshot:start -->
+
+![DictionaryManager dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.DictionaryManager/docs/screenshots/01-dashboard.png)
+
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.DictionaryManager.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.DictionaryManager)
@@ -12,8 +15,8 @@ Dictionary import/export/CRUD manager for Umbraco — full rewrite of the Umbrac
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.2.5           |
-| 17.x    | 10.0 | 2.2.5           |
+| 13.x    | 8.0  | 2.2.6           |
+| 17.x    | 10.0 | 2.2.6           |
 
 ## Installation
 
@@ -26,6 +29,10 @@ dotnet add package SplatDev.Umbraco.Plugins.DictionaryManager
 No registration call is needed. The package ships Umbraco composers, so the `AddComposers()` already in the default `Program.cs` picks the plugin up as soon as the package is referenced.
 
 ## Changelog
+
+### 2.2.6 — 2026-08-26
+
+The NuGet listing now shows the dashboard. It had no screenshot before, so the listing gave no picture of what the plugin looks like in the backoffice.
 
 ### 2.2.5 — 2026-08-26
 

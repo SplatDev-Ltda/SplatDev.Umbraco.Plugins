@@ -4,6 +4,9 @@ Dropzone.js file upload integration for Umbraco — drag-and-drop upload straigh
 
 
 <!-- screenshot:start -->
+
+![Dropzone dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Dropzone/docs/screenshots/01-dashboard.png)
+
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Dropzone.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Dropzone)
@@ -12,8 +15,8 @@ Dropzone.js file upload integration for Umbraco — drag-and-drop upload straigh
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 1.2.8           |
-| 17.x    | 10.0 | 1.2.8           |
+| 13.x    | 8.0  | 1.2.9           |
+| 17.x    | 10.0 | 1.2.9           |
 
 ## Installation
 
@@ -26,6 +29,10 @@ dotnet add package SplatDev.Umbraco.Plugins.Dropzone
 No registration call is needed. The package ships Umbraco composers, so the `AddComposers()` already in the default `Program.cs` picks the plugin up as soon as the package is referenced.
 
 ## Changelog
+
+### 1.2.9 — 2026-08-26
+
+The NuGet listing now shows the dashboard. It had no screenshot before, so the listing gave no picture of what the plugin looks like in the backoffice.
 
 ### 1.2.8 — 2026-08-26
 

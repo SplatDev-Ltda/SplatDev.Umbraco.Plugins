@@ -4,6 +4,9 @@ MercadoPago payment integration for Umbraco — create payment preferences, trac
 
 
 <!-- screenshot:start -->
+
+![Payments.MercadoPago dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Payments.MercadoPago/docs/screenshots/01-dashboard.png)
+
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Payments.MercadoPago.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Payments.MercadoPago)
@@ -12,8 +15,8 @@ MercadoPago payment integration for Umbraco — create payment preferences, trac
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.2.3           |
-| 17.x    | 10.0 | 2.2.3           |
+| 13.x    | 8.0  | 2.2.4           |
+| 17.x    | 10.0 | 2.2.4           |
 
 ## Installation
 
@@ -79,6 +82,10 @@ mp.checkout({ preference: { id: preferenceId } });
 - Front-end integration requires the MercadoPago JavaScript SDK
 
 ## Changelog
+
+### 2.2.4 — 2026-08-26
+
+The NuGet listing now shows the dashboard. It had no screenshot before, so the listing gave no picture of what the plugin looks like in the backoffice.
 
 ### 2.2.3 — 2026-08-26
 

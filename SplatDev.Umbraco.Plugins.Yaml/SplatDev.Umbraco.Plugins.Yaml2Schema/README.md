@@ -2,14 +2,21 @@
 
 Import YAML document type definitions into Umbraco — creates and updates content types, media types, member types, and data types from YAML files.
 
+
+<!-- screenshot:start -->
+
+![Yaml2Schema dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Yaml/SplatDev.Umbraco.Plugins.Yaml2Schema/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Yaml2Schema.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Yaml2Schema)
 
 ## Compatibility
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 1.1.3           |
-| 17.x    | 10.0 | 1.1.3           |
+| 13.x    | 8.0  | 1.1.4           |
+| 17.x    | 10.0 | 1.1.4           |
 
 ## Installation
 
@@ -63,6 +70,10 @@ documentTypes:
 - YAML format must match the structure produced by `Schema2Yaml`; hand-written YAML files may fail validation
 
 ## Changelog
+
+### 1.1.4 — 2026-08-26
+
+The NuGet listing now shows its screenshots. The images were in the repository but nothing referenced them, because the script that wires them looked only one directory deep and this plugin is nested under SplatDev.Umbraco.Plugins.Yaml.
 
 ### 1.1.3 — 2026-08-25
 

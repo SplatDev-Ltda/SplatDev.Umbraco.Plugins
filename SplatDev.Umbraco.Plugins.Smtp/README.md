@@ -4,6 +4,9 @@ SMTP email configuration UI for Umbraco backoffice — configure, test, and mana
 
 
 <!-- screenshot:start -->
+
+![Smtp dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Smtp/docs/screenshots/01-dashboard.png)
+
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Smtp.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Smtp)
@@ -12,8 +15,8 @@ SMTP email configuration UI for Umbraco backoffice — configure, test, and mana
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.4.4           |
-| 17.x    | 10.0 | 2.4.4           |
+| 13.x    | 8.0  | 2.4.5           |
+| 17.x    | 10.0 | 2.4.5           |
 
 ## Installation
 
@@ -65,6 +68,10 @@ After registration, the Smtp dashboard appears in the Umbraco backoffice. Naviga
 - No built-in email queue or retry mechanism; email delivery depends on the configured SMTP server
 
 ## Changelog
+
+### 2.4.5 — 2026-08-26
+
+The NuGet listing now shows the dashboard. It had no screenshot before, so the listing gave no picture of what the plugin looks like in the backoffice.
 
 ### 2.4.4 — 2026-08-26
 

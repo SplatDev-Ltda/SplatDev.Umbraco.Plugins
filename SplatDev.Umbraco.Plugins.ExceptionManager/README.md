@@ -4,6 +4,9 @@ Umbraco exception handling middleware plugin — configures production error pag
 
 
 <!-- screenshot:start -->
+
+![ExceptionManager dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.ExceptionManager/docs/screenshots/01-dashboard.png)
+
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.ExceptionManager.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.ExceptionManager)
@@ -12,8 +15,8 @@ Umbraco exception handling middleware plugin — configures production error pag
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.1.10          |
-| 17.x    | 10.0 | 2.1.10          |
+| 13.x    | 8.0  | 2.1.11          |
+| 17.x    | 10.0 | 2.1.11          |
 
 ## Installation
 
@@ -48,6 +51,10 @@ The `ExceptionComposer` hooks into the Umbraco pipeline via `UmbracoPipelineFilt
 - Does not support custom error page paths or status-code-specific error pages
 
 ## Changelog
+
+### 2.1.11 — 2026-08-26
+
+The NuGet listing now shows the dashboard. It had no screenshot before, so the listing gave no picture of what the plugin looks like in the backoffice.
 
 ### 2.1.10 — 2026-08-26
 

@@ -4,6 +4,9 @@ Umbraco short URL plugin — generate, store, and resolve short URLs backed by a
 
 
 <!-- screenshot:start -->
+
+![ShortUrls dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.ShortUrls/docs/screenshots/01-dashboard.png)
+
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.ShortUrls.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.ShortUrls)
@@ -12,8 +15,8 @@ Umbraco short URL plugin — generate, store, and resolve short URLs backed by a
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.1.12          |
-| 17.x    | 10.0 | 2.1.12          |
+| 13.x    | 8.0  | 2.1.13          |
+| 17.x    | 10.0 | 2.1.13          |
 
 ## Installation
 
@@ -107,6 +110,10 @@ public async Task<IActionResult> GetFromShortUrl(string shortUrl)
 | `ShortUrlExtensions` | Random URL-safe code generation (collision-checked) |
 
 ## Changelog
+
+### 2.1.13 — 2026-08-26
+
+The NuGet listing now shows the dashboard. It had no screenshot before, so the listing gave no picture of what the plugin looks like in the backoffice.
 
 ### 2.1.12 — 2026-08-26
 

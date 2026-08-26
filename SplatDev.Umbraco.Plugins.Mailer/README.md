@@ -4,6 +4,9 @@ Umbraco email integration plugin — send templated HTML emails from Umbraco usi
 
 
 <!-- screenshot:start -->
+
+![Mailer dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.Mailer/docs/screenshots/01-dashboard.png)
+
 <!-- screenshot:end -->
 
 [![NuGet](https://img.shields.io/nuget/v/SplatDev.Umbraco.Plugins.Mailer.svg)](https://www.nuget.org/packages/SplatDev.Umbraco.Plugins.Mailer)
@@ -12,8 +15,8 @@ Umbraco email integration plugin — send templated HTML emails from Umbraco usi
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.1.11          |
-| 17.x    | 10.0 | 2.1.11          |
+| 13.x    | 8.0  | 2.1.12          |
+| 17.x    | 10.0 | 2.1.12          |
 
 ## Installation
 
@@ -95,6 +98,10 @@ The `MailerApiController` exposes a test endpoint at `/umbraco/backoffice/api/Ma
 - Umbraco `GlobalSettings:Smtp` configuration
 
 ## Changelog
+
+### 2.1.12 — 2026-08-26
+
+The NuGet listing now shows the dashboard. It had no screenshot before, so the listing gave no picture of what the plugin looks like in the backoffice.
 
 ### 2.1.11 — 2026-08-26
 
