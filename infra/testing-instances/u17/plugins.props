@@ -147,9 +147,6 @@
     <PackageReference Include="SplatDev.Umbraco.Themes.Landing" />
     <PackageReference Include="SplatDev.Umbraco.Themes.Portfolio" />
     <PackageReference Include="SplatDev.Umbraco.Tools.PackageActions" />
-    <PackageReference Include="SplatDev.Umbraco.Tools.Packager" />
-    <PackageReference Include="SplatDev.Umbraco.Tools.T4.Plugins" />
-    <PackageReference Include="SplatDev.Umbraco.Tools.T4.Themes" />
     <PackageReference Include="SplatDev.Umbraco.Plugins.Schema2Yaml" />
     <PackageReference Include="SplatDev.Umbraco.Plugins.Yaml2Schema" />
   </ItemGroup>
@@ -293,9 +290,6 @@
     <PackageVersion Include="SplatDev.Umbraco.Themes.Landing" Version="1.0.6" />
     <PackageVersion Include="SplatDev.Umbraco.Themes.Portfolio" Version="1.0.5" />
     <PackageVersion Include="SplatDev.Umbraco.Tools.PackageActions" Version="1.0.4" />
-    <PackageVersion Include="SplatDev.Umbraco.Tools.Packager" Version="1.0.4" />
-    <PackageVersion Include="SplatDev.Umbraco.Tools.T4.Plugins" Version="1.0.4" />
-    <PackageVersion Include="SplatDev.Umbraco.Tools.T4.Themes" Version="1.0.4" />
     <PackageVersion Include="SplatDev.Umbraco.Plugins.Schema2Yaml" Version="2.1.3" />
     <PackageVersion Include="SplatDev.Umbraco.Plugins.Yaml2Schema" Version="1.1.4" />
   </ItemGroup>

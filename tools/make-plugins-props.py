@@ -48,6 +48,14 @@ def discover():
         text = csproj.read_text(encoding="utf-8", errors="replace")
         if re.search(r"<IsPackable>\s*false\s*</IsPackable>", text, re.I):
             continue
+        # A dotnet tool is installed with `dotnet tool install`, not referenced. Listing one
+        # fails the restore outright with NU1212 ("DotnetToolReference project style can only
+        # contain references to packages of type DotnetTool"), which is where the second live
+        # deploy stopped - on SplatDev.Umbraco.Tools.Packager.
+        if re.search(r"<PackAsTool>\s*true\s*</PackAsTool>", text, re.I) or \
+           re.search(r"<PackageType>\s*DotnetTool", text, re.I):
+            continue
+
         # The instance is net10.0. A package that never targets it fails the restore, so a
         # net8-only project must not be listed however publishable it is.
         tfms = re.search(r"<TargetFrameworks?>([^<]+)</TargetFrameworks?>", text)
