@@ -15,8 +15,8 @@ EXIF metadata extractor for Umbraco media — reads camera, GPS, and image EXIF 
 
 | Umbraco | .NET | Package Version | Dashboard |
 |---------|------|-----------------|-----------|
-| 13.x    | 8.0  | 1.2.6           | AngularJS |
-| 17.x    | 10.0 | 1.2.6           | Lit (Bellissima) |
+| 13.x    | 8.0  | 1.3.1           | AngularJS |
+| 17.x    | 10.0 | 1.3.1           | Lit (Bellissima) |
 
 ## Installation
 
@@ -57,9 +57,17 @@ The build output is placed at `App_Plugins/Exif/dist/exif-dashboard.element.js` 
 
 ## Changelog
 
-### 1.2.6 — 2026-08-26
+### 1.3.1 — 2026-08-26
 
 Fixes a duplicate registration on sites that still have a physical App_Plugins folder for this plugin, left behind by an older release that copied content into the site. Umbraco registered those extensions twice - once from its own scan of the folder, once from this package's embedded manifest - and logged "Extension with alias ... is already registered". The embedded manifest now yields to the physical copy.
+
+### 1.3.0 — 2026-08-26
+
+Adds an EXIF tab to the media item itself. Open any image in the Media section and its camera, lens, date, exposure, aperture, ISO, dimensions and GPS position are read as the tab renders — no need to copy a media key into the dashboard first, which is where this data was only reachable before.
+
+The dashboard's second lookup is now a content picker rather than a box for typing a server file path. Pick a page and it reports every image on it, which property each came from, and what EXIF each carries. A new `GetByContentKey` endpoint backs it, reading media references out of the node's properties whether the editor stored them as a GUID or a `umb://media/...` UDI.
+
+An item with no EXIF now says so plainly. That is the normal case for SVGs, PDFs and images an editor has re-encoded, and it is reported differently from a request that was refused.
 
 ### 1.2.5 — 2026-08-25
 

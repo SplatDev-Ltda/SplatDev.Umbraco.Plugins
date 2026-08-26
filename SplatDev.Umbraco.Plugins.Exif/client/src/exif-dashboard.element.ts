@@ -35,6 +35,14 @@ const EXIF_FIELDS: { key: keyof ExifData; label: string; suffix?: string }[] = [
  * The picker is filtered to it because EXIF is image metadata: offering the whole media
  * library would let someone choose a PDF and get nothing back with no explanation.
  */
+/** Mirrors SplatDev.Umbraco.Plugins.Exif.Models.ContentMediaExif. */
+interface ContentMediaExif {
+  mediaKey: string;
+  name: string;
+  propertyAlias: string;
+  exif: ExifData | null;
+}
+
 const IMAGE_MEDIA_TYPE = "CC07B313-0843-4AA8-BBDA-871C8DA728C8";
 
 @customElement("exif-dashboard")
@@ -101,7 +109,8 @@ export class ExifDashboardElement extends UmbElementMixin(LitElement) {
   `;
 
   @state() private _mediaKey = "";
-  @state() private _filePath = "";
+  @state() private _contentKey = "";
+  @state() private _contentResults: ContentMediaExif[] = [];
   @state() private _data: ExifData | null = null;
   @state() private _error = "";
   @state() private _loading = false;
@@ -125,16 +134,17 @@ export class ExifDashboardElement extends UmbElementMixin(LitElement) {
     }
   }
 
-  private async _lookupByPath() {
+  private async _lookupByContent() {
     this._data = null;
+    this._contentResults = [];
     this._error = "";
     this._loading = true;
     try {
       const r = await this.#fetch(
-        `${this._baseUrl}GetByFilePath?filePath=${encodeURIComponent(this._filePath)}`
+        `${this._baseUrl}GetByContentKey?contentKey=${encodeURIComponent(this._contentKey)}`
       );
       if (!r.ok) throw new Error(await r.text());
-      this._data = (await r.json()) as ExifData;
+      this._contentResults = (await r.json()) as ContentMediaExif[];
     } catch (e: unknown) {
       this._error = e instanceof Error ? e.message : "Not found.";
     } finally {
@@ -146,9 +156,6 @@ export class ExifDashboardElement extends UmbElementMixin(LitElement) {
     this._mediaKey = (e.target as HTMLInputElement).value;
   }
 
-  private _handleFilePathInput(e: Event) {
-    this._filePath = (e.target as HTMLInputElement).value;
-  }
 
   private _renderRows() {
     if (!this._data) return html``;
@@ -203,23 +210,26 @@ export class ExifDashboardElement extends UmbElementMixin(LitElement) {
           </div>
 
           <div class="lookup-section">
-            <h3>Look up by File Path</h3>
+            <h3>Look up by Content Page</h3>
             <div class="lookup-form">
               <uui-form-layout-item>
-                <uui-label slot="label">Physical File Path</uui-label>
-                <uui-input
-                  .value=${this._filePath}
-                  @input=${this._handleFilePathInput}
-                  placeholder="/var/www/media/..."
-                ></uui-input>
+                <uui-label slot="label">Page</uui-label>
+                <umb-input-document
+                  .selection=${this._contentKey ? [this._contentKey] : []}
+                  max="1"
+                  @change=${(e: Event) => {
+                    const el = e.target as unknown as { selection?: string[] };
+                    this._contentKey = el.selection?.[0] ?? "";
+                  }}
+                ></umb-input-document>
               </uui-form-layout-item>
               <uui-button
                 look="primary"
-                label="Get EXIF"
-                @click=${this._lookupByPath}
-                ?disabled=${this._loading}
+                label="Get EXIF for page images"
+                @click=${this._lookupByContent}
+                ?disabled=${this._loading || !this._contentKey}
               >
-                ${this._loading ? "Loading..." : "Get EXIF"}
+                ${this._loading ? "Loading..." : "Get EXIF for page images"}
               </uui-button>
             </div>
           </div>
@@ -241,6 +251,31 @@ export class ExifDashboardElement extends UmbElementMixin(LitElement) {
           : this._data
             ? html`<p style="margin-top:16px; color:var(--uui-color-text-alt,#6b7280);">No EXIF data found for this media item.</p>`
             : ""}
+      
+        ${this._contentResults.length > 0
+          ? html`
+              <h4 style="margin-top:20px; font-weight:600;">Images on this page</h4>
+              <table class="exif-table">
+                <tbody>
+                  ${this._contentResults.map(
+                    (r) => html`
+                      <tr>
+                        <th>${r.propertyAlias}</th>
+                        <td>
+                          ${r.exif
+                            ? [r.exif.camera, r.exif.dateTaken, r.exif.iso ? `ISO ${r.exif.iso}` : null]
+                                .filter(Boolean)
+                                .join(" · ") || "EXIF present"
+                            : "no EXIF"}
+                        </td>
+                      </tr>
+                    `
+                  )}
+                </tbody>
+              </table>
+            `
+          : ""}
+      
       </uui-box>
     `;
   }

@@ -21,6 +21,25 @@
           "match": "Umb.Section.Settings"
         }
       ]
+    },
+    {
+      "type": "workspaceView",
+      "alias": "exif.mediaView",
+      "name": "EXIF",
+      "js": "/App_Plugins/Exif/dist/exif-media-view.element.js",
+      "elementName": "exif-media-view",
+      "weight": 50,
+      "meta": {
+        "label": "EXIF",
+        "pathname": "exif",
+        "icon": "icon-camera"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.WorkspaceAlias",
+          "match": "Umb.Workspace.Media"
+        }
+      ]
     }
   ]
 }
