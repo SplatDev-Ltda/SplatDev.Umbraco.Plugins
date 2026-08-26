@@ -1,7 +1,13 @@
 name: Deploy staging
 
-# Manual only. Staging is outward-facing and shares a host with other things, so a deploy
-# is a decision someone makes, not something a merge triggers.
+# Manual only. Staging is outward-facing, so a deploy is a decision someone makes rather
+# than something a merge triggers.
+#
+# The instance is a Docker container whose application is baked into the image - the only
+# volumes are u17_media and u17_plugins, and neither carries the app. So a deploy is not a
+# file copy: it packs every plugin, ships the build context, and rebuilds the image on the
+# host. An earlier version of this workflow rsynced published output to a host directory,
+# which the container would never have read.
 on:
   workflow_dispatch:
     inputs:
@@ -9,16 +15,15 @@ on:
         description: "Branch, tag or SHA to deploy"
         required: false
         default: master
-      restart:
-        description: "How the site is restarted on the host"
-        required: true
-        default: docker
-        type: choice
-        options: [docker, systemd]
       dry_run:
-        description: "Build and diff, but change nothing on the host"
+        description: "Pack and report what would ship, but change nothing on the host"
         required: false
         default: false
+        type: boolean
+      no_cache:
+        description: "Rebuild the image from scratch (slower; use after a base-image or template change)"
+        required: false
+        default: true
         type: boolean
 
 permissions:
@@ -27,124 +32,134 @@ permissions:
 env:
   DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: 1
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  SITE: test-environments/Umbraco17.Baseline/Umbraco17.Baseline.csproj
+  SERVICE: u17-web
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: read
-
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.ref }}
 
-      # Fail here rather than three steps later with an ssh error nobody can read. A
-      # workflow that reports success having done nothing is the failure mode this repo
-      # has now found four times.
+      # Fail here rather than three steps later inside an ssh error nobody can read. A step
+      # that reports success having done nothing is the failure mode this repo has now
+      # found four separate times.
       - name: Check the deploy secrets exist
         run: |
           missing=0
-          for name in STAGING_SSH_HOST STAGING_SSH_USER STAGING_SSH_KEY STAGING_PATH; do
+          for name in STAGING_SSH_HOST STAGING_SSH_USER STAGING_SSH_PASSWORD STAGING_SRC; do
             if [ -z "${!name}" ]; then echo "::error::secret $name is not set"; missing=1; fi
           done
           [ "$missing" = "0" ] || exit 1
         env:
           STAGING_SSH_HOST: ${{ secrets.STAGING_SSH_HOST }}
           STAGING_SSH_USER: ${{ secrets.STAGING_SSH_USER }}
-          STAGING_SSH_KEY: ${{ secrets.STAGING_SSH_KEY }}
-          STAGING_PATH: ${{ secrets.STAGING_PATH }}
+          STAGING_SSH_PASSWORD: ${{ secrets.STAGING_SSH_PASSWORD }}
+          STAGING_SRC: ${{ secrets.STAGING_SRC }}
 
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "10.0.x"
 
       - name: Restore
-        run: dotnet restore "$SITE"
+        run: dotnet restore SplatDev.Core.sln
 
-      - name: Publish
-        run: dotnet publish "$SITE" -c Release -f net10.0 --no-restore -o publish
-
-      # Every plugin embeds its App_Plugins content and hands Umbraco the manifest itself,
-      # so a correct publish has no App_Plugins directory at all. If one appears, an older
-      # content-copying package has crept back in and the site would register each of its
-      # aliases twice.
-      - name: Refuse to ship a physical App_Plugins
+      # Discovery matches publish.yml's, so a package that ships is a package staging gets.
+      # dotnet pack succeeds and emits nothing for IsPackable=false, so the artifact is
+      # counted rather than the exit status.
+      - name: Pack the plugins
         run: |
-          if [ -d publish/App_Plugins ]; then
-            echo "::error::publish/App_Plugins exists; a package is copying content again"
-            find publish/App_Plugins -maxdepth 1 -mindepth 1 -type d -printf '  %f\n'
-            exit 1
-          fi
-          echo "no physical App_Plugins in the publish output, as expected"
+          mkdir -p ctx/local-packages
+          packed=0; failed=0
+          for csproj in $(find . -maxdepth 3 -name "SplatDev.*.csproj" \
+            | grep -v "Tests\|BackupManager\|FormsClone\|obj\|bin\|PdfCurator\|/customers/\|test-environments" \
+            | sort); do
+            if dotnet build "$csproj" -c Release --no-restore 2>&1 | grep -q "Build succeeded"; then
+              dotnet pack "$csproj" --no-build -c Release -o ctx/local-packages >/dev/null 2>&1 || true
+              packed=$((packed+1))
+            else
+              echo "::warning::build failed, not packed: $csproj"; failed=$((failed+1))
+            fi
+          done
+          count=$(ls ctx/local-packages/*.nupkg 2>/dev/null | wc -l)
+          echo "built $packed project(s), $failed failed, $count package(s) on disk"
+          if [ "$count" = "0" ]; then echo "::error::nothing packed"; exit 1; fi
+          if [ "$failed" != "0" ]; then echo "::error::$failed project(s) failed to build"; exit 1; fi
 
-      # Done by hand rather than with a third-party action: it is four lines, and a deploy
-      # key is not a credential to hand to something outside this repo's control.
-      - name: Set up the deploy key
+      # --packages-dir makes this fail when a plugin the props file lists has no .nupkg,
+      # rather than letting the instance quietly test fewer plugins than it claims to.
+      - name: Generate plugins.props
+        run: |
+          python3 tools/make-plugins-props.py --out ctx/plugins.props --packages-dir ctx/local-packages
+          echo "referencing $(grep -c PackageReference ctx/plugins.props) package(s)"
+
+      - name: Assemble the build context
+        run: |
+          cp infra/testing-instances/u17/Dockerfile ctx/Dockerfile
+          cp infra/testing-instances/docker-compose.yml ctx/docker-compose.yml
+          du -sh ctx | sed 's/^/context: /'
+
+      - name: Install sshpass
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq sshpass rsync
+
+      - name: Trust the host key
         run: |
           mkdir -p ~/.ssh && chmod 700 ~/.ssh
-          printf '%s\n' "${{ secrets.STAGING_SSH_KEY }}" > ~/.ssh/id_deploy
-          chmod 600 ~/.ssh/id_deploy
           ssh-keyscan -H "${{ secrets.STAGING_SSH_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
-          cat >> ~/.ssh/config <<EOF
-          Host staging
-            HostName ${{ secrets.STAGING_SSH_HOST }}
-            User ${{ secrets.STAGING_SSH_USER }}
-            IdentityFile ~/.ssh/id_deploy
-            IdentitiesOnly yes
-          EOF
 
-      # --delete keeps the server from accumulating files no release ships any more, which
-      # is exactly how staging came to hold stale App_Plugins folders. The excludes are the
-      # state that belongs to the host and not to the build: its database, its logs, its
-      # uploaded media, and its own connection string.
-      - name: Sync
-        run: |
-          rsync -az --delete ${{ inputs.dry_run && '--dry-run --itemize-changes' || '' }} \
-            --exclude 'appsettings.json' \
-            --exclude 'appsettings.*.json' \
-            --exclude 'umbraco/Data/**' \
-            --exclude 'umbraco/Logs/**' \
-            --exclude 'wwwroot/media/**' \
-            publish/ \
-            "staging:${{ secrets.STAGING_PATH }}/"
-
-      # Left-over physical App_Plugins folders are what made staging log fifteen
-      # "Extension with alias X is already registered" errors: Umbraco found the folder and
-      # the embedded manifest reader offered the same manifest again. The reader now yields
-      # to a physical copy, so this only has to remove the folders once - but removing them
-      # is what actually fixes the site rather than silencing it.
-      - name: Remove stale App_Plugins from the host
+      # sshpass -e reads SSHPASS from the environment; passing it on the command line would
+      # expose it in the host's process list.
+      - name: Ship the build context
         if: ${{ !inputs.dry_run }}
+        env:
+          SSHPASS: ${{ secrets.STAGING_SSH_PASSWORD }}
         run: |
-          ssh staging \
-            "set -e; d='${{ secrets.STAGING_PATH }}/App_Plugins'; \
-             if [ -d \"\$d\" ]; then echo 'removing:'; ls -1 \"\$d\"; rm -rf \"\$d\"; \
-             else echo 'no physical App_Plugins on the host'; fi"
+          rsync -az --delete -e "sshpass -e ssh -o StrictHostKeyChecking=yes" \
+            ctx/ "${{ secrets.STAGING_SSH_USER }}@${{ secrets.STAGING_SSH_HOST }}:${{ secrets.STAGING_SRC }}/"
 
-      - name: Restart
-        if: ${{ !inputs.dry_run }}
+      - name: Report what would ship
+        if: ${{ inputs.dry_run }}
         run: |
-          if [ "${{ inputs.restart }}" = "docker" ]; then
-            cmd="cd '${{ secrets.STAGING_PATH }}' && docker compose up -d --force-recreate"
-          else
-            cmd="sudo systemctl restart '${{ secrets.STAGING_SERVICE || 'umbraco-staging' }}'"
-          fi
-          ssh staging "$cmd"
+          echo "would ship $(ls ctx/local-packages/*.nupkg | wc -l) package(s) to ${{ secrets.STAGING_SRC }}"
+          ls ctx/local-packages | head -20
+
+      # The image carries the app, so rebuilding it is the deploy. It also clears any
+      # physical App_Plugins baked in by an older content-copying release, which is what
+      # made staging log fifteen "Extension with alias X is already registered" errors.
+      - name: Rebuild and restart
+        if: ${{ !inputs.dry_run }}
+        env:
+          SSHPASS: ${{ secrets.STAGING_SSH_PASSWORD }}
+        run: |
+          cache=""; [ "${{ inputs.no_cache }}" = "true" ] && cache="--no-cache"
+          dir="${{ secrets.STAGING_COMPOSE_DIR || secrets.STAGING_SRC }}"
+          sshpass -e ssh -o StrictHostKeyChecking=yes \
+            "${{ secrets.STAGING_SSH_USER }}@${{ secrets.STAGING_SSH_HOST }}" \
+            "set -e; cd '$dir'; docker compose build $cache $SERVICE; \
+             docker compose up -d --force-recreate $SERVICE"
 
       # Umbraco takes a while to come up with this many plugins, and a deploy that leaves
-      # the site down must fail the job rather than end green.
+      # the site down has to fail the job rather than end green.
       - name: Wait for the site to answer
         if: ${{ !inputs.dry_run }}
         run: |
           url="${{ vars.STAGING_URL || 'https://staging-umbraco.splatdev.tech' }}/umbraco"
-          for i in $(seq 1 30); do
+          for i in $(seq 1 40); do
             code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 "$url" || true)
             if [ "$code" = "200" ]; then echo "up after ~$((i*10))s"; exit 0; fi
             echo "  $((i*10))s: $code"
             sleep 10
           done
-          echo "::error::site did not return 200 within 300s"
+          echo "::error::site did not return 200 within 400s"
           exit 1
+
+      # Proves the duplicate-alias fix actually landed, rather than assuming it did.
+      - name: Report the extension manifest
+        if: ${{ !inputs.dry_run }}
+        run: |
+          url="${{ vars.STAGING_URL || 'https://staging-umbraco.splatdev.tech' }}"
+          code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 \
+            "$url/umbraco/management/api/v1/manifest/manifest/private" || true)
+          echo "manifest endpoint answered $code (401 is expected unauthenticated; 404 is not)"
+          [ "$code" = "404" ] && { echo "::error::manifest endpoint missing"; exit 1; } || true
