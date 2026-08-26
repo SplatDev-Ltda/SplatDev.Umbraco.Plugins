@@ -1,42 +1,14 @@
-import { LitElement as w, html as u, css as k, state as p, customElement as v } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as x } from "@umbraco-cms/backoffice/element-api";
-import { UMB_AUTH_CONTEXT as $ } from "@umbraco-cms/backoffice/auth";
-import { UMB_NOTIFICATION_CONTEXT as E } from "@umbraco-cms/backoffice/notification";
-function I(e) {
-  let t = null, a = null;
-  const i = e.consumeContext.bind(e), l = new Promise((r) => {
-    i($, async (o) => {
-      var d;
-      try {
-        t = await ((d = o == null ? void 0 : o.getLatestToken) == null ? void 0 : d.call(o)) ?? null;
-      } catch {
-        t = null;
-      }
-      r();
-    }), setTimeout(r, 3e3);
-  });
-  return i(E, (r) => {
-    a = r;
-  }), async (r, o = {}) => {
-    await l;
-    const d = new Headers(o.headers);
-    t && !d.has("Authorization") && d.set("Authorization", `Bearer ${t}`);
-    const n = await fetch(r, { ...o, credentials: "same-origin", headers: d });
-    if (!n.ok) {
-      const f = n.status === 401 || n.status === 403, g = f ? "Not authorised" : "Could not load data", m = f ? `The backoffice token was ${t ? "sent but rejected" : "not available"} (${n.status}). Anything shown below may be empty because the request was refused, not because there is nothing to show.` : `The request failed with ${n.status}. Anything shown below may be incomplete.`;
-      console.error(`[SplatDev] ${n.status} from ${String(r)} — ${m}`), a == null || a.peek("danger", { data: { headline: g, message: m } });
-    }
-    return n;
-  };
-}
-var P = Object.defineProperty, T = Object.getOwnPropertyDescriptor, b = (e) => {
-  throw TypeError(e);
-}, h = (e, t, a, i) => {
-  for (var l = i > 1 ? void 0 : i ? T(t, a) : t, r = e.length - 1, o; r >= 0; r--)
-    (o = e[r]) && (l = (i ? o(t, a, l) : o(l)) || l);
-  return i && l && P(t, a, l), l;
-}, C = (e, t, a) => t.has(e) || b("Cannot " + a), _ = (e, t, a) => (C(e, t, "read from private field"), a ? a.call(e) : t.get(e)), F = (e, t, a) => t.has(e) ? b("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), c;
-const y = [
+import { LitElement as _, html as r, css as f, state as n, customElement as y } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as b } from "@umbraco-cms/backoffice/element-api";
+import { c as g } from "./auth-fetch-BzMCmNwW.js";
+var x = Object.defineProperty, k = Object.getOwnPropertyDescriptor, m = (t) => {
+  throw TypeError(t);
+}, l = (t, e, a, o) => {
+  for (var s = o > 1 ? void 0 : o ? k(e, a) : e, d = t.length - 1, h; d >= 0; d--)
+    (h = t[d]) && (s = (o ? h(e, a, s) : h(s)) || s);
+  return o && s && x(e, a, s), s;
+}, v = (t, e, a) => e.has(t) || m("Cannot " + a), p = (t, e, a) => (v(t, e, "read from private field"), a ? a.call(t) : e.get(t)), w = (t, e, a) => e.has(t) ? m("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, a), u;
+const c = [
   { key: "camera", label: "Camera" },
   { key: "lens", label: "Lens" },
   { key: "dateTaken", label: "Date Taken" },
@@ -47,60 +19,57 @@ const y = [
   { key: "height", label: "Height", suffix: " px" },
   { key: "gpsLatitude", label: "GPS Latitude" },
   { key: "gpsLongitude", label: "GPS Longitude" }
-], A = "CC07B313-0843-4AA8-BBDA-871C8DA728C8";
-let s = class extends x(w) {
+], E = "CC07B313-0843-4AA8-BBDA-871C8DA728C8";
+let i = class extends b(_) {
   constructor() {
-    super(...arguments), F(this, c, I(this)), this._mediaKey = "", this._filePath = "", this._data = null, this._error = "", this._loading = !1, this._baseUrl = "/umbraco/api/exif/";
+    super(...arguments), w(this, u, g(this)), this._mediaKey = "", this._contentKey = "", this._contentResults = [], this._data = null, this._error = "", this._loading = !1, this._baseUrl = "/umbraco/api/exif/";
   }
   async _lookupByKey() {
     this._data = null, this._error = "", this._loading = !0;
     try {
-      const e = await _(this, c).call(this, `${this._baseUrl}GetByMediaKey?mediaKey=${encodeURIComponent(this._mediaKey)}`);
-      if (!e.ok) throw new Error(await e.text());
-      this._data = await e.json();
-    } catch (e) {
-      this._error = e instanceof Error ? e.message : "Not found.";
+      const t = await p(this, u).call(this, `${this._baseUrl}GetByMediaKey?mediaKey=${encodeURIComponent(this._mediaKey)}`);
+      if (!t.ok) throw new Error(await t.text());
+      this._data = await t.json();
+    } catch (t) {
+      this._error = t instanceof Error ? t.message : "Not found.";
     } finally {
       this._loading = !1;
     }
   }
-  async _lookupByPath() {
-    this._data = null, this._error = "", this._loading = !0;
+  async _lookupByContent() {
+    this._data = null, this._contentResults = [], this._error = "", this._loading = !0;
     try {
-      const e = await _(this, c).call(this, `${this._baseUrl}GetByFilePath?filePath=${encodeURIComponent(this._filePath)}`);
-      if (!e.ok) throw new Error(await e.text());
-      this._data = await e.json();
-    } catch (e) {
-      this._error = e instanceof Error ? e.message : "Not found.";
+      const t = await p(this, u).call(this, `${this._baseUrl}GetByContentKey?contentKey=${encodeURIComponent(this._contentKey)}`);
+      if (!t.ok) throw new Error(await t.text());
+      this._contentResults = await t.json();
+    } catch (t) {
+      this._error = t instanceof Error ? t.message : "Not found.";
     } finally {
       this._loading = !1;
     }
   }
-  _handleMediaKeyInput(e) {
-    this._mediaKey = e.target.value;
-  }
-  _handleFilePathInput(e) {
-    this._filePath = e.target.value;
+  _handleMediaKeyInput(t) {
+    this._mediaKey = t.target.value;
   }
   _renderRows() {
-    return this._data ? y.map(({ key: e, label: t, suffix: a }) => {
-      const i = this._data[e];
-      return i == null || i === "" ? u`` : u`
+    return this._data ? c.map(({ key: t, label: e, suffix: a }) => {
+      const o = this._data[t];
+      return o == null || o === "" ? r`` : r`
         <tr>
-          <th>${t}</th>
-          <td>${i}${a ?? ""}</td>
+          <th>${e}</th>
+          <td>${o}${a ?? ""}</td>
         </tr>
       `;
-    }) : u``;
+    }) : r``;
   }
   _hasAnyData() {
-    return this._data ? y.some(({ key: e }) => {
-      const t = this._data[e];
-      return t != null && t !== "";
+    return this._data ? c.some(({ key: t }) => {
+      const e = this._data[t];
+      return e != null && e !== "";
     }) : !1;
   }
   render() {
-    return u`
+    return r`
       <uui-box headline="EXIF Metadata Viewer">
         <div class="lookup-grid">
           <div class="lookup-section">
@@ -110,12 +79,12 @@ let s = class extends x(w) {
                 <uui-label slot="label">Image</uui-label>
                 <umb-input-media
                   .selection=${this._mediaKey ? [this._mediaKey] : []}
-                  .allowedContentTypeIds=${[A]}
+                  .allowedContentTypeIds=${[E]}
                   max="1"
-                  @change=${(e) => {
+                  @change=${(t) => {
       var a;
-      const t = e.target;
-      this._mediaKey = ((a = t.selection) == null ? void 0 : a[0]) ?? "";
+      const e = t.target;
+      this._mediaKey = ((a = e.selection) == null ? void 0 : a[0]) ?? "";
     }}
                 ></umb-input-media>
               </uui-form-layout-item>
@@ -131,44 +100,67 @@ let s = class extends x(w) {
           </div>
 
           <div class="lookup-section">
-            <h3>Look up by File Path</h3>
+            <h3>Look up by Content Page</h3>
             <div class="lookup-form">
               <uui-form-layout-item>
-                <uui-label slot="label">Physical File Path</uui-label>
-                <uui-input
-                  .value=${this._filePath}
-                  @input=${this._handleFilePathInput}
-                  placeholder="/var/www/media/..."
-                ></uui-input>
+                <uui-label slot="label">Page</uui-label>
+                <umb-input-document
+                  .selection=${this._contentKey ? [this._contentKey] : []}
+                  max="1"
+                  @change=${(t) => {
+      var a;
+      const e = t.target;
+      this._contentKey = ((a = e.selection) == null ? void 0 : a[0]) ?? "";
+    }}
+                ></umb-input-document>
               </uui-form-layout-item>
               <uui-button
                 look="primary"
-                label="Get EXIF"
-                @click=${this._lookupByPath}
-                ?disabled=${this._loading}
+                label="Get EXIF for page images"
+                @click=${this._lookupByContent}
+                ?disabled=${this._loading || !this._contentKey}
               >
-                ${this._loading ? "Loading..." : "Get EXIF"}
+                ${this._loading ? "Loading..." : "Get EXIF for page images"}
               </uui-button>
             </div>
           </div>
         </div>
 
-        ${this._error ? u`<uui-alert look="danger" class="error-banner">${this._error}</uui-alert>` : ""}
+        ${this._error ? r`<uui-alert look="danger" class="error-banner">${this._error}</uui-alert>` : ""}
 
-        ${this._hasAnyData() ? u`
+        ${this._hasAnyData() ? r`
               <h4 style="margin-top:20px; font-weight:600;">EXIF Data</h4>
               <table class="exif-table">
                 <tbody>
                   ${this._renderRows()}
                 </tbody>
               </table>
-            ` : this._data ? u`<p style="margin-top:16px; color:var(--uui-color-text-alt,#6b7280);">No EXIF data found for this media item.</p>` : ""}
+            ` : this._data ? r`<p style="margin-top:16px; color:var(--uui-color-text-alt,#6b7280);">No EXIF data found for this media item.</p>` : ""}
+      
+        ${this._contentResults.length > 0 ? r`
+              <h4 style="margin-top:20px; font-weight:600;">Images on this page</h4>
+              <table class="exif-table">
+                <tbody>
+                  ${this._contentResults.map(
+      (t) => r`
+                      <tr>
+                        <th>${t.propertyAlias}</th>
+                        <td>
+                          ${t.exif ? [t.exif.camera, t.exif.dateTaken, t.exif.iso ? `ISO ${t.exif.iso}` : null].filter(Boolean).join(" · ") || "EXIF present" : "no EXIF"}
+                        </td>
+                      </tr>
+                    `
+    )}
+                </tbody>
+              </table>
+            ` : ""}
+      
       </uui-box>
     `;
   }
 };
-c = /* @__PURE__ */ new WeakMap();
-s.styles = k`
+u = /* @__PURE__ */ new WeakMap();
+i.styles = f`
     :host {
       display: block;
       padding: var(--uui-size-layout-1, 24px);
@@ -226,26 +218,29 @@ s.styles = k`
       word-break: break-word;
     }
   `;
-h([
-  p()
-], s.prototype, "_mediaKey", 2);
-h([
-  p()
-], s.prototype, "_filePath", 2);
-h([
-  p()
-], s.prototype, "_data", 2);
-h([
-  p()
-], s.prototype, "_error", 2);
-h([
-  p()
-], s.prototype, "_loading", 2);
-s = h([
-  v("exif-dashboard")
-], s);
-const G = s;
+l([
+  n()
+], i.prototype, "_mediaKey", 2);
+l([
+  n()
+], i.prototype, "_contentKey", 2);
+l([
+  n()
+], i.prototype, "_contentResults", 2);
+l([
+  n()
+], i.prototype, "_data", 2);
+l([
+  n()
+], i.prototype, "_error", 2);
+l([
+  n()
+], i.prototype, "_loading", 2);
+i = l([
+  y("exif-dashboard")
+], i);
+const C = i;
 export {
-  s as ExifDashboardElement,
-  G as default
+  i as ExifDashboardElement,
+  C as default
 };

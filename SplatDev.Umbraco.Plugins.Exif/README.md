@@ -15,8 +15,8 @@ EXIF metadata extractor for Umbraco media — reads camera, GPS, and image EXIF 
 
 | Umbraco | .NET | Package Version | Dashboard |
 |---------|------|-----------------|-----------|
-| 13.x    | 8.0  | 1.2.5           | AngularJS |
-| 17.x    | 10.0 | 1.2.5           | Lit (Bellissima) |
+| 13.x    | 8.0  | 1.3.0           | AngularJS |
+| 17.x    | 10.0 | 1.3.0           | Lit (Bellissima) |
 
 ## Installation
 
@@ -56,6 +56,14 @@ The build output is placed at `App_Plugins/Exif/dist/exif-dashboard.element.js` 
 - `Services/` — EXIF extraction service (MetadataExtractor)
 
 ## Changelog
+
+### 1.3.0 — 2026-08-26
+
+Adds an EXIF tab to the media item itself. Open any image in the Media section and its camera, lens, date, exposure, aperture, ISO, dimensions and GPS position are read as the tab renders — no need to copy a media key into the dashboard first, which is where this data was only reachable before.
+
+The dashboard's second lookup is now a content picker rather than a box for typing a server file path. Pick a page and it reports every image on it, which property each came from, and what EXIF each carries. A new `GetByContentKey` endpoint backs it, reading media references out of the node's properties whether the editor stored them as a GUID or a `umb://media/...` UDI.
+
+An item with no EXIF now says so plainly. That is the normal case for SVGs, PDFs and images an editor has re-encoded, and it is reported differently from a request that was refused.
 
 ### 1.2.5 — 2026-08-25
 
