@@ -17,6 +17,28 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 EXCLUDE = re.compile(r"Tests|BackupManager|FormsClone|obj|bin|PdfCurator|/customers/|test-environments")
 
 
+def expand(value, text, fallback):
+    """Resolve $(Prop) against <Prop> elements in the same file.
+
+    Schema2Yaml declares <PackageId>$(_BasePackageId)</PackageId> so that a themed variant
+    can append to it, and a plain regex read of PackageId yields the literal "$(_BasePackageId)".
+    That went into plugins.props verbatim and the restore would have looked for a package by
+    that name. Resolve what the file itself defines, and fall back to the project name - which
+    ARCHITECTURE.md requires to equal the package id anyway.
+    """
+    for _ in range(3):
+        if "$(" not in value:
+            return value
+        def sub(m):
+            found = re.search(rf"<{re.escape(m.group(1))}>([^<]*)</{re.escape(m.group(1))}>", text)
+            return found.group(1) if found else m.group(0)
+        new_value = re.sub(r"\$\(([A-Za-z_][A-Za-z0-9_]*)\)", sub, value)
+        if new_value == value:
+            break
+        value = new_value
+    return fallback if "$(" in value else value
+
+
 def discover():
     out = []
     for csproj in sorted(ROOT.glob("*/*.csproj")) + sorted(ROOT.glob("*/*/*.csproj")):
@@ -35,7 +57,8 @@ def discover():
         pkg_id = re.search(r"<PackageId>([^<]+)</PackageId>", text)
         if not version:
             continue
-        out.append(((pkg_id.group(1) if pkg_id else csproj.stem), version.group(1)))
+        name = pkg_id.group(1) if pkg_id else csproj.stem
+        out.append((expand(name, text, csproj.stem), version.group(1)))
     return out
 
 
