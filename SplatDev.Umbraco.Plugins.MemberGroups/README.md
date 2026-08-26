@@ -58,6 +58,10 @@ The `ChangeUserPassword` and `ResetUserPassword` methods log a warning and retur
 
 ## Changelog
 
+### 2.3.2 — 2026-08-26
+
+Fixes a duplicate registration on sites that still have a physical App_Plugins folder for this plugin, left behind by an older release that copied content into the site. Umbraco registered those extensions twice - once from its own scan of the folder, once from this package's embedded manifest - and logged "Extension with alias ... is already registered". The embedded manifest now yields to the physical copy.
+
 ### 2.3.1 — 2026-08-24
 
 Package metadata only: the listing now carries an icon and search tags, and the project and repository links point at the organisation that actually hosts this code. No code changes.

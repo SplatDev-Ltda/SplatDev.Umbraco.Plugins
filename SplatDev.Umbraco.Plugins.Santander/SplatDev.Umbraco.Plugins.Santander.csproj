@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>SplatDev.Umbraco.Plugins.Santander</PackageId>
-    <Version>1.3.4</Version>
+    <Version>1.3.5</Version>
     <Authors>SplatDev</Authors>
     <Company>SplatDev Ltda</Company>
     <Description>Umbraco 17 plugin for the Santander Open Banking suite: a composer that registers SplatDev.Payments.Santander (options, client, the 8 product services, and the named mTLS HttpClient with the ICP-Brasil e-CNPJ certificate) plus a guarded backoffice/server-to-server banking API controller.</Description>

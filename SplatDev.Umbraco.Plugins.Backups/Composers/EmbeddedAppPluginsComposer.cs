@@ -120,26 +120,36 @@ internal static class EmbeddedAssets
     /// provider: directory enumeration only works with a generated manifest, which is the
     /// very thing that cannot be relied on here.
     /// </remarks>
-    public static IEnumerable<Stream> OpenPackageManifests()
+    public static IEnumerable<(string Folder, Stream Stream)> OpenPackageManifests()
     {
+        const string Suffix = ".umbraco-package.json";
+        var marker = $".{AppPlugins}.";
+
         foreach (var name in Assembly.GetManifestResourceNames())
         {
-            if (!name.EndsWith(".umbraco-package.json", StringComparison.OrdinalIgnoreCase))
+            if (!name.EndsWith(Suffix, StringComparison.OrdinalIgnoreCase))
             {
                 continue;
             }
 
             // Only this plugin's own App_Plugins content, not anything else that happens
             // to be embedded with a similar name.
-            if (!name.Contains($".{AppPlugins}.", StringComparison.Ordinal))
+            var at = name.IndexOf(marker, StringComparison.Ordinal);
+            if (at < 0)
             {
                 continue;
             }
 
+            // Everything between ".App_Plugins." and the suffix is the folder name, which is
+            // not always a single segment - EmailTemplates ships as "SplatDev.EmailTemplates",
+            // so splitting on '.' would keep only half of it.
+            var start = at + marker.Length;
+            var folder = name.Substring(start, name.Length - start - Suffix.Length);
+
             var stream = Assembly.GetManifestResourceStream(name);
             if (stream is not null)
             {
-                yield return stream;
+                yield return (folder, stream);
             }
         }
     }
@@ -157,14 +167,31 @@ internal sealed class EmbeddedPackageManifestReader : IPackageManifestReader
         PropertyNameCaseInsensitive = true,
     };
 
+    private readonly IWebHostEnvironment _environment;
+
+    public EmbeddedPackageManifestReader(IWebHostEnvironment environment) =>
+        _environment = environment;
+
     public Task<IEnumerable<PackageManifest>> ReadPackageManifestsAsync()
     {
         var manifests = new List<PackageManifest>();
 
-        foreach (var stream in EmbeddedAssets.OpenPackageManifests())
+        foreach (var (folder, stream) in EmbeddedAssets.OpenPackageManifests())
         {
             using (stream)
             {
+                // Umbraco enumerates physical App_Plugins directories itself, so a site that
+                // still has a real folder for this plugin - one an older content-copying
+                // release left behind - registers every alias twice. The backoffice then
+                // logs "Extension with alias X is already registered" and drops one, which
+                // is how staging ended up with fifteen of them. Let the physical copy win:
+                // it is the one Umbraco found on its own, and yielding to it is what makes
+                // an upgrade over such a site quiet rather than noisy.
+                if (HasPhysicalCopy(folder))
+                {
+                    continue;
+                }
+
                 try
                 {
                     var manifest = JsonSerializer.Deserialize<PackageManifest>(stream, SerializerOptions);
@@ -182,6 +209,22 @@ internal sealed class EmbeddedPackageManifestReader : IPackageManifestReader
         }
 
         return Task.FromResult<IEnumerable<PackageManifest>>(manifests);
+    }
+
+    private bool HasPhysicalCopy(string folder)
+    {
+        try
+        {
+            var root = _environment.ContentRootPath;
+            return !string.IsNullOrEmpty(root)
+                && File.Exists(Path.Combine(root, "App_Plugins", folder, "umbraco-package.json"));
+        }
+        catch (Exception)
+        {
+            // A path this plugin cannot probe is no reason to fail startup, and registering
+            // the embedded manifest is the safe side of the decision.
+            return false;
+        }
     }
 }
 #endif

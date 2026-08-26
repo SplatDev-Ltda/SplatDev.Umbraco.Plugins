@@ -15,8 +15,8 @@ Umbraco Remote Desktop connection manager — store RDP configurations and gener
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.5.1           |
-| 17.x    | 10.0 | 2.5.1           |
+| 13.x    | 8.0  | 2.5.2           |
+| 17.x    | 10.0 | 2.5.2           |
 
 ## Installation
 
@@ -65,6 +65,10 @@ Manage RDP connections through the backoffice dashboard. Each connection stores 
 - Uses the same `ConnectionStrings:umbracoDbDSN` as Umbraco (no separate connection string support)
 
 ## Changelog
+
+### 2.5.2 — 2026-08-26
+
+Fixes a duplicate registration on sites that still have a physical App_Plugins folder for this plugin, left behind by an older release that copied content into the site. Umbraco registered those extensions twice - once from its own scan of the folder, once from this package's embedded manifest - and logged "Extension with alias ... is already registered". The embedded manifest now yields to the physical copy.
 
 ### 2.5.1 — 2026-08-24
 

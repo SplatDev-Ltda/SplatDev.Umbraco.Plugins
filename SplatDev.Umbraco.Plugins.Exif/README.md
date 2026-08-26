@@ -15,8 +15,8 @@ EXIF metadata extractor for Umbraco media — reads camera, GPS, and image EXIF 
 
 | Umbraco | .NET | Package Version | Dashboard |
 |---------|------|-----------------|-----------|
-| 13.x    | 8.0  | 1.2.5           | AngularJS |
-| 17.x    | 10.0 | 1.2.5           | Lit (Bellissima) |
+| 13.x    | 8.0  | 1.2.6           | AngularJS |
+| 17.x    | 10.0 | 1.2.6           | Lit (Bellissima) |
 
 ## Installation
 
@@ -56,6 +56,10 @@ The build output is placed at `App_Plugins/Exif/dist/exif-dashboard.element.js` 
 - `Services/` — EXIF extraction service (MetadataExtractor)
 
 ## Changelog
+
+### 1.2.6 — 2026-08-26
+
+Fixes a duplicate registration on sites that still have a physical App_Plugins folder for this plugin, left behind by an older release that copied content into the site. Umbraco registered those extensions twice - once from its own scan of the folder, once from this package's embedded manifest - and logged "Extension with alias ... is already registered". The embedded manifest now yields to the physical copy.
 
 ### 1.2.5 — 2026-08-25
 

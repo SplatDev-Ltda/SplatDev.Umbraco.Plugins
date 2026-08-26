@@ -58,6 +58,10 @@ await _defaultValueService.ApplyDefaultsAsync("blogPost", properties);
 
 ## Changelog
 
+### 2.4.1 — 2026-08-26
+
+Fixes a duplicate registration on sites that still have a physical App_Plugins folder for this plugin, left behind by an older release that copied content into the site. Umbraco registered those extensions twice - once from its own scan of the folder, once from this package's embedded manifest - and logged "Extension with alias ... is already registered". The embedded manifest now yields to the physical copy.
+
 ### 2.4.0 — 2026-08-24
 
 Brings back the property editor. Version 2.x replaced this plugin with a rules engine — tables, a dashboard, rules applied across content — and shipped no editor at all, which is a different product under the same package id. A site upgrading from Umbraco 7 or 8 had document types whose properties were bound to `splatDev.DefaultValue`, and that editor was simply absent, leaving those properties without one and their `dValue` configuration orphaned.

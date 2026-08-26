@@ -12,8 +12,8 @@ Email template engine, Mailgun mail provider, newsletter campaigns, and member n
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 1.3.3           |
-| 17.x    | 10.0 | 1.3.3           |
+| 13.x    | 8.0  | 1.3.4           |
+| 17.x    | 10.0 | 1.3.4           |
 
 ## Installation
 
@@ -40,6 +40,10 @@ Add to `appsettings.json`:
 ```
 
 ## Changelog
+
+### 1.3.4 — 2026-08-26
+
+Fixes a duplicate registration on sites that still have a physical App_Plugins folder for this plugin, left behind by an older release that copied content into the site. Umbraco registered those extensions twice - once from its own scan of the folder, once from this package's embedded manifest - and logged "Extension with alias ... is already registered". The embedded manifest now yields to the physical copy.
 
 ### 1.3.3 — 2026-08-25
 

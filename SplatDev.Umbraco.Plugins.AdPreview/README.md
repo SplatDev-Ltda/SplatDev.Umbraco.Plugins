@@ -12,6 +12,14 @@ Create a property using the **Ad Preview** property editor schema. Edit the ad i
 
 The persisted value is JSON with the stable original field names. `overlay` controls whether title and description are rendered over the image. Preview links open in a new tab when `url` is provided.
 
+## Changelog
+
+### 1.0.1 — 2026-08-26
+
+The package icon was a 795x447 banner, so the Umbraco Marketplace - which renders icons at 64x64 - letterboxed it against every other card. It is now a 128x128 icon in the same house style as the rest of the SplatDev packages.
+
+Fixes a duplicate registration on sites that still have a physical App_Plugins folder for this plugin, left behind by an older release that copied content into the site. Umbraco registered those extensions twice - once from its own scan of the folder, once from this package's embedded manifest - and logged "Extension with alias ... is already registered". The embedded manifest now yields to the physical copy.
+
 ## License
 
 MIT

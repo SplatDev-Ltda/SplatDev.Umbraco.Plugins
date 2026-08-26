@@ -10,7 +10,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>SplatDev.Umbraco.Plugins.Analytics</PackageId>
-    <Version>3.0.1</Version>
+    <Version>3.0.2</Version>
     <Authors>SplatDev</Authors>
     <Description>First-party visitor analytics for Umbraco. Records visits against content nodes with browser, screen, entry and exit details, and reports totals, recurring visitors, real-time activity and per-page breakdowns from a backoffice dashboard. Your data stays in your database. Supports Umbraco 13 (net8.0) and Umbraco 17 (net10.0).</Description>
     <PackageTags>umbraco umbraco-marketplace analytics visitors statistics first-party</PackageTags>

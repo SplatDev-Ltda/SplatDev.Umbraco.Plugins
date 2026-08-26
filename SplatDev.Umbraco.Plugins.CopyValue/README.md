@@ -94,6 +94,10 @@ int count = await _copyValueService.BulkCopyAsync(mappingId, pairs, publish: fal
 
 ## Changelog
 
+### 2.4.3 — 2026-08-26
+
+Fixes a duplicate registration on sites that still have a physical App_Plugins folder for this plugin, left behind by an older release that copied content into the site. Umbraco registered those extensions twice - once from its own scan of the folder, once from this package's embedded manifest - and logged "Extension with alias ... is already registered". The embedded manifest now yields to the physical copy.
+
 ### 2.4.2 — 2026-08-24
 
 Reads the `from` prevalue the Umbraco 7/8 plugin used, so a data type carried over from those versions arrives with its sources intact. Reading only `sourceAliases` meant the editor reported "No source properties are set" on a data type that plainly had them. The icon is back to `icon-layers` and the Brazilian Portuguese strings that shipped with the Umbraco 8 package are restored.

@@ -12,8 +12,8 @@ Discussion forums plugin for Umbraco 13 (net8.0) and Umbraco 17 (net10.0).
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.2.5           |
-| 17.x    | 10.0 | 2.2.5           |
+| 13.x    | 8.0  | 2.2.6           |
+| 17.x    | 10.0 | 2.2.6           |
 
 ## Installation
 
@@ -64,6 +64,10 @@ npm run build
 ```
 
 ## Changelog
+
+### 2.2.6 — 2026-08-26
+
+Fixes a duplicate registration on sites that still have a physical App_Plugins folder for this plugin, left behind by an older release that copied content into the site. Umbraco registered those extensions twice - once from its own scan of the folder, once from this package's embedded manifest - and logged "Extension with alias ... is already registered". The embedded manifest now yields to the physical copy.
 
 ### 2.2.5 — 2026-08-24
 

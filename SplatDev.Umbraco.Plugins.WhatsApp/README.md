@@ -197,6 +197,10 @@ dotnet test --filter "Category=Integration"
 
 ## Changelog
 
+### 3.5.3 — 2026-08-26
+
+Fixes a duplicate registration on sites that still have a physical App_Plugins folder for this plugin, left behind by an older release that copied content into the site. Umbraco registered those extensions twice - once from its own scan of the folder, once from this package's embedded manifest - and logged "Extension with alias ... is already registered". The embedded manifest now yields to the physical copy.
+
 ### 3.5.2 — 2026-08-26
 
 The five screenshots on the NuGet listing now describe themselves — inbox, contacts, send, templates and status — rather than all five reading "screenshot".

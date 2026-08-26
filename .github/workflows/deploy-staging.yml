@@ -1,0 +1,150 @@
+name: Deploy staging
+
+# Manual only. Staging is outward-facing and shares a host with other things, so a deploy
+# is a decision someone makes, not something a merge triggers.
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Branch, tag or SHA to deploy"
+        required: false
+        default: master
+      restart:
+        description: "How the site is restarted on the host"
+        required: true
+        default: docker
+        type: choice
+        options: [docker, systemd]
+      dry_run:
+        description: "Build and diff, but change nothing on the host"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+env:
+  DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: 1
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  SITE: test-environments/Umbraco17.Baseline/Umbraco17.Baseline.csproj
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      # Fail here rather than three steps later with an ssh error nobody can read. A
+      # workflow that reports success having done nothing is the failure mode this repo
+      # has now found four times.
+      - name: Check the deploy secrets exist
+        run: |
+          missing=0
+          for name in STAGING_SSH_HOST STAGING_SSH_USER STAGING_SSH_KEY STAGING_PATH; do
+            if [ -z "${!name}" ]; then echo "::error::secret $name is not set"; missing=1; fi
+          done
+          [ "$missing" = "0" ] || exit 1
+        env:
+          STAGING_SSH_HOST: ${{ secrets.STAGING_SSH_HOST }}
+          STAGING_SSH_USER: ${{ secrets.STAGING_SSH_USER }}
+          STAGING_SSH_KEY: ${{ secrets.STAGING_SSH_KEY }}
+          STAGING_PATH: ${{ secrets.STAGING_PATH }}
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: dotnet restore "$SITE"
+
+      - name: Publish
+        run: dotnet publish "$SITE" -c Release -f net10.0 --no-restore -o publish
+
+      # Every plugin embeds its App_Plugins content and hands Umbraco the manifest itself,
+      # so a correct publish has no App_Plugins directory at all. If one appears, an older
+      # content-copying package has crept back in and the site would register each of its
+      # aliases twice.
+      - name: Refuse to ship a physical App_Plugins
+        run: |
+          if [ -d publish/App_Plugins ]; then
+            echo "::error::publish/App_Plugins exists; a package is copying content again"
+            find publish/App_Plugins -maxdepth 1 -mindepth 1 -type d -printf '  %f\n'
+            exit 1
+          fi
+          echo "no physical App_Plugins in the publish output, as expected"
+
+      # Done by hand rather than with a third-party action: it is four lines, and a deploy
+      # key is not a credential to hand to something outside this repo's control.
+      - name: Set up the deploy key
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "${{ secrets.STAGING_SSH_KEY }}" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          ssh-keyscan -H "${{ secrets.STAGING_SSH_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+          cat >> ~/.ssh/config <<EOF
+          Host staging
+            HostName ${{ secrets.STAGING_SSH_HOST }}
+            User ${{ secrets.STAGING_SSH_USER }}
+            IdentityFile ~/.ssh/id_deploy
+            IdentitiesOnly yes
+          EOF
+
+      # --delete keeps the server from accumulating files no release ships any more, which
+      # is exactly how staging came to hold stale App_Plugins folders. The excludes are the
+      # state that belongs to the host and not to the build: its database, its logs, its
+      # uploaded media, and its own connection string.
+      - name: Sync
+        run: |
+          rsync -az --delete ${{ inputs.dry_run && '--dry-run --itemize-changes' || '' }} \
+            --exclude 'appsettings.json' \
+            --exclude 'appsettings.*.json' \
+            --exclude 'umbraco/Data/**' \
+            --exclude 'umbraco/Logs/**' \
+            --exclude 'wwwroot/media/**' \
+            publish/ \
+            "staging:${{ secrets.STAGING_PATH }}/"
+
+      # Left-over physical App_Plugins folders are what made staging log fifteen
+      # "Extension with alias X is already registered" errors: Umbraco found the folder and
+      # the embedded manifest reader offered the same manifest again. The reader now yields
+      # to a physical copy, so this only has to remove the folders once - but removing them
+      # is what actually fixes the site rather than silencing it.
+      - name: Remove stale App_Plugins from the host
+        if: ${{ !inputs.dry_run }}
+        run: |
+          ssh staging \
+            "set -e; d='${{ secrets.STAGING_PATH }}/App_Plugins'; \
+             if [ -d \"\$d\" ]; then echo 'removing:'; ls -1 \"\$d\"; rm -rf \"\$d\"; \
+             else echo 'no physical App_Plugins on the host'; fi"
+
+      - name: Restart
+        if: ${{ !inputs.dry_run }}
+        run: |
+          if [ "${{ inputs.restart }}" = "docker" ]; then
+            cmd="cd '${{ secrets.STAGING_PATH }}' && docker compose up -d --force-recreate"
+          else
+            cmd="sudo systemctl restart '${{ secrets.STAGING_SERVICE || 'umbraco-staging' }}'"
+          fi
+          ssh staging "$cmd"
+
+      # Umbraco takes a while to come up with this many plugins, and a deploy that leaves
+      # the site down must fail the job rather than end green.
+      - name: Wait for the site to answer
+        if: ${{ !inputs.dry_run }}
+        run: |
+          url="${{ vars.STAGING_URL || 'https://staging-umbraco.splatdev.tech' }}/umbraco"
+          for i in $(seq 1 30); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 "$url" || true)
+            if [ "$code" = "200" ]; then echo "up after ~$((i*10))s"; exit 0; fi
+            echo "  $((i*10))s: $code"
+            sleep 10
+          done
+          echo "::error::site did not return 200 within 300s"
+          exit 1

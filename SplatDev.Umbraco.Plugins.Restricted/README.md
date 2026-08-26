@@ -17,8 +17,8 @@ Content restriction plugin for Umbraco — member-only content gates using Umbra
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.5.3           |
-| 17.x    | 10.0 | 2.5.3           |
+| 13.x    | 8.0  | 2.5.4           |
+| 17.x    | 10.0 | 2.5.4           |
 
 ## Installation
 
@@ -65,6 +65,10 @@ This plugin uses Umbraco's own public access infrastructure — no additional da
 - Redirect behavior (login vs error page) must be configured per-node
 
 ## Changelog
+
+### 2.5.4 — 2026-08-26
+
+Fixes a duplicate registration on sites that still have a physical App_Plugins folder for this plugin, left behind by an older release that copied content into the site. Umbraco registered those extensions twice - once from its own scan of the folder, once from this package's embedded manifest - and logged "Extension with alias ... is already registered". The embedded manifest now yields to the physical copy.
 
 ### 2.5.3 — 2026-08-24
 
