@@ -31,7 +31,62 @@ later only if a generic (non-domain) backoffice surface is desired.
 
 This is a **headless API plugin** — no standalone backoffice dashboard, property editors, or UI components. It operates as an API service (payment processing + webhooks), registered via DI composition. The backoffice/webhook management surface is intentionally left in the consuming application.
 
+## Backoffice dashboard
+
+Settings → Getnet. Four period buttons (7, 30, 90, 365 days) drive every panel.
+
+**Overview** — settled volume against the previous period of the same length, approval rate,
+average ticket and refunds, then a per-day volume chart and breakdowns by status and by
+payment method.
+
+**Transactions** — the ledger, filterable by status, method and a search across order
+reference, Getnet payment id, customer name and email. Shows card brand, last four digits
+and instalments where the method has them, the authorisation code, and the gateway's own
+refusal message when it refused.
+
+**Connection** — whether the seller id, client id and client secret are configured, which
+environment the base URL points at, and whether the development mock is on. Secrets are
+reported as present or missing and never sent to the browser; the seller id is masked to its
+last four digits.
+
+### Where the numbers come from
+
+Getnet's API answers about one payment at a time and offers no history to page through, so
+the dashboard reads a local ledger this plugin keeps in Umbraco's database
+(`GetnetTransactions`). A payment appears there once the consuming application records it:
+
+```csharp
+public class CheckoutService(IGetnetTransactionService getnet)
+{
+    public async Task StartAsync(Order order)
+    {
+        await getnet.RecordAsync(new GetnetTransaction
+        {
+            OrderRef = order.Reference,
+            AmountMinor = order.TotalCents,   // centavos, not reais
+            Currency = "BRL",
+            PaymentMethod = "pix",
+            CustomerName = order.CustomerName,
+        });
+    }
+
+    // From the gateway response, or from a webhook.
+    public Task ConfirmAsync(string paymentId, string authCode) =>
+        getnet.UpdateStatusAsync(paymentId, GetnetTransactionStatus.Confirmed, authCode);
+}
+```
+
+Amounts are stored in the currency's minor unit because that is what Getnet's API exchanges;
+converting on the way in is how rounding errors end up baked into a total later reported as
+money. Nothing is recorded automatically — a plugin cannot know which of your requests was a
+payment — so a site that never calls `RecordAsync` will show an empty dashboard.
+
+
 ## Changelog
+
+### 1.2.0 — 2026-08-27
+
+Adds a backoffice dashboard under Settings: settled volume against the previous period, approval rate, average ticket and refunds, a per-day volume chart, breakdowns by status and payment method, a filterable transactions table, and a connection panel showing whether the gateway credentials are configured without revealing them. The figures come from a local ledger the plugin now keeps, because Getnet's API offers no payment history to page through.
 
 ### 1.1.3 — 2026-08-25
 

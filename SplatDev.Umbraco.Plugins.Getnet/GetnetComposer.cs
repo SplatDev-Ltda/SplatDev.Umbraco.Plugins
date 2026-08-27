@@ -8,6 +8,13 @@ using Polly.Extensions.Http;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 using SplatDev.Payments.Getnet;
+#if NET10_0_OR_GREATER
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
+using SplatDev.Umbraco.Plugins.Getnet.Components;
+using SplatDev.Umbraco.Plugins.Getnet.Models;
+using SplatDev.Umbraco.Plugins.Getnet.Services;
+#endif
 
 namespace SplatDev.Umbraco.Plugins.Getnet;
 
@@ -44,6 +51,27 @@ public sealed class GetnetComposer : IComposer
         };
 
         builder.Services.AddSingleton(options);
+
+#if NET10_0_OR_GREATER
+        // The dashboard reads a local ledger of payment attempts: Getnet answers about one
+        // payment at a time and offers no history to page through, so reporting has to come
+        // from what this site recorded as it went.
+        //
+        // Paths must be ABSOLUTE. Umbraco sets the DataDirectory AppDomain property and
+        // Microsoft.Data.Sqlite resolves a relative Data Source against it rather than the
+        // content root, so a relative path lands somewhere nobody expects.
+        var dataDir = Path.Combine(
+            cfg[HostDefaults.ContentRootKey] ?? Directory.GetCurrentDirectory(),
+            "umbraco",
+            "Data");
+
+        var connection = cfg.GetConnectionString("GetnetDb")
+            ?? $"Data Source={Path.Combine(dataDir, "getnet.db")}";
+
+        builder.Services.AddDbContextFactory<GetnetDbContext>(o => o.UseSqlite(connection));
+        builder.Services.AddScoped<IGetnetTransactionService, GetnetTransactionService>();
+        builder.Components().Append<GetnetSchemaComponent>();
+#endif
         // Singleton, not scoped. The client caches its OAuth token behind a SemaphoreSlim
         // in instance state; registered per-request that cache is discarded every request
         // and every call re-authenticates. Its four dependencies — IHttpClientFactory, the

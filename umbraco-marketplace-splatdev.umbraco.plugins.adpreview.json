@@ -1,7 +1,7 @@
 {
   "PackageId": "SplatDev.Umbraco.Plugins.AdPreview",
   "PackageName": "AdPreview",
-  "PackageVersion": "1.0.1",
+  "PackageVersion": "1.0.3",
   "Author": "SplatDev",
   "License": "MIT",
   "Category": "Editor Tools",
