@@ -4,7 +4,7 @@
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     <Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>SplatDev.Umbraco.Plugins.AdPreview</AssemblyName><RootNamespace>SplatDev.Umbraco.Plugins.AdPreview</RootNamespace>
-    <PackageId>SplatDev.Umbraco.Plugins.AdPreview</PackageId><Version>1.0.1</Version>
+    <PackageId>SplatDev.Umbraco.Plugins.AdPreview</PackageId><Version>1.0.2</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile><PackageIcon>icon.png</PackageIcon>
     <Description>Image ad preview property editor for Umbraco 13 and 17.</Description><PackageTags>umbraco;property-editor;advertising;preview;splatdev</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression><RepositoryUrl>https://github.com/splatdevtech/SplatDev.Umbraco.Plugins</RepositoryUrl><RepositoryType>git</RepositoryType>

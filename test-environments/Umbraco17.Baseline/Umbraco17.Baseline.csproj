@@ -10,6 +10,7 @@
   </ItemGroup>
   <ItemGroup>
     <!-- Multi-target plugins (net8.0;net10.0) -->
+    <ProjectReference Include="../../SplatDev.Umbraco.Plugins.AdPreview/SplatDev.Umbraco.Plugins.AdPreview.csproj" PrivateAssets="none" />
     <ProjectReference Include="../../SplatDev.Content/SplatDev.Content.csproj" PrivateAssets="none" />
     <ProjectReference Include="../../SplatDev.Database/SplatDev.Database.csproj" PrivateAssets="none" />
     <ProjectReference Include="../../SplatDev.Database.MSSQLAdmin/SplatDev.Database.MSSQLAdmin.csproj" PrivateAssets="none" />
