@@ -21,6 +21,10 @@ The persisted value is JSON with the stable original field names. `overlay` cont
 
 ## Changelog
 
+### 1.0.4 — 2026-08-27
+
+Adds the umbraco-marketplace tag. Without it the package never appears on the Umbraco Marketplace at all, however complete its listing is - and this was the only package in the estate with a marketplace manifest and backoffice assets that was missing the tag.
+
 ### 1.0.3 — 2026-08-27
 
 The NuGet listing now shows the property editor, with a sample ad in it. Verified against a real install: a data type bound to this editor, a document type using it and a document all create successfully, which was not possible before 1.0.2 registered the editor server-side.
