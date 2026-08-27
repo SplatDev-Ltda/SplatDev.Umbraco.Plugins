@@ -11,7 +11,7 @@ Member-facing in-app notification system for Umbraco 17 (net10.0). Stores notifi
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 17.x    | 10.0 | 1.2.4           |
+| 17.x    | 10.0 | 1.3.0           |
 
 ## Installation
 
@@ -23,7 +23,44 @@ dotnet add package SplatDev.Umbraco.Plugins.MemberNotifications
 
 No registration call is needed. The package ships Umbraco composers, so the `AddComposers()` already in the default `Program.cs` picks the plugin up as soon as the package is referenced.
 
+## Configuration screen
+
+Members → Member Notifications. Nothing is raised until you enable it there: before 1.3.0
+this plugin only stored notifications an application created itself, and it still does that
+too.
+
+Each event has its own rule — whether it fires, who receives it, and the wording. Recipients
+are the member the event happened to, one or more member groups, or both.
+
+**Member events** — signed in, failed sign-in, signed out, two-factor requested, roles
+assigned, roles removed.
+
+**Backoffice user events** — signed in, failed sign-in, password changed, password reset,
+reset requested, two-factor requested, account locked, account unlocked.
+
+A backoffice event has no member behind it, so it can only go to a member group. The screen
+disables "notify the person it happened to" for those rather than offering a setting that
+would quietly do nothing.
+
+Titles and bodies accept `{member}`, `{user}`, `{when}`, `{ip}` and — for role
+changes — `{roles}`.
+
+Retention matters: failed sign-ins accumulate quickly on a public site, and an inbox nobody
+prunes is what eventually makes the members section slow. The default is 90 days; 0 keeps
+them forever.
+
+### Umbraco 17.4 or newer
+
+The member sign-in notifications this builds on (`MemberLoginSuccessNotification` and its
+siblings) do not exist before Umbraco 17.4, which is why the package now requires it. On
+17.3 a handler for them compiles and simply never fires.
+
+
 ## Changelog
+
+### 1.3.0 — 2026-08-27
+
+Adds a configuration screen under Members. Fourteen security events — member and backoffice sign-ins, failed sign-ins, password changes and resets, two-factor requests, account lock and unlock, and member role changes — can each be switched on, addressed to the person concerned or to member groups, and worded with tokens. Retention is configurable. Requires Umbraco 17.4, because the member sign-in notifications it listens to do not exist before that.
 
 ### 1.2.4 — 2026-08-26
 
