@@ -1,6 +1,6 @@
-import { css as c, LitElement as p, html as r, state as u } from "@umbraco-cms/backoffice/external/lit";
+import { css as p, LitElement as h, html as n, state as u } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin as m } from "@umbraco-cms/backoffice/element-api";
-const h = "/_content/PdfCurator.Web/pdfc.js", b = `
+const f = "/_content/PdfCurator.Web/pdfc.js", g = `
 :host {
   display: block;
   padding: var(--uui-size-layout-1, 24px);
@@ -33,14 +33,14 @@ uui-box {
   margin: var(--uui-size-space-3, 8px) 0 0;
 }
 `;
-var f = Object.defineProperty, d = (n, t, s, g) => {
-  for (var e = void 0, i = n.length - 1, l; i >= 0; i--)
-    (l = n[i]) && (e = l(t, s, e) || e);
-  return e && f(t, s, e), e;
+var b = Object.defineProperty, c = (d, t, r, o) => {
+  for (var e = void 0, a = d.length - 1, l; a >= 0; a--)
+    (l = d[a]) && (e = l(t, r, e) || e);
+  return e && b(t, r, e), e;
 };
-const x = c([b]), a = class a extends m(p) {
+const _ = p([g]), s = class s extends m(h) {
   constructor() {
-    super(...arguments), this._bundleLoaded = !1, this._loadError = null;
+    super(...arguments), this._bundleLoaded = !1, this._loadError = null, this._reportedMissing = !1;
   }
   connectedCallback() {
     super.connectedCallback(), this._loadPdfcBundle();
@@ -51,13 +51,13 @@ const x = c([b]), a = class a extends m(p) {
       return;
     }
     try {
-      await import(h), this._bundleLoaded = !0;
+      await import(f), this._bundleLoaded = !0;
     } catch (t) {
       this._loadError = t instanceof Error ? t.message : "Failed to load PdfCurator components";
     }
   }
   render() {
-    return this._loadError ? r`
+    return this._loadError ? n`
         <uui-box headline="${this.headline}">
           <div class="error-state">
             <uui-icon
@@ -65,34 +65,46 @@ const x = c([b]), a = class a extends m(p) {
               style="font-size:3rem;color:var(--uui-color-danger)"
             ></uui-icon>
             <p>
-              Failed to load Book Library components. Please rebuild the
+              Failed to load PdfCurator components. Please rebuild the
               project and ensure PdfCurator.Web is installed.
             </p>
           </div>
         </uui-box>
-      ` : this._bundleLoaded ? r`
+      ` : this._bundleLoaded ? n`
       <uui-box headline="${this.headline}">
-        <${this.componentTag}></${this.componentTag}>
+        <div id="host"></div>
       </uui-box>
-    ` : r`
+    ` : n`
         <uui-box headline="${this.headline}">
           <div class="loading-state">
             <uui-loader-circle></uui-loader-circle>
-            <p>Loading Book Library components…</p>
+            <p>Loading PdfCurator components…</p>
           </div>
         </uui-box>
       `;
   }
+  updated(t) {
+    var o, e;
+    if (super.updated(t), !this._bundleLoaded || this._loadError) return;
+    const r = (o = this.shadowRoot) == null ? void 0 : o.querySelector("#host");
+    if (r) {
+      if (!customElements.get(this.componentTag)) {
+        this._reportedMissing || (this._reportedMissing = !0, this._loadError = `The PdfCurator bundle loaded but did not define <${this.componentTag}>.`);
+        return;
+      }
+      ((e = r.firstElementChild) == null ? void 0 : e.tagName.toLowerCase()) !== this.componentTag && r.replaceChildren(document.createElement(this.componentTag));
+    }
+  }
 };
-a.styles = x;
-let o = a;
-d([
+s.styles = _;
+let i = s;
+c([
   u()
-], o.prototype, "_bundleLoaded");
-d([
+], i.prototype, "_bundleLoaded");
+c([
   u()
-], o.prototype, "_loadError");
+], i.prototype, "_loadError");
 export {
-  o as P
+  i as P
 };
-//# sourceMappingURL=pdfc-section-wrapper-CqiCQvAb.js.map
+//# sourceMappingURL=pdfc-section-wrapper-nn4PGSKg.js.map
