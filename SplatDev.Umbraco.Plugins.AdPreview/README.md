@@ -14,6 +14,10 @@ The persisted value is JSON with the stable original field names. `overlay` cont
 
 ## Changelog
 
+### 1.0.2 — 2026-08-27
+
+The property editor can now actually be used. Its alias was declared only in umbraco-package.json, with no server-side counterpart, so creating a data type with it failed and it could never be attached to a document type - the package shipped an editor nothing could reach. Umbraco 17 only: the package ships no AngularJS view for Umbraco 13.
+
 ### 1.0.1 — 2026-08-26
 
 The package icon was a 795x447 banner, so the Umbraco Marketplace - which renders icons at 64x64 - letterboxed it against every other card. It is now a 128x128 icon in the same house style as the rest of the SplatDev packages.
