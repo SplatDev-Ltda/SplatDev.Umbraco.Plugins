@@ -96,6 +96,30 @@ def published(pid):
                 listed.append(entry.get("version"))
     return [v for v in listed if v]
 
+def expand_package_id(text, fallback):
+    """Reads <PackageId>, resolving $(Prop) against <Prop> in the same file.
+
+    Schema2Yaml declares <PackageId>$(_BasePackageId)</PackageId> so a themed variant can
+    append to the same base. Read literally, the planner looked up a package called
+    "$(_BasePackageId)", got a 404, and moved on without a word - so that package was never
+    planned and quietly accumulated fourteen listed versions while every other id was pruned
+    to one. The same unexpanded-property bug bit tools/make-plugins-props.py.
+    """
+    match = re.search(r"<PackageId>(.*?)</PackageId>", text)
+    value = match.group(1).strip() if match else fallback
+    for _ in range(3):
+        if "$(" not in value:
+            return value
+        def sub(m):
+            found = re.search(rf"<{re.escape(m.group(1))}>([^<]*)</{re.escape(m.group(1))}>", text)
+            return found.group(1) if found else m.group(0)
+        expanded = re.sub(r"\$\(([A-Za-z_][A-Za-z0-9_]*)\)", sub, value)
+        if expanded == value:
+            break
+        value = expanded
+    return fallback if "$(" in value else value
+
+
 def main():
     listing = subprocess.run(["bash", "-c",
         'find . -maxdepth 3 -name "SplatDev.*.csproj" | grep -v "Tests\\|BackupManager\\|FormsClone\\|obj\\|bin\\|PdfCurator\\|/customers/\\|test-environments"'],
@@ -105,12 +129,12 @@ def main():
     for rel in sorted(listing):
         path = os.path.join(ROOT, rel.lstrip("./"))
         text = open(path, encoding="utf-8").read()
-        pid = (re.search(r"<PackageId>(.*?)</PackageId>", text) or [None, os.path.basename(path)[:-7]])[1]
+        pid = expand_package_id(text, os.path.basename(path)[:-7])
         shipped = (re.search(r"<Version>(.*?)</Version>", text) or [None, None])[1]
         try:
             versions = published(pid)
         except NotPublished:
-            continue
+            skipped.append(f"{pid}: nothing published under this id"); continue
         except LookupFailed as e:
             failures.append(str(e)); continue
         if not versions:
