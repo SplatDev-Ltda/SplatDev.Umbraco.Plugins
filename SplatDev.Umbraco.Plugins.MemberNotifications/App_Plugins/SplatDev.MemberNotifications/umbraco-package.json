@@ -2,7 +2,26 @@
   "$schema": "../../umbraco-package-schema.json",
   "id": "SplatDev.MemberNotifications",
   "name": "SplatDev Member Notifications",
-  "version": "1.0.0",
+  "version": "1.3.0",
   "allowPackageTelemetry": true,
-  "extensions": []
+  "extensions": [
+    {
+      "type": "dashboard",
+      "alias": "SplatDev.MemberNotifications.Settings",
+      "name": "Member Notifications",
+      "element": "/App_Plugins/SplatDev.MemberNotifications/dist/settings.js",
+      "elementName": "membernotifications-settings",
+      "weight": 30,
+      "meta": {
+        "label": "Member Notifications",
+        "pathname": "member-notifications"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.SectionAlias",
+          "match": "Umb.Section.Members"
+        }
+      ]
+    }
+  ]
 }
