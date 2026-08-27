@@ -2,6 +2,13 @@
 
 AdPreview is an Umbraco property editor for building a small image advertisement and seeing its final presentation while editing content. It preserves the original `AdPreview` property-editor alias and JSON fields (`img`, `title`, `description`, `url`, `tooltip`, `referrer`, `css`, `overlay`) used by the v7/v8 package.
 
+
+<!-- screenshot:start -->
+
+![AdPreview dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.AdPreview/docs/screenshots/01-dashboard.png)
+
+<!-- screenshot:end -->
+
 ## Install
 
 Install `SplatDev.Umbraco.Plugins.AdPreview` into an Umbraco 17 site. The package also carries the Umbraco 13 target for existing installations.
@@ -13,6 +20,10 @@ Create a property using the **Ad Preview** property editor schema. Edit the ad i
 The persisted value is JSON with the stable original field names. `overlay` controls whether title and description are rendered over the image. Preview links open in a new tab when `url` is provided.
 
 ## Changelog
+
+### 1.0.3 — 2026-08-27
+
+The NuGet listing now shows the property editor, with a sample ad in it. Verified against a real install: a data type bound to this editor, a document type using it and a document all create successfully, which was not possible before 1.0.2 registered the editor server-side.
 
 ### 1.0.2 — 2026-08-27
 
