@@ -131,7 +131,11 @@ GLYPH_FOR: dict[str, str] = {
     "blocks": "grid", "grid": "grid", "layout": "layout",
     "settings": "sliders", "config": "sliders", "configuration": "sliders",
     "adminbar": "terminal", "admin": "terminal", "devtools": "code", "codefirst": "code",
-    "schema": "sitemap", "yaml": "code", "yaml2schema": "code", "schema2yaml": "code",
+    "schema": "sitemap", "yaml": "code",
+    # These two are a pair travelling in opposite directions, and mapping both to "code"
+    # gave them the same picture - which is how they came to ship one icon between them.
+    # Schema2Yaml exports the schema out to YAML; Yaml2Schema reads YAML back in.
+    "schema2yaml": "download", "yaml2schema": "upload",
     "json": "code", "api": "plug", "webhooks": "plug", "integration": "plug",
     "exception": "bug", "exceptions": "bug", "errors": "bug", "logging": "bug",
     "logs": "list", "audit": "list",
@@ -158,8 +162,6 @@ FALLBACK = "box"
 # Hand-made artwork, never regenerated even with --force. Everything else with an
 # icon.png in its project root came from this script and can be restyled.
 BESPOKE = {
-    "SplatDev.Umbraco.Plugins.Schema2Yaml",
-    "SplatDev.Umbraco.Plugins.Yaml2Schema",
     "SplatDev.Umbraco.Plugins.OnOff",
     "SplatDev.Umbraco.Plugins.WhatsApp",
     "Umbraco.Community.AzureSSO",

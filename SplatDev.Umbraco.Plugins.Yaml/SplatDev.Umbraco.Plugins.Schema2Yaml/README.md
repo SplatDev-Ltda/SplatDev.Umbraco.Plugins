@@ -15,8 +15,8 @@ Export Umbraco document types to YAML format — reverse operation of Yaml2Schem
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 2.1.3           |
-| 17.x    | 10.0 | 2.1.3           |
+| 13.x    | 8.0  | 2.1.4           |
+| 17.x    | 10.0 | 2.1.4           |
 
 ## Installation
 
@@ -63,6 +63,10 @@ Access the Schema2Yaml dashboard from the Umbraco Settings section. Select the e
 - No incremental/delta export; always exports the full schema
 
 ## Changelog
+
+### 2.1.4 — 2026-08-27
+
+The package icon was the wrong one. Both YAML plugins shipped a single shared image lettered "YAML2SCHEMA", so this package - which exports the other way - advertised its sibling. It is now the house-style icon with an export glyph.
 
 ### 2.1.3 — 2026-08-26
 
