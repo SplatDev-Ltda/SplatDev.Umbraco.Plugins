@@ -2,6 +2,8 @@ import { LitElement, html, css } from "@umbraco-cms/backoffice/external/lit";
 import { state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 import { BUNDLE_URL, SECTION_WRAPPER_STYLES } from "./pdfc-constants";
+import { API_BASE } from "./auth-adapter";
+import { createAuthFetch } from "./auth-fetch";
 
 const styles = css([SECTION_WRAPPER_STYLES] as unknown as TemplateStringsArray);
 
@@ -17,7 +19,34 @@ export abstract class PdfcSectionWrapper extends UmbElementMixin(LitElement) {
 
   override connectedCallback(): void {
     super.connectedCallback();
+    this.#installAuthBridge();
     this._loadPdfcBundle();
+  }
+
+  /**
+   * Routes the PdfCurator components' own fetches through an authorised one.
+   *
+   * The components ship in PdfCurator.Web's bundle and call plain fetch, which on Umbraco
+   * 17 carries no Authorization header - the cookie alone is not enough, so every call to a
+   * BackOfficeAccess endpoint would answer 401. The bundle cannot be changed from here, so
+   * requests to this plugin's API prefix are delegated to createAuthFetch instead. Anything
+   * else is left exactly as it was.
+   */
+  #installAuthBridge(): void {
+    const w = window as Window & { __pdfcAuthBridge?: boolean };
+    if (w.__pdfcAuthBridge) return;
+    w.__pdfcAuthBridge = true;
+
+    const original = window.fetch.bind(window);
+    const authFetch = createAuthFetch(this, original);
+
+    window.fetch = (input: RequestInfo | URL, init?: RequestInit) => {
+      const url =
+        typeof input === "string" ? input
+        : input instanceof URL ? input.toString()
+        : input.url;
+      return url.startsWith(API_BASE) ? authFetch(input, init) : original(input, init);
+    };
   }
 
   private async _loadPdfcBundle(): Promise<void> {
@@ -96,6 +125,11 @@ export abstract class PdfcSectionWrapper extends UmbElementMixin(LitElement) {
     }
 
     if (host.firstElementChild?.tagName.toLowerCase() === this.componentTag) return;
-    host.replaceChildren(document.createElement(this.componentTag));
+
+    // Set before appending: the component reads apiBase on its first update, and the
+    // default of "" sends every call to the site root.
+    const el = document.createElement(this.componentTag) as HTMLElement & { apiBase?: string };
+    el.apiBase = API_BASE;
+    host.replaceChildren(el);
   }
 }

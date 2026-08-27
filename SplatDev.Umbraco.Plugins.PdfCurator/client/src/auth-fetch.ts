@@ -24,7 +24,14 @@ type NotificationContext = {
   peek: (colour: string, options: { data: { headline: string; message: string } }) => void;
 };
 
-export function createAuthFetch(host: UmbControllerHost): typeof fetch {
+export function createAuthFetch(
+  host: UmbControllerHost,
+  // The request is issued through this rather than the global fetch so a caller that has
+  // itself replaced window.fetch can hand back the original. PdfCurator does exactly that
+  // to authorise an external bundle's calls, and delegating to the patched global instead
+  // recurses until the tab dies.
+  baseFetch: typeof fetch = (...args) => fetch(...args),
+): typeof fetch {
   let token: string | null = null;
   let notifications: NotificationContext | null = null;
 
@@ -57,7 +64,7 @@ export function createAuthFetch(host: UmbControllerHost): typeof fetch {
     if (token && !headers.has("Authorization")) {
       headers.set("Authorization", `Bearer ${token}`);
     }
-    const response = await fetch(input, { ...init, credentials: "same-origin", headers });
+    const response = await baseFetch(input, { ...init, credentials: "same-origin", headers });
 
     // Most of these dashboards gate on `response.ok` and render their empty state on
     // anything else, so a failed request is indistinguishable from "there is no data".

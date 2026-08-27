@@ -1,6 +1,9 @@
 # Book Library (PdfCurator)
 
 <!-- screenshot:start -->
+
+![PdfCurator dashboard](https://raw.githubusercontent.com/splatdevtech/SplatDev.Umbraco.Plugins/master/SplatDev.Umbraco.Plugins.PdfCurator/docs/screenshots/01-dashboard.png)
+
 <!-- screenshot:end -->
 
 Umbraco 17 backoffice section for managing PDF digital books, documents, and publications. Provides a dedicated **Book Library** section with Dashboard, Library, Review, and Reports views — all built as pluggable Lit web components ready for the full PdfCurator component suite.
@@ -13,8 +16,8 @@ Built on top of the `SplatDev.DigitalBookCurator.Core` library which handles PDF
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 3.0.0           |
-| 17.x    | 10.0 | 3.0.0           |
+| 13.x    | 8.0  | 3.0.1           |
+| 17.x    | 10.0 | 3.0.1           |
 
 ## Installation
 
@@ -153,6 +156,10 @@ Localized in English (`en`) and Spanish (`es`).
 - `Umbraco.Cms.Api.Management` (net10.0 / Umbraco 17 only)
 
 ## Changelog
+
+### 3.0.1 — 2026-08-27
+
+The Book Library section works. Its four views rendered an empty card because a lit template cannot interpolate a tag name, and behind that its data calls answered 404 because the PdfCurator.Web API was never mapped into Umbraco - so every figure read zero whatever the library held. The API is now mapped under the configured ApiBase and requires backoffice access.
 
 ### 3.0.0 — 2026-08-25
 
