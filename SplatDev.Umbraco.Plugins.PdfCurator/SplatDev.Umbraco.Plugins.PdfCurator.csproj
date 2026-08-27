@@ -11,7 +11,7 @@
 		<FileVersion>3.0.0</FileVersion>
 		<PackageId>SplatDev.Umbraco.Plugins.PdfCurator</PackageId>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<Version>3.0.0</Version>
+		<Version>3.0.1</Version>
 		<Authors>SplatDev</Authors>
 		<Description>Umbraco 17 Book Library add-on — backoffice section with Dashboard, Library, Review, and Reports powered by PdfCurator.Web components.</Description>
 		<PackageTags>umbraco umbraco-marketplace pdf book library curator</PackageTags>

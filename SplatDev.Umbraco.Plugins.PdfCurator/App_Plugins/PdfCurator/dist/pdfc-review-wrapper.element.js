@@ -1,5 +1,5 @@
 import { customElement as f } from "@umbraco-cms/backoffice/external/lit";
-import { P as l } from "./chunks/pdfc-section-wrapper-nn4PGSKg.js";
+import { P as l } from "./chunks/pdfc-section-wrapper-AqI5vaU0.js";
 var s = Object.getOwnPropertyDescriptor, v = (p, a, o, n) => {
   for (var e = n > 1 ? void 0 : n ? s(a, o) : a, r = p.length - 1, c; r >= 0; r--)
     (c = p[r]) && (e = c(e) || e);
