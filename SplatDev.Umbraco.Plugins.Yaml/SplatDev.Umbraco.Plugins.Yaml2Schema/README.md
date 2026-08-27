@@ -15,8 +15,8 @@ Import YAML document type definitions into Umbraco — creates and updates conte
 
 | Umbraco | .NET | Package Version |
 |---------|------|-----------------|
-| 13.x    | 8.0  | 1.1.4           |
-| 17.x    | 10.0 | 1.1.4           |
+| 13.x    | 8.0  | 1.1.5           |
+| 17.x    | 10.0 | 1.1.5           |
 
 ## Installation
 
@@ -70,6 +70,10 @@ documentTypes:
 - YAML format must match the structure produced by `Schema2Yaml`; hand-written YAML files may fail validation
 
 ## Changelog
+
+### 1.1.5 — 2026-08-27
+
+The package icon is now the house-style one with an import glyph. The previous image was shared byte-for-byte with Schema2Yaml, so the two packages were indistinguishable on a search page.
 
 ### 1.1.4 — 2026-08-26
 

@@ -22,7 +22,7 @@
     <_BasePackageTags>umbraco yaml infrastructure-as-code cms content-management export schema document-types data-types templates media languages dictionary members users umbraco-marketplace</_BasePackageTags>
 
     <PackageId>$(_BasePackageId)</PackageId>
-    <Version>2.1.3</Version>
+    <Version>2.1.4</Version>
     <Authors>Carlos Casalicchio</Authors>
     <Company>SplatDev</Company>
     <Copyright>Copyright © 2026 SplatDev</Copyright>
